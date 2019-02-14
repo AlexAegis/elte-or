@@ -6,11 +6,11 @@ import org.junit.Test;
 import java.util.Arrays;
 
 public class Arguments {
-    public static void main(String ...args) {
+    public static void main(String... args) {
         System.out.println(new Arguments().task(args).toString());
     }
 
-    private ResultPair task(String ...args) {
+    private ResultPair task(String... args) {
         return new ResultPair(args.length, Arrays.stream(args).filter(s -> s.chars().allMatch(Character::isDigit))
                 .mapToInt(Integer::parseInt).sum());
     }
@@ -26,10 +26,7 @@ public class Arguments {
 
         @Override
         public String toString() {
-            return "ResultPair{" +
-                    "count=" + count +
-                    ", sum=" + sum +
-                    '}';
+            return "ResultPair{" + "count=" + count + ", sum=" + sum + '}';
         }
     }
 

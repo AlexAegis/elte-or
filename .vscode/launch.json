@@ -6,6 +6,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - Arguments",
+            "request": "launch",
+            "mainClass": "lesson01.Arguments",
+            "projectName": "elte-or"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Arguments",
+            "request": "launch",
+            "mainClass": "src.main.java.lesson01.Arguments",
+            "projectName": "elte-or"
+        },
+        {
+            "type": "java",
             "name": "Debug (Launch) - Current File",
             "request": "launch",
             "mainClass": "${file}",

@@ -20,5 +20,6 @@
 	"java.autobuild.enabled": true,
 	"java.format.onType.enabled": true,
 	"java.completion.guessMethodArguments": true,
-	"java.completion.enabled": true
+	"java.completion.enabled": true,
+	"java.configuration.updateBuildConfiguration": "automatic"
 }
