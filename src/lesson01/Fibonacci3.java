@@ -1,20 +1,25 @@
 package lesson01;
 
+import java.util.stream.IntStream;
+
 public class Fibonacci3 {
     public static void main(String[] args) {
-        System.out.println(fib(5));
+        System.out.println(fib(4));
     }
 
-    static int fib(int n) {
+    private static int fib(int n) {
+        return IntStream.range(0, n).collect(FibAcc::new, FibAcc::shift, (fibAcc, fin) -> {}).sum;
+    }
+}
 
-        int prevbef = 0;
-        int prev =1;
-        int sum = 0;
-        for (int i = 1; i <= n ; i++) {
-            sum += prev + prevbef;
-            prevbef = prev;
-            prev = i;
-        }
-        return sum;
+class FibAcc {
+    private int prev = 1;
+    private int prevBef;
+    int sum;
+
+    void shift(Integer i) {
+        sum += prev + prevBef;
+        prevBef = prev;
+        prev = i;
     }
 }
