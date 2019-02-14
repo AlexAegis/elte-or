@@ -4,23 +4,22 @@ import java.util.stream.IntStream;
 
 public class Fibonacci {
     public static void main(String[] args) {
-        System.out.println(fib(4));
+        System.out.println(fib(6));
     }
 
     private static int fib(int n) {
-        return IntStream.range(0, n).collect(FibAcc::new, FibAcc::shift, (fibAcc, fin) -> {
-        }).sum;
+        return IntStream.range(0, n).collect(Fib::new, Fib::shift, (fibAcc, fin) -> {
+        }).t2;
     }
 
-    static class FibAcc {
-        private int prev = 1;
-        private int prevBef;
-        int sum;
+    static class Fib {
+        private int t1 = 1;
+        private int t2;
 
         void shift(Integer i) {
-            sum += prev + prevBef;
-            prevBef = prev;
-            prev = i;
+            int sum = t1 + t2;
+            t1 = t2;
+            t2 = sum;
         }
     }
 }

@@ -6,6 +6,20 @@
 	"configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - Fibonacci",
+            "request": "launch",
+            "mainClass": "lesson01.Fibonacci",
+            "projectName": "elte-or"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - FibonacciTrace",
+            "request": "launch",
+            "mainClass": "lesson01.FibonacciTrace",
+            "projectName": "elte-or"
+        },
+        {
+            "type": "java",
             "name": "CodeLens (Launch) - Arguments",
             "request": "launch",
             "mainClass": "lesson01.Arguments",
