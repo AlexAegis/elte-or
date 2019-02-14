@@ -3,25 +3,29 @@ package lesson01;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class FibonacciTrace4 {
-
     public static void main(String[] args) {
-        System.out.println(fib(5).stream().map(Object::toString).collect(Collectors.joining(", ")));
+        System.out.println(fib(4).trace.stream().map(Object::toString).collect(Collectors.joining(", ")));
     }
 
-    static List<Integer> fib(int n) {
-        List<Integer> trace = new ArrayList<>();
-        int prevbef = 0;
-        int prev =1;
-        int sum = 0;
-        trace.add(sum);
-        for (int i = 1; i <= n ; i++) {
-            sum += prev + prevbef;
-            trace.add(sum);
-            prevbef = prev;
-            prev = i;
-        }
-        return trace;
+    private static FibAcc fib(int n) {
+        return IntStream.range(0, n).collect(FibAcc::new, FibAcc::shift, (fibAcc, fin) -> {});
     }
+
+    static class FibAcc {
+        List<Integer> trace = new ArrayList<>();
+        private int prev = 1;
+        private int prevBef;
+        int sum;
+
+        void shift(Integer i) {
+            sum += prev + prevBef;
+            prevBef = prev;
+            prev = i;
+            trace.add(sum);
+        }
+    }
+
 }
