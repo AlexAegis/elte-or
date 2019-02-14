@@ -1,13 +1,13 @@
 package lesson01;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.util.Arrays;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class Arguments {
     public static void main(String... args) {
-        System.out.println(new Arguments().task(args).toString());
+        System.out.println(new Arguments().task("alma", "3", "körte", "6").toString());
     }
 
     private ResultPair task(String... args) {
@@ -33,7 +33,7 @@ public class Arguments {
     @Test
     public void test() {
         ResultPair resultPair = task("alma", "3", "körte", "6");
-        Assert.assertEquals(resultPair.count, 4);
-        Assert.assertEquals(resultPair.sum, 9);
+        Assertions.assertEquals(resultPair.count, 4);
+        Assertions.assertEquals(resultPair.sum, 9);
     }
 }
