@@ -15,5 +15,10 @@
 	"editor.codeActionsOnSave": {
 		"source.fixAll": true
 	},
-	"workbench.colorTheme": "Darcula"
+	"workbench.colorTheme": "Darcula",
+	"java.import.maven.enabled": true,
+	"java.autobuild.enabled": true,
+	"java.format.onType.enabled": true,
+	"java.completion.guessMethodArguments": true,
+	"java.completion.enabled": true
 }

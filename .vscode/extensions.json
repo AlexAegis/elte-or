@@ -6,6 +6,7 @@
 		"vscjava.vscode-java-dependency",
 		"vscjava.vscode-java-test",
 		"vscjava.vscode-maven",
+		"naco-siren.gradle-language",
 		"esbenp.prettier-vscode",
 		"jasonlhy.hungry-delete",
 		"eamodio.gitlens",
@@ -18,6 +19,6 @@
 		"gabrielbb.vscode-lombok",
 		"ibm.output-colorizer",
 		"christian-kohler.path-intellisense",
-		"dotjoshjohnson.xml"
+		"redhat.vscode-xml"
 	]
 }
