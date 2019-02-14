@@ -33,6 +33,7 @@ public class Arguments {
     @Test
     public void test() {
         ResultPair resultPair = task("alma", "3", "körte", "6");
+        System.out.println("ASd");
         Assertions.assertEquals(resultPair.count, 4);
         Assertions.assertEquals(resultPair.sum, 9);
     }
