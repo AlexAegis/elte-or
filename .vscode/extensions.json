@@ -5,7 +5,6 @@
 		"pkief.material-icon-theme",
 		"eamodio.gitlens",
         "npxms.hide-gitignored",
-        "vscjava.vscode-java-pack",
-        "esbenp.prettier-vscode"
+        "vscjava.vscode-java-pack"
 	]
 }

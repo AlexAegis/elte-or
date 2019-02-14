@@ -1,0 +1,19 @@
+{
+	"editor.formatOnSave": true,
+	"editor.autoIndent": true,
+	"editor.quickSuggestions": true,
+	"editor.tabSize": 4,
+	"files.exclude": {
+		".idea": true,
+		"*.iml": true
+	},
+	"docthis.authorName": "AlexAegis",
+	"docthis.includeTypes": false,
+	"docthis.includeMemberOfOnClassMembers": false,
+	"search.usePCRE2": true,
+	"terminal.integrated.windowsEnableConpty": true,
+	"editor.codeActionsOnSave": {
+		"source.fixAll": true
+	},
+	"workbench.colorTheme": "Darcula"
+}
