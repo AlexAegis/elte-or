@@ -1,10 +1,23 @@
 {
 	"recommendations": [
+		"vscjava.vscode-java-pack",
+		"redhat.java",
+		"vscjava.vscode-java-debug",
+		"vscjava.vscode-java-dependency",
+		"vscjava.vscode-java-test",
+		"vscjava.vscode-maven",
 		"esbenp.prettier-vscode",
 		"jasonlhy.hungry-delete",
-		"pkief.material-icon-theme",
 		"eamodio.gitlens",
-        "npxms.hide-gitignored",
-        "vscjava.vscode-java-pack"
+		"npxms.hide-gitignored",
+		"pkief.material-icon-theme",
+		"equinusocio.vsc-material-theme",
+		"rokoroku.vscode-theme-darcula",
+		"editorconfig.editorconfig",
+		"codezombiech.gitignore",
+		"gabrielbb.vscode-lombok",
+		"ibm.output-colorizer",
+		"christian-kohler.path-intellisense",
+		"dotjoshjohnson.xml"
 	]
 }
