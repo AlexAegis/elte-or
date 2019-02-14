@@ -10,16 +10,17 @@ public class Fibonacci3 {
     private static int fib(int n) {
         return IntStream.range(0, n).collect(FibAcc::new, FibAcc::shift, (fibAcc, fin) -> {}).sum;
     }
-}
 
-class FibAcc {
-    private int prev = 1;
-    private int prevBef;
-    int sum;
+    static class FibAcc {
+        private int prev = 1;
+        private int prevBef;
+        int sum;
 
-    void shift(Integer i) {
-        sum += prev + prevBef;
-        prevBef = prev;
-        prev = i;
+        void shift(Integer i) {
+            sum += prev + prevBef;
+            prevBef = prev;
+            prev = i;
+        }
     }
 }
+
