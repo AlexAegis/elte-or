@@ -1,0 +1,2 @@
+# elte-or
+Osztott Rendszerek
