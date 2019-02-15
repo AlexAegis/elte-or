@@ -3,7 +3,7 @@ package lesson01;
 import java.util.stream.IntStream;
 
 public class Fibonacci {
-	public static void main(String[] args) {
+	public static void main(String... args) {
 		System.out.println(fib(6));
 	}
 

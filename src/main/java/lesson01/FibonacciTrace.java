@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class FibonacciTrace {
-	public static void main(String[] args) {
+	public static void main(String... args) {
 		System.out.println(fib(40).trace.stream().map(Object::toString).collect(Collectors.joining(", ")));
 	}
 
