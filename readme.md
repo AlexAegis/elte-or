@@ -1,6 +1,6 @@
 # Osztott Rendszerek
 
-[![Build Status](https://travis-ci.com/AlexAegis/elte-or.svg?branch=master)](https://travis-ci.com/AlexAegis/elte-or) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+[![Build Status](https://travis-ci.com/AlexAegis/elte-or.svg?branch=master)](https://travis-ci.com/AlexAegis/elte-or) [![Maintainability](https://api.codeclimate.com/v1/badges/c6f44ecb5a3920b431dc/maintainability)](https://codeclimate.com/github/AlexAegis/elte-or/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/c6f44ecb5a3920b431dc/test_coverage)](https://codeclimate.com/github/AlexAegis/elte-or/test_coverage) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 
 ELTE-IK Osztott Rendszerek 2018/19-2
 
