@@ -10,7 +10,7 @@ public class FibonacciTrace {
         System.out.println(fib(40).trace.stream().map(Object::toString).collect(Collectors.joining(", ")));
     }
 
-    private static Fib fib(int n) {
+    public static Fib fib(int n) {
         return IntStream.range(0, n).collect(Fib::new, Fib::shift, (a, b) -> {
         });
     }

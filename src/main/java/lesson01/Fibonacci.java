@@ -7,7 +7,7 @@ public class Fibonacci {
         System.out.println(fib(6));
     }
 
-    private static int fib(int n) {
+    public static int fib(int n) {
         return IntStream.range(0, n).collect(Fib::new, Fib::shift, (fibAcc, fin) -> {
         }).t2;
     }

@@ -29,8 +29,11 @@
 		{
 			"name": "MyConf",
 			"workingDirectory": "${workspaceFolder}",
-			"vmargs": ["-Xmx512M"]
+			"vmargs": ["-Xmx512M"],
+			"args": [],
+			"env": {}
 		}
 	],
-	"java.test.defaultConfig": "default"
+	"java.test.defaultConfig": "MyConf",
+	"java.dependency.packagePresentation": "hierarchical"
 }
