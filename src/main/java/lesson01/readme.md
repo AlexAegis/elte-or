@@ -21,4 +21,4 @@ Print out all the fibonacci numbers until `n`
 
 ## 5) Reverse Polish Notation resolver
 
-Calculate the recieved RPN
+Evaluate the recieved RPN

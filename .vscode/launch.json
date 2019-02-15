@@ -4,46 +4,72 @@
 	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
 	"version": "0.2.0",
 	"configurations": [
-        {
-            "type": "java",
-            "name": "CodeLens (Launch) - Read",
-            "request": "launch",
-            "mainClass": "lesson02.Read",
-            "projectName": "elte-or"
-        },
-        {
-            "type": "java",
-            "name": "CodeLens (Launch) - Fibonacci",
-            "request": "launch",
-            "mainClass": "lesson01.Fibonacci",
-            "projectName": "elte-or"
-        },
-        {
-            "type": "java",
-            "name": "CodeLens (Launch) - FibonacciTrace",
-            "request": "launch",
-            "mainClass": "lesson01.FibonacciTrace",
-            "projectName": "elte-or"
-        },
-        {
-            "type": "java",
-            "name": "CodeLens (Launch) - Arguments",
-            "request": "launch",
-            "mainClass": "lesson01.Arguments",
-            "projectName": "elte-or"
-        },
-        {
-            "type": "java",
-            "name": "Debug (Launch) - Current File",
-            "request": "launch",
-            "mainClass": "${file}",
-            "args": "alma 2 korte 5"
-        },
-        {
-            "type": "java",
-            "name": "Debug (Launch)-Main",
-            "request": "launch",
-            "mainClass": "Main"
-        }
-    ]
+		{
+			"type": "java",
+			"name": "CodeLens (Launch) - ReversePolishNotation",
+			"request": "launch",
+			"mainClass": "lesson01.ReversePolishNotation",
+			"projectName": "elte-or"
+		},
+		{
+			"type": "java",
+			"name": "CodeLens (Launch) - PolishNotation",
+			"request": "launch",
+			"mainClass": "lesson01.PolishNotation",
+			"projectName": "elte-or"
+		},
+		{
+			"type": "java",
+			"name": "CodeLens (Launch) - HelloWorld",
+			"request": "launch",
+			"mainClass": "lesson01.HelloWorld",
+			"projectName": "elte-or"
+		},
+		{
+			"type": "java",
+			"name": "CodeLens (Launch) - Read",
+			"request": "launch",
+			"mainClass": "lesson02.Read",
+			"projectName": "elte-or"
+		},
+		{
+			"type": "java",
+			"name": "CodeLens (Launch) - Fibonacci",
+			"request": "launch",
+			"mainClass": "lesson01.Fibonacci",
+			"projectName": "elte-or"
+		},
+		{
+			"type": "java",
+			"name": "CodeLens (Launch) - FibonacciTrace",
+			"request": "launch",
+			"mainClass": "lesson01.FibonacciTrace",
+			"projectName": "elte-or"
+		},
+		{
+			"type": "java",
+			"name": "CodeLens (Launch) - Arguments",
+			"request": "launch",
+			"mainClass": "lesson01.Arguments",
+			"projectName": "elte-or",
+			"args": [
+				"alma",
+				"4",
+				"körte",
+				"11"
+			]
+		},
+		{
+			"type": "java",
+			"name": "Debug (Launch) - Current File",
+			"request": "launch",
+			"mainClass": "${file}"
+		},
+		{
+			"type": "java",
+			"name": "Debug (Launch)-Main",
+			"request": "launch",
+			"mainClass": "Main"
+		}
+	]
 }

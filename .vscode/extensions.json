@@ -19,6 +19,7 @@
 		"gabrielbb.vscode-lombok",
 		"ibm.output-colorizer",
 		"christian-kohler.path-intellisense",
-		"redhat.vscode-xml"
+		"redhat.vscode-xml",
+		"sohibe.java-generate-setters-getters"
 	]
 }
