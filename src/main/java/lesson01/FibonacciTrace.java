@@ -21,7 +21,7 @@ public class FibonacciTrace {
 		private int t2;
 
 		void shift(Integer i) {
-			int sum = t1 + t2;
+			var sum = t1 + t2;
 			t1 = t2;
 			t2 = sum;
 			trace.add(t1);

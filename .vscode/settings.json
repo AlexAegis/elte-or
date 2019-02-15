@@ -39,7 +39,7 @@
 	"java.dependency.packagePresentation": "hierarchical",
 	"java.configuration.checkProjectSettingsExclusions": false,
 	"java.saveActions.organizeImports": true,
-	"java.format.comments.enabled": true,
+	"java.format.comments.enabled": false,
 	"java.format.settings.url": ".vscode/format.xml",
 	"java.format.settings.profile": "GoogleStyle"
 }
