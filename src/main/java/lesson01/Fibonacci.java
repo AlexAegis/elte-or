@@ -8,7 +8,7 @@ public class Fibonacci {
 	}
 
 	public static int fib(int n) {
-		return IntStream.range(0, n).collect(Fib::new, Fib::shift, (fibAcc, fin) -> {
+		return IntStream.range(0, n).collect(Fib::new, Fib::shift, (a, b) -> {
 		}).t2;
 	}
 
