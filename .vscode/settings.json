@@ -20,6 +20,7 @@
 	},
 	"workbench.colorTheme": "Darcula",
 	"java.import.maven.enabled": true,
+	"java.import.gradle.enabled": true,
 	"java.autobuild.enabled": true,
 	"java.format.onType.enabled": true,
 	"java.completion.guessMethodArguments": true,
@@ -35,5 +36,8 @@
 		}
 	],
 	"java.test.defaultConfig": "MyConf",
-	"java.dependency.packagePresentation": "hierarchical"
+	"java.dependency.packagePresentation": "hierarchical",
+	"java.configuration.checkProjectSettingsExclusions": false,
+	"java.saveActions.organizeImports": true,
+	"java.format.comments.enabled": true
 }
