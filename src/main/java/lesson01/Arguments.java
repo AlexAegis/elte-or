@@ -1,6 +1,7 @@
 package lesson01;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class Arguments {
 	public static void main(String... args) {
@@ -12,7 +13,7 @@ public class Arguments {
 				.mapToInt(Integer::parseInt).sum());
 	}
 
-	class ResultPair {
+	public static class ResultPair {
 		int count;
 		int sum;
 
@@ -24,6 +25,21 @@ public class Arguments {
 		@Override
 		public String toString() {
 			return "ResultPair{" + "count=" + count + ", sum=" + sum + '}';
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o)
+				return true;
+			if (o == null || getClass() != o.getClass())
+				return false;
+			ResultPair that = (ResultPair) o;
+			return count == that.count && sum == that.sum;
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(count, sum);
 		}
 	}
 

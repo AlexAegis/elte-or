@@ -8,11 +8,8 @@ import lesson01.Arguments;
 
 public class ArgumentsTest {
 
-    @Test
-    public void test() {
-        Arguments.ResultPair resultPair = new Arguments().task("alma", "3", "körte", "6");
-        System.out.println("ASd");
-        assertEquals(resultPair.count, 4);
-        assertEquals(resultPair.sum, 9);
-    }
+	@Test
+	public void test() {
+		assertEquals(new Arguments().task("alma", "3", "körte", "6"), new Arguments.ResultPair(4, 9));
+	}
 }
