@@ -1,6 +1,6 @@
 # Osztott Rendszerek
 
-[![Build Status](https://travis-ci.com/AlexAegis/elte-or.svg?branch=master)](https://travis-ci.com/AlexAegis/elte-or)
+[![Build Status](https://travis-ci.com/AlexAegis/elte-or.svg?branch=master)](https://travis-ci.com/AlexAegis/elte-or) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 
 ELTE-IK Osztott Rendszerek 2018/19-2
 

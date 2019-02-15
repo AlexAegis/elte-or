@@ -1,5 +1,6 @@
 plugins {
     id 'application'
+	id 'jacoco'
 }
 
 group 'hu.elte'
@@ -38,5 +39,21 @@ sourceSets {
 
 test {
     useJUnitPlatform()
+	jacoco {
+        destinationFile = file("$buildDir/reports/jacoco/jacocoTest.exec")
+	}
 }
 
+jacoco {
+    toolVersion = "0.8.3"
+    reportsDir = file("$buildDir/reports/jacoco/")
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled false
+        // html.enabled false
+		html.destination file("$buildDir/reports/jacoco/html")
+    }
+}
