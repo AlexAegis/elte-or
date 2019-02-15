@@ -38,6 +38,7 @@ sourceSets {
 }
 
 test {
+	finalizedBy jacocoTestReport
     useJUnitPlatform()
 	jacoco {
         destinationFile = file("$buildDir/reports/jacoco/jacocoTest.exec")
@@ -53,7 +54,6 @@ jacocoTestReport {
     reports {
         xml.enabled true
         csv.enabled false
-        // html.enabled false
-		html.destination file("$buildDir/reports/jacoco/html")
+        html.enabled false
     }
 }
