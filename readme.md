@@ -58,6 +58,10 @@ ELTE-IK 2018-19/2
 
 > **Unit testing** framework
 
+### [JaCoCo](https://www.eclemma.org/jacoco/)
+
+> **Code coverage** tool
+
 ## Recommendations
 
 ### [Visual Studio Code](https://code.visualstudio.com/)
