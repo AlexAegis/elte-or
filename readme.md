@@ -94,6 +94,10 @@ ELTE-IK 2018-19/2
 
 > **Vulnerability** detection
 
-### [Libraries](https://libraries.io/)
+### [Libraries.io](https://libraries.io/)
 
 > **Dependency** watcher
+
+### [Shields.io](https://shields.io/#/)
+
+> **Badges** to look cool
