@@ -4,8 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import lesson02.model.Coord;
-import lesson02.model.Table;
+import model.Coord;
+import model.Table;
 
 public class Print {
 	public static void main(String... args) {

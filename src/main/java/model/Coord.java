@@ -1,8 +1,8 @@
-package lesson02.model;
+package model;
 
 import java.util.Objects;
 
-public class Coord {
+public class Coord implements Comparable<Coord> {
 	private int x;
 	private int y;
 
@@ -23,9 +23,21 @@ public class Coord {
 
 	public static Coord center = new Coord(0, 0);
 
+
+	public int distanceX(Coord other) {
+		return Math.abs(this.x - other.x);
+	}
+
+	public int distanceY(Coord other) {
+		return Math.abs(this.y - other.y);
+	}
+
 	public int manhattan(Coord other) {
-		return Math.max(this.x, other.x) - Math.min(this.x, other.x) + Math.max(this.y, other.y)
-				- Math.min(this.y, other.y);
+		return this.distanceX(other) + this.distanceY(other);
+	}
+
+	public double distance(Coord other) {
+		return Math.sqrt(Math.pow(this.distanceX(other), 2) + Math.pow(this.distanceY(other), 2));
 	}
 
 	public Coord add(Coord other) {
@@ -57,5 +69,10 @@ public class Coord {
 	@Override
 	public int hashCode() {
 		return Objects.hash(x, y);
+	}
+
+	@Override
+	public int compareTo(Coord o) {
+		return y == o.y ? x - o.x : y - o.y;
 	}
 }

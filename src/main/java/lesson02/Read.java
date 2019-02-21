@@ -3,28 +3,28 @@ package lesson02;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
-import lesson02.model.Coord;
+import model.Coord;
 
+/**
+ * Task 1 - Read coordinates from the input file, then print out the one nearest to the center
+ */
 public class Read {
 	public static void main(String... args) {
-		System.out.println(new Read().read("input.txt"));
+		new Read().read("input.txt").ifPresent(System.out::println);
 	}
 
-	List<String> read(String filename) {
-		List<String> result = new ArrayList<>();
+	Optional<Coord> read(String filename) {
 		try (Scanner scn = new Scanner(new File(Read.class.getResource(filename).toURI()))) {
 			List<Coord> coords = new ArrayList<>();
 			while (scn.hasNextLine()) {
 				coords.add(new Coord(scn.nextLine()));
 			}
-
-			Coord closest = coords.stream()
-					.reduce((a, b) -> Coord.center.manhattan(a) < Coord.center.manhattan(b) ? a : b).orElse(null);
-			System.out.println(closest != null ? closest.toString() : "not found, no points given");
+			return coords.stream().reduce((a, b) -> Coord.center.distance(a) < Coord.center.distance(b) ? a : b);
 		} catch (Exception e) {
 			e.printStackTrace();
+			return Optional.empty();
 		}
-		return result;
 	}
 }

@@ -6,6 +6,20 @@
 	"configurations": [
 		{
 			"type": "java",
+			"name": "CodeLens (Launch) - Ships",
+			"request": "launch",
+			"mainClass": "lesson02.Ships",
+			"projectName": "elte-or"
+		},
+		{
+			"type": "java",
+			"name": "CodeLens (Launch) - Print",
+			"request": "launch",
+			"mainClass": "lesson02.Print",
+			"projectName": "elte-or"
+		},
+		{
+			"type": "java",
 			"name": "CodeLens (Launch) - PrintTable",
 			"request": "launch",
 			"mainClass": "lesson02.PrintTable",
