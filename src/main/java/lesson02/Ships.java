@@ -19,16 +19,16 @@ public class Ships {
 			List<Coord> ships = new ArrayList<>();
 			List<Coord> attacks = new ArrayList<>();
 			while (shipScanner.hasNextLine()) {
-				String nl = shipScanner.nextLine();
+				var nl = shipScanner.nextLine();
 				if (nl.contains(","))
 					ships.add(new Coord(nl));
 			}
 			while (attackScanner.hasNextLine()) {
-				String nl = attackScanner.nextLine();
+				var nl = attackScanner.nextLine();
 				if (nl.contains(","))
 					attacks.add(new Coord(nl));
 			}
-			Table table = new Table(ships);
+			var table = new Table(ships);
 			attacks.forEach(table::shoot);
 			return Optional.of(table);
 		} catch (Exception e) {

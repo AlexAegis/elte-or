@@ -33,7 +33,7 @@ public class Arguments {
 				return true;
 			if (o == null || getClass() != o.getClass())
 				return false;
-			ResultPair that = (ResultPair) o;
+			var that = (ResultPair) o;
 			return count == that.count && sum == that.sum;
 		}
 

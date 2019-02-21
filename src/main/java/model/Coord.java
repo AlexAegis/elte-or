@@ -9,7 +9,7 @@ public class Coord implements Comparable<Coord> {
 	public static Coord center = new Coord(0, 0);
 
 	public Coord(String in) {
-		String[] split = in.split(",");
+		var split = in.split(",");
 		this.x = Integer.parseInt(split[0].trim());
 		this.y = Integer.parseInt(split[1].trim());
 	}
@@ -68,7 +68,7 @@ public class Coord implements Comparable<Coord> {
 			return true;
 		if (o == null || getClass() != o.getClass())
 			return false;
-		Coord coord = (Coord) o;
+		var coord = (Coord) o;
 		return x == coord.x && y == coord.y;
 	}
 

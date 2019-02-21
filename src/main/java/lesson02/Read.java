@@ -2,7 +2,6 @@ package lesson02;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import model.Coord;
@@ -17,7 +16,7 @@ public class Read {
 
 	public Optional<Coord> read(String filename) {
 		try (Scanner scn = new Scanner(new File(Read.class.getResource(filename).toURI()))) {
-			List<Coord> coords = new ArrayList<>();
+			var coords = new ArrayList<Coord>();
 			while (scn.hasNextLine()) {
 				coords.add(new Coord(scn.nextLine()));
 			}

@@ -32,7 +32,7 @@ public class Table {
 				this.ships.add(ship);
 				ship.addBody(shipPiece);
 				for (var direction : Direction.values()) {
-					Coord next = shipPiece;
+					var next = shipPiece;
 					while (remaining.remove(next = next.add(direction.vector))) {
 						ship.addBody(next);
 					}
