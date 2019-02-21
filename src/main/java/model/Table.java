@@ -28,9 +28,8 @@ public class Table {
 		for (var shipPiece : ships) {
 			if (remaining.contains(shipPiece)) {
 				remaining.remove(shipPiece);
-				var ship = new Ship();
+				var ship = new Ship(shipPiece);
 				this.ships.add(ship);
-				ship.addBody(shipPiece);
 				for (var direction : Direction.values()) {
 					var next = shipPiece;
 					while (remaining.remove(next = next.add(direction.vector))) {
