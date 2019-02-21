@@ -41,5 +41,6 @@
 	"java.saveActions.organizeImports": true,
 	"java.format.comments.enabled": false,
 	"java.format.settings.url": ".vscode/format.xml",
-	"java.format.settings.profile": "GoogleStyle"
+	"java.format.settings.profile": "GoogleStyle",
+	"java.home": "C:/Program Files/Java/jdk-11.0.2"
 }
