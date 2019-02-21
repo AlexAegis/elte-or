@@ -17,7 +17,7 @@ public class Table {
 	public static final String HORIZONTAL_SHIP_PIECE_MARKER = "-";
 	public static final String VERTICAL_SHIP_PIECE_MARKER = "|";
 	public static final String DESTROYED_SHIP_PIECE_MARKER = "#";
-	public static final String SINGLE_SHIP_PIECE_MARKER = "#";
+	public static final String SINGLE_SHIP_PIECE_MARKER = "X";
 
 	public Table() {
 	}
