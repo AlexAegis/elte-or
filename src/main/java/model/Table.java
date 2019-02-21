@@ -1,5 +1,6 @@
 package model;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,8 +9,19 @@ import java.util.stream.Collectors;
 public class Table {
 
 	private List<Ship> ships = new ArrayList<>();
-	private final int height = 10;
-	private final int width = 10;
+	private List<Coord> missedShots = new ArrayList<>();
+	public static final int MAP_HEIGHT = 10;
+	public static final int MAP_WIDTH = 10;
+	public static final String EMPTY_FIELD_MARKER = ".";
+	public static final String MISSED_SHOT_MARKER = "O";
+	public static final String HORIZONTAL_SHIP_PIECE_MARKER = "-";
+	public static final String VERTICAL_SHIP_PIECE_MARKER = "|";
+	public static final String DESTROYED_SHIP_PIECE_MARKER = "#";
+	public static final String SINGLE_SHIP_PIECE_MARKER = "#";
+
+
+	public Table() {
+	}
 
 	public Table(List<Coord> ships) {
 		List<Coord> remaining = new ArrayList<Coord>(ships); // Modifying the Collection you're iterating would result in Concurrent Modification Error
@@ -44,7 +56,10 @@ public class Table {
 	 * @param target
 	 */
 	public void shoot(Coord target) {
-		ships.forEach(ship -> ship.shoot(target));
+		if (ships.stream().noneMatch(ship -> ship.shoot(target))) {
+			missedShots.add(target);
+		}
+		this.print(System.out);
 	}
 
 	/**
@@ -52,11 +67,11 @@ public class Table {
 	 * @return empty plane
 	 */
 	public String[][] empty() {
-		var field = new String[height][width];
-		for (int x = 0; x < width; x++) {
-			var row = new String[width];
-			for (int y = 0; y < height; y++) {
-				row[y] = ".";
+		var field = new String[MAP_HEIGHT][MAP_WIDTH];
+		for (int x = 0; x < MAP_WIDTH; x++) {
+			var row = new String[MAP_WIDTH];
+			for (int y = 0; y < MAP_HEIGHT; y++) {
+				row[y] = EMPTY_FIELD_MARKER;
 			}
 			field[x] = row;
 		}
@@ -68,10 +83,21 @@ public class Table {
 	 */
 	public String toString() {
 		var field = empty();
+		missedShots.forEach(miss -> field[miss.getX()][miss.getY()] = MISSED_SHOT_MARKER);
 		ships.forEach(ship -> ship.print(field));
 		return Arrays.stream(field).map(row -> Arrays.stream(row).collect(Collectors.joining()))
 				.collect(Collectors.joining("\n"));
 
+	}
+
+	public String state() {
+		return ships.stream().map(Ship::toString).collect(Collectors.joining("\n"));
+	}
+
+	public void print(PrintStream ps) {
+		ps.println(toString());
+		ps.println(state());
+		ps.println();
 	}
 
 }

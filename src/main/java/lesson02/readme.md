@@ -13,4 +13,4 @@ Read coordinates and print out a **10 by 10** plane, put `X` where is a coordina
 ## 3) [Ships](./Ships.java)
 
 Read ships from a file, then attacks from another. Simulate a one-sided torpedo game. Print out the table after each attack and the statuses of the ships (Total health and health remaining).
-Mark empty spots on the **10 by 10** plane with a `.`, Ships with a `-` or `|` depending on where it's facing and damaged parts of the ships with a `#`.
+Mark empty spots on the **10 by 10** plane with a `.`, Ships with a `-` or `|` depending on where it's facing. (`X` if it's a single piece) and damaged parts of the ships with a `#`. Also, you can display missed shots with an `O`.

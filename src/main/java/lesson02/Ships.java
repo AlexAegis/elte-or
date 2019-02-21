@@ -15,15 +15,21 @@ public class Ships {
 
 	Optional<Table> simulate(String defenderFileName, String attackerFileName) {
 		try (Scanner shipScanner = new Scanner(new File(Read.class.getResource(defenderFileName).toURI()));
-				Scanner attacks = new Scanner(new File(Read.class.getResource(attackerFileName).toURI()))) {
+				Scanner attackScanner = new Scanner(new File(Read.class.getResource(attackerFileName).toURI()))) {
 			List<Coord> ships = new ArrayList<>();
+			List<Coord> attacks = new ArrayList<>();
 			while (shipScanner.hasNextLine()) {
-				ships.add(new Coord(shipScanner.nextLine()));
+				String nl = shipScanner.nextLine();
+				if (nl.contains(","))
+					ships.add(new Coord(nl));
+			}
+			while (attackScanner.hasNextLine()) {
+				String nl = attackScanner.nextLine();
+				if (nl.contains(","))
+					attacks.add(new Coord(nl));
 			}
 			Table table = new Table(ships);
-			System.out.println(table.toString());
-
-			table.getShips().forEach(ship -> System.out.println(ship.toString()));
+			attacks.forEach(table::shoot);
 			return Optional.of(table);
 		} catch (Exception e) {
 			e.printStackTrace();

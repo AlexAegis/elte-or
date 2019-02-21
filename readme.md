@@ -16,11 +16,13 @@ ELTE-IK 2018-19/2
 | 4   | [Fibonacci Trace](./src/main/java/lesson01/FibonacciTrace.java)                | [Test](./src/test/java/lesson01/FibonacciTraceTest.java)        |
 | 5   | [Reverse Polish Notation](./src/main/java/lesson01/ReversePolishNotation.java) | [Test](./src/test/java/lesson01/ReversePolishNotationTest.java) |
 
-## [Lesson 2 - file handling, scanner](./src/main/java/lesson02/)
+## [Lesson 2 - file handling, scanner, torpedo](./src/main/java/lesson02/)
 
-| #   | Task                                       | [Test](./src/test/java/lesson02/)              |
-| --- | ------------------------------------------ | ---------------------------------------------- |
-| 1   | [Read](./src/main/java/lesson02/Read.java) | [Test](./src/test/java/lesson02/ReadTest.java) |
+| #   | Task                                         | [Test](./src/test/java/lesson02/)               |
+| --- | -------------------------------------------- | ----------------------------------------------- |
+| 1   | [Read](./src/main/java/lesson02/Read.java)   | [Test](./src/test/java/lesson02/ReadTest.java)  |
+| 2   | [Print](./src/main/java/lesson02/Print.java) | [Test](./src/test/java/lesson02/PrintTest.java) |
+| 3   | [Ships](./src/main/java/lesson02/Ships.java) | [Test](./src/test/java/lesson02/ShipsTest.java) |
 
 ---
 

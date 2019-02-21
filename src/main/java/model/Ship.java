@@ -8,7 +8,7 @@ public class Ship {
 	private Map<Coord, Boolean> body = new HashMap<>();
 
 	private String name;
-	private boolean horizontal = true;
+	private Boolean horizontal;
 
 	public Ship() {
 	}
@@ -38,24 +38,37 @@ public class Ship {
 		return body;
 	}
 
-	void shoot(Coord target) {
-		if (body.containsKey(target))
+	/**
+	 * Tries to shoot the {@link Ship}
+	 * @param target coordinate
+	 * @return true if it hit, false if it missed
+	 */
+	boolean shoot(Coord target) {
+		if (body.containsKey(target)) {
 			body.put(target, false);
+			return true;
+		} else
+			return false;
 	}
 
 	boolean isDead() {
 		return !this.body.containsValue(true);
 	}
 
+	/**
+	 * Puts itself into a width × height sized String[][]
+	 * @param into
+	 */
 	void print(String[][] into) {
 		this.body.forEach((piece, healthy) -> {
-
 			if (!healthy) {
-				into[piece.getX()][piece.getY()] = "#";
-			} else if (horizontal) {
-				into[piece.getX()][piece.getY()] = "-";
+				into[piece.getX()][piece.getY()] = Table.DESTROYED_SHIP_PIECE_MARKER;
+			} else if (horizontal != null && horizontal) {
+				into[piece.getX()][piece.getY()] = Table.HORIZONTAL_SHIP_PIECE_MARKER;
+			} else if (horizontal != null && !horizontal) {
+				into[piece.getX()][piece.getY()] = Table.VERTICAL_SHIP_PIECE_MARKER;
 			} else {
-				into[piece.getX()][piece.getY()] = "|";
+				into[piece.getX()][piece.getY()] = Table.SINGLE_SHIP_PIECE_MARKER;
 			}
 		});
 	}

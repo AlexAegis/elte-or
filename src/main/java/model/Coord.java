@@ -53,7 +53,7 @@ public class Coord implements Comparable<Coord> {
 	}
 
 	public String toString() {
-		return "x:" + x + " y: " + y;
+		return "{x: " + x + ", y: " + y + "}";
 	}
 
 	@Override
