@@ -12,6 +12,10 @@ public class Coord {
 		this.y = Integer.parseInt(split[1].trim());
 	}
 
+	public Coord(Coord other) {
+		this(other.x, other.y);
+	}
+
 	public Coord(int x, int y) {
 		this.x = x;
 		this.y = y;
@@ -22,6 +26,10 @@ public class Coord {
 	public int manhattan(Coord other) {
 		return Math.max(this.x, other.x) - Math.min(this.x, other.x) + Math.max(this.y, other.y)
 				- Math.min(this.y, other.y);
+	}
+
+	public Coord add(Coord other) {
+		return new Coord(x + other.x, y + other.y);
 	}
 
 	public int getX() {

@@ -6,8 +6,8 @@ import java.util.Map;
 
 public class Table {
 
-	private Map<Coord, String> grid = new HashMap<Coord, String>();
-	private List<Coord> mines;
+	// private Map<Coord, String> grid = new HashMap<Coord, String>();
+	private List<Coord> ships;
 
 
 	Coord leftMost;
@@ -15,21 +15,32 @@ public class Table {
 	Coord rightMost;
 	Coord bottomMost;
 
-	public Table(List<Coord> mines) {
-		this.mines = mines;
-		leftMost = mines.stream().reduce((a, b) -> a.getX() < b.getX() ? a : b).orElse(Coord.center);
-		topMost = mines.stream().reduce((a, b) -> a.getY() > b.getY() ? a : b).orElse(Coord.center);
-		rightMost = mines.stream().reduce((a, b) -> a.getX() > b.getX() ? a : b).orElse(Coord.center);
-		bottomMost = mines.stream().reduce((a, b) -> a.getY() < b.getY() ? a : b).orElse(Coord.center);
-		mines.stream().forEach(mine -> grid.put(mine, "X"));
+	public Table(List<Coord> ships) {
+		this.ships = ships;
+		// ships.stream().forEach(mine -> grid.put(mine, "X"));
+	}
+
+	public void shoot(Coord target) {
+		if (this.ships.contains(target)) {
+			destroyShip(target);
+		}
+	}
+
+	void destroyShip(Coord here) {
+
+		ships.remove(here);
+		for (var direction : Direction.values()) {
+			Coord next = here;
+			while (ships.remove(next = next.add(direction.vector)));
+		}
 	}
 
 	public String toString() {
 		String result = "";
-		for (int x = leftMost.getX(); x < rightMost.getX(); x++) {
+		for (int x = 0; x < 10; x++) {
 			String row = "";
-			for (int y = bottomMost.getY(); y < topMost.getY(); y++) {
-				if (this.mines.contains(new Coord(x, y))) {
+			for (int y = 0; y < 10; y++) {
+				if (this.ships.contains(new Coord(x, y))) {
 					row += "X";
 				} else {
 					row += ".";
@@ -39,4 +50,5 @@ public class Table {
 		}
 		return result;
 	}
+
 }

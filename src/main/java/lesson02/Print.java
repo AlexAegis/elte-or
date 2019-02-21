@@ -7,9 +7,9 @@ import java.util.Scanner;
 import lesson02.model.Coord;
 import lesson02.model.Table;
 
-public class PrintTable {
+public class Print {
 	public static void main(String... args) {
-		new PrintTable().read("input.txt");
+		new Print().read("input.txt");
 	}
 
 	void read(String filename) {
