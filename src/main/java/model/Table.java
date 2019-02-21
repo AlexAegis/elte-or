@@ -19,7 +19,6 @@ public class Table {
 	public static final String DESTROYED_SHIP_PIECE_MARKER = "#";
 	public static final String SINGLE_SHIP_PIECE_MARKER = "#";
 
-
 	public Table() {
 	}
 
