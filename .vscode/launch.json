@@ -6,6 +6,13 @@
 	"configurations": [
 		{
 			"type": "java",
+			"name": "CodeLens (Launch) - PrintTable",
+			"request": "launch",
+			"mainClass": "lesson02.PrintTable",
+			"projectName": "elte-or"
+		},
+		{
+			"type": "java",
 			"name": "CodeLens (Launch) - ReversePolishNotation",
 			"request": "launch",
 			"mainClass": "lesson01.ReversePolishNotation",
