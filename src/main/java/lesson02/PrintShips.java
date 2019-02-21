@@ -28,16 +28,18 @@ public class PrintShips {
 			e.printStackTrace();
 		}
 
+		table.getShips().forEach(ship -> System.out.println(ship.toString()));
 
-		try (Scanner scn = new Scanner(new File(Read.class.getResource(attackerFileName).toURI()))) {
-			List<Coord> shots = new ArrayList<>();
-			while (scn.hasNextLine()) {
-				table.shoot(new Coord(scn.nextLine()));
-				System.out.println(table.toString());
-			}
+		/*
+				try (Scanner scn = new Scanner(new File(Read.class.getResource(attackerFileName).toURI()))) {
+					List<Coord> shots = new ArrayList<>();
+					while (scn.hasNextLine()) {
+						table.shoot(new Coord(scn.nextLine()));
+						System.out.println(table.toString());
+					}
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}*/
 	}
 }

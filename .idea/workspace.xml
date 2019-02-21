@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e9fc54b6-7ad8-4c50-9c86-12c7d09a261d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/lesson02/Coord.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lesson02/Read.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lesson02/Read.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lesson02/PrintShips.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lesson02/PrintShips.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lesson02/model/Table.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lesson02/model/Table.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/.gradle/" />
@@ -136,12 +136,22 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="java" value="1" />
+          <entry key="java" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="JAVA" value="1" />
+          <entry key="JAVA" value="3" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="java" value="79" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="JAVA" value="79" />
         </counts>
       </usages-collector>
     </session>
@@ -169,16 +179,56 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/lesson02/model/Coord.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="164">
-              <caret line="42" column="32" lean-forward="true" selection-start-line="42" selection-start-column="32" selection-end-line="42" selection-end-column="32" />
+            <state relative-caret-position="504">
+              <caret line="52" column="32" selection-start-line="52" selection-start-column="32" selection-end-line="52" selection-end-column="32" />
               <folding>
-                <element signature="e#611#612#0" expanded="true" />
-                <element signature="e#646#647#0" expanded="true" />
+                <element signature="e#290#291#0" expanded="true" />
+                <element signature="e#319#320#0" expanded="true" />
+                <element signature="e#628#629#0" expanded="true" />
+                <element signature="e#677#678#0" expanded="true" />
+                <element signature="e#699#700#0" expanded="true" />
+                <element signature="e#714#715#0" expanded="true" />
+                <element signature="e#736#737#0" expanded="true" />
+                <element signature="e#751#752#0" expanded="true" />
+                <element signature="e#780#781#0" expanded="true" />
+                <element signature="e#815#816#0" expanded="true" />
                 <element signature="e#920#921#0" expanded="true" />
                 <element signature="e#952#953#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/lesson02/model/Ship.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="184">
+              <caret line="29" column="28" selection-start-line="29" selection-start-column="28" selection-end-line="29" selection-end-column="28" />
+              <folding>
+                <element signature="e#287#288#0" expanded="true" />
+                <element signature="e#323#324#0" expanded="true" />
+                <element signature="e#700#701#0" expanded="true" />
+                <element signature="e#743#744#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/lesson02/model/Table.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="323">
+              <caret line="36" column="9" selection-start-line="36" selection-start-column="9" selection-end-line="36" selection-end-column="9" />
+              <folding>
+                <element signature="e#218#231#0" expanded="true" />
+                <element signature="e#428#435#0" expanded="true" />
+                <element signature="e#969#970#0" expanded="true" />
+                <element signature="e#988#989#0" expanded="true" />
+                <element signature="e#761#762#0" expanded="true" />
+                <element signature="e#807#808#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -651,6 +701,8 @@
         <option value="$PROJECT_DIR$/build.gradle" />
         <option value="$PROJECT_DIR$/src/main/java/lesson01/Arguments.java" />
         <option value="$PROJECT_DIR$/src/main/java/lesson02/model/Coord.java" />
+        <option value="$PROJECT_DIR$/src/main/java/lesson02/model/Table.java" />
+        <option value="$PROJECT_DIR$/src/main/java/lesson02/model/Ship.java" />
       </list>
     </option>
   </component>
@@ -660,7 +712,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
     <option name="width" value="1616" />
@@ -930,7 +982,7 @@
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="right" id="Capture Analysis" order="4" />
       <window_info anchor="right" id="Maven Projects" order="5" />
-      <window_info anchor="right" id="Gradle" order="6" visible="true" weight="0.32969153" />
+      <window_info anchor="right" id="Gradle" order="6" visible="true" weight="0.22943445" />
       <window_info anchor="right" id="Database" order="7" />
       <window_info anchor="right" id="Palette&#9;" order="8" />
       <window_info anchor="right" id="Theme Preview" order="9" />
@@ -1009,13 +1061,49 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/lesson02/model/Coord.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="164">
-          <caret line="42" column="32" lean-forward="true" selection-start-line="42" selection-start-column="32" selection-end-line="42" selection-end-column="32" />
+        <state relative-caret-position="504">
+          <caret line="52" column="32" selection-start-line="52" selection-start-column="32" selection-end-line="52" selection-end-column="32" />
           <folding>
-            <element signature="e#611#612#0" expanded="true" />
-            <element signature="e#646#647#0" expanded="true" />
+            <element signature="e#290#291#0" expanded="true" />
+            <element signature="e#319#320#0" expanded="true" />
+            <element signature="e#628#629#0" expanded="true" />
+            <element signature="e#677#678#0" expanded="true" />
+            <element signature="e#699#700#0" expanded="true" />
+            <element signature="e#714#715#0" expanded="true" />
+            <element signature="e#736#737#0" expanded="true" />
+            <element signature="e#751#752#0" expanded="true" />
+            <element signature="e#780#781#0" expanded="true" />
+            <element signature="e#815#816#0" expanded="true" />
             <element signature="e#920#921#0" expanded="true" />
             <element signature="e#952#953#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lesson02/model/Table.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="36" column="9" selection-start-line="36" selection-start-column="9" selection-end-line="36" selection-end-column="9" />
+          <folding>
+            <element signature="e#218#231#0" expanded="true" />
+            <element signature="e#428#435#0" expanded="true" />
+            <element signature="e#969#970#0" expanded="true" />
+            <element signature="e#988#989#0" expanded="true" />
+            <element signature="e#761#762#0" expanded="true" />
+            <element signature="e#807#808#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lesson02/model/Ship.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="184">
+          <caret line="29" column="28" selection-start-line="29" selection-start-column="28" selection-end-line="29" selection-end-column="28" />
+          <folding>
+            <element signature="e#287#288#0" expanded="true" />
+            <element signature="e#323#324#0" expanded="true" />
+            <element signature="e#700#701#0" expanded="true" />
+            <element signature="e#743#744#0" expanded="true" />
           </folding>
         </state>
       </provider>
