@@ -24,6 +24,13 @@ ELTE-IK 2018-19/2
 | 2   | [Print](./src/main/java/lesson02/Print.java) | [Test](./src/test/java/lesson02/PrintTest.java) |
 | 3   | [Ships](./src/main/java/lesson02/Ships.java) | [Test](./src/test/java/lesson02/ShipsTest.java) |
 
+| Shared model                                      |
+| ------------------------------------------------- |
+| [Table](./src/main/java/model/Table.java)         |
+| [Ship](./src/main/java/model/Ship.java)           |
+| [Coord](./src/main/java/model/Coord.java)         |
+| [Direction](./src/main/java/model/Direction.java) |
+
 ---
 
 ## Build

@@ -6,6 +6,8 @@ public class Coord implements Comparable<Coord> {
 	private int x;
 	private int y;
 
+	public static Coord center = new Coord(0, 0);
+
 	public Coord(String in) {
 		String[] split = in.split(",");
 		this.x = Integer.parseInt(split[0].trim());
@@ -20,9 +22,6 @@ public class Coord implements Comparable<Coord> {
 		this.x = x;
 		this.y = y;
 	}
-
-	public static Coord center = new Coord(0, 0);
-
 
 	public int distanceX(Coord other) {
 		return Math.abs(this.x - other.x);
