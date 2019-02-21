@@ -12,7 +12,7 @@ public class Fibonacci {
 		}).t2;
 	}
 
-	static class Fib {
+	private static class Fib {
 		private int t1 = 1;
 		private int t2;
 

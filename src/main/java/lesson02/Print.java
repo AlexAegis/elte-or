@@ -13,7 +13,7 @@ public class Print {
 		new Print().read("input.txt").ifPresent(System.out::println);
 	}
 
-	Optional<Table> read(String filename) {
+	public Optional<Table> read(String filename) {
 		try (Scanner scn = new Scanner(new File(Read.class.getResource(filename).toURI()))) {
 			List<Coord> mines = new ArrayList<>();
 			while (scn.hasNextLine()) {

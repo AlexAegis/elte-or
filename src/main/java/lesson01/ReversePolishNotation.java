@@ -12,14 +12,14 @@ public class ReversePolishNotation {
 		System.out.println(eval("15 7 1 1 + - / 3 * 2 1 1 + + -")); // 5
 	}
 
-	static Map<String, BiFunction<Integer, Integer, Integer>> op = Map.ofEntries(
+	public static Map<String, BiFunction<Integer, Integer, Integer>> op = Map.ofEntries(
 			new SimpleImmutableEntry<String, BiFunction<Integer, Integer, Integer>>("+", (op1, op2) -> op2 + op1),
 			new SimpleImmutableEntry<String, BiFunction<Integer, Integer, Integer>>("-", (op1, op2) -> op2 - op1),
 			new SimpleImmutableEntry<String, BiFunction<Integer, Integer, Integer>>("*", (op1, op2) -> op2 * op1),
 			new SimpleImmutableEntry<String, BiFunction<Integer, Integer, Integer>>("/", (op1, op2) -> op2 / op1),
 			new SimpleImmutableEntry<String, BiFunction<Integer, Integer, Integer>>("%", (op1, op2) -> op2 % op1));
 
-	static Integer eval(String rpn) {
+	public static Integer eval(String rpn) {
 		return Arrays.stream(rpn.split(" ")).collect(Stack<Integer>::new, (acc, next) -> {
 			if (op.containsKey(next)) {
 				acc.push(op.get(next).apply(acc.pop(), acc.pop()));

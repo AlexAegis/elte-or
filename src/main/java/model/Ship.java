@@ -27,14 +27,14 @@ public class Ship {
 		addBody(headPiece);
 	}
 
-	void addBody(Coord bodyPiece) {
+	public void addBody(Coord bodyPiece) {
 		if (!body.isEmpty()) {
 			horizontal = body.keySet().iterator().next().distanceX(bodyPiece) == 0;
 		}
 		body.put(bodyPiece, true);
 	}
 
-	Map<Coord, Boolean> getBody() {
+	public Map<Coord, Boolean> getBody() {
 		return body;
 	}
 
@@ -43,7 +43,7 @@ public class Ship {
 	 * @param target coordinate
 	 * @return true if it hit, false if it missed
 	 */
-	boolean shoot(Coord target) {
+	public boolean shoot(Coord target) {
 		if (body.containsKey(target)) {
 			body.put(target, false);
 			return true;
@@ -51,7 +51,7 @@ public class Ship {
 			return false;
 	}
 
-	boolean isDead() {
+	public boolean isDead() {
 		return !this.body.containsValue(true);
 	}
 
@@ -59,7 +59,7 @@ public class Ship {
 	 * Puts itself into a width × height sized String[][]
 	 * @param into
 	 */
-	void print(String[][] into) {
+	public void print(String[][] into) {
 		this.body.forEach((piece, healthy) -> {
 			if (!healthy) {
 				into[piece.getX()][piece.getY()] = Table.DESTROYED_SHIP_PIECE_MARKER;

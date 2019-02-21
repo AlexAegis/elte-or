@@ -15,7 +15,7 @@ public class FibonacciTrace {
 		});
 	}
 
-	static class Fib {
+	public static class Fib {
 		List<Integer> trace = new ArrayList<>();
 		private int t1 = 1;
 		private int t2;

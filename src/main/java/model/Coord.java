@@ -44,6 +44,12 @@ public class Coord implements Comparable<Coord> {
 		return new Coord(x + other.x, y + other.y);
 	}
 
+	public Coord addInto(Coord other) {
+		x += other.x;
+		y += other.x;
+		return this;
+	}
+
 	public int getX() {
 		return x;
 	}
@@ -52,8 +58,9 @@ public class Coord implements Comparable<Coord> {
 		return y;
 	}
 
-	public String toString() {
-		return "{x: " + x + ", y: " + y + "}";
+	@Override
+	public int compareTo(Coord o) {
+		return y == o.y ? x - o.x : y - o.y;
 	}
 
 	@Override
@@ -71,8 +78,8 @@ public class Coord implements Comparable<Coord> {
 		return Objects.hash(x, y);
 	}
 
-	@Override
-	public int compareTo(Coord o) {
-		return y == o.y ? x - o.x : y - o.y;
+	public String toString() {
+		return "{x: " + x + ", y: " + y + "}";
 	}
+
 }

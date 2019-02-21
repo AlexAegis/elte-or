@@ -13,7 +13,7 @@ public class Ships {
 		new Ships().simulate("player.defend.txt", "player.attack.txt").ifPresent(System.out::println);
 	}
 
-	Optional<Table> simulate(String defenderFileName, String attackerFileName) {
+	public Optional<Table> simulate(String defenderFileName, String attackerFileName) {
 		try (Scanner shipScanner = new Scanner(new File(Read.class.getResource(defenderFileName).toURI()));
 				Scanner attackScanner = new Scanner(new File(Read.class.getResource(attackerFileName).toURI()))) {
 			List<Coord> ships = new ArrayList<>();

@@ -8,7 +8,7 @@ public class Arguments {
 		System.out.println(new Arguments().task("alma", "3", "körte", "6").toString());
 	}
 
-	ResultPair task(String... args) {
+	public ResultPair task(String... args) {
 		return new ResultPair(args.length, Arrays.stream(args).filter(s -> s.chars().allMatch(Character::isDigit))
 				.mapToInt(Integer::parseInt).sum());
 	}

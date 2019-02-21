@@ -15,7 +15,7 @@ public class Read {
 		new Read().read("input.txt").ifPresent(System.out::println);
 	}
 
-	Optional<Coord> read(String filename) {
+	public Optional<Coord> read(String filename) {
 		try (Scanner scn = new Scanner(new File(Read.class.getResource(filename).toURI()))) {
 			List<Coord> coords = new ArrayList<>();
 			while (scn.hasNextLine()) {
