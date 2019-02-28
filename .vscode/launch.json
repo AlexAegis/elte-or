@@ -87,6 +87,26 @@
 			"name": "Debug (Launch)-Main",
 			"request": "launch",
 			"mainClass": "Main"
+		},
+		{
+			"type": "java",
+			"name": "Example Server",
+			"request": "launch",
+			"mainClass": "lesson03.Server",
+			"projectName": "elte-or"
+		},
+		{
+			"type": "java",
+			"name": "Example Client",
+			"request": "launch",
+			"mainClass": "lesson03.Client",
+			"projectName": "elte-or"
+		}
+	],
+	"compounds": [
+		{
+			"name": "Example Server/Client",
+			"configurations": ["Example Server", "Example Client"]
 		}
 	]
 }

@@ -3,15 +3,18 @@ package model;
 import java.util.Objects;
 
 public class Coord implements Comparable<Coord> {
-	private int x;
-	private int y;
+	private Integer x;
+	private Integer y;
 
 	public static Coord center = new Coord(0, 0);
 
-	public Coord(String in) {
+	public Coord(String in) throws Exception {
 		var split = in.split(",");
-		this.x = Integer.parseInt(split[0].trim());
-		this.y = Integer.parseInt(split[1].trim());
+		x = Integer.parseInt(split[0].trim());
+		y = Integer.parseInt(split[1].trim());
+		if (x == null || y == null || x < 0 || y < 0 || x > 10 || y > 10) {
+			throw new Exception("Bad inputs");
+		}
 	}
 
 	public Coord(Coord other) {

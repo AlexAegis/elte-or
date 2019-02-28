@@ -92,6 +92,10 @@ public class Table {
 		return ships.stream().map(Ship::toString).collect(Collectors.joining("\n"));
 	}
 
+	public Boolean isFinished() {
+		return ships.stream().allMatch(Ship::isDead);
+	}
+
 	public void print(PrintStream ps) {
 		ps.println(toString());
 		ps.println(state());

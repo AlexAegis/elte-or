@@ -1,15 +1,9 @@
 package lesson03;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Optional;
 import java.util.Scanner;
-import model.Coord;
 
 /**
  * Task 1 - Read coordinates from the input file, then print out the one nearest to the center
