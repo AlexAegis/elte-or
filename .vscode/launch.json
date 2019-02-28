@@ -73,18 +73,14 @@
 			"request": "launch",
 			"mainClass": "lesson01.Arguments",
 			"projectName": "elte-or",
-			"args": [
-				"alma",
-				"4",
-				"körte",
-				"11"
-			]
+			"args": ["alma", "4", "körte", "11"]
 		},
 		{
 			"type": "java",
 			"name": "Debug (Launch) - Current File",
 			"request": "launch",
-			"mainClass": "${file}"
+			"mainClass": "${file}",
+			"console": "integratedTerminal"
 		},
 		{
 			"type": "java",
