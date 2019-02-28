@@ -101,12 +101,31 @@
 			"request": "launch",
 			"mainClass": "lesson03.Client",
 			"projectName": "elte-or"
+		},
+		{
+			"type": "java",
+			"name": "BasicBattleShips Server",
+			"request": "launch",
+			"mainClass": "lesson03.BattleShipsServer",
+			"projectName": "elte-or"
+		},
+		{
+			"type": "java",
+			"name": "BasicBattleShips Client",
+			"request": "launch",
+			"mainClass": "lesson03.BattleShipsClient",
+			"console": "integratedTerminal",
+			"projectName": "elte-or"
 		}
 	],
 	"compounds": [
 		{
 			"name": "Example Server/Client",
 			"configurations": ["Example Server", "Example Client"]
+		},
+		{
+			"name": "BasicBattleShips Server/Client",
+			"configurations": ["BasicBattleShips Server", "BasicBattleShips Client"]
 		}
 	]
 }

@@ -8,6 +8,10 @@ Basic server-client connetion
 
 Print out each state of the game after each step!
 
-## 3) [Basic Server/Client connection](./Server.java)
+## 3)Basic [Server](./Server.java)/[Client](./Client.java) connection
 
 Send messages from the client to the server
+
+## 4) [BattleShips Server](./BattleShipsServer.java) and player [Client](./BattleShipsClient.java)
+
+Run the battleship guessing game through a single client
