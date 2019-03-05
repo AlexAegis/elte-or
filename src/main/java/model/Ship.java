@@ -37,16 +37,17 @@ public class Ship {
 	/**
 	 * Tries to shoot the {@link Ship}
 	 * @param shot coordinate
-	 * @return true if it hit, false if it missed
+	 * @return true if it kills, false if it hit but didnt kill, null if missed
 	 */
-	public boolean recieveShot(Shot shot) throws AlreadyShotException {
+	public Boolean recieveShot(Shot shot) throws AlreadyShotException {
 		body.computeIfPresent(shot.getTarget(), (body, damage) -> {
 			throw new AlreadyShotException(damage);
 		});
 		if (body.containsKey(shot.getTarget())) {
-			return body.put(shot.getTarget(), shot) == null;
+			body.put(shot.getTarget(), shot);
+			return isDead();
 		} else
-			return false;
+			return null;
 	}
 
 	public boolean isDead() {

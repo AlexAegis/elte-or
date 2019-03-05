@@ -57,13 +57,16 @@ public class Admiral {
 	 *
 	 */
 	public Shot shoot(Admiral admiral, Coord target) throws AlreadyShotException {
-		Shot shot = new Shot(this, target);
+		var shot = new Shot(this, target, ShotMarker.MISS);
 		shots.putIfAbsent(admiral, new ArrayList<>());
 		shots.get(admiral).add(shot);
-		if (admiral.ships.stream().noneMatch(ship -> ship.recieveShot(shot))) {
-			shot.setResult(ShotMarker.MISS);
+		var shotResults =
+				admiral.ships.stream().map(ship -> ship.recieveShot(shot)).distinct().collect(Collectors.toList());
+
+		if (shotResults.contains(true)) {
+			shot.setResult(ShotMarker.HIT_AND_FINISHED);
 			admiral.getMiss().add(shot);
-		} else {
+		} else if (shotResults.contains(false)) {
 			shot.setResult(ShotMarker.HIT);
 		}
 		return shot;

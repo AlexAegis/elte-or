@@ -4,7 +4,7 @@ package model;
  * It can either be HIT or MISS
  */
 public enum ShotMarker {
-	HIT("#"), MISS("O");
+	HIT_AND_FINISHED("Z"), HIT("#"), MISS("O");
 
 	private String marker;
 
