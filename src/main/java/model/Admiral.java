@@ -42,7 +42,7 @@ public class Admiral {
 					remaining.remove(shipPiece);
 					var ship = new Ship(shipPiece, this);
 					ships.add(ship);
-					for (var direction : Direction.values()) {
+					for (var direction : Direction.axis()) {
 						var next = shipPiece;
 						while (remaining.remove(next = next.add(direction.vector))) {
 							ship.addBody(next);

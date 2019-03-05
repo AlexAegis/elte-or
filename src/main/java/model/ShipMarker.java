@@ -1,7 +1,7 @@
 package model;
 
 public enum ShipMarker {
-	HORIZONTAL("-"), VERTICAL("|"), SINGLE("X");
+	HORIZONTAL("-"), VERTICAL("|"), SINGLE("X"), BORDER("~");
 
 	private String marker;
 

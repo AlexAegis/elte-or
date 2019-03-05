@@ -1,13 +1,18 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import com.sun.source.tree.Tree;
 
 public class Ship {
 	private Map<Coord, Shot> body = new HashMap<>();
-
+	private Set<Coord> border = new HashSet<>();
 	private Boolean horizontal;
 	private Admiral admiral;
 
@@ -39,6 +44,16 @@ public class Ship {
 			horizontal = body.keySet().iterator().next().distanceX(bodyPiece) == 0;
 		}
 		body.put(bodyPiece, shot);
+
+		List<Direction> borderDir;
+		if (horizontal == null) {
+			borderDir = Direction.corners();
+		} else {
+			borderDir = Direction.cornersAndAxis(horizontal);
+		}
+		border.addAll(borderDir.stream().map(dir -> dir.vector.add(bodyPiece)).collect(Collectors.toSet()));
+
+
 		if (shot != null) {
 			this.assembled = shot.getResult().equals(ShotMarker.HIT_AND_FINISHED);
 		}
@@ -91,6 +106,10 @@ public class Ship {
 			} else {
 				into[piece.getX()][piece.getY()] = ShipMarker.SINGLE.toString();
 			}
+		});
+
+		this.border.forEach(coord -> {
+			into[coord.getX()][coord.getY()] = ShipMarker.BORDER.toString();
 		});
 	}
 
