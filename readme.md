@@ -16,13 +16,29 @@ ELTE-IK 2018-19/2
 | 4   | [Fibonacci Trace](./src/main/java/lesson01/FibonacciTrace.java)                | [Test](./src/test/java/lesson01/FibonacciTraceTest.java)        |
 | 5   | [Reverse Polish Notation](./src/main/java/lesson01/ReversePolishNotation.java) | [Test](./src/test/java/lesson01/ReversePolishNotationTest.java) |
 
-## [Lesson 2 - file handling, scanner, torpedo](./src/main/java/lesson02/)
+## [Lesson 2 - file handling, scanner, battleships](./src/main/java/lesson02/)
 
 | #   | Task                                         | [Test](./src/test/java/lesson02/)               |
 | --- | -------------------------------------------- | ----------------------------------------------- |
 | 1   | [Read](./src/main/java/lesson02/Read.java)   | [Test](./src/test/java/lesson02/ReadTest.java)  |
 | 2   | [Print](./src/main/java/lesson02/Print.java) | [Test](./src/test/java/lesson02/PrintTest.java) |
 | 3   | [Ships](./src/main/java/lesson02/Ships.java) | [Test](./src/test/java/lesson02/ShipsTest.java) |
+
+| Shared model                                      |
+| ------------------------------------------------- |
+| [Table](./src/main/java/model/Table.java)         |
+| [Ship](./src/main/java/model/Ship.java)           |
+| [Coord](./src/main/java/model/Coord.java)         |
+| [Direction](./src/main/java/model/Direction.java) |
+
+## [Lesson 3 - Basic server-client connection](./src/main/java/lesson03/)
+
+| #   | Task                                                                                                                                                |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | [Continuous file write from standard input](./src/main/java/lesson03/ContinuousFileWrite.java)                                                      |
+| 2   | [BasicBattleShips from standard input](./src/main/java/lesson03/BattleShipsFromStdIn.java)                                                          |
+| 3   | [Basic Server](./src/main/java/lesson03/Server.java)/[Client example](./src/main/java/lesson03/Client.java)                                         |
+| 4   | [Basic BattleShips Server](./src/main/java/lesson03/BasicBattleShipsServer.java) [and Client](./src/main/java/lesson03/BasicBattleShipsClient.java) |
 
 | Shared model                                      |
 | ------------------------------------------------- |

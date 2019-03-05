@@ -1,13 +1,10 @@
 package lesson03;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,9 +15,9 @@ import model.Table;
 /**
  * Run this with the BasicBattleShips Server/Client compound debug configuration to run with client simultaneously
  */
-public class BattleShipsServer {
+public class BasicBattleShipsServer {
 	public static void main(String... args) {
-		new BattleShipsServer().run(6788, "player.1.ships.txt");
+		new BasicBattleShipsServer().run(6788, "player.1.ships.txt");
 	}
 
 	public Optional<Table> run(Integer port, String defenderFileName) {
@@ -31,7 +28,7 @@ public class BattleShipsServer {
 				PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
 				Scanner in = new Scanner(new InputStreamReader(clientSocket.getInputStream()));
 				Scanner shipScanner =
-						new Scanner(new File(BattleShipsServer.class.getResource(defenderFileName).toURI()))) {
+						new Scanner(new File(BasicBattleShipsServer.class.getResource(defenderFileName).toURI()))) {
 			System.out.println("Server start");
 
 			List<Coord> ships = new ArrayList<>();

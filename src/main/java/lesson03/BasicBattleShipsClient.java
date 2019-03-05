@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
@@ -12,9 +11,9 @@ import java.util.Scanner;
 /**
  * Run this with the BasicBattleShips Server/Client compound debug configuration to run with client simultaneously
  */
-public class BattleShipsClient {
+public class BasicBattleShipsClient {
 	public static void main(String... args) {
-		new BattleShipsClient().run("127.0.0.1", 6788);
+		new BasicBattleShipsClient().run("127.0.0.1", 6788);
 	}
 
 	public void run(String host, Integer serverPort) {
