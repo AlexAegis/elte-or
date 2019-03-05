@@ -67,6 +67,8 @@ ELTE-IK 2018-19/2
 ./gradlew run
 ```
 
+If for some reason VS Code throws an error upon running a debug session that it can't build the workspace, but the project can be built by hand, try cleaning it with Ctrl+Shift+P `>Java: Clean the Java language server workspace`
+
 ---
 
 ## Technologies

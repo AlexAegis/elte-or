@@ -16,6 +16,10 @@ public class Shot {
 		this.result = result;
 	}
 
+	public void print(String[][] into) {
+		into[getTarget().getX()][getTarget().getY()] = toString();
+	}
+
 	/**
 	 * @return the source
 	 */

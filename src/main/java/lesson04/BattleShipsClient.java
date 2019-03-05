@@ -1,4 +1,4 @@
-package lesson03;
+package lesson04;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,11 +10,11 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 /**
- * Run this with the BasicBattleShips Server/Client compound debug configuration to run with client simultaneously
+ * Run this with the BattleShips Server/Client compound debug configuration to run with client simultaneously
  */
-public class BasicBattleShipsClient {
+public class BattleShipsClient {
 	public static void main(String... args) {
-		new BasicBattleShipsClient().run("127.0.0.1", 6788);
+		new BattleShipsClient().run("127.0.0.1", 6788);
 	}
 
 	public void run(String host, Integer serverPort) {
@@ -31,15 +31,14 @@ public class BasicBattleShipsClient {
 					}
 					out.println(nl);
 					out.flush();
+					System.out.println("LOL");
+
 					String result = in.lines().takeWhile(str -> !str.equals("")).collect(Collectors.joining("\n"));
 					System.out.println(result);
 					if (result.equals("error")) {
-						throw new IllegalArgumentException("Bad input");
+						throw new Exception("Bad input");
 					}
-					if (result.equals("won") || result.equals("lose")) {
-						break;
-					}
-				} catch (IllegalArgumentException e) {
+				} catch (Exception e) {
 					System.out.println("Enter a valid target");
 				}
 			}

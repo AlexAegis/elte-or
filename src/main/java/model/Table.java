@@ -1,11 +1,7 @@
 package model;
 
-import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Table {
@@ -76,6 +72,13 @@ public class Table {
 			turn();
 		}
 		return shot;
+	}
+
+	public String lastResult() throws IllegalAccessException {
+		if (current == null) {
+			turn();
+		}
+		return current.field(admirals.get(nextIndex()));
 	}
 
 	public Admiral getAdmiral(Integer index) {

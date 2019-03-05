@@ -13,7 +13,6 @@ public class Ship {
 	public Ship() {
 	}
 
-
 	public Ship(Coord headPiece, Admiral admiral) {
 		this(headPiece);
 		this.admiral = admiral;

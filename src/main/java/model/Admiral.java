@@ -75,12 +75,26 @@ public class Admiral {
 	}
 
 	public String field() {
+		return field(null);
+	}
+
+	/**
+	 * Prints out it's own field when no admiral is given
+	 * Prints out the knowledge about the opponent if admiral is given
+	 * @return
+	 */
+	public String field(Admiral admiral) {
 		var field = Table.empty();
-		miss.forEach(miss -> field[miss.getTarget().getX()][miss.getTarget().getY()] = miss.toString());
-		ships.forEach(ship -> ship.print(field));
+		if (admiral != null) {
+			shots.get(admiral).forEach(shot -> shot.print(field));
+		} else {
+			miss.forEach(miss -> miss.print(field));
+			ships.forEach(ship -> ship.print(field));
+		}
 		return Arrays.stream(field).map(row -> Arrays.stream(row).collect(Collectors.joining()))
 				.collect(Collectors.joining("\n"));
 	}
+
 
 	public String state() {
 		return ships.stream().map(Ship::toString).collect(Collectors.joining("\n"));

@@ -125,6 +125,22 @@
 			"mainClass": "lesson03.BasicBattleShipsClient",
 			"console": "externalTerminal",
 			"projectName": "elte-or"
+		},
+		{
+			"type": "java",
+			"name": "BattleShips Server",
+			"request": "launch",
+			"mainClass": "lesson04.BattleShipsServer",
+			"console": "externalTerminal",
+			"projectName": "elte-or"
+		},
+		{
+			"type": "java",
+			"name": "BattleShips Client",
+			"request": "launch",
+			"mainClass": "lesson04.BattleShipsClient",
+			"console": "externalTerminal",
+			"projectName": "elte-or"
 		}
 	],
 	"compounds": [
@@ -135,6 +151,10 @@
 		{
 			"name": "BasicBattleShips Server/Client",
 			"configurations": ["BasicBattleShips Server", "BasicBattleShips Client"]
+		},
+		{
+			"name": "BattleShips Server/Client",
+			"configurations": ["BattleShips Server", "BattleShips Client"]
 		}
 	]
 }
