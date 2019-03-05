@@ -49,7 +49,7 @@ public class BasicBattleShipsServer {
 					}
 					table.shoot(1, 0, new Coord(input));
 					System.out.println(table.toString());
-					out.println(table.getAdmiral(1).field(table.getAdmiral(0)));
+					out.println(table.getAdmiral(1).toString(table.getAdmiral(0)));
 				} catch (IllegalArgumentException e) {
 					System.out.println("Invalid input: " + input);
 					out.println("Enter a valid target");

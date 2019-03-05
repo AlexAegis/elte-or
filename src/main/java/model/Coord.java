@@ -45,6 +45,10 @@ public class Coord implements Comparable<Coord> {
 		return Math.sqrt(Math.pow(this.distanceX(other), 2) + Math.pow(this.distanceY(other), 2));
 	}
 
+	public Boolean neighbours(Coord other) {
+		return manhattan(other) == 1;
+	}
+
 	public Coord add(Coord other) {
 		return new Coord(x + other.x, y + other.y);
 	}

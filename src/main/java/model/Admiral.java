@@ -15,7 +15,11 @@ public class Admiral {
 	private List<Ship> ships = new ArrayList<>();
 	private List<Shot> miss = new ArrayList<>();
 
-	private Map<Admiral, List<Shot>> shots = new HashMap<>();
+	// The Admiral used as a key is the real one, the value is the mock of that admiral
+	private Map<Admiral, Admiral> knowledge = new HashMap<>();
+
+	Admiral() {
+	}
 
 	Admiral(List<Coord> shipPieces) {
 		place(shipPieces);
@@ -58,16 +62,22 @@ public class Admiral {
 	 */
 	public Shot shoot(Admiral admiral, Coord target) throws AlreadyShotException {
 		var shot = new Shot(this, target, ShotMarker.MISS);
-		shots.putIfAbsent(admiral, new ArrayList<>());
-		shots.get(admiral).add(shot);
+		knowledge.putIfAbsent(admiral, new Admiral());
 		var shotResults =
 				admiral.ships.stream().map(ship -> ship.recieveShot(shot)).distinct().collect(Collectors.toList());
-
 		if (shotResults.contains(true)) {
 			shot.setResult(ShotMarker.HIT_AND_FINISHED);
-			admiral.getMiss().add(shot);
 		} else if (shotResults.contains(false)) {
 			shot.setResult(ShotMarker.HIT);
+		} else {
+			admiral.getMiss().add(shot);
+			knowledge.get(admiral).getMiss().add(shot);
+		}
+		if (shotResults.contains(false) || shotResults.contains(true)) {
+			knowledge.get(admiral).getShips().stream().filter(
+					ship -> ship.getBody().keySet().stream().anyMatch(coord -> coord.neighbours(shot.getTarget())))
+					.findFirst().ifPresentOrElse(ship -> ship.addBody(shot.getTarget(), shot),
+							() -> knowledge.get(admiral).getShips().add(new Ship(shot, admiral)));
 		}
 		return shot;
 	}
@@ -89,18 +99,30 @@ public class Admiral {
 	public String field(Admiral admiral) {
 		var field = Table.empty();
 		if (admiral != null) {
-			shots.get(admiral).forEach(shot -> shot.print(field));
+			knowledge.get(admiral).print(field);
 		} else {
-			miss.forEach(miss -> miss.print(field));
-			ships.forEach(ship -> ship.print(field));
+			print(field);
 		}
 		return Arrays.stream(field).map(row -> Arrays.stream(row).collect(Collectors.joining()))
 				.collect(Collectors.joining("\n"));
 	}
 
+	public void print(String[][] into) {
+		miss.forEach(miss -> miss.print(into));
+		ships.forEach(ship -> ship.print(into));
+	}
 
 	public String state() {
-		return ships.stream().map(Ship::toString).collect(Collectors.joining("\n"));
+		return state(null);
+	}
+
+	public String state(Admiral admiral) {
+		if (admiral != null) {
+			admiral = knowledge.get(admiral);
+		} else {
+			admiral = this;
+		}
+		return admiral.getShips().stream().map(Ship::toString).collect(Collectors.joining("\n"));
 	}
 
 	/**
@@ -115,6 +137,10 @@ public class Admiral {
 	 */
 	public List<Ship> getShips() {
 		return ships;
+	}
+
+	public String toString(Admiral target) {
+		return knowledge.get(target).toString();
 	}
 
 	@Override

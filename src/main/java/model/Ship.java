@@ -3,12 +3,15 @@ package model;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import com.sun.source.tree.Tree;
 
 public class Ship {
 	private Map<Coord, Shot> body = new HashMap<>();
 
 	private Boolean horizontal;
 	private Admiral admiral;
+
+	private Boolean assembled = true;
 
 	public Ship() {
 	}
@@ -18,16 +21,27 @@ public class Ship {
 		this.admiral = admiral;
 	}
 
+	public Ship(Shot shot, Admiral admiral) {
+		this.admiral = admiral;
+		addBody(shot.getTarget(), shot);
+	}
 
 	public Ship(Coord headPiece) {
 		addBody(headPiece);
 	}
 
 	public void addBody(Coord bodyPiece) {
+		addBody(bodyPiece, null);
+	}
+
+	public void addBody(Coord bodyPiece, Shot shot) {
 		if (!body.isEmpty()) {
 			horizontal = body.keySet().iterator().next().distanceX(bodyPiece) == 0;
 		}
-		body.put(bodyPiece, null);
+		body.put(bodyPiece, shot);
+		if (shot != null) {
+			this.assembled = shot.getResult().equals(ShotMarker.HIT_AND_FINISHED);
+		}
 	}
 
 	public Map<Coord, Shot> getBody() {
@@ -41,7 +55,11 @@ public class Ship {
 	 */
 	public Boolean recieveShot(Shot shot) throws AlreadyShotException {
 		body.computeIfPresent(shot.getTarget(), (body, damage) -> {
-			throw new AlreadyShotException(damage);
+			// Only tell if it's already been shot if the same player shot it
+			if (damage.getSource().equals(shot.getSource())) {
+				throw new AlreadyShotException(damage);
+			} else
+				return damage;
 		});
 		if (body.containsKey(shot.getTarget())) {
 			body.put(shot.getTarget(), shot);
@@ -50,8 +68,12 @@ public class Ship {
 			return null;
 	}
 
+	/**
+	 * We only know if its truly dead or not, if we have all it's pieces.
+	 * @return
+	 */
 	public boolean isDead() {
-		return this.body.values().stream().noneMatch(Objects::isNull);
+		return this.assembled && this.body.values().stream().noneMatch(Objects::isNull);
 	}
 
 	/**
@@ -74,7 +96,8 @@ public class Ship {
 
 	@Override
 	public String toString() {
-		return "Ship hp: " + this.body.values().stream().filter(Objects::isNull).count() + "/" + body.size();
+		return "Ship hp: " + this.body.values().stream().filter(Objects::isNull).count() + "/" + body.size()
+				+ (isDead() ? "" : " Not yet") + " destroyed";
 	}
 
 	@Override
