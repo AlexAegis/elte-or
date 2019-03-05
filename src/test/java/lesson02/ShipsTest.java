@@ -10,8 +10,8 @@ class ShipsTest {
 
 	@Test
 	public void test() {
-		assertEquals(new Ships().simulate("player.defend.txt", "player.attack.txt").orElse(new Table()).toString(),
-				finalFieldState);
+		assertEquals(new Ships().simulate("player.defend.txt", "player.attack.txt").orElse(new Table()).getAdmiral(0)
+				.field(), finalFieldState);
 	}
 
 }
