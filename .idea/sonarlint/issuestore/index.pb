@@ -19,8 +19,6 @@ X
 (gradle/wrapper/gradle-wrapper.properties,f\b\fbe448ebfc3eb2d4e308f6b8b043666f5b57235e
 Z
 *src/main/java/lesson01/FibonacciTrace.java,7\9\797c725789d1e120e841b86ed2533d5ebac64420
-Z
-*src/main/java/lesson01/PolishNotation.java,e\5\e554299e6a159f701bb3d7a026c09df6429d4e93
 V
 &src/main/java/lesson01/HelloWorld.java,7\9\791a02f6b4d10caba3de903c9a0d12506c1de242
 7

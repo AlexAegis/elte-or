@@ -1,6 +1,0 @@
-
-Bsquid:S1481"(Remove this unused "asd" local variable.(Áì˜úÿÿÿÿ
-psquid:S00120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(ÖÈ£Ì
-;squid:S1481"'Remove this unused "in" local variable.(Úæâ|
-Jsquid:S1854"6Remove this useless assignment to local variable "in".(Úæâ|
-Qsquid:S1854"7Remove this useless assignment to local variable "asd".(Áì˜úÿÿÿÿ
