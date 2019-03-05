@@ -5,9 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
+import model.AlreadyShotException;
 import model.Coord;
 import model.Table;
 
+/**
+ * Launch with "CodeLens (Launch) - BattleShipsFromStdIn" because you'll need a terminal
+ */
 public class BattleShipsFromStdIn {
 	public static void main(String... args) {
 		new BattleShipsFromStdIn().simulate("player.1.ships.txt").ifPresent(System.out::println);
@@ -24,15 +28,22 @@ public class BattleShipsFromStdIn {
 					ships.add(new Coord(nl));
 			}
 			var table = new Table(ships);
+			System.out.println(table.toString() + "is fin: " + table.isFinished());
+
 			while (!table.isFinished()) {
 				try {
 					String nl = attackScanner.nextLine();
 					if (nl.equals("exit")) {
 						break;
 					}
-					table.shoot(new Coord(nl));
-				} catch (Exception e) {
-					System.out.println("Enter a valid target");
+					//table.autoTurn(new Coord(nl));
+					table.shoot(1, 0, new Coord(nl));
+					table.turn();
+					System.out.println(table.toString());
+				} catch (IllegalArgumentException e) {
+					System.out.println(e.getMessage());
+				} catch (AlreadyShotException e) {
+					System.out.println(e.getMessage());
 				}
 			}
 			return Optional.of(table);

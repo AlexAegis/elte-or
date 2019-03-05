@@ -8,12 +8,12 @@ public class Coord implements Comparable<Coord> {
 
 	public static Coord center = new Coord(0, 0);
 
-	public Coord(String in) throws Exception {
+	public Coord(String in) throws IllegalArgumentException {
 		var split = in.split(",");
 		x = Integer.parseInt(split[0].trim());
 		y = Integer.parseInt(split[1].trim());
 		if (x == null || y == null || x < 0 || y < 0 || x > 10 || y > 10) {
-			throw new Exception("Bad inputs");
+			throw new IllegalArgumentException("Bad inputs");
 		}
 	}
 

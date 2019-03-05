@@ -10,7 +10,8 @@ import model.Table;
 
 public class Ships {
 	public static void main(String... args) {
-		new Ships().simulate("player.defend.txt", "player.attack.txt").ifPresent(System.out::println);
+		new Ships().simulate("player.defend.txt", "player.attack.txt").map(table -> table.getAdmiral(0))
+				.ifPresent(System.out::println);
 	}
 
 	public Optional<Table> simulate(String defenderFileName, String attackerFileName) {
@@ -29,7 +30,13 @@ public class Ships {
 					attacks.add(new Coord(nl));
 			}
 			var table = new Table(ships);
-			attacks.forEach(table::shoot);
+			try {
+				for (var attack : attacks) {
+					table.shoot(1, 0, attack);
+				}
+			} catch (IllegalAccessException | IllegalArgumentException e) {
+				e.printStackTrace();
+			}
 			return Optional.of(table);
 		} catch (Exception e) {
 			e.printStackTrace();

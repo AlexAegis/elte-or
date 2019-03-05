@@ -7,6 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Scanner;
 import model.Coord;
@@ -39,16 +40,21 @@ public class BasicBattleShipsServer {
 			}
 			var table = new Table(ships);
 			while (!table.isFinished()) {
+				String input = "";
 				try {
-					String nl = in.nextLine();
-					if (nl.equals("exit")) {
+					input = in.nextLine();
+					if (input.equals("exit")) {
 						break;
 					}
-					table.shoot(new Coord(nl));
-					out.println(table.toString() + "\n" + table.state());
-				} catch (Exception e) {
-					System.out.println("Enter a valid target");
-					out.println("error");
+					table.shoot(1, 0, new Coord(input));
+					out.println(table.toString());
+					out.println();
+				} catch (IllegalArgumentException e) {
+					System.out.println("Invalid input: " + input);
+					out.println("Enter a valid target");
+				} catch (NoSuchElementException e) {
+					System.out.println("No more input, Client disconnected!");
+					break;
 				}
 				out.flush();
 			}

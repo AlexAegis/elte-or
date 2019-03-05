@@ -5,21 +5,18 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Ship {
-	private Map<Coord, Boolean> body = new HashMap<>();
+	private Map<Coord, Shot> body = new HashMap<>();
 
-	private String name;
 	private Boolean horizontal;
+	private Admiral admiral;
 
 	public Ship() {
 	}
 
-	public Ship(String name) {
-		this.name = name;
-	}
 
-	public Ship(Coord headPiece, String name) {
+	public Ship(Coord headPiece, Admiral admiral) {
 		this(headPiece);
-		this.name = name;
+		this.admiral = admiral;
 	}
 
 
@@ -31,28 +28,30 @@ public class Ship {
 		if (!body.isEmpty()) {
 			horizontal = body.keySet().iterator().next().distanceX(bodyPiece) == 0;
 		}
-		body.put(bodyPiece, true);
+		body.put(bodyPiece, null);
 	}
 
-	public Map<Coord, Boolean> getBody() {
+	public Map<Coord, Shot> getBody() {
 		return body;
 	}
 
 	/**
 	 * Tries to shoot the {@link Ship}
-	 * @param target coordinate
+	 * @param shot coordinate
 	 * @return true if it hit, false if it missed
 	 */
-	public boolean shoot(Coord target) {
-		if (body.containsKey(target)) {
-			body.put(target, false);
-			return true;
+	public boolean recieveShot(Shot shot) throws AlreadyShotException {
+		body.computeIfPresent(shot.getTarget(), (body, damage) -> {
+			throw new AlreadyShotException(damage);
+		});
+		if (body.containsKey(shot.getTarget())) {
+			return body.put(shot.getTarget(), shot) == null;
 		} else
 			return false;
 	}
 
 	public boolean isDead() {
-		return !this.body.containsValue(true);
+		return this.body.values().stream().noneMatch(Objects::isNull);
 	}
 
 	/**
@@ -60,23 +59,22 @@ public class Ship {
 	 * @param into
 	 */
 	public void print(String[][] into) {
-		this.body.forEach((piece, healthy) -> {
-			if (!healthy) {
-				into[piece.getX()][piece.getY()] = Table.DESTROYED_SHIP_PIECE_MARKER;
+		this.body.forEach((piece, shot) -> {
+			if (shot != null) {
+				into[piece.getX()][piece.getY()] = shot.toString();
 			} else if (horizontal != null && horizontal) {
-				into[piece.getX()][piece.getY()] = Table.HORIZONTAL_SHIP_PIECE_MARKER;
+				into[piece.getX()][piece.getY()] = ShipMarker.HORIZONTAL.toString();
 			} else if (horizontal != null && !horizontal) {
-				into[piece.getX()][piece.getY()] = Table.VERTICAL_SHIP_PIECE_MARKER;
+				into[piece.getX()][piece.getY()] = ShipMarker.VERTICAL.toString();
 			} else {
-				into[piece.getX()][piece.getY()] = Table.SINGLE_SHIP_PIECE_MARKER;
+				into[piece.getX()][piece.getY()] = ShipMarker.SINGLE.toString();
 			}
 		});
 	}
 
 	@Override
 	public String toString() {
-		return (this.name != null ? name : "Ship") + " hp: " + this.body.values().stream().filter(next -> next).count()
-				+ "/" + body.size();
+		return "Ship hp: " + this.body.values().stream().filter(Objects::isNull).count() + "/" + body.size();
 	}
 
 	@Override

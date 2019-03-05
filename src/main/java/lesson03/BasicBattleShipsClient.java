@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 /**
  * Run this with the BasicBattleShips Server/Client compound debug configuration to run with client simultaneously
@@ -30,7 +31,10 @@ public class BasicBattleShipsClient {
 					}
 					out.println(nl);
 					out.flush();
-					String result = in.readLine();
+					System.out.println("LOL");
+
+					String result = in.lines().takeWhile(str -> !str.equals("")).collect(Collectors.joining("\n"));
+					System.out.println(result);
 					if (result.equals("error")) {
 						throw new Exception("Bad input");
 					}
