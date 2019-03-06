@@ -34,6 +34,11 @@ public class Ship {
 		addBody(headPiece);
 	}
 
+	public void merge(Ship other) {
+		other.getBody().forEach((body, shot) -> addBody(body, shot));
+		finishBorder();
+	}
+
 	public void addBody(Coord bodyPiece) {
 		addBody(bodyPiece, null);
 	}
@@ -62,27 +67,33 @@ public class Ship {
 
 	public void finishBorder() {
 		// First bit
-		body.keySet().stream().sorted().findFirst().ifPresent(coord -> {
-			if (horizontal == null) { // single size, only corners were added
-				border.addAll(Direction.axis().stream().map(dir -> dir.vector.add(coord)).collect(Collectors.toSet()));
-			} else if (!horizontal) { // longer
-				System.out.println(Direction.LEFT.vector.add(coord));
-				border.add(Direction.LEFT.vector.add(coord));
-			} else {
-				border.add(Direction.DOWN.vector.add(coord));
-				System.out.println(Direction.DOWN.vector.add(coord));
-			}
-		});
+		var sorted = body.keySet().stream()
+				.sorted((a, o) -> a.getY() == o.getY() ? a.getX() - o.getX() : a.getY() - o.getY())
+				.collect(Collectors.toList());
+		System.out.println("SORTSTR");
+		for (var s : sorted) {
+			System.out.println(s);
+		}
+		System.out.println("SORTEND");
+		var first = sorted.get(0);
+		var last = sorted.get(sorted.size() - 1);
+		if (horizontal == null) { // single size, only corners were added
+			border.addAll(Direction.axis().stream().map(dir -> dir.vector.add(first)).collect(Collectors.toSet()));
+		} else if (!horizontal) { // longer
+			System.out.println(Direction.LEFT.vector.add(first));
+			border.add(Direction.LEFT.vector.add(first));
+		} else {
+			border.add(Direction.DOWN.vector.add(first));
+			System.out.println(Direction.DOWN.vector.add(first));
+		}
 		// last bit
-		body.keySet().stream().sorted(Comparator.reverseOrder()).findFirst().ifPresent(coord -> {
-			if (horizontal != null && !horizontal) {
-				border.add(Direction.RIGHT.vector.add(coord));
-				System.out.println(Direction.RIGHT.vector.add(coord));
-			} else if (horizontal != null && horizontal) {
-				border.add(Direction.UP.vector.add(coord));
-				System.out.println(Direction.UP.vector.add(coord));
-			}
-		});
+		if (horizontal != null && !horizontal) {
+			border.add(Direction.RIGHT.vector.add(last));
+			System.out.println(Direction.RIGHT.vector.add(last));
+		} else if (horizontal != null && horizontal) {
+			border.add(Direction.UP.vector.add(last));
+			System.out.println(Direction.UP.vector.add(last));
+		}
 
 	}
 

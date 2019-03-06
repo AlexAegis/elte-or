@@ -74,10 +74,16 @@ public class Admiral {
 			knowledge.get(admiral).getMiss().add(shot);
 		}
 		if (shotResults.contains(false) || shotResults.contains(true)) {
+			var toBeRemoved = new ArrayList<Ship>();
 			knowledge.get(admiral).getShips().stream().filter(
 					ship -> ship.getBody().keySet().stream().anyMatch(coord -> coord.neighbours(shot.getTarget())))
-					.findFirst().ifPresentOrElse(ship -> ship.addBody(shot.getTarget(), shot),
+					.reduce((acc, next) -> {
+						toBeRemoved.add(next);
+						acc.merge(next);
+						return acc;
+					}).ifPresentOrElse(ship -> ship.addBody(shot.getTarget(), shot),
 							() -> knowledge.get(admiral).getShips().add(new Ship(shot, admiral)));
+			toBeRemoved.forEach(knowledge.get(admiral).getShips()::remove);
 		}
 		return shot;
 	}
