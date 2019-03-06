@@ -67,14 +67,7 @@ public class Ship {
 
 	public void finishBorder() {
 		// First bit
-		var sorted = body.keySet().stream()
-				.sorted((a, o) -> a.getY() == o.getY() ? a.getX() - o.getX() : a.getY() - o.getY())
-				.collect(Collectors.toList());
-		System.out.println("SORTSTR");
-		for (var s : sorted) {
-			System.out.println(s);
-		}
-		System.out.println("SORTEND");
+		var sorted = body.keySet().stream().sorted().collect(Collectors.toList());
 		var first = sorted.get(0);
 		var last = sorted.get(sorted.size() - 1);
 		if (horizontal == null) { // single size, only corners were added
