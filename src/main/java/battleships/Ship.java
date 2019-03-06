@@ -22,16 +22,22 @@ public class Ship {
 
 	private Boolean assembled = true;
 
-	public Ship() {
-	}
-
-	public Ship(Coord headPiece, Admiral admiral) {
-		this(headPiece);
+	public Ship(Admiral admiral) {
 		this.admiral = admiral;
 	}
 
-	public Ship(Shot shot, Admiral admiral) {
-		this.admiral = admiral;
+	public Ship(Admiral admiral, Coord piece) {
+		this(admiral);
+		addBody(piece);
+	}
+
+	public Ship(Admiral admiral, Coord piece, Shot shot) {
+		this(admiral);
+		addBody(piece, shot);
+	}
+
+	public Ship(Admiral admiral, Shot shot) {
+		this(admiral);
 		addBody(shot.getTarget(), shot);
 	}
 
@@ -43,8 +49,8 @@ public class Ship {
 		other.getBody().forEach((body, shot) -> addBody(body, shot));
 	}
 
-	public void addBody(Coord bodyPiece) {
-		addBody(bodyPiece, null);
+	public void addBody(Coord piece) {
+		addBody(piece, null);
 	}
 
 	public void addBody(Coord bodyPiece, Shot shot) {
