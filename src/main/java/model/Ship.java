@@ -1,6 +1,5 @@
 package model;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -66,10 +65,10 @@ public class Ship {
 	}
 
 	public void finishBorder() {
-		// First bit
 		var sorted = body.keySet().stream().sorted().collect(Collectors.toList());
 		var first = sorted.get(0);
 		var last = sorted.get(sorted.size() - 1);
+		// First bit
 		if (horizontal == null) { // single size, only corners were added
 			border.addAll(Direction.axis().stream().map(dir -> dir.vector.add(first)).collect(Collectors.toSet()));
 		} else if (!horizontal) { // longer
@@ -87,7 +86,6 @@ public class Ship {
 			border.add(Direction.UP.vector.add(last));
 			System.out.println(Direction.UP.vector.add(last));
 		}
-
 	}
 
 	public Map<Coord, Shot> getBody() {
@@ -100,9 +98,6 @@ public class Ship {
 	 * @return true if it kills, false if it hit but didnt kill, null if missed
 	 */
 	public Boolean recieveShot(Shot shot) throws AlreadyShotException {
-		if (border.contains(shot.getTarget())) {
-			throw new BorderShotException();
-		}
 		body.computeIfPresent(shot.getTarget(), (body, damage) -> {
 			// Only tell if it's already been shot if the same player shot it
 			if (damage.getSource().equals(shot.getSource())) {
@@ -152,6 +147,13 @@ public class Ship {
 	 */
 	public Admiral getAdmiral() {
 		return admiral;
+	}
+
+	/**
+	 * @return the border
+	 */
+	public Set<Coord> getBorder() {
+		return border;
 	}
 
 	@Override

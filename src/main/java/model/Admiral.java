@@ -60,9 +60,13 @@ public class Admiral {
 	 * @param target
 	 *
 	 */
-	public Shot shoot(Admiral admiral, Coord target) throws AlreadyShotException {
+	public Shot shoot(Admiral admiral, Coord target) throws AlreadyShotException, BorderShotException {
 		var shot = new Shot(this, target, ShotMarker.MISS);
 		knowledge.putIfAbsent(admiral, new Admiral());
+		if (knowledge.values().stream().flatMap(a -> a.ships.stream()).flatMap(ship -> ship.getBorder().stream())
+				.anyMatch(coord -> coord.equals(target))) {
+			throw new BorderShotException();
+		}
 		var shotResults =
 				admiral.ships.stream().map(ship -> ship.recieveShot(shot)).distinct().collect(Collectors.toList());
 		if (shotResults.contains(true)) {
