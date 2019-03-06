@@ -118,8 +118,8 @@ public class Admiral {
 	}
 
 	public void print(String[][] into) {
-		miss.forEach(miss -> miss.print(into));
 		ships.forEach(ship -> ship.print(into));
+		miss.forEach(miss -> miss.print(into));
 	}
 
 	public String state() {

@@ -35,7 +35,6 @@ public class Ship {
 
 	public void merge(Ship other) {
 		other.getBody().forEach((body, shot) -> addBody(body, shot));
-		finishBorder();
 	}
 
 	public void addBody(Coord bodyPiece) {
@@ -72,19 +71,15 @@ public class Ship {
 		if (horizontal == null) { // single size, only corners were added
 			border.addAll(Direction.axis().stream().map(dir -> dir.vector.add(first)).collect(Collectors.toSet()));
 		} else if (!horizontal) { // longer
-			System.out.println(Direction.LEFT.vector.add(first));
 			border.add(Direction.LEFT.vector.add(first));
 		} else {
 			border.add(Direction.DOWN.vector.add(first));
-			System.out.println(Direction.DOWN.vector.add(first));
 		}
 		// last bit
 		if (horizontal != null && !horizontal) {
 			border.add(Direction.RIGHT.vector.add(last));
-			System.out.println(Direction.RIGHT.vector.add(last));
 		} else if (horizontal != null && horizontal) {
 			border.add(Direction.UP.vector.add(last));
-			System.out.println(Direction.UP.vector.add(last));
 		}
 	}
 

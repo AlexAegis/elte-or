@@ -1,10 +1,10 @@
 package model;
 
 /**
- * It can either be HIT or MISS
+ * It can either be hit_and_finished, hit or miss, huh?
  */
 public enum ShotMarker {
-	HIT_AND_FINISHED("Z"), HIT("#"), MISS("O");
+	HIT_AND_FINISHED("#"), HIT("#"), MISS("O");
 
 	private String marker;
 

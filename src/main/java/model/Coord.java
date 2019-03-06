@@ -13,6 +13,9 @@ public class Coord implements Comparable<Coord> {
 			throw new IllegalArgumentException("Bad inputs");
 		}
 		var split = in.split(",");
+		if (split.length != 2 || split[0].isEmpty() || split[1].isEmpty()) {
+			throw new IllegalArgumentException("Bad inputs");
+		}
 		x = Integer.parseInt(split[0].trim());
 		y = Integer.parseInt(split[1].trim());
 		if (x == null || y == null || x < 0 || y < 0 || x >= 10 || y >= 10) {
