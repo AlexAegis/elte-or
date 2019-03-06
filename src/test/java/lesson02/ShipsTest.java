@@ -5,8 +5,9 @@ import org.junit.jupiter.api.Test;
 import model.Table;
 
 class ShipsTest {
-	String finalFieldState = "..........\n" + ".--#.O....\n" + "..........\n" + "...#......\n" + "...#......\n"
-			+ "...#......\n" + "...#......\n" + "..........\n" + "..........\n" + "..........";
+	// TODO: When finalized the Z (last hit indicator) will also be shown as #
+	String finalFieldState = "~~~~~.....\n" + "~--#~O....\n" + "~~~~~.....\n" + "..~#~.....\n" + "..~#~.....\n"
+			+ "..~#~.....\n" + "..~Z~.....\n" + "..~~~.....\n" + "..........\n" + "..........";
 
 	@Test
 	public void test() {

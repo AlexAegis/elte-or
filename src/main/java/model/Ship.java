@@ -143,6 +143,13 @@ public class Ship {
 		});
 	}
 
+	/**
+	 * @return the admiral
+	 */
+	public Admiral getAdmiral() {
+		return admiral;
+	}
+
 	@Override
 	public String toString() {
 		return "Ship hp: " + this.body.values().stream().filter(Objects::isNull).count() + "/" + body.size()

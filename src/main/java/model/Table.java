@@ -13,18 +13,17 @@ public class Table {
 	private Admiral current;
 
 	public Table() {
-		addAdmiral(null);
-		addAdmiral(null);
+		this(null, null);
 	}
 
 	public Table(List<Coord> shipPieces) {
-		addAdmiral(shipPieces);
-		addAdmiral(null);
+		this(shipPieces, null);
 	}
 
 	public Table(List<Coord> shipAPieces, List<Coord> shipBPieces) {
 		addAdmiral(shipAPieces);
 		addAdmiral(shipBPieces);
+		finishShipBorders();
 	}
 
 	public void addAdmiral(List<Coord> shipPieces) {
