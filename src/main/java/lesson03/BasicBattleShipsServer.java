@@ -11,6 +11,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Scanner;
 import model.AlreadyShotException;
+import model.BorderShotException;
 import model.Coord;
 import model.Table;
 
@@ -52,11 +53,14 @@ public class BasicBattleShipsServer {
 					System.out.println(table.toString());
 					out.println(table.getAdmiral(1).toString(table.getAdmiral(0)));
 				} catch (IllegalArgumentException e) {
-					System.out.println("Invalid input: " + input);
-					out.println("Enter a valid target");
+					System.out.println(e.getMessage() + input);
+					out.println(e.getMessage());
 				} catch (AlreadyShotException e) {
-					System.out.println("Already shot, try again: " + input);
-					out.println("Already shot, try again");
+					System.out.println(e.getMessage() + input);
+					out.println(e.getMessage());
+				} catch (BorderShotException e) {
+					System.out.println(e.getMessage() + input);
+					out.println(e.getMessage());
 				} catch (NoSuchElementException e) {
 					System.out.println("No more input, Client disconnected!");
 					break;

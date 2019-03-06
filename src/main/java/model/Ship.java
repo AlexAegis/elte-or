@@ -1,6 +1,5 @@
 package model;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,7 +8,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import com.sun.source.tree.Tree;
 
 public class Ship {
 	private Map<Coord, Shot> body = new HashMap<>();
@@ -54,11 +52,9 @@ public class Ship {
 		}
 		border.addAll(borderDir.stream().map(dir -> dir.vector.add(bodyPiece)).collect(Collectors.toSet()));
 
-
 		if (shot != null) {
 			this.assembled = shot.getResult().equals(ShotMarker.HIT_AND_FINISHED);
 			if (this.assembled) {
-				System.out.println("FINISHING BODDD");
 				finishBorder();
 			}
 		}
@@ -100,6 +96,9 @@ public class Ship {
 	 * @return true if it kills, false if it hit but didnt kill, null if missed
 	 */
 	public Boolean recieveShot(Shot shot) throws AlreadyShotException {
+		if (border.contains(shot.getTarget())) {
+			throw new BorderShotException();
+		}
 		body.computeIfPresent(shot.getTarget(), (body, damage) -> {
 			// Only tell if it's already been shot if the same player shot it
 			if (damage.getSource().equals(shot.getSource())) {
