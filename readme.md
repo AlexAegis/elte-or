@@ -24,12 +24,12 @@ ELTE-IK 2018-19/2
 | 2   | [Print](./src/main/java/lesson02/Print.java) | [Test](./src/test/java/lesson02/PrintTest.java) |
 | 3   | [Ships](./src/main/java/lesson02/Ships.java) | [Test](./src/test/java/lesson02/ShipsTest.java) |
 
-| Shared model                                      |
-| ------------------------------------------------- |
-| [Table](./src/main/java/model/Table.java)         |
-| [Ship](./src/main/java/model/Ship.java)           |
-| [Coord](./src/main/java/model/Coord.java)         |
-| [Direction](./src/main/java/model/Direction.java) |
+| Shared model                                                  |
+| ------------------------------------------------------------- |
+| [Table](./src/main/java/battleships/Table.java)               |
+| [Ship](./src/main/java/battleships/Ship.java)                 |
+| [Coord](./src/main/java/battleships/model/Coord.java)         |
+| [Direction](./src/main/java/battleships/model/Direction.java) |
 
 ## [Lesson 3 - Basic server-client connection](./src/main/java/lesson03/)
 
@@ -40,12 +40,16 @@ ELTE-IK 2018-19/2
 | 3   | [Basic Server](./src/main/java/lesson03/Server.java)/[Client example](./src/main/java/lesson03/Client.java)                                         |
 | 4   | [Basic BattleShips Server](./src/main/java/lesson03/BasicBattleShipsServer.java) [and Client](./src/main/java/lesson03/BasicBattleShipsClient.java) |
 
-| Shared model                                      |
-| ------------------------------------------------- |
-| [Table](./src/main/java/model/Table.java)         |
-| [Ship](./src/main/java/model/Ship.java)           |
-| [Coord](./src/main/java/model/Coord.java)         |
-| [Direction](./src/main/java/model/Direction.java) |
+| Shared model                                                  |
+| ------------------------------------------------------------- |
+| [Admiral](./src/main/java/battleships/Admiral.java)           |
+| [Table](./src/main/java/battleships/Table.java)               |
+| [Ship](./src/main/java/battleships/Ship.java)                 |
+| [Coord](./src/main/java/battleships/model/Coord.java)         |
+| [Shot](./src/main/java/battleships/model/Shot.java)           |
+| [Direction](./src/main/java/battleships/model/Direction.java) |
+
+## [Lesson 4 - BattleShips over network](./src/main/java/lesson04/)
 
 ---
 
