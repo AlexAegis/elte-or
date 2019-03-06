@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
-import model.AlreadyShotException;
+import model.exception.AlreadyShotException;
 import model.Coord;
 import model.Table;
 
@@ -29,20 +29,18 @@ public class BattleShipsFromStdIn {
 			}
 			var table = new Table(ships);
 			System.out.println(table.toString() + "is fin: " + table.isFinished());
-
+			table.turn();
+			table.turn();
 			while (!table.isFinished()) {
 				try {
 					String nl = attackScanner.nextLine();
 					if (nl.equals("exit")) {
 						break;
 					}
-					//table.autoTurn(new Coord(nl));
 					table.shoot(1, 0, new Coord(nl));
-					table.turn();
-					System.out.println(table.toString());
-				} catch (IllegalArgumentException e) {
-					System.out.println(e.getMessage());
-				} catch (AlreadyShotException e) {
+					System.out.println(table.lastTarget().toString());
+					System.out.println(table.lastKnowledge());
+				} catch (Exception e) {
 					System.out.println(e.getMessage());
 				}
 			}

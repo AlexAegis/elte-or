@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Scanner;
-import model.AlreadyShotException;
-import model.BorderShotException;
+import model.exception.AlreadyShotException;
+import model.exception.BorderShotException;
 import model.Coord;
 import model.Table;
 

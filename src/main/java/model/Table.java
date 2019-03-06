@@ -69,7 +69,7 @@ public class Table {
 		if (current == null) {
 			turn();
 		}
-		Shot shot = shoot(current, admirals.get(nextIndex()), target);
+		Shot shot = shoot(current, lastTarget(), target);
 		if (shot != null) {
 			turn();
 		}
@@ -80,7 +80,21 @@ public class Table {
 		if (current == null) {
 			turn();
 		}
-		return current.field(admirals.get(nextIndex()));
+		return current.field(lastTarget());
+	}
+
+	public String lastKnowledge() throws IllegalAccessException {
+		if (current == null) {
+			turn();
+		}
+		return current.toString(lastTarget());
+	}
+
+	public Admiral lastTarget() throws IllegalAccessException {
+		if (current == null) {
+			turn();
+		}
+		return admirals.get(nextIndex());
 	}
 
 	public Admiral getAdmiral(Integer index) {

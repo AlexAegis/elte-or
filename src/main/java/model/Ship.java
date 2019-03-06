@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import model.exception.AlreadyShotException;
 
 public class Ship {
 	private Map<Coord, Shot> body = new HashMap<>();

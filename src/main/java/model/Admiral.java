@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import model.exception.AlreadyShotException;
+import model.exception.BorderShotException;
 
 /**
  * A class representing a player
@@ -109,6 +111,7 @@ public class Admiral {
 	public String field(Admiral admiral) {
 		var field = Table.empty();
 		if (admiral != null) {
+			knowledge.putIfAbsent(admiral, new Admiral());
 			knowledge.get(admiral).print(field);
 		} else {
 			print(field);
@@ -149,7 +152,15 @@ public class Admiral {
 		return ships;
 	}
 
+	/**
+	 * @return the knowledge
+	 */
+	public Map<Admiral, Admiral> getKnowledge() {
+		return knowledge;
+	}
+
 	public String toString(Admiral target) {
+		knowledge.putIfAbsent(target, new Admiral());
 		return knowledge.get(target).toString();
 	}
 

@@ -1,4 +1,6 @@
-package model;
+package model.exception;
+
+import model.Shot;
 
 public class AlreadyShotException extends RuntimeException {
 
