@@ -31,6 +31,9 @@ public class Table {
 		admirals.add(new Admiral(shipPieces));
 	}
 
+	public void finishShipBorders() {
+		admirals.stream().flatMap(admiral -> admiral.getShips().stream()).forEach(ship -> ship.finishBorder());
+	}
 
 	public void shoot(Integer fromIndex, Integer toIndex, Coord target)
 			throws IllegalAccessException, IllegalArgumentException {

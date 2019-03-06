@@ -40,6 +40,7 @@ public class BasicBattleShipsServer {
 					ships.add(new Coord(nl));
 			}
 			var table = new Table(ships);
+			table.finishShipBorders();
 			while (!table.isFinished()) {
 				String input = "";
 				try {

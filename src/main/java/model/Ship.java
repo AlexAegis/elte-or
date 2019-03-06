@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -56,7 +57,37 @@ public class Ship {
 
 		if (shot != null) {
 			this.assembled = shot.getResult().equals(ShotMarker.HIT_AND_FINISHED);
+			if (this.assembled) {
+				System.out.println("FINISHING BODDD");
+				finishBorder();
+			}
 		}
+	}
+
+	public void finishBorder() {
+		// First bit
+		body.keySet().stream().sorted().findFirst().ifPresent(coord -> {
+			if (horizontal == null) { // single size, only corners were added
+				border.addAll(Direction.axis().stream().map(dir -> dir.vector.add(coord)).collect(Collectors.toSet()));
+			} else if (!horizontal) { // longer
+				System.out.println(Direction.LEFT.vector.add(coord));
+				border.add(Direction.LEFT.vector.add(coord));
+			} else {
+				border.add(Direction.DOWN.vector.add(coord));
+				System.out.println(Direction.DOWN.vector.add(coord));
+			}
+		});
+		// last bit
+		body.keySet().stream().sorted(Comparator.reverseOrder()).findFirst().ifPresent(coord -> {
+			if (horizontal != null && !horizontal) {
+				border.add(Direction.RIGHT.vector.add(coord));
+				System.out.println(Direction.RIGHT.vector.add(coord));
+			} else if (horizontal != null && horizontal) {
+				border.add(Direction.UP.vector.add(coord));
+				System.out.println(Direction.UP.vector.add(coord));
+			}
+		});
+
 	}
 
 	public Map<Coord, Shot> getBody() {
