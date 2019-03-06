@@ -1,4 +1,7 @@
-package model;
+package battleships.model;
+
+import battleships.Admiral;
+import battleships.marker.ShotMarker;
 
 public class Shot {
 	private Admiral source;

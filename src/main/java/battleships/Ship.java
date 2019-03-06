@@ -1,4 +1,4 @@
-package model;
+package battleships;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -7,7 +7,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import model.exception.AlreadyShotException;
+import battleships.exception.AlreadyShotException;
+import battleships.marker.ShipMarker;
+import battleships.marker.ShotMarker;
+import battleships.model.Coord;
+import battleships.model.Direction;
+import battleships.model.Shot;
 
 public class Ship {
 	private Map<Coord, Shot> body = new HashMap<>();

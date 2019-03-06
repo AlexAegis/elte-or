@@ -1,8 +1,11 @@
-package model;
+package battleships;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import battleships.marker.TableMarker;
+import battleships.model.Coord;
+import battleships.model.Shot;
 
 public class Table {
 	private List<Admiral> admirals = new ArrayList<>();

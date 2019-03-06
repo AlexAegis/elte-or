@@ -5,9 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
-import model.exception.AlreadyShotException;
-import model.Coord;
-import model.Table;
+import battleships.model.Coord;
+import battleships.Table;
 
 /**
  * Launch with "CodeLens (Launch) - BattleShipsFromStdIn" because you'll need a terminal

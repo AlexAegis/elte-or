@@ -1,14 +1,11 @@
-package model;
+package battleships.marker;
 
-/**
- * It can either be hit_and_finished, hit or miss, huh?
- */
-public enum ShotMarker {
-	HIT_AND_FINISHED("#"), HIT("#"), MISS("O");
+public enum TableMarker {
+	EMPTY(".");
 
 	private String marker;
 
-	ShotMarker(String marker) {
+	TableMarker(String marker) {
 		this.marker = marker;
 	}
 

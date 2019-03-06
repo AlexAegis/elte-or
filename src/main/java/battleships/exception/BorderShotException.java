@@ -1,4 +1,4 @@
-package model.exception;
+package battleships.exception;
 
 public class BorderShotException extends RuntimeException {
 

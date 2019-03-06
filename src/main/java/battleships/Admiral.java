@@ -1,4 +1,4 @@
-package model;
+package battleships;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -7,8 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import model.exception.AlreadyShotException;
-import model.exception.BorderShotException;
+import battleships.exception.AlreadyShotException;
+import battleships.exception.BorderShotException;
+import battleships.marker.ShotMarker;
+import battleships.model.Coord;
+import battleships.model.Direction;
+import battleships.model.Shot;
 
 /**
  * A class representing a player

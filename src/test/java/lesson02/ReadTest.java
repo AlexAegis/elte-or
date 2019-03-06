@@ -2,7 +2,7 @@ package lesson02;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
-import model.Coord;
+import battleships.model.Coord;
 
 class ReadTest {
 

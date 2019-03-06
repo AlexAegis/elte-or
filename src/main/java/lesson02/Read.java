@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Scanner;
-import model.Coord;
+import battleships.model.Coord;
 
 /**
  * Task 1 - Read coordinates from the input file, then print out the one nearest to the center

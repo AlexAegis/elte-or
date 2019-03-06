@@ -1,11 +1,11 @@
-package model;
+package battleships.marker;
 
-public enum TableMarker {
-	EMPTY(".");
+public enum ShipMarker {
+	HORIZONTAL("-"), VERTICAL("|"), SINGLE("X"), BORDER("~");
 
 	private String marker;
 
-	TableMarker(String marker) {
+	ShipMarker(String marker) {
 		this.marker = marker;
 	}
 

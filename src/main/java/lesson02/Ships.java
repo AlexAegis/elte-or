@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
-import model.Coord;
-import model.Table;
+import battleships.model.Coord;
+import battleships.Table;
 
 public class Ships {
 	public static void main(String... args) {

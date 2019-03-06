@@ -2,7 +2,7 @@ package lesson02;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
-import model.Table;
+import battleships.Table;
 
 class PrintTest {
 	String state = "~~~.......\n" + "~X~.......\n" + "~~~~~.....\n" + "..~X~.....\n" + "..~~~.....\n" + ".....~~~..\n"

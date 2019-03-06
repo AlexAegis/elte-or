@@ -4,8 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Scanner;
-import model.Coord;
-import model.Table;
+import battleships.model.Coord;
+import battleships.Table;
 
 public class Print {
 	public static void main(String... args) {

@@ -1,6 +1,6 @@
-package model.exception;
+package battleships.exception;
 
-import model.Shot;
+import battleships.model.Shot;
 
 public class AlreadyShotException extends RuntimeException {
 

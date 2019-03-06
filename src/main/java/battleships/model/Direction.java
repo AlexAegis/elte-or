@@ -1,4 +1,4 @@
-package model;
+package battleships.model;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,17 +23,17 @@ public enum Direction {
 		this(new Coord(x, y));
 	}
 
-	static List<Direction> axis() {
+	public static List<Direction> axis() {
 		return axis(null);
 	}
 
-	static List<Direction> cornersAndAxis(Boolean exceptHorizontal) {
+	public static List<Direction> cornersAndAxis(Boolean exceptHorizontal) {
 		List<Direction> result = axis(exceptHorizontal);
 		result.addAll(corners());
 		return result;
 	}
 
-	static List<Direction> axis(Boolean exceptHorizontal) {
+	public static List<Direction> axis(Boolean exceptHorizontal) {
 		Predicate<Direction> filter;
 		if (exceptHorizontal == null) {
 			filter = allAxis;
@@ -45,7 +45,7 @@ public enum Direction {
 		return Arrays.asList(Direction.values()).stream().filter(filter).collect(Collectors.toList());
 	}
 
-	static List<Direction> corners() {
+	public static List<Direction> corners() {
 		return Arrays.asList(Direction.values()).stream().filter(Direction.corners).collect(Collectors.toList());
 	}
 

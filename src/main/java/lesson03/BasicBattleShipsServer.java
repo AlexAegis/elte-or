@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Scanner;
-import model.exception.AlreadyShotException;
-import model.exception.BorderShotException;
-import model.Coord;
-import model.Table;
+import battleships.exception.AlreadyShotException;
+import battleships.exception.BorderShotException;
+import battleships.model.Coord;
+import battleships.Table;
 
 /**
  * Run this with the BasicBattleShips Server/Client compound debug configuration to run with client simultaneously
