@@ -32,7 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-public class ShipSegment extends Button implements Switchable {
+public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 
 
 	private Ship ship;
@@ -56,12 +56,9 @@ public class ShipSegment extends Button implements Switchable {
 	 * @param type
 	 */
 	public ShipSegment(Ship ship) {
-		super("");
 		this.ship = ship;
 		setRenderer(new ShipRenderer());
-
 		//setTheme(LanternaThemes.getRegisteredTheme("blaster"));
-
 	}
 
 	/**
@@ -76,13 +73,7 @@ public class ShipSegment extends Button implements Switchable {
 		return null;
 	}
 
-	@Override
-	public void doSwitch() {
-		if (getParent() instanceof Chainable) {
-			((Chainable) getParent()).nextContainer().addComponent(this);
-		}
-		takeFocus();
-	}
+
 
 	public void briefError() {
 		currentHighlighted = error;
@@ -100,32 +91,32 @@ public class ShipSegment extends Button implements Switchable {
 	@Override
 	public synchronized Result handleKeyStroke(KeyStroke keyStroke) {
 
-		if (getParent() instanceof Sea) {
+		if (ship.getParent() instanceof Sea) {
 			int width = 10;
 			int height = 10;
 
 			Logger.getGlobal().info("Harr, i'm on the sea");
 			Direction direction = null;
 			if (keyStroke.getKeyType() == KeyType.ArrowUp) {
-				if (getPosition().getRow() > 0) {
+				if (ship.getPosition().getRow() > 0) {
 					direction = Direction.UP;
 				} else {
 					briefError();
 				}
 			} else if (keyStroke.getKeyType() == KeyType.ArrowDown) {
-				if (getPosition().getRow() < height - 1) {
+				if (ship.getPosition().getRow() < height - 1) {
 					direction = Direction.DOWN;
 				} else {
 					briefError();
 				}
 			} else if (keyStroke.getKeyType() == KeyType.ArrowLeft) {
-				if (getPosition().getColumn() > 0) {
+				if (ship.getPosition().getColumn() > 0) {
 					direction = Direction.LEFT;
 				} else {
 					briefError();
 				}
 			} else if (keyStroke.getKeyType() == KeyType.ArrowRight) {
-				if (getPosition().getColumn() < width - getShip().getType().getLength()) {
+				if (ship.getPosition().getColumn() < width - getShip().getType().getLength()) {
 					direction = Direction.RIGHT;
 				} else {
 					briefError();
@@ -136,7 +127,7 @@ public class ShipSegment extends Button implements Switchable {
 
 			} else if (keyStroke.getKeyType() == KeyType.Escape) {
 				// Back to drawer
-				doSwitch();
+				ship.doSwitch();
 			} else if (keyStroke.getCharacter() == ' ') {
 				// Rotate on space
 				System.out.println("SPAACE");
@@ -145,15 +136,15 @@ public class ShipSegment extends Button implements Switchable {
 
 			if (direction != null) {
 
-				this.setPosition(new TerminalPosition(getPosition().getColumn() + direction.vector.getX(),
-						getPosition().getRow() - direction.vector.getY()));
+				ship.setPosition(new TerminalPosition(ship.getPosition().getColumn() + direction.vector.getX(),
+						ship.getPosition().getRow() - direction.vector.getY()));
 			}
 			getBody();
 			return Result.HANDLED;
 		} else {
 			if (keyStroke.getKeyType() == KeyType.Enter
 					|| (keyStroke.getKeyType() == KeyType.Character && keyStroke.getCharacter() == ' ')) {
-				doSwitch();
+				ship.doSwitch();
 				return Result.HANDLED;
 			}
 			if (keyStroke.getKeyType() == KeyType.ArrowUp || keyStroke.getKeyType() == KeyType.ArrowDown) {
@@ -168,23 +159,23 @@ public class ShipSegment extends Button implements Switchable {
 	/**
 	 * Alternative button renderer that displays buttons with just the label and minimal decoration
 	 */
-	public static class ShipRenderer implements InteractableRenderer<Button> {
+	public static class ShipRenderer implements InteractableRenderer<ShipSegment> {
 
 		@Override
-		public TerminalPosition getCursorLocation(Button component) {
+		public TerminalPosition getCursorLocation(ShipSegment component) {
 			return null;
 		}
 
 
 		@Override
-		public TerminalSize getPreferredSize(Button component) {
+		public TerminalSize getPreferredSize(ShipSegment component) {
 			return new TerminalSize(1, 1);
 		}
 
 
 		@Override
-		public void drawComponent(TextGUIGraphics graphics, Button shipButton) {
-			ShipSegment ship = (ShipSegment) shipButton;
+		public void drawComponent(TextGUIGraphics graphics, ShipSegment ship) {
+
 			if (ship.isFocused()) {
 				graphics.setBackgroundColor(ship.currentHighlighted);
 			} else {
@@ -199,6 +190,11 @@ public class ShipSegment extends Button implements Switchable {
 			graphics.putString(0, 0, ship.getShip().getType().getName()); //TODO: Take this out
 		}
 
+	}
+
+	@Override
+	protected InteractableRenderer<ShipSegment> createDefaultRenderer() {
+		return new ShipRenderer();
 	}
 
 }
