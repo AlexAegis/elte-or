@@ -28,6 +28,10 @@ public class Table {
 		finishShipBorders();
 	}
 
+	public void addAdmiral() {
+		admirals.add(new Admiral(null));
+	}
+
 	public void addAdmiral(List<Coord> shipPieces) {
 		admirals.add(new Admiral(shipPieces));
 	}
@@ -38,6 +42,9 @@ public class Table {
 
 	public void shoot(Integer fromIndex, Integer toIndex, Coord target)
 			throws IllegalAccessException, IllegalArgumentException {
+		if (fromIndex == null || toIndex == null) {
+			throw new IllegalArgumentException("Can't shoot from or to nothing");
+		}
 		shoot(admirals.get(fromIndex), admirals.get(toIndex), target);
 	}
 
@@ -63,15 +70,19 @@ public class Table {
 		return current == null ? 0 : (admirals.indexOf(current) + 1) % admirals.size();
 	}
 
+	public Shot autoShoot(Coord target) throws IllegalAccessException {
+		if (current == null) {
+			turn();
+		}
+		return shoot(current, lastTarget(), target);
+	}
+
 	/**
 	 * Only used for two players, targets the next player in cycle, from the current player
 	 * @param target
 	 */
 	public Shot autoTurn(Coord target) throws IllegalAccessException {
-		if (current == null) {
-			turn();
-		}
-		Shot shot = shoot(current, lastTarget(), target);
+		Shot shot = autoShoot(target);
 		if (shot != null) {
 			turn();
 		}
@@ -140,5 +151,23 @@ public class Table {
 
 	public Boolean isFinished() {
 		return admirals.size() >= 2 && admirals.stream().filter(a -> !a.isLost()).count() == 1;
+	}
+
+	/**
+	 * @return the current
+	 */
+	public Admiral getCurrent() {
+		return current;
+	}
+
+	public Admiral findAdmiral(String id) {
+		return getAdmiral(Integer.parseInt(id));
+	}
+
+	public Boolean isCurrent(String id) throws IllegalAccessException {
+		if (current == null) {
+			turn();
+		}
+		return findAdmiral(id).equals(getCurrent());
 	}
 }

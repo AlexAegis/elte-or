@@ -136,10 +136,20 @@
 		},
 		{
 			"type": "java",
-			"name": "BattleShips Client",
+			"name": "BattleShips Client 1",
 			"request": "launch",
 			"mainClass": "lesson04.BattleShipsClient",
 			"console": "externalTerminal",
+			"args": ["player.1.ships.txt"],
+			"projectName": "elte-or"
+		},
+		{
+			"type": "java",
+			"name": "BattleShips Client 2",
+			"request": "launch",
+			"mainClass": "lesson04.BattleShipsClient",
+			"console": "externalTerminal",
+			"args": ["player.2.ships.txt"],
 			"projectName": "elte-or"
 		}
 	],
@@ -153,8 +163,12 @@
 			"configurations": ["BasicBattleShips Server", "BasicBattleShips Client"]
 		},
 		{
-			"name": "BattleShips Server/Client",
-			"configurations": ["BattleShips Server", "BattleShips Client"]
+			"name": "BattleShips Server/Client Single Client",
+			"configurations": ["BattleShips Server", "BattleShips Client 1"]
+		},
+		{
+			"name": "BattleShips Server/Client Double Client",
+			"configurations": ["BattleShips Server", "BattleShips Client 1", "BattleShips Client 2"]
 		}
 	]
 }

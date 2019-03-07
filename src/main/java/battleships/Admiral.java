@@ -173,4 +173,7 @@ public class Admiral {
 		return field() + "\n" + state();
 	}
 
+	public void finishBorders() {
+		ships.forEach(ship -> ship.finishBorder());
+	}
 }

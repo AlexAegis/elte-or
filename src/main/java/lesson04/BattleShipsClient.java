@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.ConnectException;
@@ -17,6 +18,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.stream.Collectors;
 import battleships.Admiral;
+import battleships.action.Attack;
 import battleships.action.Converter;
 import battleships.action.Place;
 import battleships.model.Coord;
@@ -52,41 +54,55 @@ public class BattleShipsClient {
 		while (!finished) {
 			try (Socket server = new Socket(host, serverPort);
 					PrintWriter out = new PrintWriter(server.getOutputStream(), true);
+					ObjectOutputStream oos = new ObjectOutputStream(server.getOutputStream());
 					BufferedReader in = new BufferedReader(new InputStreamReader(server.getInputStream()));
 					Scanner console = new Scanner(System.in)) {
 				System.out.println("Client Start");
 				// Register client
-				out.println("REG");
-				out.flush();
-				id = recieve(in);
-				System.out.println("Client joined, id obtained: " + id);
+				if (id != null) {
+					out.println(id);
+					out.flush();
+				} else {
+					out.println("register");
+					out.flush();
+				}
+				id = in.readLine();
+				System.out.println("Client joined, id: " + id);
 
 				if (!initialPieces.isEmpty()) {
 					System.out.println("Default pieces detected, sending data");
-					initialPieces.forEach(piece -> {
-						System.out.println(transaction(in, out, new Place(id, piece))); // Result of placement
-					});
+					oos.writeObject(
+							initialPieces.stream().map(piece -> new Place(id, piece)).collect(Collectors.toList()));
+					oos.flush();
 
+					out.println("init placement finished");
+					out.flush();
 				}
 
 				while (true) {
 					try {
 						String nl = console.nextLine();
+						System.out.println("Input: " + nl);
 						if (nl.equals("exit")) {
 							break;
 						}
-						out.println(nl);
-						out.flush();
+						Attack attack = new Attack(id, null, new Coord(nl));
+						oos.writeObject(attack);
+						oos.flush();
+						System.out.println("Attack sent to: " + attack.getTarget().toString());
 						String result = recieve(in);
-						System.out.println(result);
+						if (result.equals("not your turn")) {
+							throw new IllegalArgumentException("not your turn");
+						}
 						if (result.equals("error")) {
 							throw new IllegalArgumentException("Bad input");
 						}
 						if (result.equals("won") || result.equals("lose")) {
 							break;
 						}
+						System.out.println(result);
 					} catch (IllegalArgumentException e) {
-						System.out.println("Enter a valid target");
+						System.out.println(e.getMessage());
 					}
 				}
 			} catch (UnknownHostException e) {
@@ -99,12 +115,6 @@ public class BattleShipsClient {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	public String transaction(BufferedReader in, PrintWriter out, Serializable pack) {
-		out.println(Converter.to(pack));
-		out.flush();
-		return recieve(in);
 	}
 
 	public String recieve(BufferedReader in) {
