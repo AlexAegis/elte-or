@@ -92,9 +92,11 @@ public class Client implements Runnable {
 			window.setHints(Arrays.asList(Window.Hint.FULL_SCREEN, Window.Hint.NO_DECORATIONS));
 
 
-			Panel drawer = new Drawer();
+			Drawer drawer = new Drawer();
 			container.addComponent(drawer.withBorder(Borders.singleLine("Drawer")));
-			Panel sea = new Sea();
+			Sea sea = new Sea();
+			sea.setDrawer(drawer);
+			drawer.setSea(sea);
 
 			container.addComponent(sea.withBorder(Borders.singleLine("Sea")));
 
@@ -112,10 +114,7 @@ public class Client implements Runnable {
 			Ship shipFrigateB = new Ship(ShipType.FRIGATE);
 			Ship shipFrigateC = new Ship(ShipType.FRIGATE);
 
-			shipFrigateA.addListener((event) -> {
-				sea.addComponent(shipFrigateA);
-				window.setFocusedInteractable(shipFrigateA);
-			});
+
 
 			drawer.addComponent(shipFrigateA);
 			drawer.addComponent(shipFrigateB);

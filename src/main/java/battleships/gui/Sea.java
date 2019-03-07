@@ -14,6 +14,7 @@ import com.googlecode.lanterna.gui2.AbstractInteractableComponent;
 import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.Component;
 import com.googlecode.lanterna.gui2.ComponentRenderer;
+import com.googlecode.lanterna.gui2.Container;
 import com.googlecode.lanterna.gui2.InteractableRenderer;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextGUIGraphics;
@@ -28,14 +29,34 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 
-public class Sea extends Panel {
+public class Sea extends Panel implements Switchable {
 
 
 	private TextColor colorWater = TextColor.Factory.fromString("#5555BB");
 
+	private Drawer drawer;
 
 	public Sea() {
 		setLayoutManager(new SeaLayout(new TerminalSize(10, 10)));
 
+	}
+
+	/**
+	 * @return the drawer
+	 */
+	public Drawer getDrawer() {
+		return drawer;
+	}
+
+	/**
+	 * @param drawer the drawer to set
+	 */
+	public void setDrawer(Drawer drawer) {
+		this.drawer = drawer;
+	}
+
+	@Override
+	public Panel nextContainer() {
+		return getDrawer();
 	}
 }

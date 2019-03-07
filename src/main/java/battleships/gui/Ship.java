@@ -56,7 +56,13 @@ public class Ship extends Button {
 		setRenderer(new ShipRenderer());
 		//setTheme(LanternaThemes.getRegisteredTheme("blaster"));
 
+	}
 
+	public void switchParents() {
+		if (getParent() instanceof Switchable) {
+			((Switchable) getParent()).nextContainer().addComponent(this);
+		}
+		takeFocus();
 	}
 
 	/**
@@ -85,7 +91,6 @@ public class Ship extends Button {
 		if (getParent() instanceof Sea) {
 			int width = 10;
 			int height = 10;
-
 
 			System.out.println("Harr, i'm on the sea");
 			Direction direction = null;
@@ -117,6 +122,7 @@ public class Ship extends Button {
 				// Try to place
 			} else if (keyStroke.getKeyType() == KeyType.Escape) {
 				// Back to drawer
+				switchParents();
 			}
 
 			if (direction != null) {
@@ -130,7 +136,7 @@ public class Ship extends Button {
 			System.out.println("Harr, i'm still in the drawer.");
 			if (keyStroke.getKeyType() == KeyType.Enter
 					|| (keyStroke.getKeyType() == KeyType.Character && keyStroke.getCharacter() == ' ')) {
-				triggerActions();
+				switchParents();
 				return Result.HANDLED;
 			}
 			return super.handleKeyStroke(keyStroke);

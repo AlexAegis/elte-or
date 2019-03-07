@@ -14,6 +14,7 @@ import com.googlecode.lanterna.gui2.AbstractInteractableComponent;
 import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.Component;
 import com.googlecode.lanterna.gui2.ComponentRenderer;
+import com.googlecode.lanterna.gui2.Container;
 import com.googlecode.lanterna.gui2.InteractableRenderer;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextGUIGraphics;
@@ -26,9 +27,30 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class Drawer extends Panel {
+public class Drawer extends Panel implements Switchable {
+
+	private Sea sea;
 
 	public Drawer() {
 
+	}
+
+	/**
+	 * @return the sea
+	 */
+	public Sea getSea() {
+		return sea;
+	}
+
+	/**
+	 * @param sea the sea to set
+	 */
+	public void setSea(Sea sea) {
+		this.sea = sea;
+	}
+
+	@Override
+	public Panel nextContainer() {
+		return getSea();
 	}
 }
