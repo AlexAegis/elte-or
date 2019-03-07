@@ -6,6 +6,13 @@
 	"configurations": [
 		{
 			"type": "java",
+			"name": "CodeLens (Launch) - GuiTest",
+			"request": "launch",
+			"mainClass": "battleships.GuiTest",
+			"projectName": "elte-or"
+		},
+		{
+			"type": "java",
 			"name": "CodeLens (Launch) - BattleShipsFromStdIn",
 			"request": "launch",
 			"mainClass": "lesson03.BattleShipsFromStdIn",
@@ -150,6 +157,15 @@
 			"mainClass": "lesson04.BattleShipsClient",
 			"console": "externalTerminal",
 			"args": ["player.2.ships.txt"],
+			"projectName": "elte-or"
+		},
+		{
+			"type": "java",
+			"name": "Gui Test",
+			"request": "launch",
+			"mainClass": "battleships.Client",
+			"console": "integratedTerminal",
+			"args": ["--init", "player.2.ships.txt"],
 			"projectName": "elte-or"
 		}
 	],
