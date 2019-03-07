@@ -2,7 +2,7 @@ package lesson02;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
-import battleships.Table;
+import battleships.model.Table;
 
 class ShipsTest {
 	String finalFieldState = "~~~~~.....\n" + "~--#~O....\n" + "~~~~~.....\n" + "..~#~.....\n" + "..~#~.....\n"

@@ -22,12 +22,13 @@ import com.googlecode.lanterna.gui2.WindowDecorationRenderer;
 import com.googlecode.lanterna.gui2.WindowPostRenderer;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
+import battleships.misc.Chainable;
 import battleships.model.ShipType;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class Drawer extends Panel implements Switchable {
+public class Drawer extends Panel implements Chainable {
 
 	private Sea sea;
 

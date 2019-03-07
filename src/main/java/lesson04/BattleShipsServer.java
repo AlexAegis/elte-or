@@ -18,8 +18,8 @@ import battleships.exception.AlreadyShotException;
 import battleships.exception.BorderShotException;
 import battleships.model.Coord;
 import battleships.model.Shot;
-import battleships.Admiral;
-import battleships.Table;
+import battleships.model.Admiral;
+import battleships.model.Table;
 import battleships.action.Attack;
 import battleships.action.Place;
 

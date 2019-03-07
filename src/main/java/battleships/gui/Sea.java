@@ -22,15 +22,16 @@ import com.googlecode.lanterna.gui2.WindowDecorationRenderer;
 import com.googlecode.lanterna.gui2.WindowPostRenderer;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
-import battleships.Admiral;
+import battleships.model.Admiral;
 import battleships.gui.layout.SeaLayout;
+import battleships.misc.Chainable;
 import battleships.model.ShipType;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 
-public class Sea extends Panel implements Switchable {
+public class Sea extends Panel implements Chainable {
 
 
 	private TextColor colorWater = TextColor.Factory.fromString("#5555BB");
@@ -38,6 +39,7 @@ public class Sea extends Panel implements Switchable {
 	private Drawer drawer;
 
 	private Admiral admiral;
+	private TerminalPosition cursor;
 
 	public Sea(Admiral admiral) {
 		setLayoutManager(new SeaLayout(new TerminalSize(10, 10)));

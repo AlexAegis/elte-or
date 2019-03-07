@@ -53,6 +53,7 @@ import com.googlecode.lanterna.terminal.Terminal;
 import battleships.gui.Drawer;
 import battleships.gui.Sea;
 import battleships.gui.Ship;
+import battleships.model.Admiral;
 import battleships.model.ShipType;
 
 @Command(name = "client", sortOptions = false,
@@ -88,9 +89,6 @@ public class Client implements Runnable {
 	@Override
 	public void run() {
 		Logger.getGlobal().setLevel(app.loglevel.getLevel());
-		for (var init : initialFiles) {
-			System.out.println("Hello " + init.exists());
-		}
 		try (Terminal terminal = new DefaultTerminalFactory().createTerminal();
 				Screen screen = new TerminalScreen(terminal);) {
 			terminal.setBackgroundColor(TextColor.Factory.fromString("#121212"));
@@ -108,16 +106,6 @@ public class Client implements Runnable {
 			drawer.setSea(sea);
 
 			container.addComponent(sea.withBorder(Borders.singleLine("Sea")));
-
-			/*Button but = new Button("   ");
-			but.setRenderer(new Button.FlatButtonRenderer());
-			but.setTheme(LanternaThemes.getRegisteredTheme("ship"));
-			but.addListener((event) -> {
-				System.out.println("BUTTON PRESSED");
-			});
-			piecePicker.addComponent(but);
-			piecePicker.addComponent(new Button("b"));
-			piecePicker.addComponent(new Button("c"));*/
 
 			Ship shipFrigateA = new Ship(ShipType.FRIGATE);
 			Ship shipFrigateB = new Ship(ShipType.FRIGATE);

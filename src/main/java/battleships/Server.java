@@ -55,7 +55,7 @@ public class Server implements Runnable {
 	@Override
 	public void run() {
 		Logger.getGlobal().setLevel(app.loglevel.getLevel());
-		System.out.println("HELLOS EEGEER");
+		Logger.getGlobal().info("Server starts");
 
 	}
 

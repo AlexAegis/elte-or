@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import battleships.model.Coord;
-import battleships.Table;
+import battleships.model.Table;
 
 /**
  * Launch with "CodeLens (Launch) - BattleShipsFromStdIn" because you'll need a terminal

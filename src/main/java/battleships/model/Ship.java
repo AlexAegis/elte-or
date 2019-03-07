@@ -1,4 +1,4 @@
-package battleships;
+package battleships.model;
 
 import java.util.HashMap;
 import java.util.HashSet;

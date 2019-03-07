@@ -13,7 +13,7 @@ import java.util.Scanner;
 import battleships.exception.AlreadyShotException;
 import battleships.exception.BorderShotException;
 import battleships.model.Coord;
-import battleships.Table;
+import battleships.model.Table;
 
 /**
  * Run this with the BasicBattleShips Server/Client compound debug configuration to run with client simultaneously

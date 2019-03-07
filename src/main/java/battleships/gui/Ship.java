@@ -20,6 +20,8 @@ import com.googlecode.lanterna.gui2.WindowDecorationRenderer;
 import com.googlecode.lanterna.gui2.WindowPostRenderer;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
+import battleships.misc.Chainable;
+import battleships.misc.Switchable;
 import battleships.model.Direction;
 import battleships.model.ShipType;
 import java.util.EnumSet;
@@ -29,7 +31,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-public class Ship extends Button {
+public class Ship extends Button implements Switchable {
 
 
 	private ShipType type;
@@ -54,16 +56,16 @@ public class Ship extends Button {
 	 */
 	public Ship(ShipType type) {
 		super("");
-		System.out.println("RECONST");
 		this.type = type;
 		setRenderer(new ShipRenderer());
 		//setTheme(LanternaThemes.getRegisteredTheme("blaster"));
 
 	}
 
-	public void switchParents() {
-		if (getParent() instanceof Switchable) {
-			((Switchable) getParent()).nextContainer().addComponent(this);
+	@Override
+	public void doSwitch() {
+		if (getParent() instanceof Chainable) {
+			((Chainable) getParent()).nextContainer().addComponent(this);
 		}
 		takeFocus();
 	}
@@ -125,7 +127,7 @@ public class Ship extends Button {
 				// Try to place
 			} else if (keyStroke.getKeyType() == KeyType.Escape) {
 				// Back to drawer
-				switchParents();
+				doSwitch();
 			}
 
 			if (direction != null) {
@@ -136,10 +138,9 @@ public class Ship extends Button {
 
 			return Result.HANDLED;
 		} else {
-			System.out.println("Harr, i'm still in the drawer.");
 			if (keyStroke.getKeyType() == KeyType.Enter
 					|| (keyStroke.getKeyType() == KeyType.Character && keyStroke.getCharacter() == ' ')) {
-				switchParents();
+				doSwitch();
 				return Result.HANDLED;
 			}
 			return super.handleKeyStroke(keyStroke);

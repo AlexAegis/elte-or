@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import battleships.model.Coord;
-import battleships.Table;
+import battleships.model.Table;
 
 public class Ships {
 	public static void main(String... args) {

@@ -1,4 +1,4 @@
-package battleships;
+package battleships.model;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
