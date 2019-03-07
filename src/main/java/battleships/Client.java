@@ -5,6 +5,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.IVersionProvider;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
+import picocli.CommandLine.ParentCommand;
 import java.awt.Toolkit;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -23,6 +24,8 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
@@ -62,6 +65,9 @@ import battleships.model.ShipType;
 		optionListHeading = "@|bold %nOptions|@:%n", footer = {"", "Author: AlexAegis"})
 public class Client implements Runnable {
 
+	@ParentCommand
+	private App app;
+
 	@Option(names = {"-i", "--init", "--initialFiles"}, paramLabel = "<files>", arity = "1..*",
 			description = "Initial placements")
 	private List<File> initialFiles = new ArrayList<>();
@@ -73,12 +79,15 @@ public class Client implements Runnable {
 	@Option(names = {"-p", "--port"}, paramLabel = "<host>", description = "Port of the server", defaultValue = "6668")
 	private Integer port;
 
+	private Admiral admiral = new Admiral();
+
 	public static void main(String[] args) {
 		CommandLine.run(new Client(), System.err, args);
 	}
 
 	@Override
 	public void run() {
+		Logger.getGlobal().setLevel(app.loglevel.getLevel());
 		for (var init : initialFiles) {
 			System.out.println("Hello " + init.exists());
 		}
@@ -94,7 +103,7 @@ public class Client implements Runnable {
 
 			Drawer drawer = new Drawer();
 			container.addComponent(drawer.withBorder(Borders.singleLine("Drawer")));
-			Sea sea = new Sea();
+			Sea sea = new Sea(admiral);
 			sea.setDrawer(drawer);
 			drawer.setSea(sea);
 

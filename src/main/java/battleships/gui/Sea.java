@@ -22,6 +22,7 @@ import com.googlecode.lanterna.gui2.WindowDecorationRenderer;
 import com.googlecode.lanterna.gui2.WindowPostRenderer;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
+import battleships.Admiral;
 import battleships.gui.layout.SeaLayout;
 import battleships.model.ShipType;
 import java.util.EnumSet;
@@ -36,9 +37,11 @@ public class Sea extends Panel implements Switchable {
 
 	private Drawer drawer;
 
-	public Sea() {
-		setLayoutManager(new SeaLayout(new TerminalSize(10, 10)));
+	private Admiral admiral;
 
+	public Sea(Admiral admiral) {
+		setLayoutManager(new SeaLayout(new TerminalSize(10, 10)));
+		//admiral.getShips() // place ships
 	}
 
 	/**

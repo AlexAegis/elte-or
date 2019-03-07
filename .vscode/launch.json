@@ -102,12 +102,7 @@
 			"request": "launch",
 			"mainClass": "lesson01.Arguments",
 			"projectName": "elte-or",
-			"args": [
-				"alma",
-				"4",
-				"körte",
-				"11"
-			]
+			"args": ["alma", "4", "körte", "11"]
 		},
 		{
 			"type": "java",
@@ -166,9 +161,7 @@
 			"request": "launch",
 			"mainClass": "lesson04.BattleShipsClient",
 			"console": "externalTerminal",
-			"args": [
-				"player.1.ships.txt"
-			],
+			"args": ["player.1.ships.txt"],
 			"projectName": "elte-or"
 		},
 		{
@@ -177,9 +170,7 @@
 			"request": "launch",
 			"mainClass": "lesson04.BattleShipsClient",
 			"console": "externalTerminal",
-			"args": [
-				"player.2.ships.txt"
-			],
+			"args": ["player.2.ships.txt"],
 			"projectName": "elte-or"
 		},
 		{
@@ -188,11 +179,7 @@
 			"request": "launch",
 			"mainClass": "battleships.App",
 			"console": "internalConsole",
-			"args": [
-				"client",
-				"--init",
-				"src/main/resouces/lesson04/player.1.ships.txt"
-			],
+			"args": ["-l", "INFO", "client", "-i", "src/main/resouces/lesson04/player.1.ships.txt"],
 			"projectName": "battleships"
 		},
 		{

@@ -6,8 +6,12 @@ import picocli.CommandLine.IVersionProvider;
 import picocli.CommandLine.Option;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.jar.Manifest;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import battleships.misc.Levels;
 
 @Command(name = "App", sortOptions = false, header = {"", "@|cyan  _____     _   _   _     _____ _   _        |@",
 		"@|cyan | __  |___| |_| |_| |___|   __| |_|_|___ ___ |@",
@@ -24,16 +28,19 @@ public class App implements Runnable {
 	@Option(names = {"-v", "--version"}, versionHelp = true, description = "Prints version")
 	boolean versionRequested;
 
-	public static void main(String... args) {
+	@Option(names = {"-l", "--logLevel"},
+			description = "Sets the level of logging, Valid values: ${COMPLETION-CANDIDATES} (default: ${DEFAULT-VALUE})")
+	Levels loglevel = Levels.OFF;
+
+	public static void main(String... args) throws Exception {
 		CommandLine.run(new App(), System.err, args);
 	}
 
 	@Override
 	public void run() {
-		if (help) {
-			CommandLine.usage(this, System.err);
-			return;
-		}
+		Logger.getGlobal().setLevel(loglevel.getLevel());
+
+		CommandLine.usage(this, System.err);
 	}
 
 	static class ManifestVersionProvider implements IVersionProvider {

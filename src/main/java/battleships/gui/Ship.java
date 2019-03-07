@@ -25,9 +25,12 @@ import battleships.model.ShipType;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class Ship extends Button {
+
 
 	private ShipType type;
 
@@ -92,7 +95,7 @@ public class Ship extends Button {
 			int width = 10;
 			int height = 10;
 
-			System.out.println("Harr, i'm on the sea");
+			Logger.getGlobal().info("Harr, i'm on the sea");
 			Direction direction = null;
 			if (keyStroke.getKeyType() == KeyType.ArrowUp) {
 				if (getPosition().getRow() > 0) {

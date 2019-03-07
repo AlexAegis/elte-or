@@ -5,6 +5,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.IVersionProvider;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
+import picocli.CommandLine.ParentCommand;
 import java.awt.Toolkit;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+import java.util.logging.Logger;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.graphics.TextGraphics;
@@ -40,6 +42,9 @@ import com.googlecode.lanterna.terminal.Terminal;
 		optionListHeading = "@|bold %nOptions|@:%n", footer = {"", "Author: AlexAegis"})
 public class Server implements Runnable {
 
+	@ParentCommand
+	private App app;
+
 	@Option(names = {"-p", "--port"}, paramLabel = "<host>", description = "Port of the server", defaultValue = "6668")
 	private Integer port;
 
@@ -49,7 +54,7 @@ public class Server implements Runnable {
 
 	@Override
 	public void run() {
-
+		Logger.getGlobal().setLevel(app.loglevel.getLevel());
 		System.out.println("HELLOS EEGEER");
 
 	}
