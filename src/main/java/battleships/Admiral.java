@@ -11,7 +11,6 @@ import battleships.exception.AlreadyShotException;
 import battleships.exception.BorderShotException;
 import battleships.marker.ShotMarker;
 import battleships.model.Coord;
-import battleships.model.Direction;
 import battleships.model.Shot;
 
 /**
@@ -24,40 +23,38 @@ public class Admiral {
 	// The Admiral used as a key is the real one, the value is the mock of that admiral
 	private Map<Admiral, Admiral> knowledge = new HashMap<>();
 
-	Admiral() {
+	public Admiral() {
 	}
 
-	Admiral(List<Coord> shipPieces) {
-		putAll(shipPieces);
+	public Admiral(List<Coord> shipPieces) {
+		placeAll(shipPieces);
 	}
 
-	/**
-	 * The isEmpty check is there so if there is a player without ships, it automatically qualifies for godmode
-	 *
-	 * @return
-	 */
-	public Boolean isLost() {
-		return ships.stream().allMatch(Ship::isDead) && !ships.isEmpty();
-	}
-
-	public void putAll(List<Coord> shipPieces) {
+	public void placeAll(List<Coord> shipPieces) {
 		if (shipPieces != null) {
-			//var remaining = new ArrayList<Coord>(shipPieces); // Modifying the Collection you're iterating would result in Concurrent Modification Error
-			for (var shipPiece : shipPieces) {
-				place(this, shipPiece);
-				/*if (remaining.contains(shipPiece)) {
-					remaining.remove(shipPiece);
-					var ship = new Ship(shipPiece, this);
-					ships.add(ship);
-					for (var direction : Direction.axis()) {
-						var next = shipPiece;
-						while (remaining.remove(next = next.add(direction.vector))) {
-							ship.addBody(next);
-						}
-					}
-				}*/
-			}
+			shipPieces.forEach(piece -> place(piece));
 		}
+	}
+
+	public void place(Coord shipPiece) {
+		place(this, shipPiece, null);
+	}
+
+	public void place(Admiral admiral, Coord shipPiece) {
+		place(admiral, shipPiece, null);
+	}
+
+	public static void place(Admiral admiral, Coord shipPiece, Shot shot) {
+		var toBeRemoved = new ArrayList<Ship>();
+		admiral.getShips().stream()
+				.filter(ship -> ship.getBody().keySet().stream().anyMatch(coord -> coord.neighbours(shipPiece)))
+				.reduce((acc, next) -> {
+					toBeRemoved.add(next);
+					acc.merge(next);
+					return acc;
+				}).ifPresentOrElse(ship -> ship.addBody(shipPiece, shot),
+						() -> admiral.getShips().add(new Ship(admiral, shipPiece, shot)));
+		toBeRemoved.forEach(admiral.getShips()::remove);
 	}
 
 	/**
@@ -90,22 +87,7 @@ public class Admiral {
 		return shot;
 	}
 
-	public void place(Admiral admiral, Coord shipPiece) {
-		place(admiral, shipPiece, null);
-	}
 
-	public void place(Admiral admiral, Coord shipPiece, Shot shot) {
-		var toBeRemoved = new ArrayList<Ship>();
-		admiral.getShips().stream()
-				.filter(ship -> ship.getBody().keySet().stream().anyMatch(coord -> coord.neighbours(shipPiece)))
-				.reduce((acc, next) -> {
-					toBeRemoved.add(next);
-					acc.merge(next);
-					return acc;
-				}).ifPresentOrElse(ship -> ship.addBody(shipPiece, shot),
-						() -> admiral.getShips().add(new Ship(admiral, shipPiece, shot)));
-		toBeRemoved.forEach(admiral.getShips()::remove);
-	}
 
 	public void print(PrintStream ps) {
 		ps.println(toString());
@@ -149,6 +131,15 @@ public class Admiral {
 			admiral = this;
 		}
 		return admiral.getShips().stream().map(Ship::toString).collect(Collectors.joining("\n"));
+	}
+
+	/**
+	* The isEmpty check is there so if there is a player without ships, it automatically qualifies for godmode
+	*
+	* @return
+	*/
+	public Boolean isLost() {
+		return ships.stream().allMatch(Ship::isDead) && !ships.isEmpty();
 	}
 
 	/**

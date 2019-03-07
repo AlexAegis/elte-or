@@ -1,8 +1,10 @@
 package battleships.model;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Coord implements Comparable<Coord> {
+public class Coord implements Comparable<Coord>, Serializable {
+	private static final long serialVersionUID = 7066738546729358350L;
 	private Integer x;
 	private Integer y;
 

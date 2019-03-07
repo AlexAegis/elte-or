@@ -36,9 +36,7 @@ public class BasicBattleShipsServer {
 
 			List<Coord> ships = new ArrayList<>();
 			while (shipScanner.hasNextLine()) {
-				var nl = shipScanner.nextLine();
-				if (nl.contains(","))
-					ships.add(new Coord(nl));
+				ships.add(new Coord(shipScanner.nextLine()));
 			}
 			var table = new Table(ships);
 			table.finishShipBorders();

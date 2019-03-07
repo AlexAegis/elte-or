@@ -16,7 +16,6 @@ public class Table {
 	private Admiral current;
 
 	public Table() {
-		this(null, null);
 	}
 
 	public Table(List<Coord> shipPieces) {
@@ -140,6 +139,6 @@ public class Table {
 	}
 
 	public Boolean isFinished() {
-		return admirals.stream().filter(a -> !a.isLost()).count() == 1;
+		return admirals.size() >= 2 && admirals.stream().filter(a -> !a.isLost()).count() == 1;
 	}
 }
