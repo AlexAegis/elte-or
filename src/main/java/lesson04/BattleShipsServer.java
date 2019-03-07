@@ -21,7 +21,6 @@ import battleships.model.Shot;
 import battleships.Admiral;
 import battleships.Table;
 import battleships.action.Attack;
-import battleships.action.Converter;
 import battleships.action.Place;
 
 /**

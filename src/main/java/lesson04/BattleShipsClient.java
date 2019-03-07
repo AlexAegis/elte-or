@@ -19,7 +19,6 @@ import java.util.TimerTask;
 import java.util.stream.Collectors;
 import battleships.Admiral;
 import battleships.action.Attack;
-import battleships.action.Converter;
 import battleships.action.Place;
 import battleships.model.Coord;
 
