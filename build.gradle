@@ -20,7 +20,19 @@ dependencies {
 }
 
 application {
-    mainClassName = 'lesson01.Fibonacci'
+    mainClassName = 'battleships.App'
+}
+
+jar {
+  manifest {
+    attributes(
+      'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+      'Main-Class': 'battleships.App'
+    )
+  }
+      from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 sourceSets {

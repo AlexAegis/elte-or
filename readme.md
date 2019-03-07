@@ -73,7 +73,9 @@ ELTE-IK 2018-19/2
 
 If for some reason VS Code throws an error upon running a debug session that it can't build the workspace, but the project can be built by hand, try cleaning it with Ctrl+Shift+P `>Java: Clean the Java language server workspace`
 
----
+## Throubleshoot
+
+If the application looks blurry and you're using different scaling settings on windows other than 100%, try setting the Right-Click->Properties->Compatibility Tab's "Override the high DPI scaling behavior" to "System" on the java.exe/javaw.exe you're using. (Or use a WSL Shell)
 
 ## Technologies
 

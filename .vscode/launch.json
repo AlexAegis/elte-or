@@ -6,6 +6,13 @@
 	"configurations": [
 		{
 			"type": "java",
+			"name": "CodeLens (Launch) - LanternaExample",
+			"request": "launch",
+			"mainClass": "battleships.LanternaExample",
+			"projectName": "elte-or"
+		},
+		{
+			"type": "java",
 			"name": "CodeLens (Launch) - GuiTest",
 			"request": "launch",
 			"mainClass": "battleships.GuiTest",
@@ -161,11 +168,19 @@
 		},
 		{
 			"type": "java",
-			"name": "Gui Test",
+			"name": "App as Client",
 			"request": "launch",
-			"mainClass": "battleships.Client",
-			"console": "integratedTerminal",
-			"args": ["--init", "player.2.ships.txt"],
+			"mainClass": "battleships.App",
+			"console": "internalConsole",
+			"args": ["client", "--init"],
+			"projectName": "elte-or"
+		},
+		{
+			"type": "java",
+			"name": "Lanterna Example",
+			"request": "launch",
+			"mainClass": "battleships.LanternaExample",
+			"console": "internalConsole",
 			"projectName": "elte-or"
 		}
 	],
