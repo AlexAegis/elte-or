@@ -7,7 +7,6 @@ import picocli.CommandLine.Option;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 @Command(name = "App", sortOptions = false, header = {"", "@|cyan  _____     _   _   _     _____ _   _        |@",
@@ -25,7 +24,7 @@ public class App implements Runnable {
 	@Option(names = {"-v", "--version"}, versionHelp = true, description = "Prints version")
 	boolean versionRequested;
 
-	public static void main(String[] args) {
+	public static void main(String... args) {
 		CommandLine.run(new App(), System.err, args);
 	}
 
@@ -36,13 +35,15 @@ public class App implements Runnable {
 			return;
 		}
 	}
+
 	static class ManifestVersionProvider implements IVersionProvider {
 		public String[] getVersion() throws Exception {
 			Enumeration<URL> resources = getClass().getClassLoader().getResources("META-INF/MANIFEST.MF");
 			while (resources.hasMoreElements()) {
 				try {
 					Manifest manifest = new Manifest(resources.nextElement().openStream());
-					return new String[] {manifest.getMainAttributes().getValue("Build-Version")};
+					String version = manifest.getMainAttributes().getValue("Build-Version");
+					return new String[] {version == null ? "Only available from jar" : version};
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
