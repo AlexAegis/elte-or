@@ -172,8 +172,8 @@
 			"request": "launch",
 			"mainClass": "battleships.App",
 			"console": "internalConsole",
-			"args": ["client", "--init"],
-			"projectName": "elte-or"
+			"args": ["-v", "client", "--init", "src/main/resouces/lesson04/player.1.ships.txt"],
+			"projectName": "battleships"
 		},
 		{
 			"type": "java",

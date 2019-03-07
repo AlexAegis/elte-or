@@ -24,15 +24,16 @@ application {
 }
 
 jar {
-  manifest {
-    attributes(
-      'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
-      'Main-Class': 'battleships.App'
-    )
-  }
-      from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
+	manifest {
+		attributes(
+			'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+			'Main-Class': 'battleships.App',
+			'Build-Version': version
+		)
+	}
+	from {
+		configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+	}
 }
 
 sourceSets {
