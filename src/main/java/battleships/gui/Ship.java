@@ -20,6 +20,7 @@ import com.googlecode.lanterna.gui2.WindowDecorationRenderer;
 import com.googlecode.lanterna.gui2.WindowPostRenderer;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
+import battleships.model.Direction;
 import battleships.model.ShipType;
 import java.util.EnumSet;
 import java.util.List;
@@ -30,8 +31,11 @@ public class Ship extends Button {
 
 	private ShipType type;
 
-	private TextColor highlighted = TextColor.Factory.fromString("#787777");
+	private final TextColor highlighted = TextColor.Factory.fromString("#787777");
+	private TextColor currentHighlighted = highlighted;
 	private TextColor basic = TextColor.Factory.fromString("#555555");
+	private TextColor error = TextColor.Factory.fromString("#AA5555");
+
 
 	/**
 	 * Themes:
@@ -47,6 +51,7 @@ public class Ship extends Button {
 	 */
 	public Ship(ShipType type) {
 		super("");
+		System.out.println("RECONST");
 		this.type = type;
 		setRenderer(new ShipRenderer());
 		//setTheme(LanternaThemes.getRegisteredTheme("blaster"));
@@ -61,21 +66,75 @@ public class Ship extends Button {
 		return type;
 	}
 
+	public void briefError() {
+		currentHighlighted = error;
+		new Thread(() -> {
+			try {
+				Thread.sleep(200);
+				currentHighlighted = highlighted;
+				this.invalidate();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}).start();
+	}
 
 	@Override
 	public synchronized Result handleKeyStroke(KeyStroke keyStroke) {
 
 		if (getParent() instanceof Sea) {
+			int width = 10;
+			int height = 10;
+
+
 			System.out.println("Harr, i'm on the sea");
+			Direction direction = null;
+			if (keyStroke.getKeyType() == KeyType.ArrowUp) {
+				if (getPosition().getRow() > 0) {
+					direction = Direction.UP;
+				} else {
+					briefError();
+				}
+			} else if (keyStroke.getKeyType() == KeyType.ArrowDown) {
+				if (getPosition().getRow() < height - 1) {
+					direction = Direction.DOWN;
+				} else {
+					briefError();
+				}
+			} else if (keyStroke.getKeyType() == KeyType.ArrowLeft) {
+				if (getPosition().getColumn() > 0) {
+					direction = Direction.LEFT;
+				} else {
+					briefError();
+				}
+			} else if (keyStroke.getKeyType() == KeyType.ArrowRight) {
+				if (getPosition().getColumn() < width - type.getLength()) {
+					direction = Direction.RIGHT;
+				} else {
+					briefError();
+				}
+			} else if (keyStroke.getKeyType() == KeyType.Enter) {
+				// Try to place
+			} else if (keyStroke.getKeyType() == KeyType.Escape) {
+				// Back to drawer
+			}
+
+			if (direction != null) {
+
+				this.setPosition(new TerminalPosition(getPosition().getColumn() + direction.vector.getX(),
+						getPosition().getRow() - direction.vector.getY()));
+			}
+
+			return Result.HANDLED;
 		} else {
 			System.out.println("Harr, i'm still in the drawer.");
+			if (keyStroke.getKeyType() == KeyType.Enter
+					|| (keyStroke.getKeyType() == KeyType.Character && keyStroke.getCharacter() == ' ')) {
+				triggerActions();
+				return Result.HANDLED;
+			}
+			return super.handleKeyStroke(keyStroke);
 		}
-		if (keyStroke.getKeyType() == KeyType.Enter
-				|| (keyStroke.getKeyType() == KeyType.Character && keyStroke.getCharacter() == ' ')) {
-			triggerActions();
-			return Result.HANDLED;
-		}
-		return super.handleKeyStroke(keyStroke);
 	}
 
 	/**
@@ -99,15 +158,14 @@ public class Ship extends Button {
 		public void drawComponent(TextGUIGraphics graphics, Button shipButton) {
 			Ship ship = (Ship) shipButton;
 			if (ship.isFocused()) {
-				graphics.setBackgroundColor(ship.highlighted);
+				graphics.setBackgroundColor(ship.currentHighlighted);
 			} else {
 				graphics.setBackgroundColor(ship.basic);
 			}
 			graphics.fill(' ');
 			if (ship.isFocused()) {
-				graphics.setBackgroundColor(ship.highlighted);
+				graphics.setBackgroundColor(ship.currentHighlighted);
 			} else {
-
 				graphics.setBackgroundColor(ship.basic);
 			}
 			graphics.putString(0, 0, ship.getType().getName()); //TODO: Take this out

@@ -1,4 +1,4 @@
-package battleships.gui;
+package battleships.gui.layout;
 
 import com.googlecode.lanterna.SGR;
 import com.googlecode.lanterna.Symbols;
@@ -21,21 +21,35 @@ import com.googlecode.lanterna.gui2.WindowDecorationRenderer;
 import com.googlecode.lanterna.gui2.WindowPostRenderer;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
-import battleships.gui.layout.SeaLayout;
 import battleships.model.ShipType;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import com.googlecode.lanterna.gui2.LayoutManager;
+
+public class SeaLayout implements LayoutManager {
+
+	TerminalSize size;
+
+	public SeaLayout(TerminalSize size) {
+		this.size = size;
+	}
 
 
-public class Sea extends Panel {
+	@Override
+	public TerminalSize getPreferredSize(List<Component> components) {
+		return size;
+	}
 
 
-	private TextColor colorWater = TextColor.Factory.fromString("#5555BB");
+	@Override
+	public void doLayout(TerminalSize area, List<Component> components) {
+
+	}
 
 
-	public Sea() {
-		setLayoutManager(new SeaLayout(new TerminalSize(10, 10)));
-
+	@Override
+	public boolean hasChanged() {
+		return false;
 	}
 }
