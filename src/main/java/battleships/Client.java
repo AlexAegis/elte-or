@@ -45,6 +45,7 @@ import com.googlecode.lanterna.gui2.LinearLayout;
 import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.Window;
+import com.googlecode.lanterna.gui2.GridLayout.Alignment;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TabBehaviour;
 import com.googlecode.lanterna.screen.TerminalScreen;
@@ -53,6 +54,7 @@ import com.googlecode.lanterna.terminal.Terminal;
 import battleships.gui.Drawer;
 import battleships.gui.Sea;
 import battleships.gui.Ship;
+import battleships.gui.ShipSegment;
 import battleships.model.Admiral;
 import battleships.model.ShipType;
 
@@ -94,23 +96,24 @@ public class Client implements Runnable {
 			terminal.setBackgroundColor(TextColor.Factory.fromString("#121212"));
 			screen.startScreen();
 			BasicWindow window = new BasicWindow();
-			Panel container = new Panel();
+			Panel container = new Panel(new LinearLayout(Direction.HORIZONTAL));
+
 			window.setComponent(container);
 			window.setHints(Arrays.asList(Window.Hint.FULL_SCREEN, Window.Hint.NO_DECORATIONS));
 
 
 			Drawer drawer = new Drawer();
-			container.addComponent(drawer.withBorder(Borders.singleLine("Drawer")));
+
 			Sea sea = new Sea(admiral);
 			sea.setDrawer(drawer);
 			drawer.setSea(sea);
 
+			container.addComponent(drawer.withBorder(Borders.singleLine("Drawer")));
 			container.addComponent(sea.withBorder(Borders.singleLine("Sea")));
 
 			Ship shipFrigateA = new Ship(ShipType.FRIGATE);
-			Ship shipFrigateB = new Ship(ShipType.FRIGATE);
-			Ship shipFrigateC = new Ship(ShipType.FRIGATE);
-
+			Ship shipFrigateB = new Ship(ShipType.CARRIER);
+			Ship shipFrigateC = new Ship(ShipType.BOAT);
 
 
 			drawer.addComponent(shipFrigateA);
@@ -126,7 +129,7 @@ public class Client implements Runnable {
 			MultiWindowTextGUI gui =
 					new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
 
-			window.setFocusedInteractable(shipFrigateA);
+			window.setFocusedInteractable((ShipSegment) shipFrigateA.getChildren().iterator().next());
 			gui.addWindowAndWait(window);
 		} catch (IOException e) {
 			e.printStackTrace();

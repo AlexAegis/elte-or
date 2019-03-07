@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import battleships.exception.AlreadyShotException;
+import battleships.gui.ShipSegment;
 import battleships.marker.ShipMarker;
 import battleships.marker.ShotMarker;
 import battleships.model.Coord;
