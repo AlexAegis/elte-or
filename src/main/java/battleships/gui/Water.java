@@ -37,8 +37,7 @@ public class Water extends AbstractInteractableComponent<Water> {
 
 	private Sea sea;
 
-	private final TextColor highlighted = TextColor.Factory.fromString("#555599");
-	private TextColor currentHighlighted = highlighted;
+	private TextColor current = Palette.WATER;
 
 
 
@@ -58,6 +57,18 @@ public class Water extends AbstractInteractableComponent<Water> {
 		this.sea = sea;
 		setSize(new TerminalSize(1, 1));
 		//setTheme(LanternaThemes.getRegisteredTheme("blaster"));
+	}
+
+	public void startRipple() {
+		current = Palette.WATER_RIPPLE_0;
+	}
+
+	public void startRipple0() {
+		current = Palette.WATER_RIPPLE_1;
+	}
+
+	public void startRipple1() {
+		current = Palette.WATER_RIPPLE_2;
 	}
 
 	/**
@@ -104,9 +115,9 @@ public class Water extends AbstractInteractableComponent<Water> {
 			//} else {
 
 			if (water.isFocused()) {
-				graphics.setBackgroundColor(water.currentHighlighted);
+				graphics.setBackgroundColor(water.current);
 			} else {
-				graphics.setBackgroundColor(Palette.WATER);
+				graphics.setBackgroundColor(water.current);
 			}
 			graphics.fill(' ');
 

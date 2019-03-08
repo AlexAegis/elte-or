@@ -11,10 +11,13 @@ import com.googlecode.lanterna.graphics.Theme;
 import com.googlecode.lanterna.graphics.ThemeDefinition;
 import com.googlecode.lanterna.graphics.ThemeStyle;
 import com.googlecode.lanterna.gui2.AbstractInteractableComponent;
+import com.googlecode.lanterna.gui2.Borders;
 import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.Component;
 import com.googlecode.lanterna.gui2.ComponentRenderer;
+import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.InteractableRenderer;
+import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextGUIGraphics;
 import com.googlecode.lanterna.gui2.WindowDecorationRenderer;
 import com.googlecode.lanterna.gui2.WindowPostRenderer;
@@ -23,8 +26,8 @@ import com.googlecode.lanterna.input.KeyType;
 import battleships.misc.Chainable;
 import battleships.misc.Switchable;
 import battleships.model.Coord;
-import battleships.model.Direction;
 import battleships.model.ShipType;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -116,28 +119,28 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 			int height = 10;
 
 			Logger.getGlobal().info("Harr, i'm on the sea");
-			Direction direction = null;
+			battleships.model.Direction direction = null;
 			if (keyStroke.getKeyType() == KeyType.ArrowUp) {
 				if (ship.getPosition().getRow() > 0) {
-					direction = Direction.UP;
+					direction = battleships.model.Direction.UP;
 				} else {
 					briefError();
 				}
 			} else if (keyStroke.getKeyType() == KeyType.ArrowDown) {
 				if (ship.getPosition().getRow() < height - 1) {
-					direction = Direction.DOWN;
+					direction = battleships.model.Direction.DOWN;
 				} else {
 					briefError();
 				}
 			} else if (keyStroke.getKeyType() == KeyType.ArrowLeft) {
 				if (ship.getPosition().getColumn() > 0) {
-					direction = Direction.LEFT;
+					direction = battleships.model.Direction.LEFT;
 				} else {
 					briefError();
 				}
 			} else if (keyStroke.getKeyType() == KeyType.ArrowRight) {
 				if (ship.getPosition().getColumn() < width - getShip().getType().getLength()) {
-					direction = Direction.RIGHT;
+					direction = battleships.model.Direction.RIGHT;
 				} else {
 					briefError();
 				}
@@ -201,6 +204,7 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 
 	public Function<ShipSegment, TerminalPosition> bodyPieceFlattener =
 			bodyPiece -> bodyPiece.getPosition().withRelative(bodyPiece.getParent().getPosition());
+
 
 	/**
 	 * Alternative button renderer that displays buttons with just the label and minimal decoration
