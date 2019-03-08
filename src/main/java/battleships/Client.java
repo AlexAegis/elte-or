@@ -139,8 +139,7 @@ public class Client implements Runnable {
 						ObjectOutputStream oos = new ObjectOutputStream(server.getOutputStream());
 						ObjectInputStream ois = new ObjectInputStream(server.getInputStream());) {
 					_server = server;
-
-					if (game.getPlayerName() != null) {
+					if (game.getPlayerName().getText() != null && !game.getPlayerName().getText().isEmpty()) {
 						oos.writeObject(new Register(game.getPlayerName().getText()));
 					} else {
 						oos.writeObject(new Register());
@@ -148,7 +147,7 @@ public class Client implements Runnable {
 					oos.flush();
 					RegisterResult rrs = (RegisterResult) ois.readObject();
 					game.setPlayerName(rrs.getTarget());
-					Logger.getGlobal().info("Client joined, name: " + game.getPlayerName());
+					Logger.getGlobal().info("Client joined, name: " + game.getPlayerName().getText());
 
 					/*
 										if (!game..isEmpty()) {
@@ -219,7 +218,6 @@ public class Client implements Runnable {
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}
-				_server = null;
 			}
 		});
 		net.start();

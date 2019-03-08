@@ -23,10 +23,21 @@ public class Admiral {
 	// The Admiral used as a key is the real one, the value is the mock of that admiral
 	private Map<Admiral, Admiral> knowledge = new HashMap<>();
 
-	public Admiral() {
+	private String name;
+
+	public Admiral(String name) {
+		this.name = name;
 	}
 
-	public Admiral(List<Coord> shipPieces) {
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	public Admiral(String name, List<Coord> shipPieces) {
+		this(name);
 		placeAll(shipPieces);
 	}
 
@@ -66,7 +77,7 @@ public class Admiral {
 	 */
 	public Shot shoot(Admiral admiral, Coord target) throws AlreadyShotException, BorderShotException {
 		var shot = new Shot(this, target, ShotMarker.MISS);
-		knowledge.putIfAbsent(admiral, new Admiral());
+		knowledge.putIfAbsent(admiral, new Admiral(admiral.getName()));
 		if (knowledge.values().stream().flatMap(a -> a.ships.stream()).flatMap(ship -> ship.getBorder().stream())
 				.anyMatch(coord -> coord.equals(target))) {
 			throw new BorderShotException();
@@ -106,7 +117,7 @@ public class Admiral {
 	public String field(Admiral admiral) {
 		var field = Table.empty();
 		if (admiral != null) {
-			knowledge.putIfAbsent(admiral, new Admiral());
+			knowledge.putIfAbsent(admiral, new Admiral(admiral.getName()));
 			knowledge.get(admiral).print(field);
 		} else {
 			print(field);
@@ -164,7 +175,7 @@ public class Admiral {
 	}
 
 	public String toString(Admiral target) {
-		knowledge.putIfAbsent(target, new Admiral());
+		knowledge.putIfAbsent(target, new Admiral(target.getName()));
 		return knowledge.get(target).toString();
 	}
 

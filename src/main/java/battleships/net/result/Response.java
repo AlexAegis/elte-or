@@ -2,13 +2,13 @@ package battleships.net.result;
 
 import java.io.Serializable;
 
-public class Result implements Serializable {
+public class Response implements Serializable {
 
 	private static final long serialVersionUID = 5037733141987271620L;
 
 	String target;
 
-	public Result(String target) {
+	public Response(String target) {
 		this.target = target;
 	}
 

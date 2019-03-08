@@ -13,6 +13,7 @@ import java.util.Scanner;
 import battleships.exception.AlreadyShotException;
 import battleships.exception.BorderShotException;
 import battleships.model.Coord;
+import battleships.model.LegacyTable;
 import battleships.model.Table;
 
 /**
@@ -23,7 +24,7 @@ public class BasicBattleShipsServer {
 		new BasicBattleShipsServer().run(6788, "player.1.ships.txt");
 	}
 
-	public Optional<Table> run(Integer port, String defenderFileName) {
+	public Optional<LegacyTable> run(Integer port, String defenderFileName) {
 		System.out.println("Server run");
 
 		try (ServerSocket serverSocket = new ServerSocket(port);
@@ -38,7 +39,7 @@ public class BasicBattleShipsServer {
 			while (shipScanner.hasNextLine()) {
 				ships.add(new Coord(shipScanner.nextLine()));
 			}
-			var table = new Table(ships);
+			var table = new LegacyTable(ships);
 			table.finishShipBorders();
 			while (!table.isFinished()) {
 				String input = "";
@@ -47,9 +48,9 @@ public class BasicBattleShipsServer {
 					if (input.equals("exit")) {
 						break;
 					}
-					table.shoot(1, 0, new Coord(input));
+					table.shoot("1", "0", new Coord(input));
 					System.out.println(table.toString());
-					out.println(table.getAdmiral(1).toString(table.getAdmiral(0)));
+					out.println(table.getAdmiral("1").toString(table.getAdmiral("0")));
 				} catch (IllegalArgumentException e) {
 					System.out.println(e.getMessage() + input);
 					out.println(e.getMessage());

@@ -2,6 +2,7 @@ package battleships.model;
 
 import java.io.Serializable;
 import java.util.Objects;
+import com.googlecode.lanterna.TerminalSize;
 
 public class Coord implements Comparable<Coord>, Serializable {
 	private static final long serialVersionUID = 7066738546729358350L;
@@ -32,6 +33,10 @@ public class Coord implements Comparable<Coord>, Serializable {
 	public Coord(int x, int y) {
 		this.x = x;
 		this.y = y;
+	}
+
+	public TerminalSize convertToTerminalSize() {
+		return new TerminalSize(x, y);
 	}
 
 	public int distanceX(Coord other) {

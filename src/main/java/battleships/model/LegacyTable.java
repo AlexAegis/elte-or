@@ -10,7 +10,10 @@ import battleships.marker.TableMarker;
 import battleships.model.Coord;
 import battleships.model.Shot;
 
-public class Table {
+/**
+ * This is for the original basic console solution
+ */
+public class LegacyTable {
 	private Map<String, Admiral> admirals = new HashMap<>();
 
 	public static final int MAP_HEIGHT = 10;
@@ -19,14 +22,43 @@ public class Table {
 	private Admiral current;
 	private Integer currentIndex = 0;
 
-	public Table() {
+	private static int autoId = 0;
+
+	public LegacyTable() {
+	}
+
+	@Deprecated
+	public LegacyTable(List<Coord> shipPieces) {
+		this(shipPieces, null);
+	}
+
+	@Deprecated
+	public LegacyTable(List<Coord> shipAPieces, List<Coord> shipBPieces) {
+		addAdmiral(shipAPieces);
+		addAdmiral(shipBPieces);
+		finishShipBorders();
 	}
 
 	public Admiral addAdmiral(String id) {
 		Admiral admiral = new Admiral(id);
-		admirals.put(id, admiral);
+		admirals.put(admiral.getName(), admiral);
 		return admiral;
 	}
+
+	@Deprecated
+	public Admiral addAdmiral() {
+		Admiral admiral = new Admiral(Integer.toString(autoId++));
+		admirals.put(admiral.getName(), admiral);
+		return admiral;
+	}
+
+	@Deprecated
+	public Admiral addAdmiral(List<Coord> shipPieces) {
+		Admiral admiral = new Admiral(Integer.toString(autoId++), shipPieces);
+		admirals.put(Integer.toString(autoId++), admiral);
+		return admiral;
+	}
+
 
 	public void finishShipBorders() {
 		admirals.values().stream().flatMap(admiral -> admiral.getShips().stream()).forEach(ship -> ship.finishBorder());
@@ -172,11 +204,7 @@ public class Table {
 		return getAdmiral(id).equals(getCurrent());
 	}
 
-	public Coord getSize() {
-		return new Coord(MAP_WIDTH, MAP_HEIGHT);
-	}
-
-	public String autoGenerateIndex() {
-		return Integer.toString(currentIndex++);
+	public TerminalSize getSize() {
+		return new TerminalSize(MAP_WIDTH, MAP_HEIGHT);
 	}
 }

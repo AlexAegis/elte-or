@@ -31,7 +31,7 @@ import battleships.model.Admiral;
 public class GameWindow extends BasicWindow {
 	Client client;
 	Label playerName;
-	private Admiral admiral = new Admiral();
+	private Admiral admiral;
 	Boolean finished = false;
 	Boolean closed = false;
 	BasicWindow connect;
@@ -51,7 +51,6 @@ public class GameWindow extends BasicWindow {
 		seaContainer.addComponent(sea);
 
 		client.fieldInitFromFile(sea);
-
 
 
 		Panel container = new Panel(new BorderLayout());
