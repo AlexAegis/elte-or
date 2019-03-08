@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import java.util.stream.IntStream;
 
 public class Water extends AbstractInteractableComponent<Water> {
 
@@ -60,16 +60,25 @@ public class Water extends AbstractInteractableComponent<Water> {
 	}
 
 	public void startRipple() {
-		current = Palette.WATER_RIPPLE_0;
+		new Thread(() -> {
+			try {
+				current = Palette.WATER_RIPPLE_0;
+				invalidate();
+				Thread.sleep(170);
+				current = Palette.WATER_RIPPLE_1;
+				invalidate();
+				Thread.sleep(170);
+				current = Palette.WATER_RIPPLE_2;
+				invalidate();
+				Thread.sleep(400);
+				current = Palette.WATER;
+				invalidate();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}).start();
 	}
 
-	public void startRipple0() {
-		current = Palette.WATER_RIPPLE_1;
-	}
-
-	public void startRipple1() {
-		current = Palette.WATER_RIPPLE_2;
-	}
 
 	/**
 	 * @return the sea

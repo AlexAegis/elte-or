@@ -61,20 +61,24 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	public void sendRipple() {
 		this.getLayoutManager().doLayout(getPreferredSize(), (List<Component>) getChildren());
 
-		var wave = ripple(new TerminalPosition(5, 5), 1, 6, Direction.HORIZONTAL);
+		var waves = ripple(new TerminalPosition(5, 5), 1, 4, Direction.HORIZONTAL);
 
-		getWaters().forEach(water -> {
-
-			if (wave.get(0).contains(water.getPosition())) {
-				water.startRipple();
+		new Thread(() -> {
+			try {
+				for (var wave : waves) {
+					Thread.sleep(200);
+					getWaters().forEach(water -> {
+						if (wave.contains(water.getPosition())) {
+							water.startRipple();
+							water.invalidate();
+						}
+					});
+				}
+				this.invalidate();
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			if (wave.get(1).contains(water.getPosition())) {
-				water.startRipple0();
-			}
-			if (wave.get(2).contains(water.getPosition())) {
-				water.startRipple1();
-			}
-		});
+		}).start();
 
 	}
 
