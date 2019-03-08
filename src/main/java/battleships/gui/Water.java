@@ -7,6 +7,7 @@ import com.googlecode.lanterna.gui2.AbstractInteractableComponent;
 import com.googlecode.lanterna.gui2.InteractableRenderer;
 import com.googlecode.lanterna.gui2.TextGUIGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
+import battleships.gui.container.Sea;
 
 public class Water extends AbstractInteractableComponent<Water> {
 

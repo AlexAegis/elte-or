@@ -49,7 +49,7 @@ import com.googlecode.lanterna.terminal.Terminal;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import battleships.gui.container.Drawer;
-import battleships.gui.Sea;
+import battleships.gui.container.Sea;
 import battleships.gui.Ship;
 import battleships.gui.ShipSegment;
 import battleships.model.Admiral;

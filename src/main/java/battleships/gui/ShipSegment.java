@@ -9,6 +9,7 @@ import com.googlecode.lanterna.gui2.TextGUIGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import battleships.gui.container.Drawer;
+import battleships.gui.container.Sea;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

@@ -4,6 +4,7 @@ import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.LinearLayout;
 import com.googlecode.lanterna.gui2.Panel;
+import battleships.gui.container.Sea;
 import battleships.gui.layout.SegmentContainer;
 import battleships.misc.Chainable;
 import battleships.misc.Switchable;

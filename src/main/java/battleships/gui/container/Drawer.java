@@ -2,7 +2,6 @@ package battleships.gui.container;
 
 import java.util.Optional;
 import com.googlecode.lanterna.gui2.Panel;
-import battleships.gui.Sea;
 import battleships.gui.Ship;
 import battleships.gui.layout.ShipContainer;
 import battleships.misc.Chainable;

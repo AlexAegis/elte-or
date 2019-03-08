@@ -1,4 +1,4 @@
-package battleships.gui;
+package battleships.gui.container;
 
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.TerminalPosition;
@@ -7,6 +7,9 @@ import com.googlecode.lanterna.gui2.Component;
 import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.Panel;
 import battleships.model.Admiral;
+import battleships.gui.Ship;
+import battleships.gui.ShipSegment;
+import battleships.gui.Water;
 import battleships.gui.container.Drawer;
 import battleships.gui.layout.SeaLayout;
 import battleships.gui.layout.ShipContainer;
