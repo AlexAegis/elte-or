@@ -54,15 +54,14 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 
 		setLayoutManager(new SeaLayout(new TerminalSize(width, height)));
 		IntStream.range(0, width * height).forEach(i -> addComponent(new Water(this)));
-		sendRipple();
+		this.getLayoutManager().doLayout(getPreferredSize(), (List<Component>) getChildren());
+		//sendRipple();
 		//admiral.getShips() // place ships
 	}
 
-	public void sendRipple() {
-		this.getLayoutManager().doLayout(getPreferredSize(), (List<Component>) getChildren());
 
-		var waves = ripple(new TerminalPosition(5, 5), 1, 4, Direction.HORIZONTAL);
-
+	public void sendRipple(Ship ship) {
+		var waves = ripple(ship.getPosition(), ship.getType().getLength(), 4, ship.getOrientation());
 		new Thread(() -> {
 			try {
 				for (var wave : waves) {
@@ -102,6 +101,13 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	}
 
 
+	public static List<TerminalPosition> nthRipple(TerminalPosition anchor, Integer count, Integer iteration,
+			Direction orientaton) {
+		if (iteration < 1 || iteration > count) {
+			throw new IllegalArgumentException();
+		}
+		return ripple(anchor, 1, count, orientaton).get(iteration - 1);
+	}
 
 	public static List<TerminalPosition> nthRipple(TerminalPosition anchor, Integer length, Integer count,
 			Integer iteration, Direction orientaton) {
@@ -114,23 +120,18 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	public static List<List<TerminalPosition>> ripple(TerminalPosition anchor, Integer length, Integer count,
 			Direction orientaton) {
 		var result = new ArrayList<List<TerminalPosition>>();
-
-
+		length--;
 		for (int c = 1; c < count; c++) {
 			var iter = new ArrayList<TerminalPosition>();
 			var headpiece = false;
 			var tailpiece = false;
-			for (int i = 1; i <= length; i++) {
-				headpiece = i == 1;
+			for (int i = 0; i <= length; i++) {
+				headpiece = i == 0;
 				tailpiece = i == length;
 
-				var vert = orientaton.equals(Direction.VERTICAL);
 				var hor = orientaton.equals(Direction.HORIZONTAL);
 
-				var translated = anchor.withRelative(vert ? i : 0, hor ? i : 0);
-
-
-				if (headpiece) { // O--
+				if (headpiece) {
 					if (hor) {
 						iter.add(anchor.withRelative(-c, 0));
 					} else {
@@ -149,60 +150,61 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 
 				if (tailpiece) {
 					if (hor) {
-						iter.add(anchor.withRelative(c, 0)); // --ox
+						iter.add(anchor.withRelative(c + i, 0));
 					} else {
-						iter.add(anchor.withRelative(0, c)); // --ox
+						iter.add(anchor.withRelative(0, c + i));
 					}
 					for (int t = c; t > 0; t--) {
 						if (hor) {
-							iter.add(anchor.withRelative(c, t));
-							iter.add(anchor.withRelative(c, -t));
+							iter.add(anchor.withRelative(c + i, t));
+							iter.add(anchor.withRelative(c + i, -t));
 						} else {
-							iter.add(anchor.withRelative(t, c));
-							iter.add(anchor.withRelative(-t, c));
+							iter.add(anchor.withRelative(t, c + i));
+							iter.add(anchor.withRelative(-t, c + i));
 						}
 					}
 				}
-				// -O-
-
 				if (hor) {
 					iter.add(anchor.withRelative(0, -c));
 				} else {
 					iter.add(anchor.withRelative(-c, 0));
 				}
-
 				if (hor) {
 					iter.add(anchor.withRelative(0, c));
 				} else {
 					iter.add(anchor.withRelative(c, 0));
 				}
-				for (int t = c; t > 0; t--) {
+				for (int t = c; t >= 0; t--) {
 
 					if (hor) {
-						iter.add(anchor.withRelative(t, -c)); //    x
-						//  -o-
-						iter.add(anchor.withRelative(-t, -c));//     x
-						// -o-
-						iter.add(anchor.withRelative(t, c));
-						iter.add(anchor.withRelative(-t, c));
+						iter.add(anchor.withRelative(t + i, -c));
+						iter.add(anchor.withRelative(-t + i, -c));
+						iter.add(anchor.withRelative(t + i, c));
+						iter.add(anchor.withRelative(-t + i, c));
 					} else {
-						iter.add(anchor.withRelative(-c, t)); //    x
-						//  -o-
-						iter.add(anchor.withRelative(-c, -t));//     x
-						// -o-
-						iter.add(anchor.withRelative(c, t));
-						iter.add(anchor.withRelative(c, -t));
+						iter.add(anchor.withRelative(-c, t + i));
+						iter.add(anchor.withRelative(-c, -t + i));
+						iter.add(anchor.withRelative(c, t + i));
+						iter.add(anchor.withRelative(c, -t + i));
 					}
-
 				}
-
-
 			}
 			result.add(iter);
 		}
-
-
 		return result;
+	}
 
+	/**
+	 * @return the height
+	 */
+	public Integer getHeight() {
+		return height;
+	}
+
+	/**
+	 * @return the width
+	 */
+	public Integer getWidth() {
+		return width;
 	}
 }

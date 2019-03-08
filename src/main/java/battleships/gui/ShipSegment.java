@@ -111,14 +111,12 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 		return false;
 	}
 
+
 	@Override
 	public synchronized Result handleKeyStroke(KeyStroke keyStroke) {
 
 		if (isOnSea()) {
-			int width = 10;
-			int height = 10;
-
-			Logger.getGlobal().info("Harr, i'm on the sea");
+			var sea = ((Sea) ship.getParent());
 			battleships.model.Direction direction = null;
 			if (keyStroke.getKeyType() == KeyType.ArrowUp) {
 				if (ship.getPosition().getRow() > 0) {
@@ -127,7 +125,7 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 					briefError();
 				}
 			} else if (keyStroke.getKeyType() == KeyType.ArrowDown) {
-				if (ship.getPosition().getRow() < height - 1) {
+				if (ship.getPosition().getRow() < sea.getHeight() - ship.getSize().getRows()) {
 					direction = battleships.model.Direction.DOWN;
 				} else {
 					briefError();
@@ -139,7 +137,7 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 					briefError();
 				}
 			} else if (keyStroke.getKeyType() == KeyType.ArrowRight) {
-				if (ship.getPosition().getColumn() < width - getShip().getType().getLength()) {
+				if (ship.getPosition().getColumn() < sea.getWidth() - ship.getSize().getColumns()) {
 					direction = battleships.model.Direction.RIGHT;
 				} else {
 					briefError();
@@ -147,7 +145,7 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 			} else if (keyStroke.getKeyType() == KeyType.Enter) {
 				// Try to place
 				// Do placement validation
-				var sea = ((Sea) ship.getParent());
+
 				// all the ships on the sea TODO: INCLUDE BORDERS .withBorder
 				var takenPositions = sea.getShips().stream()
 						.flatMap(seaShip -> seaShip.equals(ship) ? Stream.empty() : seaShip.getBody().stream()) // Every other ship
@@ -158,12 +156,15 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 				var tps = takenPositions.size();
 				var pps = placementPositions.size();
 				takenPositions.addAll(placementPositions);
-				if (takenPositions.size() != tps + pps) {
+				if (takenPositions.size() != tps + pps
+						|| ship.getPosition().getRow() > sea.getHeight() - ship.getSize().getRows()
+						|| ship.getPosition().getColumn() > sea.getWidth() - ship.getSize().getColumns()) {
 					briefError();
 				} else {
 					Drawer d = sea.getDrawer();
 					if (d.getShips().size() > 0) {
-						System.out.println(d.getShips().get(0).getBody().get(0).takeFocus());
+						sea.sendRipple(ship);
+						d.getShips().get(0).getBody().get(0).takeFocus();
 					} else {
 						// TODO: Finished placement
 					}
