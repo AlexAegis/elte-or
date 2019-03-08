@@ -229,7 +229,7 @@ public class Client implements Runnable {
 				}
 			}
 		});
-		net.start();
+
 
 		/*
 				Sea opponent = new Sea(admiral);
@@ -244,7 +244,7 @@ public class Client implements Runnable {
 			screen.startScreen();
 			game = new GameWindow(this, terminal, screen);
 			connect = new ConnectWindow(this);
-
+			net.start();
 			MultiWindowTextGUI gui =
 					new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
 
