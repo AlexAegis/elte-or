@@ -129,6 +129,7 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 					ship.setOriginalPosition(null);
 					ship.setOriginalParent(null);
 					ship.setHeld(false);
+					sea.getDrawer().takeFocus();
 					return Result.HANDLED;
 				default:
 			}
@@ -156,6 +157,8 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 					sea.getDrawer().takeFocus();
 					return Result.HANDLED;
 				case Enter:
+					ship.setOriginalParent(ship.getParent());
+					ship.setOriginalPosition(ship.getPosition());
 					ship.setHeld(true);
 					return Result.HANDLED;
 				default:
