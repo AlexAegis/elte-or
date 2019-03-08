@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -37,7 +36,6 @@ import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.EmptySpace;
 import com.googlecode.lanterna.gui2.GridLayout;
 import com.googlecode.lanterna.gui2.Label;
-import com.googlecode.lanterna.gui2.LinearLayout;
 import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextBox;
@@ -48,10 +46,10 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import battleships.gui.container.ConnectWindow;
 import battleships.gui.container.Drawer;
+import battleships.gui.container.GameWindow;
 import battleships.gui.container.Sea;
-import battleships.gui.Ship;
-import battleships.gui.ShipSegment;
 import battleships.model.Admiral;
 import battleships.model.Coord;
 import battleships.model.ShipType;
@@ -80,20 +78,15 @@ public class Client implements Runnable {
 	@Option(names = {"-p", "--port"}, paramLabel = "<host>",
 			description = "Port of the server  (default: ${DEFAULT-VALUE})")
 	private Integer port = 6668;
-	Label playerName;
-	private Admiral admiral = new Admiral();
 
-	private static final Pattern IP_ADDRESS_PART = Pattern.compile(
-			"^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])[.]){0,3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])?$");
-
-	private static final String IP_ADDRESS_FULL =
-			"^(25[0-5]|2[0-4]\\d|1\\d{2}|\\d{1,2})\\.(25[0-5]|2[0-4]\\d|1\\d{2}|\\d{1,2})\\.(25[0-5]|2[0-4]\\d|1\\d{2}|\\d{1,2})\\.(25[0-5]|2[0-4]\\d|1\\d{2}|\\d{1,2})$";
+	GameWindow game;
+	ConnectWindow connect;
 
 	public static void main(String[] args) {
 		CommandLine.run(new Client(), System.err, args);
 	}
 
-	private void fieldInitFromFile(Sea sea) {
+	public void fieldInitFromFile(Sea sea) {
 		initialFiles.forEach(file -> {
 			try (BufferedReader fin = new BufferedReader(new FileReader(file))) {
 				var placementObject = new JSONParser().parse(fin);
@@ -112,8 +105,6 @@ public class Client implements Runnable {
 						});
 					}
 				}
-
-
 			} catch (IOException | ParseException | ClassCastException e) {
 				e.printStackTrace();
 			}
@@ -123,31 +114,58 @@ public class Client implements Runnable {
 	Socket _server;
 	Boolean finished = false;
 	Boolean closed = false;
-	BasicWindow connect;
-	Thread connectTry;
+
+	Thread net;
 
 	@Override
 	public void run() {
 		Logger.getGlobal().setLevel(app.loglevel.getLevel());
-		Drawer drawer = new Drawer();
-		Panel seaContainer = new Panel(new GridLayout(1));
-		Panel opponentContainer = new Panel(new GridLayout(3));
-		Sea sea = new Sea(admiral, drawer);
-		sea.setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER, true,
-				true, 1, 1));
-		seaContainer.addComponent(sea);
 
-		Sea opponent = new Sea(admiral);
-		opponent.setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER,
-				true, true, 1, 1));
-		opponentContainer.addComponent(opponent);
+		/*
+				Sea opponent = new Sea(admiral);
+				opponent.setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER,
+						true, true, 1, 1));
+				opponentContainer.addComponent(opponent);
+		*/
+
+		try (Terminal terminal = new DefaultTerminalFactory().createTerminal();
+				Screen screen = new TerminalScreen(terminal);) {
+			terminal.setBackgroundColor(TextColor.Factory.fromString("#000000"));
+			screen.startScreen();
+			game = new GameWindow(this, terminal, screen);
+			connect = new ConnectWindow(this);
+			MultiWindowTextGUI gui =
+					new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
+
+			gui.addWindow(game);
+			if (_server == null) {
+				gui.addWindow(connect);
+				gui.moveToTop(connect);
+
+				connect.takeFocus();
+				gui.waitForWindowToClose(connect);
+			}
+			game.takeFocus();
+
+			gui.waitForWindowToClose(game);
+		} catch (IOException | ArrayIndexOutOfBoundsException e) {
+			e.printStackTrace();
+		} finally {
+			if (getNet() != null) {
+				getNet().interrupt();
+			}
+
+			if (connect.getConnectTry() != null) {
+				connect.getConnectTry().interrupt();
+			}
+			closed = true;
+		}
 
 
-		fieldInitFromFile(sea);
 
 		// Network
 
-		var net = new Thread(() -> {
+		net = new Thread(() -> {
 			while (_server == null && !closed) {
 				try (Socket server = new Socket(host, port);
 						PrintWriter out = new PrintWriter(server.getOutputStream(), true);
@@ -182,123 +200,35 @@ public class Client implements Runnable {
 		net.start();
 
 		// GUI
-		try (Terminal terminal = new DefaultTerminalFactory().createTerminal();
-				Screen screen = new TerminalScreen(terminal);) {
-			terminal.setBackgroundColor(TextColor.Factory.fromString("#000000"));
-			screen.startScreen();
-			BasicWindow window = new BasicWindow();
-			Panel container = new Panel(new BorderLayout());
 
-			window.setComponent(container);
-			window.setHints(Arrays.asList(Window.Hint.FULL_SCREEN, Window.Hint.CENTERED, Window.Hint.NO_DECORATIONS));
-			Panel drawerAndName = new Panel(new BorderLayout());
-
-
-
-			container.addComponent(seaContainer.withBorder(Borders.singleLine("Sea")));
-			container.addComponent(opponentContainer.withBorder(Borders.singleLine("Opponent")));
-			playerName = new Label("");
-			drawerAndName.addComponent(playerName);
-			drawerAndName.addComponent(drawer.withBorder(Borders.singleLine("Drawer")));
-
-			playerName.setLayoutData(BorderLayout.Location.TOP);
-			drawer.setLayoutData(BorderLayout.Location.CENTER);
-
-			container.addComponent(drawerAndName);
-			drawerAndName.setLayoutData(BorderLayout.Location.LEFT);
-			seaContainer.setLayoutData(BorderLayout.Location.CENTER);
-
-			connect = new BasicWindow();
-			connect.setTitle("Connect");
-			connect.setHints(Arrays.asList(Window.Hint.MODAL));
-			Panel connectForm = new Panel();
-			connectForm.setLayoutManager(new GridLayout(2));
-			connect.setComponent(connectForm);
-
-			connectForm.addComponent(new Label("IP Address"));
-			final TextBox hostBox = new TextBox().setValidationPattern(IP_ADDRESS_PART).addTo(connectForm);
-
-			connectForm.addComponent(new Label("Port"));
-			final TextBox portBox =
-					new TextBox().setValidationPattern(Pattern.compile("[0-9]{0,4}")).addTo(connectForm);
-			//portBox.invalidate();
-			//portBox.setTheme(LanternaThemes.getRegisteredTheme("conqueror"));
-			connectForm.addComponent(new EmptySpace(new TerminalSize(0, 0)));
-
-
-			new Button("Connect", () -> {
-				Boolean valid = true;
-				if (!portBox.getText().matches("[0-9]{4}")) {
-					briefError(portBox);
-					valid &= false;
-				}
-				if (!(!hostBox.getText().isEmpty() && hostBox.getText().matches(IP_ADDRESS_FULL))) {
-					briefError(hostBox);
-					valid &= false;
-				}
-				if (valid) {
-					host = hostBox.getText();
-					port = Integer.parseInt(portBox.getText());
-					var children = connectForm.getChildren();
-					connectForm.removeAllComponents();
-					connectTry = new Thread(() -> {
-						try {
-							Thread.sleep(500);
-							children.stream().forEach(child -> connectForm.addComponent(child));
-						} catch (InterruptedException e) {
-							Logger.getGlobal().info("Connect window interrupted");
-						}
-					});
-					connectTry.start();
-
-				}
-			}).addTo(connectForm);
-
-			MultiWindowTextGUI gui =
-					new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
-
-			gui.addWindow(window);
-			if (_server == null) {
-				gui.addWindow(connect);
-				gui.moveToTop(connect);
-				hostBox.takeFocus();
-				gui.waitForWindowToClose(connect);
-			}
-			window.setFocusedInteractable(drawer.getShips().iterator().next().getSegments().iterator().next());
-			gui.waitForWindowToClose(window);
-		} catch (IOException | ArrayIndexOutOfBoundsException e) {
-			e.printStackTrace();
-		} finally {
-			if (net != null) {
-				net.interrupt();
-			}
-
-			if (connectTry != null) {
-				connectTry.interrupt();
-			}
-			closed = true;
-		}
 	}
 
-	public void briefError(TextBox textBox) {
-		Theme t = textBox.getTheme();
-		new Thread(() -> {
-			try {
-				textBox.invalidate();
-				textBox.setTheme(LanternaThemes.getRegisteredTheme("conqueror"));
-				Thread.sleep(400);
-				textBox.setTheme(t);
-				textBox.invalidate();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}).start();
-	}
 
 	static class DisplayCountdown extends TimerTask {
 		@Override
 		public void run() {
 		}
+	}
+
+	/**
+	 * @param host the host to set
+	 */
+	public void setHost(String host) {
+		this.host = host;
+	}
+
+	/**
+	 * @param port the port to set
+	 */
+	public void setPort(Integer port) {
+		this.port = port;
+	}
+
+	/**
+	 * @return the net
+	 */
+	public Thread getNet() {
+		return net;
 	}
 
 }

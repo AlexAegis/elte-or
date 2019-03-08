@@ -4,25 +4,13 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParentCommand;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
-import java.util.logging.Logger;
-import battleships.exception.AlreadyShotException;
-import battleships.exception.BorderShotException;
 import battleships.misc.Spawner;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
-import battleships.model.Admiral;
 import battleships.model.Table;
 import battleships.server.ClientThread;
-import battleships.action.Attack;
-import battleships.action.Place;
 
 @Command(name = "server", sortOptions = false,
 		header = {"", "@|cyan  _____     _   _   _     _____ _   _                                     |@",
