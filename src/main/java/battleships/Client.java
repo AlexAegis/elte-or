@@ -86,14 +86,15 @@ public class Client implements Runnable {
 					var placementsHolder = (Map<String, List<Map<String, String>>>) placementObject;
 					var placements = placementsHolder.get("placements");
 					for (var placement : placements) {
-						Coord coord = new Coord(placement.get("position"));
-
-
-						Ship ship = new Ship(ShipType.valueOf(placement.get("class")));
-						ship.setLayoutTo(Direction.valueOf(placement.get("orientation")));
-						ship.setPosition(new TerminalPosition(coord.getX(), coord.getY()));
-
-						//sea.addComponent(ship);
+						drawer.getByClass(ShipType.valueOf(placement.get("class"))).ifPresent(ship -> {
+							Coord coord = new Coord(placement.get("position"));
+							ship.setLayoutTo(Direction.valueOf(placement.get("orientation")));
+							ship.setPosition(new TerminalPosition(coord.getX(), coord.getY()));
+							if (sea.placementValid(ship)) {
+								sea.addComponent(ship);
+								sea.sendRipple(ship);
+							}
+						});
 					}
 				}
 
@@ -112,30 +113,15 @@ public class Client implements Runnable {
 			window.setComponent(container);
 			window.setHints(Arrays.asList(Window.Hint.FULL_SCREEN, Window.Hint.NO_DECORATIONS));
 
-
-
 			container.addComponent(drawer.withBorder(Borders.singleLine("Drawer")));
 			container.addComponent(sea.withBorder(Borders.singleLine("Sea")));
-
-			Ship shipFrigateA = new Ship(ShipType.FRIGATE);
-			Ship shipFrigateB = new Ship(ShipType.CARRIER);
-			Ship shipFrigateC = new Ship(ShipType.BOAT);
-
-
-			drawer.addComponent(shipFrigateA);
-			drawer.addComponent(shipFrigateB);
-			drawer.addComponent(shipFrigateC);
-
-
-			//TextGraphics tGraphics = screen.newTextGraphics();
-			//tGraphics.drawRectangle(new TerminalPosition(3, 3), new TerminalSize(10, 10), '*');
 
 
 
 			MultiWindowTextGUI gui =
 					new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
 
-			window.setFocusedInteractable((ShipSegment) shipFrigateA.getChildren().iterator().next());
+			window.setFocusedInteractable(drawer.getShips().iterator().next().getSegments().iterator().next());
 			gui.addWindowAndWait(window);
 		} catch (IOException e) {
 			e.printStackTrace();

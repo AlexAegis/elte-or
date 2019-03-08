@@ -4,6 +4,7 @@ import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.LinearLayout;
 import com.googlecode.lanterna.gui2.Panel;
+import battleships.gui.layout.SegmentContainer;
 import battleships.misc.Chainable;
 import battleships.misc.Switchable;
 import battleships.model.ShipType;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 
-public class Ship extends Panel implements Switchable {
+public class Ship extends Panel implements Switchable, SegmentContainer {
 
 
 	private ShipType type;
@@ -89,7 +90,7 @@ public class Ship extends Panel implements Switchable {
 		if (getParent() instanceof Chainable) {
 			((Chainable) getParent()).nextContainer().addComponent(this);
 		}
-		//takeFocus();
+		getSegments().iterator().next().takeFocus();
 	}
 
 	/**
