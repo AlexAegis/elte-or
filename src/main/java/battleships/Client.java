@@ -24,9 +24,13 @@ import java.util.TimerTask;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.bundle.LanternaThemes;
+import com.googlecode.lanterna.graphics.Theme;
 import com.googlecode.lanterna.gui2.BasicWindow;
 import com.googlecode.lanterna.gui2.Borders;
+import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.DefaultWindowManager;
 import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.EmptySpace;
@@ -78,8 +82,11 @@ public class Client implements Runnable {
 
 	private Admiral admiral = new Admiral();
 
-	private static final Pattern IP_ADDRESS = Pattern.compile(
+	private static final Pattern IP_ADDRESS_PART = Pattern.compile(
 			"^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])[.]){0,3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])?$");
+
+	private static final String IP_ADDRESS_FULL =
+			"^(25[0-5]|2[0-4]\\d|1\\d{2}|\\d{1,2})\\.(25[0-5]|2[0-4]\\d|1\\d{2}|\\d{1,2})\\.(25[0-5]|2[0-4]\\d|1\\d{2}|\\d{1,2})\\.(25[0-5]|2[0-4]\\d|1\\d{2}|\\d{1,2})$";
 
 	public static void main(String[] args) {
 		CommandLine.run(new Client(), System.err, args);
@@ -115,6 +122,7 @@ public class Client implements Runnable {
 	Socket _server;
 	Boolean finished = false;
 	Boolean closed = false;
+	BasicWindow connect;
 
 	@Override
 	public void run() {
@@ -137,6 +145,9 @@ public class Client implements Runnable {
 						Scanner console = new Scanner(System.in)) {
 					_server = server;
 
+					if (connect != null) {
+						connect.close();
+					}
 					while (!finished) {
 						System.out.println("Still playin");
 						Thread.sleep(200);
@@ -174,7 +185,7 @@ public class Client implements Runnable {
 			container.addComponent(sea.withBorder(Borders.singleLine("Sea")));
 
 
-			var connect = new BasicWindow();
+			connect = new BasicWindow();
 			connect.setTitle("Connect");
 			connect.setHints(Arrays.asList(Window.Hint.MODAL));
 			Panel connectForm = new Panel();
@@ -182,13 +193,47 @@ public class Client implements Runnable {
 			connect.setComponent(connectForm);
 
 			connectForm.addComponent(new Label("IP Address"));
-			final TextBox txtNum1 = new TextBox().setValidationPattern(IP_ADDRESS).addTo(connectForm);
+			final TextBox hostBox = new TextBox().setValidationPattern(IP_ADDRESS_PART).addTo(connectForm);
 
 			connectForm.addComponent(new Label("Port"));
-			final TextBox txtNum2 =
+			final TextBox portBox =
 					new TextBox().setValidationPattern(Pattern.compile("[0-9]{0,4}")).addTo(connectForm);
+			//portBox.invalidate();
+			//portBox.setTheme(LanternaThemes.getRegisteredTheme("conqueror"));
+			connectForm.addComponent(new EmptySpace(new TerminalSize(0, 0)));
+
+			new Button("Connect", () -> {
+				Boolean valid = true;
+				if (!portBox.getText().matches("[0-9]{4}")) {
+					briefError(portBox);
+					valid &= false;
+				}
+				if (!(!hostBox.getText().isEmpty() && hostBox.getText().matches(IP_ADDRESS_FULL))) {
+					briefError(hostBox);
+					valid &= false;
+				}
+
+				if (valid) {
+					System.out.println("Valid");
+					host = hostBox.getText();
+					port = Integer.parseInt(portBox.getText());
+
+					var children = connectForm.getChildren();
+					connectForm.removeAllComponents();
+					new Thread(() -> {
+						try {
+							Thread.sleep(500);
+							children.stream().forEach(child -> connectForm.addComponent(portBox));
+
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}).start();
+
+				}
 
 
+			}).addTo(connectForm);
 
 			MultiWindowTextGUI gui =
 					new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
@@ -197,7 +242,7 @@ public class Client implements Runnable {
 			if (_server == null) {
 				gui.addWindow(connect);
 				gui.moveToTop(connect);
-				txtNum1.takeFocus();
+				hostBox.takeFocus();
 				gui.waitForWindowToClose(connect);
 			}
 			window.setFocusedInteractable(drawer.getShips().iterator().next().getSegments().iterator().next());
@@ -208,6 +253,21 @@ public class Client implements Runnable {
 			net.interrupt();
 			closed = true;
 		}
+	}
+
+	public void briefError(TextBox textBox) {
+		Theme t = textBox.getTheme();
+		new Thread(() -> {
+			try {
+				textBox.invalidate();
+				textBox.setTheme(LanternaThemes.getRegisteredTheme("conqueror"));
+				Thread.sleep(400);
+				textBox.setTheme(t);
+				textBox.invalidate();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}).start();
 	}
 
 	static class DisplayCountdown extends TimerTask {
