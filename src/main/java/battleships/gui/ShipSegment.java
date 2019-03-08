@@ -168,8 +168,9 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 					briefError();
 				} else {
 					Drawer d = sea.getDrawer();
+					sea.sendRipple(ship);
 					if (d.getShips().size() > 0) {
-						sea.sendRipple(ship);
+
 						d.getShips().get(0).getBody().get(0).takeFocus();
 					} else {
 						// TODO: Finished placement

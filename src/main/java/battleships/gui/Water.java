@@ -37,41 +37,36 @@ public class Water extends AbstractInteractableComponent<Water> {
 
 	private Sea sea;
 
-	private TextColor current = Palette.WATER;
+	private TextColor currentFore = Palette.WATER;
+	private TextColor currentBack = Palette.WATER;
 
 
 
 	/**
-	 * Themes:
-	 *
-	 * default
-	 * defrost
-	 * bigsnake
-	 * conqueror
-	 * businessmachine
-	 * blaster
-	 *
 	 * @param type
 	 */
 	public Water(Sea sea) {
 		this.sea = sea;
 		setSize(new TerminalSize(1, 1));
-		//setTheme(LanternaThemes.getRegisteredTheme("blaster"));
 	}
 
 	public void startRipple() {
 		new Thread(() -> {
 			try {
-				current = Palette.WATER_RIPPLE_0;
+				currentFore = Palette.WATER_RIPPLE_1;
+				currentBack = Palette.WATER_RIPPLE_2;
 				invalidate();
 				Thread.sleep(170);
-				current = Palette.WATER_RIPPLE_1;
+				currentFore = Palette.WATER_RIPPLE_0;
+				currentBack = Palette.WATER_RIPPLE_1;
 				invalidate();
 				Thread.sleep(170);
-				current = Palette.WATER_RIPPLE_2;
+				currentFore = Palette.WATER_RIPPLE_1;
+				currentBack = Palette.WATER_RIPPLE_0;
 				invalidate();
 				Thread.sleep(400);
-				current = Palette.WATER;
+				currentFore = Palette.WATER;
+				currentBack = Palette.WATER;
 				invalidate();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -119,20 +114,21 @@ public class Water extends AbstractInteractableComponent<Water> {
 
 		@Override
 		public void drawComponent(TextGUIGraphics graphics, Water water) {
-			//if (!ship.isTargeting()) {
-
-			//} else {
 
 			if (water.isFocused()) {
-				graphics.setBackgroundColor(water.current);
+				graphics.setBackgroundColor(water.currentBack);
+				graphics.setForegroundColor(water.currentFore);
 			} else {
-				graphics.setBackgroundColor(water.current);
+				graphics.setBackgroundColor(water.currentBack);
+				graphics.setForegroundColor(water.currentFore);
 			}
-			graphics.fill(' ');
-
-			//}
-
-
+			if (water.currentFore.equals(Palette.WATER_RIPPLE_0)) {
+				graphics.fill('░');
+			} else if (water.currentFore.equals(Palette.WATER_RIPPLE_1)) {
+				graphics.fill('▒');
+			} else {
+				graphics.fill(' ');
+			}
 		}
 
 	}
