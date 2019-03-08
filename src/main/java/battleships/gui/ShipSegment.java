@@ -93,52 +93,31 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 			var sea = ((Sea) ship.getParent());
 			battleships.model.Direction direction = null;
 			if (keyStroke.getKeyType() == KeyType.ArrowUp) {
-				if (ship.getPosition().getRow() > 0) {
+				if (sea.placementValidFromTop(ship)) {
 					direction = battleships.model.Direction.UP;
 				} else {
 					briefError();
 				}
 			} else if (keyStroke.getKeyType() == KeyType.ArrowDown) {
-				if (ship.getPosition().getRow() < sea.getHeight() - ship.getSize().getRows()) {
+				if (sea.placementValidFromBottom(ship)) {
 					direction = battleships.model.Direction.DOWN;
 				} else {
 					briefError();
 				}
 			} else if (keyStroke.getKeyType() == KeyType.ArrowLeft) {
-				if (ship.getPosition().getColumn() > 0) {
+				if (sea.placementValidFromLeft(ship)) {
 					direction = battleships.model.Direction.LEFT;
 				} else {
 					briefError();
 				}
 			} else if (keyStroke.getKeyType() == KeyType.ArrowRight) {
-				if (ship.getPosition().getColumn() < sea.getWidth() - ship.getSize().getColumns()) {
+				if (sea.placementValidFromRight(ship)) {
 					direction = battleships.model.Direction.RIGHT;
 				} else {
 					briefError();
 				}
 			} else if (keyStroke.getKeyType() == KeyType.Enter) {
-				// Try to place
-				// Do placement validation
-
-				// all the ships on the sea TODO: INCLUDE BORDERS .withBorder
-				var takenPositions = sea.getShips().stream()
-						.flatMap(seaShip -> seaShip.equals(ship) ? Stream.empty() : seaShip.getBody().stream()) // Every other ship
-						.map(bodyPieceFlattener).collect(Collectors.toSet());
-
-				var borderPositions = sea.getShips().stream()
-						.flatMap(seaShip -> seaShip.equals(ship) ? Stream.empty() : seaShip.getBorder().stream()) // Every other ship
-						.collect(Collectors.toSet());
-
-				var placementPositions = ship.getBody().stream().map(bodyPieceFlattener).collect(Collectors.toSet());
-
-				var tps = takenPositions.size();
-				var bps = borderPositions.size();
-				var pps = placementPositions.size();
-				takenPositions.addAll(borderPositions);
-				takenPositions.addAll(placementPositions);
-				if (takenPositions.size() != tps + bps + pps
-						|| ship.getPosition().getRow() > sea.getHeight() - ship.getSize().getRows()
-						|| ship.getPosition().getColumn() > sea.getWidth() - ship.getSize().getColumns()) {
+				if (!sea.placementValid(ship)) {
 					briefError();
 				} else {
 					Drawer d = sea.getDrawer();
@@ -154,11 +133,8 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 
 
 			} else if (keyStroke.getKeyType() == KeyType.Escape) {
-				// Back to drawer
 				ship.doSwitch();
 			} else if (keyStroke.getCharacter() == ' ') {
-				// Rotate on space
-				System.out.println("SPAACE");
 				ship.changeOrientation();
 			}
 
@@ -183,9 +159,6 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 
 		}
 	}
-
-	public Function<ShipSegment, TerminalPosition> bodyPieceFlattener =
-			bodyPiece -> bodyPiece.getPosition().withRelative(bodyPiece.getParent().getPosition());
 
 
 	/**

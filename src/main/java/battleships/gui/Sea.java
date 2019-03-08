@@ -13,7 +13,10 @@ import battleships.gui.layout.WaterContainer;
 import battleships.misc.Chainable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 
 public class Sea extends Panel implements Chainable, ShipContainer, WaterContainer {
@@ -79,6 +82,66 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 		return getDrawer();
 	}
 
+	public Boolean placementValidFromLeft(Ship ship) {
+		return placementValidFromLeft(ship, true);
+	}
+
+	public Boolean placementValidFromLeft(Ship ship, Boolean before) {
+		return ship.getPosition().getColumn() > (before ? 0 : -1);
+	}
+
+	public Boolean placementValidFromTop(Ship ship) {
+		return placementValidFromTop(ship, true);
+	}
+
+	public Boolean placementValidFromTop(Ship ship, Boolean before) {
+		return ship.getPosition().getRow() > (before ? 0 : -1);
+	}
+
+	public Boolean placementValidFromRight(Ship ship) {
+		return placementValidFromRight(ship, true);
+	}
+
+	public Boolean placementValidFromRight(Ship ship, Boolean before) {
+		return ship.getPosition().getColumn() < getWidth() - ship.getSize().getColumns() + (before ? 0 : 1);
+	}
+
+	public Boolean placementValidFromBottom(Ship ship) {
+		return placementValidFromBottom(ship, true);
+	}
+
+	public Boolean placementValidFromBottom(Ship ship, Boolean before) {
+		return ship.getPosition().getRow() < getHeight() - ship.getSize().getRows() + (before ? 0 : 1);
+	}
+
+	public Boolean placementValidFromAllSides(Ship ship) {
+		return placementValidFromLeft(ship, false) && placementValidFromTop(ship, false)
+				&& placementValidFromRight(ship, false) && placementValidFromBottom(ship, false);
+	}
+
+	public Boolean placementValid(Ship ship) {
+		var takenPositions = getShips().stream()
+				.flatMap(seaShip -> seaShip.equals(ship) ? Stream.empty() : seaShip.getBody().stream()) // Every other ship
+				.map(bodyPieceFlattener).collect(Collectors.toSet());
+
+		var borderPositions = getShips().stream()
+				.flatMap(seaShip -> seaShip.equals(ship) ? Stream.empty() : seaShip.getBorder().stream()) // Every other ship
+				.collect(Collectors.toSet());
+
+		var placementPositions = ship.getBody().stream().map(bodyPieceFlattener).collect(Collectors.toSet());
+
+		var tps = takenPositions.size();
+		var bps = borderPositions.size();
+		var pps = placementPositions.size();
+		takenPositions.addAll(borderPositions);
+		takenPositions.addAll(placementPositions);
+
+		return takenPositions.size() == tps + bps + pps && placementValidFromAllSides(ship);
+	}
+
+
+	public Function<ShipSegment, TerminalPosition> bodyPieceFlattener =
+			bodyPiece -> bodyPiece.getPosition().withRelative(bodyPiece.getParent().getPosition());
 
 	public static List<TerminalPosition> nthRipple(TerminalPosition anchor, Integer count, Integer iteration,
 			Direction orientaton) {

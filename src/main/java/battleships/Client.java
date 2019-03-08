@@ -92,7 +92,8 @@ public class Client implements Runnable {
 						Ship ship = new Ship(ShipType.valueOf(placement.get("class")));
 						ship.setLayoutTo(Direction.valueOf(placement.get("orientation")));
 						ship.setPosition(new TerminalPosition(coord.getX(), coord.getY()));
-						sea.addComponent(ship);
+
+						//sea.addComponent(ship);
 					}
 				}
 
