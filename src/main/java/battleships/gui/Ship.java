@@ -70,6 +70,10 @@ public class Ship extends Panel implements Switchable {
 				.collect(Collectors.toList());
 	}
 
+	public List<TerminalPosition> getBorder() {
+		return Sea.nthRipple(getPosition(), getType().getLength(), 1, getOrientation());
+	}
+
 
 	public ShipSegment getHead() {
 		return (ShipSegment) getChildren().iterator().next();

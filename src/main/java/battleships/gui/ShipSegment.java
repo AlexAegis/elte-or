@@ -148,10 +148,16 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 
 				// all the ships on the sea TODO: INCLUDE BORDERS .withBorder
 				var takenPositions = sea.getShips().stream()
-						.flatMap(seaShip -> seaShip.equals(ship) ? Stream.empty() : seaShip.getBody().stream()) // Every other ship
-						.map(bodyPieceFlattener).collect(Collectors.toSet());
+						.flatMap(seaShip -> seaShip.equals(ship) ? Stream.empty()
+								: Stream.concat(seaShip.getBorder().stream(),
+										seaShip.getBody().stream()
+												.map(bodyPiece -> bodyPiece.getPosition()
+														.withRelative(bodyPiece.getParent().getPosition())))) // Every other ship
+						.collect(Collectors.toSet());
 
-				var placementPositions = ship.getBody().stream().map(bodyPieceFlattener).collect(Collectors.toSet());
+				var placementPositions = ship.getBody().stream()
+						.map(bodyPiece -> bodyPiece.getPosition().withRelative(bodyPiece.getParent().getPosition()))
+						.collect(Collectors.toSet());
 
 				var tps = takenPositions.size();
 				var pps = placementPositions.size();
@@ -203,8 +209,6 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 		}
 	}
 
-	public Function<ShipSegment, TerminalPosition> bodyPieceFlattener =
-			bodyPiece -> bodyPiece.getPosition().withRelative(bodyPiece.getParent().getPosition());
 
 
 	/**
