@@ -29,6 +29,7 @@ import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.bundle.LanternaThemes;
 import com.googlecode.lanterna.graphics.Theme;
 import com.googlecode.lanterna.gui2.BasicWindow;
+import com.googlecode.lanterna.gui2.BorderLayout;
 import com.googlecode.lanterna.gui2.Borders;
 import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.DefaultWindowManager;
@@ -123,12 +124,23 @@ public class Client implements Runnable {
 	Boolean finished = false;
 	Boolean closed = false;
 	BasicWindow connect;
+	Thread connectTry;
 
 	@Override
 	public void run() {
 		Logger.getGlobal().setLevel(app.loglevel.getLevel());
 		Drawer drawer = new Drawer();
+		Panel seaContainer = new Panel(new GridLayout(1));
+		Panel opponentContainer = new Panel(new GridLayout(3));
 		Sea sea = new Sea(admiral);
+		sea.setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER, true,
+				true, 1, 1));
+		seaContainer.addComponent(sea);
+
+		Sea opponent = new Sea(admiral);
+		opponent.setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER,
+				true, true, 1, 1));
+		opponentContainer.addComponent(opponent);
 		sea.setDrawer(drawer);
 		drawer.setSea(sea);
 
@@ -159,7 +171,7 @@ public class Client implements Runnable {
 					try {
 						Thread.sleep(200);
 					} catch (InterruptedException e1) {
-						e1.printStackTrace();
+						Logger.getGlobal().info("Connecting interrupted");
 					}
 				} catch (IOException | InterruptedException e) {
 					e.printStackTrace();
@@ -173,17 +185,19 @@ public class Client implements Runnable {
 		// GUI
 		try (Terminal terminal = new DefaultTerminalFactory().createTerminal();
 				Screen screen = new TerminalScreen(terminal);) {
-			terminal.setBackgroundColor(TextColor.Factory.fromString("#121212"));
+			terminal.setBackgroundColor(TextColor.Factory.fromString("#000000"));
 			screen.startScreen();
 			BasicWindow window = new BasicWindow();
-			Panel container = new Panel(new LinearLayout(Direction.HORIZONTAL));
+			Panel container = new Panel(new BorderLayout());
 
 			window.setComponent(container);
-			window.setHints(Arrays.asList(Window.Hint.FULL_SCREEN, Window.Hint.NO_DECORATIONS));
+			window.setHints(Arrays.asList(Window.Hint.FULL_SCREEN, Window.Hint.CENTERED, Window.Hint.NO_DECORATIONS));
 
 			container.addComponent(drawer.withBorder(Borders.singleLine("Drawer")));
-			container.addComponent(sea.withBorder(Borders.singleLine("Sea")));
-
+			container.addComponent(seaContainer.withBorder(Borders.singleLine("Sea")));
+			container.addComponent(opponentContainer.withBorder(Borders.singleLine("Opponent")));
+			drawer.setLayoutData(BorderLayout.Location.LEFT);
+			seaContainer.setLayoutData(BorderLayout.Location.CENTER);
 
 			connect = new BasicWindow();
 			connect.setTitle("Connect");
@@ -202,6 +216,7 @@ public class Client implements Runnable {
 			//portBox.setTheme(LanternaThemes.getRegisteredTheme("conqueror"));
 			connectForm.addComponent(new EmptySpace(new TerminalSize(0, 0)));
 
+
 			new Button("Connect", () -> {
 				Boolean valid = true;
 				if (!portBox.getText().matches("[0-9]{4}")) {
@@ -212,27 +227,22 @@ public class Client implements Runnable {
 					briefError(hostBox);
 					valid &= false;
 				}
-
 				if (valid) {
-					System.out.println("Valid");
 					host = hostBox.getText();
 					port = Integer.parseInt(portBox.getText());
-
 					var children = connectForm.getChildren();
 					connectForm.removeAllComponents();
-					new Thread(() -> {
+					connectTry = new Thread(() -> {
 						try {
 							Thread.sleep(500);
-							children.stream().forEach(child -> connectForm.addComponent(portBox));
-
+							children.stream().forEach(child -> connectForm.addComponent(child));
 						} catch (InterruptedException e) {
-							e.printStackTrace();
+							Logger.getGlobal().info("Connect window interrupted");
 						}
-					}).start();
+					});
+					connectTry.start();
 
 				}
-
-
 			}).addTo(connectForm);
 
 			MultiWindowTextGUI gui =
@@ -250,7 +260,13 @@ public class Client implements Runnable {
 		} catch (IOException | ArrayIndexOutOfBoundsException e) {
 			e.printStackTrace();
 		} finally {
-			net.interrupt();
+			if (net != null) {
+				net.interrupt();
+			}
+
+			if (connectTry != null) {
+				connectTry.interrupt();
+			}
 			closed = true;
 		}
 	}

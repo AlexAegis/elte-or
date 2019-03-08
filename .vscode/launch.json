@@ -184,6 +184,15 @@
 		},
 		{
 			"type": "java",
+			"name": "App as Server",
+			"request": "launch",
+			"mainClass": "battleships.App",
+			"console": "internalConsole",
+			"args": ["-l", "INFO", "server"],
+			"projectName": "battleships"
+		},
+		{
+			"type": "java",
 			"name": "Lanterna Example",
 			"request": "launch",
 			"mainClass": "battleships.LanternaExample",
