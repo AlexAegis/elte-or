@@ -5,6 +5,7 @@ import com.googlecode.lanterna.gui2.Container;
 import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.LinearLayout;
 import com.googlecode.lanterna.gui2.Panel;
+import battleships.gui.container.Drawer;
 import battleships.gui.container.Sea;
 import battleships.gui.layout.SegmentContainer;
 import battleships.misc.Chainable;
@@ -23,10 +24,11 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 
 	private static final LinearLayout HORIZONTAL = new LinearLayout(Direction.HORIZONTAL).setSpacing(0);
 	private static final LinearLayout VERTICAL = new LinearLayout(Direction.VERTICAL).setSpacing(0);
-	private Direction orientation;
+	private Direction orientation = Direction.HORIZONTAL;
 	private Boolean held = false;
 
 	private TerminalPosition originalPosition;
+	private Direction originalOrientation;
 	private Container originalParent;
 
 	/**
@@ -45,6 +47,51 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 	 */
 	public Container getOriginalParent() {
 		return originalParent;
+	}
+
+	public void saveParent() {
+		setOriginalParent(getParent());
+	}
+
+	public void resetParent() {
+		if (getOriginalParent() != null) {
+			if (getOriginalParent() instanceof Sea) {
+				((Sea) getOriginalParent()).addComponent(this);
+			} else if (getOriginalParent() instanceof Drawer) {
+				((Drawer) getOriginalParent()).addComponent(this);
+			}
+			setOriginalParent(null);
+		}
+	}
+
+	/**
+	 * @return the originalOrientation
+	 */
+	public Direction getOriginalOrientation() {
+		return originalOrientation;
+	}
+
+	public void saveOrientation() {
+		setOriginalOrientation(getOrientation());
+	}
+
+	public void resetOriginalOrientation() {
+		if (getOriginalOrientation() != null) {
+			if (getOriginalOrientation().equals(Direction.HORIZONTAL)) {
+				setLayoutToHorizontal();
+			} else {
+				setLayoutToVertical();
+			}
+			setOriginalOrientation(null);
+		}
+	}
+
+
+	/**
+	 * @param originalOrientation the originalOrientation to set
+	 */
+	public void setOriginalOrientation(Direction originalOrientation) {
+		this.originalOrientation = originalOrientation;
 	}
 
 	/**
@@ -66,6 +113,27 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 	 */
 	public void setOriginalPosition(TerminalPosition originalPosition) {
 		this.originalPosition = originalPosition;
+	}
+
+	public void savePosition() {
+		setOriginalPosition(getPosition());
+	}
+
+	public void resetOriginalPosition() {
+		if (getOriginalPosition() != null) {
+			setPosition(getOriginalPosition());
+			setOriginalPosition(null);
+		}
+	}
+
+	public void savePlacement() {
+		saveOrientation();
+		savePosition();
+	}
+
+	public void resetOriginalPlacement() {
+		resetOriginalOrientation();
+		resetOriginalPosition();
 	}
 
 	/**

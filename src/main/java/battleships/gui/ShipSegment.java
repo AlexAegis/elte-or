@@ -122,7 +122,7 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 					return Result.HANDLED;
 				case Escape:
 					if (sea.equals(ship.getOriginalParent())) {
-						ship.setPosition(ship.getOriginalPosition());
+						ship.resetOriginalPlacement();
 					} else {
 						ship.doSwitch();
 					}
@@ -157,8 +157,8 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 					sea.getDrawer().takeFocus();
 					return Result.HANDLED;
 				case Enter:
-					ship.setOriginalParent(ship.getParent());
-					ship.setOriginalPosition(ship.getPosition());
+					ship.savePlacement();
+					ship.saveParent();
 					ship.setHeld(true);
 					return Result.HANDLED;
 				default:
@@ -188,8 +188,8 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 					return Result.HANDLED;
 				case Enter:
 					ship.setHeld(true);
-					ship.setOriginalParent(ship.getParent());
-					ship.setOriginalPosition(ship.getPosition());
+					ship.savePlacement();
+					ship.saveParent();
 					ship.doSwitch();
 					return Result.HANDLED;
 				default:
