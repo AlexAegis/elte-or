@@ -57,4 +57,28 @@ public class Drawer extends Panel implements Chainable, ShipContainer {
 	public Panel nextContainer() {
 		return getSea();
 	}
+
+	public Optional<Ship> firstShip() {
+		return getShips().isEmpty() ? Optional.empty() : Optional.of(getShips().get(0));
+	}
+
+	public Optional<Ship> lastShip() {
+		return getShips().isEmpty() ? Optional.empty() : Optional.of(getShips().get(getShips().size() - 1));
+	}
+
+	public Boolean isFirstShip(Ship ship) {
+		return ship.equals(firstShip().orElse(null));
+	}
+
+	public Boolean isLastShip(Ship ship) {
+		return ship.equals(lastShip().orElse(null));
+	}
+
+	public void focusFirstShip() {
+		firstShip().ifPresent(Ship::takeFocus);
+	}
+
+	public void focusLastShip() {
+		lastShip().ifPresent(Ship::takeFocus);
+	}
 }

@@ -27,6 +27,7 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 	private TextColor error = TextColor.Factory.fromString("#AA5555");
 
 	public ShipSegment(Ship ship) {
+
 		this.ship = ship;
 	}
 
@@ -113,14 +114,9 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 					if (!sea.placementValid(ship)) {
 						briefError();
 					} else {
-						Drawer d = sea.getDrawer();
 						ship.setHeld(false);
 						sea.sendRipple(ship);
-						if (d.getShips().size() > 0) {
-							d.takeFocus();
-						} else {
-							// TODO: Finished placement
-						}
+						sea.getDrawer().takeFocus();
 					}
 					return Result.HANDLED;
 				case Escape:
@@ -132,6 +128,7 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 					ship.setOriginalPosition(null);
 					ship.setOriginalParent(null);
 					ship.setHeld(false);
+					return Result.HANDLED;
 				default:
 			}
 			switch (keyStroke.getCharacter()) {
@@ -166,11 +163,26 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 		}
 
 		if (isInDrawer()) {
+			var drawer = ((Drawer) ship.getParent());
 			switch (keyStroke.getKeyType()) {
 				case ArrowDown:
-					return Result.MOVE_FOCUS_DOWN;
+					if (drawer.isLastShip(ship)) {
+						drawer.focusFirstShip();
+						return Result.HANDLED;
+					} else {
+						return Result.MOVE_FOCUS_DOWN;
+					}
 				case ArrowUp:
-					return Result.MOVE_FOCUS_UP;
+					if (drawer.isFirstShip(ship)) {
+						drawer.focusLastShip();
+						return Result.HANDLED;
+					} else {
+						return Result.MOVE_FOCUS_UP;
+					}
+				case Tab:
+				case ReverseTab:
+					drawer.getSea().takeFocus();
+					return Result.HANDLED;
 				case Enter:
 					ship.setHeld(true);
 					ship.setOriginalParent(ship.getParent());

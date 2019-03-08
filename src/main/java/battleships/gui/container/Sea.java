@@ -259,4 +259,10 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	public Integer getWidth() {
 		return width;
 	}
+
+	public void takeFocus() {
+		if (!getShips().isEmpty()) {
+			getShips().get(0).takeFocus();
+		}
+	}
 }

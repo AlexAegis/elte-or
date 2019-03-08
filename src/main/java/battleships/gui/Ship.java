@@ -145,4 +145,10 @@ public class Ship extends Panel implements Switchable, SegmentContainer {
 		return type;
 	}
 
+	public void takeFocus() {
+		if (!getBody().isEmpty()) {
+			getBody().get(0).takeFocus();
+		}
+	}
+
 }
