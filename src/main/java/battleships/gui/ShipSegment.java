@@ -76,11 +76,15 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 
 
 	public void briefError() {
-		currentHighlighted = error;
+		ship.getChildren().stream().map(c -> (ShipSegment) c).forEach(s -> {
+			s.currentHighlighted = error;
+		});
 		new Thread(() -> {
 			try {
 				Thread.sleep(200);
-				currentHighlighted = highlighted;
+				ship.getChildren().stream().map(c -> (ShipSegment) c).forEach(s -> {
+					s.currentHighlighted = highlighted;
+				});
 				this.invalidate();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -88,10 +92,22 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 		}).start();
 	}
 
+	public Boolean isInDrawer() {
+		return ship.getParent() instanceof Drawer;
+	}
+
+	public Boolean isOnSea() {
+		return ship.getParent() instanceof Sea;
+	}
+
+	public Boolean isTargeting() {
+		return false;
+	}
+
 	@Override
 	public synchronized Result handleKeyStroke(KeyStroke keyStroke) {
 
-		if (ship.getParent() instanceof Sea) {
+		if (isOnSea()) {
 			int width = 10;
 			int height = 10;
 
@@ -138,6 +154,7 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 
 				ship.setPosition(new TerminalPosition(ship.getPosition().getColumn() + direction.vector.getX(),
 						ship.getPosition().getRow() - direction.vector.getY()));
+
 			}
 			getBody();
 			return Result.HANDLED;
@@ -174,20 +191,21 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 
 
 		@Override
-		public void drawComponent(TextGUIGraphics graphics, ShipSegment ship) {
+		public void drawComponent(TextGUIGraphics graphics, ShipSegment shipSegment) {
+			//if (!ship.isTargeting()) {
 
-			if (ship.isFocused()) {
-				graphics.setBackgroundColor(ship.currentHighlighted);
+			//} else {
+
+			if (shipSegment.ship.getHead().isFocused()) {
+				graphics.setBackgroundColor(shipSegment.currentHighlighted);
 			} else {
-				graphics.setBackgroundColor(ship.basic);
+				graphics.setBackgroundColor(shipSegment.basic);
 			}
 			graphics.fill(' ');
-			if (ship.isFocused()) {
-				graphics.setBackgroundColor(ship.currentHighlighted);
-			} else {
-				graphics.setBackgroundColor(ship.basic);
-			}
-			graphics.putString(0, 0, ship.getShip().getType().getName()); //TODO: Take this out
+
+			//}
+
+
 		}
 
 	}
