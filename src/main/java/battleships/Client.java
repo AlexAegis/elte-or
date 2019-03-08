@@ -145,10 +145,19 @@ public class Client implements Runnable {
 						oos.writeObject(new Register());
 					}
 					oos.flush();
+					Logger.getGlobal().info("Sent registration");
 					RegisterResult rrs = (RegisterResult) ois.readObject();
+					Logger.getGlobal().info("Recieved registration result" + rrs.getTarget());
 					game.setPlayerName(rrs.getTarget());
 					Logger.getGlobal().info("Client joined, name: " + game.getPlayerName().getText());
 
+					if (rrs.getTarget() != null && !rrs.getTarget().isEmpty()) {
+						// Login success
+						System.out.println("SUCCESSFUL LOGIN");
+						connect.close();
+						connect.getConnectTry().interrupt();
+						game.invalidate();
+					}
 					/*
 										if (!game..isEmpty()) {
 											System.out.println("Default pieces detected, sending data");
@@ -240,6 +249,7 @@ public class Client implements Runnable {
 					new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
 
 			gui.addWindow(game);
+
 			if (_server == null) {
 				gui.addWindow(connect);
 				gui.moveToTop(connect);
