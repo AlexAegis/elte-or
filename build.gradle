@@ -20,6 +20,7 @@ repositories {
 dependencies {
 	compile group: 'info.picocli', name: 'picocli', version: '3.9.5'
 	compile group: 'com.googlecode.lanterna', name: 'lanterna', version: '3.0.1'
+	compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.4.0'
 }
 

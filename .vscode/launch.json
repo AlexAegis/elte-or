@@ -179,7 +179,7 @@
 			"request": "launch",
 			"mainClass": "battleships.App",
 			"console": "internalConsole",
-			"args": ["-l", "INFO", "client", "-i", "src/main/resouces/example/placements.1.json"],
+			"args": ["-l", "INFO", "client", "-i", "./src/main/resources/example/placements.1.json"],
 			"projectName": "battleships"
 		},
 		{

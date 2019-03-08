@@ -4,13 +4,17 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParentCommand;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Logger;
+import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.BasicWindow;
 import com.googlecode.lanterna.gui2.Borders;
@@ -25,11 +29,14 @@ import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import battleships.gui.Drawer;
 import battleships.gui.Sea;
 import battleships.gui.Ship;
 import battleships.gui.ShipSegment;
 import battleships.model.Admiral;
+import battleships.model.Coord;
 import battleships.model.ShipType;
 
 @Command(name = "client", sortOptions = false,
@@ -65,12 +72,33 @@ public class Client implements Runnable {
 	@Override
 	public void run() {
 		Logger.getGlobal().setLevel(app.loglevel.getLevel());
+		Drawer drawer = new Drawer();
+
+		Sea sea = new Sea(admiral);
+		sea.setDrawer(drawer);
+		drawer.setSea(sea);
+
 
 		initialFiles.forEach(file -> {
-			try (Scanner fin = new Scanner(file)) {
+			try (BufferedReader fin = new BufferedReader(new FileReader(file))) {
+				var placementObject = new JSONParser().parse(fin);
+				if (placementObject instanceof Map) {
+					var placementsHolder = (Map<String, List<Map<String, String>>>) placementObject;
+					var placements = placementsHolder.get("placements");
+					for (var placement : placements) {
+						Coord coord = new Coord(placement.get("position"));
 
-			} catch (IOException e) {
 
+						Ship ship = new Ship(ShipType.valueOf(placement.get("class")));
+						ship.setLayoutTo(Direction.valueOf(placement.get("orientation")));
+						ship.setPosition(new TerminalPosition(coord.getX(), coord.getY()));
+						sea.addComponent(ship);
+					}
+				}
+
+
+			} catch (IOException | ParseException | ClassCastException e) {
+				e.printStackTrace();
 			}
 		});
 		try (Terminal terminal = new DefaultTerminalFactory().createTerminal();
@@ -84,11 +112,6 @@ public class Client implements Runnable {
 			window.setHints(Arrays.asList(Window.Hint.FULL_SCREEN, Window.Hint.NO_DECORATIONS));
 
 
-			Drawer drawer = new Drawer();
-
-			Sea sea = new Sea(admiral);
-			sea.setDrawer(drawer);
-			drawer.setSea(sea);
 
 			container.addComponent(drawer.withBorder(Borders.singleLine("Drawer")));
 			container.addComponent(sea.withBorder(Borders.singleLine("Sea")));

@@ -54,16 +54,19 @@ public class Ship extends Panel implements Switchable {
 		return (ShipSegment) getChildren().iterator().next();
 	}
 
-	public void setLayoutToVertical() {
-		setLayoutManager(Ship.VERTICAL);
+
+	public void setLayoutTo(Direction direction) {
+		setLayoutManager(Direction.VERTICAL.equals(direction) ? Ship.VERTICAL : Ship.HORIZONTAL);
 		setSize(getLayoutManager().getPreferredSize(new ArrayList<>(getChildren())));
-		orientation = Direction.VERTICAL;
+		orientation = direction;
+	}
+
+	public void setLayoutToVertical() {
+		setLayoutTo(Direction.VERTICAL);
 	}
 
 	public void setLayoutToHorizontal() {
-		setLayoutManager(Ship.HORIZONTAL);
-		setSize(getLayoutManager().getPreferredSize(new ArrayList<>(getChildren())));
-		orientation = Direction.HORIZONTAL;
+		setLayoutTo(Direction.HORIZONTAL);
 	}
 
 	public void changeOrientation() {
