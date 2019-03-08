@@ -123,8 +123,10 @@ public class Water extends AbstractInteractableComponent<Water> {
 				graphics.setForegroundColor(water.currentFore);
 			}
 			if (water.currentFore.equals(Palette.WATER_RIPPLE_0)) {
+				//graphics.enableModifiers(SGR.BLINK);
 				graphics.fill('░');
 			} else if (water.currentFore.equals(Palette.WATER_RIPPLE_1)) {
+				//	graphics.enableModifiers(SGR.BLINK);
 				graphics.fill('▒');
 			} else {
 				graphics.fill(' ');
