@@ -148,21 +148,21 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 
 				// all the ships on the sea TODO: INCLUDE BORDERS .withBorder
 				var takenPositions = sea.getShips().stream()
-						.flatMap(seaShip -> seaShip.equals(ship) ? Stream.empty()
-								: Stream.concat(seaShip.getBorder().stream(),
-										seaShip.getBody().stream()
-												.map(bodyPiece -> bodyPiece.getPosition()
-														.withRelative(bodyPiece.getParent().getPosition())))) // Every other ship
+						.flatMap(seaShip -> seaShip.equals(ship) ? Stream.empty() : seaShip.getBody().stream()) // Every other ship
+						.map(bodyPieceFlattener).collect(Collectors.toSet());
+
+				var borderPositions = sea.getShips().stream()
+						.flatMap(seaShip -> seaShip.equals(ship) ? Stream.empty() : seaShip.getBorder().stream()) // Every other ship
 						.collect(Collectors.toSet());
 
-				var placementPositions = ship.getBody().stream()
-						.map(bodyPiece -> bodyPiece.getPosition().withRelative(bodyPiece.getParent().getPosition()))
-						.collect(Collectors.toSet());
+				var placementPositions = ship.getBody().stream().map(bodyPieceFlattener).collect(Collectors.toSet());
 
 				var tps = takenPositions.size();
+				var bps = borderPositions.size();
 				var pps = placementPositions.size();
+				takenPositions.addAll(borderPositions);
 				takenPositions.addAll(placementPositions);
-				if (takenPositions.size() != tps + pps
+				if (takenPositions.size() != tps + bps + pps
 						|| ship.getPosition().getRow() > sea.getHeight() - ship.getSize().getRows()
 						|| ship.getPosition().getColumn() > sea.getWidth() - ship.getSize().getColumns()) {
 					briefError();
@@ -209,6 +209,8 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 		}
 	}
 
+	public Function<ShipSegment, TerminalPosition> bodyPieceFlattener =
+			bodyPiece -> bodyPiece.getPosition().withRelative(bodyPiece.getParent().getPosition());
 
 
 	/**

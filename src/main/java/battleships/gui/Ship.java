@@ -71,7 +71,7 @@ public class Ship extends Panel implements Switchable {
 	}
 
 	public List<TerminalPosition> getBorder() {
-		return Sea.nthRipple(getPosition(), getType().getLength(), 1, getOrientation());
+		return Sea.nthRipple(getPosition(), getType().getLength(), 2, 1, getOrientation());
 	}
 
 
