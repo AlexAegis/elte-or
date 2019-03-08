@@ -1,6 +1,7 @@
 package battleships.gui;
 
 import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.gui2.Container;
 import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.LinearLayout;
 import com.googlecode.lanterna.gui2.Panel;
@@ -23,6 +24,49 @@ public class Ship extends Panel implements Switchable, SegmentContainer {
 	private static final LinearLayout HORIZONTAL = new LinearLayout(Direction.HORIZONTAL).setSpacing(0);
 	private static final LinearLayout VERTICAL = new LinearLayout(Direction.VERTICAL).setSpacing(0);
 	private Direction orientation;
+	private Boolean held = false;
+
+	private TerminalPosition originalPosition;
+	private Container originalParent;
+
+	/**
+	* @return the held
+	*/
+	public Boolean isHeld() {
+		return held;
+	}
+
+	public void setHeld(Boolean held) {
+		this.held = held;
+	}
+
+	/**
+	 * @return the originalParent
+	 */
+	public Container getOriginalParent() {
+		return originalParent;
+	}
+
+	/**
+	 * @param originalParent the originalParent to set
+	 */
+	public void setOriginalParent(Container originalParent) {
+		this.originalParent = originalParent;
+	}
+
+	/**
+	 * @return the originalPosition
+	 */
+	public TerminalPosition getOriginalPosition() {
+		return originalPosition;
+	}
+
+	/**
+	 * @param originalPosition the originalPosition to set
+	 */
+	public void setOriginalPosition(TerminalPosition originalPosition) {
+		this.originalPosition = originalPosition;
+	}
 
 	/**
 	 * Themes:

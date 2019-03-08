@@ -26,27 +26,14 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 	private TextColor basic = TextColor.Factory.fromString("#555555");
 	private TextColor error = TextColor.Factory.fromString("#AA5555");
 
-
-	/**
-	 * Themes:
-	 *
-	 * default
-	 * defrost
-	 * bigsnake
-	 * conqueror
-	 * businessmachine
-	 * blaster
-	 *
-	 * @param type
-	 */
 	public ShipSegment(Ship ship) {
 		this.ship = ship;
-		//setTheme(LanternaThemes.getRegisteredTheme("blaster"));
 	}
 
 	public void damage() {
 		this.damaged = true;
 	}
+
 
 
 	/**
@@ -91,77 +78,115 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 	@Override
 	public synchronized Result handleKeyStroke(KeyStroke keyStroke) {
 
-		if (isOnSea()) {
+		if (isOnSea() && ship.isHeld()) {
 			var sea = ((Sea) ship.getParent());
-			battleships.model.Direction direction = null;
-			if (keyStroke.getKeyType() == KeyType.ArrowUp) {
-				if (sea.placementValidFromTop(ship)) {
-					direction = battleships.model.Direction.UP;
-				} else {
-					briefError();
-				}
-			} else if (keyStroke.getKeyType() == KeyType.ArrowDown) {
-				if (sea.placementValidFromBottom(ship)) {
-					direction = battleships.model.Direction.DOWN;
-				} else {
-					briefError();
-				}
-			} else if (keyStroke.getKeyType() == KeyType.ArrowLeft) {
-				if (sea.placementValidFromLeft(ship)) {
-					direction = battleships.model.Direction.LEFT;
-				} else {
-					briefError();
-				}
-			} else if (keyStroke.getKeyType() == KeyType.ArrowRight) {
-				if (sea.placementValidFromRight(ship)) {
-					direction = battleships.model.Direction.RIGHT;
-				} else {
-					briefError();
-				}
-			} else if (keyStroke.getKeyType() == KeyType.Enter) {
-				if (!sea.placementValid(ship)) {
-					briefError();
-				} else {
-					Drawer d = sea.getDrawer();
-					sea.sendRipple(ship);
-					if (d.getShips().size() > 0) {
-
-						d.getShips().get(0).getBody().get(0).takeFocus();
+			switch (keyStroke.getKeyType()) {
+				case ArrowDown:
+					if (sea.placementValidFromBottom(ship)) {
+						moveShipInDirection(battleships.model.Direction.DOWN);
 					} else {
-						// TODO: Finished placement
+						briefError();
 					}
-				}
-
-
-
-			} else if (keyStroke.getKeyType() == KeyType.Escape) {
-				ship.doSwitch();
-			} else if (keyStroke.getCharacter() == ' ') {
-				ship.changeOrientation();
+					return Result.HANDLED;
+				case ArrowLeft:
+					if (sea.placementValidFromLeft(ship)) {
+						moveShipInDirection(battleships.model.Direction.LEFT);
+					} else {
+						briefError();
+					}
+					return Result.HANDLED;
+				case ArrowRight:
+					if (sea.placementValidFromRight(ship)) {
+						moveShipInDirection(battleships.model.Direction.RIGHT);
+					} else {
+						briefError();
+					}
+					return Result.HANDLED;
+				case ArrowUp:
+					if (sea.placementValidFromTop(ship)) {
+						moveShipInDirection(battleships.model.Direction.UP);
+					} else {
+						briefError();
+					}
+					return Result.HANDLED;
+				case Enter:
+					if (!sea.placementValid(ship)) {
+						briefError();
+					} else {
+						Drawer d = sea.getDrawer();
+						ship.setHeld(false);
+						sea.sendRipple(ship);
+						if (d.getShips().size() > 0) {
+							d.takeFocus();
+						} else {
+							// TODO: Finished placement
+						}
+					}
+					return Result.HANDLED;
+				case Escape:
+					if (sea.equals(ship.getOriginalParent())) {
+						ship.setPosition(ship.getOriginalPosition());
+					} else {
+						ship.doSwitch();
+					}
+					ship.setOriginalPosition(null);
+					ship.setOriginalParent(null);
+					ship.setHeld(false);
+				default:
 			}
-
-			if (direction != null) {
-
-				ship.setPosition(new TerminalPosition(ship.getPosition().getColumn() + direction.vector.getX(),
-						ship.getPosition().getRow() - direction.vector.getY()));
-
+			switch (keyStroke.getCharacter()) {
+				case ' ':
+					ship.changeOrientation();
+					return Result.HANDLED;
+				default:
 			}
-			return Result.HANDLED;
-		} else {
-			if (keyStroke.getKeyType() == KeyType.Enter
-					|| (keyStroke.getKeyType() == KeyType.Character && keyStroke.getCharacter() == ' ')) {
-				ship.doSwitch();
-				return Result.HANDLED;
-			}
-			if (keyStroke.getKeyType() == KeyType.ArrowUp || keyStroke.getKeyType() == KeyType.ArrowDown) {
-				return super.handleKeyStroke(keyStroke);
-			} else {
-				return Result.UNHANDLED;
-			}
-
 		}
+
+		// When the cursor is on the sea and not holding any items and when in placement mode
+		if (isOnSea() && !ship.isHeld()) {
+			switch (keyStroke.getKeyType()) {
+				case ArrowDown:
+					return Result.MOVE_FOCUS_DOWN;
+				case ArrowLeft:
+					return Result.MOVE_FOCUS_LEFT;
+				case ArrowRight:
+					return Result.MOVE_FOCUS_RIGHT;
+				case ArrowUp:
+					return Result.MOVE_FOCUS_UP;
+				case Tab:
+					return Result.MOVE_FOCUS_NEXT;
+				case ReverseTab:
+					return Result.MOVE_FOCUS_PREVIOUS;
+				case Enter:
+					ship.setHeld(true);
+
+					return Result.HANDLED;
+				default:
+			}
+		}
+
+		if (isInDrawer()) {
+			switch (keyStroke.getKeyType()) {
+				case ArrowDown:
+					return Result.MOVE_FOCUS_DOWN;
+				case ArrowUp:
+					return Result.MOVE_FOCUS_UP;
+				case Enter:
+					ship.setHeld(true);
+					ship.setOriginalParent(ship.getParent());
+					ship.setOriginalPosition(ship.getPosition());
+					ship.doSwitch();
+					return Result.HANDLED;
+				default:
+			}
+		}
+		return Result.UNHANDLED;
 	}
 
+	public void moveShipInDirection(battleships.model.Direction direction) {
+		ship.setPosition(new TerminalPosition(ship.getPosition().getColumn() + direction.vector.getX(),
+				ship.getPosition().getRow() - direction.vector.getY()));
+	}
 
 	/**
 	 * Alternative button renderer that displays buttons with just the label and minimal decoration
