@@ -21,10 +21,12 @@ import com.googlecode.lanterna.gui2.WindowDecorationRenderer;
 import com.googlecode.lanterna.gui2.WindowPostRenderer;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
+import battleships.gui.Water;
 import battleships.model.ShipType;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 import com.googlecode.lanterna.gui2.LayoutManager;
 
 public class SeaLayout implements LayoutManager {
@@ -44,7 +46,16 @@ public class SeaLayout implements LayoutManager {
 
 	@Override
 	public void doLayout(TerminalSize area, List<Component> components) {
-
+		int x = 0;
+		int y = 0;
+		for (var c : components.stream().filter(c -> c instanceof Water).collect(Collectors.toList())) {
+			c.setPosition(new TerminalPosition(x, y));
+			x++;
+			if (x >= area.getColumns()) {
+				x = 0;
+				y++;
+			}
+		}
 	}
 
 

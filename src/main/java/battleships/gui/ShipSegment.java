@@ -57,7 +57,6 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 	 */
 	public ShipSegment(Ship ship) {
 		this.ship = ship;
-		setRenderer(new ShipRenderer());
 		//setTheme(LanternaThemes.getRegisteredTheme("blaster"));
 	}
 

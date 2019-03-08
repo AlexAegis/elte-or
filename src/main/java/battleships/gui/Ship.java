@@ -27,6 +27,7 @@ import battleships.misc.Chainable;
 import battleships.misc.Switchable;
 import battleships.model.Coord;
 import battleships.model.ShipType;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -74,11 +75,13 @@ public class Ship extends Panel implements Switchable {
 
 	public void setLayoutToVertical() {
 		setLayoutManager(Ship.VERTICAL);
+		setSize(getLayoutManager().getPreferredSize(new ArrayList<>(getChildren())));
 		orientation = Direction.VERTICAL;
 	}
 
 	public void setLayoutToHorizontal() {
 		setLayoutManager(Ship.HORIZONTAL);
+		setSize(getLayoutManager().getPreferredSize(new ArrayList<>(getChildren())));
 		orientation = Direction.HORIZONTAL;
 	}
 

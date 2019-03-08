@@ -15,6 +15,7 @@ import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.Component;
 import com.googlecode.lanterna.gui2.ComponentRenderer;
 import com.googlecode.lanterna.gui2.Container;
+import com.googlecode.lanterna.gui2.GridLayout;
 import com.googlecode.lanterna.gui2.InteractableRenderer;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextGUIGraphics;
@@ -29,6 +30,7 @@ import battleships.model.ShipType;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.IntStream;
 
 
 public class Sea extends Panel implements Chainable {
@@ -41,8 +43,14 @@ public class Sea extends Panel implements Chainable {
 	private Admiral admiral;
 	private TerminalPosition cursor;
 
+	private Integer width = 10;
+	private Integer height = 10;
+
 	public Sea(Admiral admiral) {
-		setLayoutManager(new SeaLayout(new TerminalSize(10, 10)));
+
+		setLayoutManager(new SeaLayout(new TerminalSize(width, height)));
+		IntStream.range(0, width * height).forEach(i -> addComponent(new Water(this)));
+
 		//admiral.getShips() // place ships
 	}
 
