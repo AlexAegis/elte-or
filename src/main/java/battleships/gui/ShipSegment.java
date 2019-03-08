@@ -4,6 +4,7 @@ import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.gui2.AbstractInteractableComponent;
+import com.googlecode.lanterna.gui2.Interactable;
 import com.googlecode.lanterna.gui2.InteractableRenderer;
 import com.googlecode.lanterna.gui2.TextGUIGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
@@ -141,22 +142,21 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 
 		// When the cursor is on the sea and not holding any items and when in placement mode
 		if (isOnSea() && !ship.isHeld()) {
+			var sea = ((Sea) ship.getParent());
 			switch (keyStroke.getKeyType()) {
 				case ArrowDown:
-					return Result.MOVE_FOCUS_DOWN;
-				case ArrowLeft:
-					return Result.MOVE_FOCUS_LEFT;
 				case ArrowRight:
-					return Result.MOVE_FOCUS_RIGHT;
-				case ArrowUp:
-					return Result.MOVE_FOCUS_UP;
-				case Tab:
 					return Result.MOVE_FOCUS_NEXT;
-				case ReverseTab:
+				case ArrowUp:
+				case ArrowLeft:
 					return Result.MOVE_FOCUS_PREVIOUS;
+				case Tab:
+				case ReverseTab:
+				case Escape:
+					sea.getDrawer().takeFocus();
+					return Result.HANDLED;
 				case Enter:
 					ship.setHeld(true);
-
 					return Result.HANDLED;
 				default:
 			}
@@ -198,6 +198,14 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 	public void moveShipInDirection(battleships.model.Direction direction) {
 		ship.setPosition(new TerminalPosition(ship.getPosition().getColumn() + direction.vector.getX(),
 				ship.getPosition().getRow() - direction.vector.getY()));
+	}
+
+	@Override
+	protected void afterEnterFocus(FocusChangeDirection direction, Interactable previouslyInFocus) {
+		/*if (ship.isHeld() && ship.getParent() instanceof Drawer) {
+			previouslyInFocus.takeFocus();
+		}*/
+		super.afterEnterFocus(direction, previouslyInFocus);
 	}
 
 	/**

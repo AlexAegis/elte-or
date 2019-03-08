@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 
-public class Ship extends Panel implements Switchable, SegmentContainer {
+public class Ship extends Panel implements Switchable, SegmentContainer, Comparable<Ship> {
 
 
 	private ShipType type;
@@ -149,6 +149,13 @@ public class Ship extends Panel implements Switchable, SegmentContainer {
 		if (!getBody().isEmpty()) {
 			getBody().get(0).takeFocus();
 		}
+	}
+
+	@Override
+	public int compareTo(Ship o) {
+		return getPosition().getRow() == o.getPosition().getRow()
+				? getPosition().getColumn() - o.getPosition().getColumn()
+				: getPosition().getRow() - o.getPosition().getRow();
 	}
 
 }

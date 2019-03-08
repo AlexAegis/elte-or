@@ -5,6 +5,7 @@ import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.gui2.Component;
 import com.googlecode.lanterna.gui2.Direction;
+import com.googlecode.lanterna.gui2.Interactable;
 import com.googlecode.lanterna.gui2.Panel;
 import battleships.model.Admiral;
 import battleships.gui.Ship;
@@ -35,6 +36,8 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 
 	private Integer width = 10;
 	private Integer height = 10;
+
+	private Ship focused;
 
 	public Sea(Admiral admiral, Drawer drawer) {
 		this(admiral);
@@ -264,5 +267,39 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 		if (!getShips().isEmpty()) {
 			getShips().get(0).takeFocus();
 		}
+	}
+
+
+	public Interactable focusCalc(Interactable fromThis, Boolean forward) {
+		if (getShips() != null && !getShips().isEmpty()) {
+			if (fromThis instanceof ShipSegment) {
+				focused = ((ShipSegment) fromThis).getShip();
+			}
+			if (focused == null) {
+				return (Interactable) getShips().get(0).getHead();
+			} else {
+				var sortedShips = getShips().stream().sorted().collect(Collectors.toList());
+				var focusedSortedIndex = sortedShips.indexOf(focused);
+				return (Interactable) sortedShips
+						.get(((focusedSortedIndex + (forward ? 1 : -1)) + sortedShips.size()) % sortedShips.size())
+						.getHead();
+			}
+		} else {
+			return fromThis;
+		}
+	}
+
+
+	/**
+	 * TODO: Should work differently on targeting mode and placement mode!! (Or not)
+	 */
+	@Override
+	public Interactable previousFocus(Interactable fromThis) {
+		return focusCalc(fromThis, false);
+	}
+
+	@Override
+	public Interactable nextFocus(Interactable fromThis) {
+		return focusCalc(fromThis, true);
 	}
 }
