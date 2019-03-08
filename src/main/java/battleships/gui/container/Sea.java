@@ -4,9 +4,11 @@ import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.gui2.Component;
+import com.googlecode.lanterna.gui2.ComponentRenderer;
 import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.Interactable;
 import com.googlecode.lanterna.gui2.Panel;
+import com.googlecode.lanterna.gui2.TextGUIGraphics;
 import battleships.model.Admiral;
 import battleships.gui.Ship;
 import battleships.gui.ShipSegment;
@@ -44,6 +46,8 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 		setDrawer(drawer);
 		drawer.setSea(this);
 	}
+
+
 
 	public Sea(Admiral admiral) {
 
@@ -302,4 +306,37 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	public Interactable nextFocus(Interactable fromThis) {
 		return focusCalc(fromThis, true);
 	}
+	/*
+		@Override
+		protected ComponentRenderer<Sea> createDefaultRenderer() {
+			return new ComponentRenderer<Sea>() {
+
+				@Override
+				public TerminalSize getPreferredSize(Sea component) {
+					synchronized (components) {
+						cachedPreferredSize = layoutManager.getPreferredSize(components);
+					}
+					return cachedPreferredSize;
+				}
+
+				@Override
+				public void drawComponent(TextGUIGraphics graphics, Sea component) {
+					if (isInvalid()) {
+						layout(graphics.getSize());
+					}
+
+					// Reset the area
+					graphics.applyThemeStyle(getThemeDefinition().getNormal());
+					graphics.fill(' ');
+
+					synchronized (components) {
+						for (Component child : components) {
+							TextGUIGraphics componentGraphics =
+									graphics.newTextGraphics(child.getPosition(), child.getSize());
+							child.draw(componentGraphics);
+						}
+					}
+				}
+			};
+		}*/
 }

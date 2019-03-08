@@ -34,9 +34,10 @@ public class Drawer extends Panel implements Chainable, ShipContainer {
 		return getShips().stream().filter(ship -> ship.getType().equals(type)).findFirst();
 	}
 
-
 	public void takeFocus() {
-		getShips().get(0).getBody().get(0).takeFocus();
+		if (!getShips().isEmpty()) {
+			getShips().get(0).takeFocus();
+		}
 	}
 
 	/**
