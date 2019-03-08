@@ -1,7 +1,9 @@
-package battleships.gui;
+package battleships.gui.container;
 
 import java.util.Optional;
 import com.googlecode.lanterna.gui2.Panel;
+import battleships.gui.Sea;
+import battleships.gui.Ship;
 import battleships.gui.layout.ShipContainer;
 import battleships.misc.Chainable;
 import battleships.model.ShipType;
@@ -11,6 +13,11 @@ public class Drawer extends Panel implements Chainable, ShipContainer {
 	private Sea sea;
 
 
+	public Drawer(Sea sea) {
+		this();
+		setSea(sea);
+		sea.setDrawer(this);
+	}
 
 	public Drawer() {
 

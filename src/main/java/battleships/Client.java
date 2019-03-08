@@ -48,7 +48,7 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import battleships.gui.Drawer;
+import battleships.gui.container.Drawer;
 import battleships.gui.Sea;
 import battleships.gui.Ship;
 import battleships.gui.ShipSegment;
@@ -132,7 +132,7 @@ public class Client implements Runnable {
 		Drawer drawer = new Drawer();
 		Panel seaContainer = new Panel(new GridLayout(1));
 		Panel opponentContainer = new Panel(new GridLayout(3));
-		Sea sea = new Sea(admiral);
+		Sea sea = new Sea(admiral, drawer);
 		sea.setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER, true,
 				true, 1, 1));
 		seaContainer.addComponent(sea);
@@ -141,8 +141,7 @@ public class Client implements Runnable {
 		opponent.setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER,
 				true, true, 1, 1));
 		opponentContainer.addComponent(opponent);
-		sea.setDrawer(drawer);
-		drawer.setSea(sea);
+
 
 		fieldInitFromFile(sea);
 

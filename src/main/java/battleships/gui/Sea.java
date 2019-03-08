@@ -7,6 +7,7 @@ import com.googlecode.lanterna.gui2.Component;
 import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.Panel;
 import battleships.model.Admiral;
+import battleships.gui.container.Drawer;
 import battleships.gui.layout.SeaLayout;
 import battleships.gui.layout.ShipContainer;
 import battleships.gui.layout.WaterContainer;
@@ -31,6 +32,12 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 
 	private Integer width = 10;
 	private Integer height = 10;
+
+	public Sea(Admiral admiral, Drawer drawer) {
+		this(admiral);
+		setDrawer(drawer);
+		drawer.setSea(this);
+	}
 
 	public Sea(Admiral admiral) {
 
