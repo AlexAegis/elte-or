@@ -25,28 +25,37 @@ public class ConnectWindow extends BasicWindow {
 	private static final String IP_ADDRESS_FULL =
 			"^(25[0-5]|2[0-4]\\d|1\\d{2}|\\d{1,2})\\.(25[0-5]|2[0-4]\\d|1\\d{2}|\\d{1,2})\\.(25[0-5]|2[0-4]\\d|1\\d{2}|\\d{1,2})\\.(25[0-5]|2[0-4]\\d|1\\d{2}|\\d{1,2})$";
 
+	Panel connectForm;
 	TextBox hostBox;
 	TextBox portBox;
 
 	public ConnectWindow(Client client) {
 		this.client = client;
-
-
 		setTitle("Connect");
 		setHints(Arrays.asList(Window.Hint.MODAL));
-		Panel connectForm = new Panel();
+		connectForm = new Panel();
 		connectForm.setLayoutManager(new GridLayout(2));
 		setComponent(connectForm);
 
 		connectForm.addComponent(new Label("IP Address"));
-		hostBox = new TextBox().setValidationPattern(IP_ADDRESS_PART).addTo(connectForm);
+		hostBox = new TextBox(client.getHost()).setValidationPattern(IP_ADDRESS_PART).addTo(connectForm);
 
 		connectForm.addComponent(new Label("Port"));
-		portBox = new TextBox().setValidationPattern(Pattern.compile("[0-9]{0,4}")).addTo(connectForm);
+		portBox = new TextBox(client.getPort().toString()).setValidationPattern(Pattern.compile("[0-9]{0,4}"))
+				.addTo(connectForm);
 		//portBox.invalidate();
 		//portBox.setTheme(LanternaThemes.getRegisteredTheme("conqueror"));
 		connectForm.addComponent(new EmptySpace());
 
+		connectTry = new Thread(() -> {
+			try {
+				Thread.sleep(500);
+				connectForm.getChildren().stream().forEach(child -> connectForm.addComponent(child));
+				takeFocus();
+			} catch (InterruptedException e) {
+				Logger.getGlobal().info("Connect window interrupted");
+			}
+		});
 
 		new Button("Connect", () -> {
 			Boolean valid = true;
@@ -61,18 +70,8 @@ public class ConnectWindow extends BasicWindow {
 			if (valid) {
 				client.setHost(hostBox.getText());
 				client.setPort(Integer.parseInt(portBox.getText()));
-				var children = connectForm.getChildren();
 				connectForm.removeAllComponents();
-				connectTry = new Thread(() -> {
-					try {
-						Thread.sleep(500);
-						children.stream().forEach(child -> connectForm.addComponent(child));
-					} catch (InterruptedException e) {
-						Logger.getGlobal().info("Connect window interrupted");
-					}
-				});
 				connectTry.start();
-
 			}
 		}).addTo(connectForm);
 

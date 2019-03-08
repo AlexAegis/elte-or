@@ -9,6 +9,10 @@ import battleships.misc.Spawner;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 import battleships.model.Table;
 import battleships.server.ClientThread;
 
@@ -35,36 +39,33 @@ public class Server implements Runnable, Spawner {
 	List<ClientThread> clients = new ArrayList<>();
 	ServerSocket server;
 	Table table;
+	ExecutorService executor = Executors.newCachedThreadPool();
 
 	@Override
 	public void run() {
-		System.out.println("Server run");
+		Logger.getGlobal().info("Server run, listening on port: " + port);
 		table = new Table();
 		try {
 			server = new ServerSocket(port);
-
-			//ExecutorService es = Executors.newCachedThreadPool();
 			spawn();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			// server.close();
+			try {
+				executor.awaitTermination(10, TimeUnit.DAYS);
+				// TODO: Because of autospawning the last one wont terminate. Have to manually terminate after game end.
+				server.close();
+			} catch (IOException | InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	@Override
 	public void spawn() {
 		var thread = new ClientThread(server, table, this);
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		thread.start();
+		executor.submit(thread);
 		clients.add(thread);
 	}
-
 
 }

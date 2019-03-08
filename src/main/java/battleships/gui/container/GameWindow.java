@@ -32,7 +32,6 @@ public class GameWindow extends BasicWindow {
 	Client client;
 	Label playerName;
 	private Admiral admiral = new Admiral();
-	Socket _server;
 	Boolean finished = false;
 	Boolean closed = false;
 	BasicWindow connect;
@@ -98,5 +97,17 @@ public class GameWindow extends BasicWindow {
 		setFocusedInteractable(getDrawer().getShips().iterator().next().getSegments().iterator().next());
 	}
 
+	/**
+	 * @return the playerName
+	 */
+	public Label getPlayerName() {
+		return playerName;
+	}
 
+	/**
+	 * @param playerName the playerName to set
+	 */
+	public void setPlayerName(String playerName) {
+		this.playerName.setText(playerName);
+	}
 }

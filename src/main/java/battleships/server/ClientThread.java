@@ -18,8 +18,8 @@ import battleships.model.Admiral;
 import battleships.model.Table;
 import lesson04.BattleShipsServer;
 import battleships.Server;
-import battleships.action.Attack;
-import battleships.action.Place;
+import battleships.net.action.Attack;
+import battleships.net.action.Place;
 
 public class ClientThread extends Thread {
 
@@ -35,7 +35,6 @@ public class ClientThread extends Thread {
 
 	@Override
 	public synchronized void run() {
-		System.out.println("RUNNNN");
 		Socket clientSocket = null;
 		try {
 			clientSocket = server.accept();

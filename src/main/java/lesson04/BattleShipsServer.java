@@ -17,8 +17,8 @@ import battleships.model.Shot;
 import battleships.model.Admiral;
 import battleships.model.Table;
 import battleships.server.ClientThread;
-import battleships.action.Attack;
-import battleships.action.Place;
+import battleships.net.action.Attack;
+import battleships.net.action.Place;
 
 /**
  * Run this with the BasicBattleShips Server/Client compound debug configuration to run with client simultaneously
