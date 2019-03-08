@@ -61,7 +61,7 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	public void sendRipple() {
 		this.getLayoutManager().doLayout(getPreferredSize(), (List<Component>) getChildren());
 
-		var wave = ripple(new TerminalPosition(5, 5), 1, 3, Direction.HORIZONTAL);
+		var wave = ripple(new TerminalPosition(5, 5), 1, 6, Direction.HORIZONTAL);
 
 		getWaters().forEach(water -> {
 
@@ -112,7 +112,7 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 		var result = new ArrayList<List<TerminalPosition>>();
 
 
-		for (int c = 0; c < count; c++) {
+		for (int c = 1; c < count; c++) {
 			var iter = new ArrayList<TerminalPosition>();
 			var headpiece = false;
 			var tailpiece = false;
@@ -141,7 +141,9 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 							iter.add(anchor.withRelative(-t, -c));
 						}
 					}
-				} else if (tailpiece) {
+				}
+
+				if (tailpiece) {
 					if (hor) {
 						iter.add(anchor.withRelative(c, 0)); // --ox
 					} else {
@@ -156,39 +158,40 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 							iter.add(anchor.withRelative(-t, c));
 						}
 					}
-				} else { // -O-
-
-					if (hor) {
-						iter.add(anchor.withRelative(0, -c));
-					} else {
-						iter.add(anchor.withRelative(-c, 0));
-					}
-
-					if (hor) {
-						iter.add(anchor.withRelative(0, c));
-					} else {
-						iter.add(anchor.withRelative(c, 0));
-					}
-					for (int t = c; t > 0; t--) {
-
-						if (hor) {
-							iter.add(anchor.withRelative(t, -c)); //    x
-							//  -o-
-							iter.add(anchor.withRelative(-t, -c));//     x
-							// -o-
-							iter.add(anchor.withRelative(t, c));
-							iter.add(anchor.withRelative(-t, c));
-						} else {
-							iter.add(anchor.withRelative(-c, t)); //    x
-							//  -o-
-							iter.add(anchor.withRelative(-c, -t));//     x
-							// -o-
-							iter.add(anchor.withRelative(c, t));
-							iter.add(anchor.withRelative(c, -t));
-						}
-
-					}
 				}
+				// -O-
+
+				if (hor) {
+					iter.add(anchor.withRelative(0, -c));
+				} else {
+					iter.add(anchor.withRelative(-c, 0));
+				}
+
+				if (hor) {
+					iter.add(anchor.withRelative(0, c));
+				} else {
+					iter.add(anchor.withRelative(c, 0));
+				}
+				for (int t = c; t > 0; t--) {
+
+					if (hor) {
+						iter.add(anchor.withRelative(t, -c)); //    x
+						//  -o-
+						iter.add(anchor.withRelative(-t, -c));//     x
+						// -o-
+						iter.add(anchor.withRelative(t, c));
+						iter.add(anchor.withRelative(-t, c));
+					} else {
+						iter.add(anchor.withRelative(-c, t)); //    x
+						//  -o-
+						iter.add(anchor.withRelative(-c, -t));//     x
+						// -o-
+						iter.add(anchor.withRelative(c, t));
+						iter.add(anchor.withRelative(c, -t));
+					}
+
+				}
+
 
 			}
 			result.add(iter);
