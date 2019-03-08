@@ -1,6 +1,5 @@
 package lesson04;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
@@ -10,13 +9,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import battleships.exception.AlreadyShotException;
 import battleships.exception.BorderShotException;
-import battleships.model.Coord;
 import battleships.model.Shot;
 import battleships.model.Admiral;
 import battleships.model.Table;

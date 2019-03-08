@@ -6,10 +6,8 @@ import picocli.CommandLine.IVersionProvider;
 import picocli.CommandLine.Option;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.jar.Manifest;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import battleships.misc.Levels;
 
