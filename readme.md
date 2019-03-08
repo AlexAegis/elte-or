@@ -4,6 +4,15 @@
 
 ELTE-IK 2018-19/2
 
+TODO:
+
+Button panel below the playfield
+
+Dynamic buttons, Finalize placement (match starts when everybody is finalized)
+if initialplacement (from file) places down every ship (drawer gets empty) autofinalize
+
+(Drawer 0/8 counter in title border bar)
+
 ---
 
 ## [Lesson 1 - resuscitation](./src/main/java/lesson01/)
