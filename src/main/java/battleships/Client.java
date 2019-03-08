@@ -80,7 +80,7 @@ public class Client implements Runnable {
 	@Option(names = {"-p", "--port"}, paramLabel = "<host>",
 			description = "Port of the server  (default: ${DEFAULT-VALUE})")
 	private Integer port = 6668;
-
+	Label playerName;
 	private Admiral admiral = new Admiral();
 
 	private static final Pattern IP_ADDRESS_PART = Pattern.compile(
@@ -192,11 +192,21 @@ public class Client implements Runnable {
 
 			window.setComponent(container);
 			window.setHints(Arrays.asList(Window.Hint.FULL_SCREEN, Window.Hint.CENTERED, Window.Hint.NO_DECORATIONS));
+			Panel drawerAndName = new Panel(new BorderLayout());
 
-			container.addComponent(drawer.withBorder(Borders.singleLine("Drawer")));
+
+
 			container.addComponent(seaContainer.withBorder(Borders.singleLine("Sea")));
 			container.addComponent(opponentContainer.withBorder(Borders.singleLine("Opponent")));
-			drawer.setLayoutData(BorderLayout.Location.LEFT);
+			playerName = new Label("");
+			drawerAndName.addComponent(playerName);
+			drawerAndName.addComponent(drawer.withBorder(Borders.singleLine("Drawer")));
+
+			playerName.setLayoutData(BorderLayout.Location.TOP);
+			drawer.setLayoutData(BorderLayout.Location.CENTER);
+
+			container.addComponent(drawerAndName);
+			drawerAndName.setLayoutData(BorderLayout.Location.LEFT);
 			seaContainer.setLayoutData(BorderLayout.Location.CENTER);
 
 			connect = new BasicWindow();

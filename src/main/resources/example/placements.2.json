@@ -1,7 +1,7 @@
 {
 	"placements": [
-		{ "position": "2,2", "class": "FRIGATE", "orientation": "horizontal" },
-		{ "position": "9,9", "class": "BOAT", "orientation": "horizontal" },
-		{ "position": "6,5", "class": "SUBMARINE", "orientation": "vertical" }
+		{ "position": "1,1", "class": "FRIGATE", "orientation": "horizontal" },
+		{ "position": "3,9", "class": "BOAT", "orientation": "horizontal" },
+		{ "position": "5,7", "class": "SUBMARINE", "orientation": "vertical" }
 	]
 }

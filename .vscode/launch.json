@@ -175,7 +175,7 @@
 		},
 		{
 			"type": "java",
-			"name": "App as Client",
+			"name": "App Client",
 			"request": "launch",
 			"mainClass": "battleships.App",
 			"console": "internalConsole",
@@ -184,10 +184,19 @@
 		},
 		{
 			"type": "java",
-			"name": "App as Server",
+			"name": "App Client 2",
 			"request": "launch",
 			"mainClass": "battleships.App",
 			"console": "internalConsole",
+			"args": ["-l", "INFO", "client", "-i", "./src/main/resources/example/placements.2.json"],
+			"projectName": "battleships"
+		},
+		{
+			"type": "java",
+			"name": "App Server",
+			"request": "launch",
+			"mainClass": "battleships.App",
+			"console": "integratedTerminal",
 			"args": ["-l", "INFO", "server"],
 			"projectName": "battleships"
 		},
@@ -216,6 +225,10 @@
 		{
 			"name": "BattleShips Server/Client Double Client",
 			"configurations": ["BattleShips Server", "BattleShips Client 1", "BattleShips Client 2"]
+		},
+		{
+			"name": "App Server/Client Double Client",
+			"configurations": ["App Server", "App Client", "App Client"]
 		}
 	]
 }
