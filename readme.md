@@ -83,6 +83,14 @@ If the application looks blurry and you're using different scaling settings on w
 
 > **Oracle** JDK
 
+### [Lanterna](https://github.com/mabe02/lanterna)
+
+> **Text GUI** library
+
+### [Picocli](https://picocli.info/)
+
+> **Command line** interface
+
 ### [Gradle](https://gradle.org/)
 
 > **Build** tool
