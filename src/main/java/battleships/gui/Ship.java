@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -64,10 +65,11 @@ public class Ship extends Panel implements Switchable {
 		IntStream.range(0, type.getLength()).mapToObj(i -> new ShipSegment(this)).forEach(this::addComponent);
 	}
 
-	public List<Coord> getBody() {
-		Logger.getGlobal().info("getPosition().getColumn(): " + getPosition().getColumn());
-		return null;
+	public List<ShipSegment> getBody() {
+		return getChildren().stream().filter(c -> c instanceof ShipSegment).map(c -> (ShipSegment) c)
+				.collect(Collectors.toList());
 	}
+
 
 	public ShipSegment getHead() {
 		return (ShipSegment) getChildren().iterator().next();

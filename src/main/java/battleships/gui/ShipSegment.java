@@ -27,9 +27,13 @@ import battleships.model.Direction;
 import battleships.model.ShipType;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
@@ -71,11 +75,6 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 	 */
 	public Ship getShip() {
 		return ship;
-	}
-
-	public List<Coord> getBody() {
-		Logger.getGlobal().info("getPosition().getColumn(): " + getPosition().getColumn());
-		return null;
 	}
 
 
@@ -145,6 +144,29 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 			} else if (keyStroke.getKeyType() == KeyType.Enter) {
 				// Try to place
 				// Do placement validation
+				var sea = ((Sea) ship.getParent());
+				// all the ships on the sea TODO: INCLUDE BORDERS .withBorder
+				var takenPositions = sea.getShips().stream()
+						.flatMap(seaShip -> seaShip.equals(ship) ? Stream.empty() : seaShip.getBody().stream()) // Every other ship
+						.map(bodyPieceFlattener).collect(Collectors.toSet());
+
+				var placementPositions = ship.getBody().stream().map(bodyPieceFlattener).collect(Collectors.toSet());
+
+				var tps = takenPositions.size();
+				var pps = placementPositions.size();
+				takenPositions.addAll(placementPositions);
+				if (takenPositions.size() != tps + pps) {
+					briefError();
+				} else {
+					Drawer d = sea.getDrawer();
+					if (d.getShips().size() > 0) {
+						System.out.println(d.getShips().get(0).getBody().get(0).takeFocus());
+					} else {
+						// TODO: Finished placement
+					}
+				}
+
+
 
 			} else if (keyStroke.getKeyType() == KeyType.Escape) {
 				// Back to drawer
@@ -161,7 +183,6 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 						ship.getPosition().getRow() - direction.vector.getY()));
 
 			}
-			getBody();
 			return Result.HANDLED;
 		} else {
 			if (keyStroke.getKeyType() == KeyType.Enter
@@ -177,6 +198,9 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 
 		}
 	}
+
+	public Function<ShipSegment, TerminalPosition> bodyPieceFlattener =
+			bodyPiece -> bodyPiece.getPosition().withRelative(bodyPiece.getParent().getPosition());
 
 	/**
 	 * Alternative button renderer that displays buttons with just the label and minimal decoration

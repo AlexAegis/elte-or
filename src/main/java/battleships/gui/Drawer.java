@@ -15,6 +15,7 @@ import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.Component;
 import com.googlecode.lanterna.gui2.ComponentRenderer;
 import com.googlecode.lanterna.gui2.Container;
+import com.googlecode.lanterna.gui2.Interactable;
 import com.googlecode.lanterna.gui2.InteractableRenderer;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextGUIGraphics;
@@ -22,13 +23,15 @@ import com.googlecode.lanterna.gui2.WindowDecorationRenderer;
 import com.googlecode.lanterna.gui2.WindowPostRenderer;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
+import battleships.gui.layout.ShipContainer;
 import battleships.misc.Chainable;
 import battleships.model.ShipType;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
-public class Drawer extends Panel implements Chainable {
+public class Drawer extends Panel implements Chainable, ShipContainer {
 
 	private Sea sea;
 

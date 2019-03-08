@@ -25,6 +25,7 @@ import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import battleships.model.Admiral;
 import battleships.gui.layout.SeaLayout;
+import battleships.gui.layout.ShipContainer;
 import battleships.misc.Chainable;
 import battleships.model.ShipType;
 import java.util.EnumSet;
@@ -33,7 +34,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.IntStream;
 
 
-public class Sea extends Panel implements Chainable {
+public class Sea extends Panel implements Chainable, ShipContainer {
 
 
 	private TextColor colorWater = TextColor.Factory.fromString("#5555BB");
