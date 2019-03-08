@@ -39,7 +39,7 @@ public class Water extends AbstractInteractableComponent<Water> {
 
 	private final TextColor highlighted = TextColor.Factory.fromString("#555599");
 	private TextColor currentHighlighted = highlighted;
-	private TextColor basic = TextColor.Factory.fromString("#111177");
+
 
 
 	/**
@@ -106,7 +106,7 @@ public class Water extends AbstractInteractableComponent<Water> {
 			if (water.isFocused()) {
 				graphics.setBackgroundColor(water.currentHighlighted);
 			} else {
-				graphics.setBackgroundColor(water.basic);
+				graphics.setBackgroundColor(Palette.WATER);
 			}
 			graphics.fill(' ');
 

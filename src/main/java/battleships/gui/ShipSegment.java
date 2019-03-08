@@ -36,6 +36,7 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 
 
 	private Ship ship;
+	private Boolean damaged = false;
 
 	private final TextColor highlighted = TextColor.Factory.fromString("#787777");
 	private TextColor currentHighlighted = highlighted;
@@ -59,6 +60,11 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 		this.ship = ship;
 		//setTheme(LanternaThemes.getRegisteredTheme("blaster"));
 	}
+
+	public void damage() {
+		this.damaged = true;
+	}
+
 
 	/**
 	 * @return the ship
@@ -195,12 +201,20 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 
 			//} else {
 
+			graphics.setForegroundColor(Palette.SHIP_FORE);
+
 			if (shipSegment.ship.getHead().isFocused()) {
 				graphics.setBackgroundColor(shipSegment.currentHighlighted);
 			} else {
-				graphics.setBackgroundColor(shipSegment.basic);
+				graphics.setBackgroundColor(Palette.SHIP_BACK);
 			}
-			graphics.fill(' ');
+
+			if (shipSegment.damaged) {
+				graphics.fill('▒');
+			} else {
+				graphics.fill(' ');
+			}
+
 
 			//}
 
