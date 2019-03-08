@@ -23,7 +23,9 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 	private Boolean damaged = false;
 
 	private final TextColor highlighted = TextColor.Factory.fromString("#787777");
+	private final TextColor held = TextColor.Factory.fromString("#889999");
 	private TextColor currentHighlighted = highlighted;
+	private TextColor currentHeld = held;
 	private TextColor basic = TextColor.Factory.fromString("#555555");
 	private TextColor error = TextColor.Factory.fromString("#AA5555");
 
@@ -50,12 +52,14 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 	public void briefError() {
 		ship.getChildren().stream().map(c -> (ShipSegment) c).forEach(s -> {
 			s.currentHighlighted = error;
+			s.currentHeld = error;
 		});
 		new Thread(() -> {
 			try {
 				Thread.sleep(200);
 				ship.getChildren().stream().map(c -> (ShipSegment) c).forEach(s -> {
 					s.currentHighlighted = highlighted;
+					s.currentHeld = held;
 				});
 				this.invalidate();
 			} catch (Exception e) {
@@ -237,11 +241,15 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 			graphics.setForegroundColor(Palette.SHIP_FORE);
 
 			if (shipSegment.ship.getHead().isFocused()) {
-				graphics.setBackgroundColor(shipSegment.currentHighlighted);
+				if (shipSegment.ship.isHeld()) {
+					graphics.setBackgroundColor(shipSegment.currentHeld);
+				} else {
+					graphics.setBackgroundColor(shipSegment.currentHighlighted);
+				}
+
 			} else {
 				graphics.setBackgroundColor(Palette.SHIP_BACK);
 			}
-
 			if (shipSegment.damaged) {
 				graphics.fill('▒');
 			} else {
