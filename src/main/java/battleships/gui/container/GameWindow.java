@@ -10,6 +10,7 @@ import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.bundle.LanternaThemes;
 import com.googlecode.lanterna.graphics.Theme;
 import com.googlecode.lanterna.gui2.BasicWindow;
+import com.googlecode.lanterna.gui2.Border;
 import com.googlecode.lanterna.gui2.BorderLayout;
 import com.googlecode.lanterna.gui2.Borders;
 import com.googlecode.lanterna.gui2.Button;
@@ -29,38 +30,35 @@ import battleships.Client;
 import battleships.model.Admiral;
 
 public class GameWindow extends BasicWindow {
-	Client client;
-	Label playerName;
+	private Client client;
+	private Label playerName;
 	private Admiral admiral;
-	Boolean finished = false;
-	Boolean closed = false;
-	BasicWindow connect;
-	Thread connectTry;
+	private Boolean finished = false;
+	private Boolean closed = false;
+	private BasicWindow connect;
+	private Thread connectTry;
 
-	Drawer drawer;
-	Sea sea;
+	private Drawer drawer;
+	private Sea sea;
+	private ActionBar actionBar;
 
 	public GameWindow(Client client, Terminal terminal, Screen screen) {
 		this.client = client;
-		drawer = new Drawer();
+		Panel container = new Panel(new BorderLayout());
+		setComponent(container);
+		setHints(Arrays.asList(Window.Hint.FULL_SCREEN, Window.Hint.CENTERED, Window.Hint.NO_DECORATIONS));
+
+
+		drawer = new Drawer(this);
 		sea = new Sea(admiral, drawer);
 		Panel seaContainer = new Panel(new GridLayout(1));
 		Panel opponentContainer = new Panel(new GridLayout(3));
 		sea.setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER, true,
 				true, 1, 1));
 		seaContainer.addComponent(sea);
-
 		client.fieldInitFromFile(sea);
 
-
-		Panel container = new Panel(new BorderLayout());
-
-		setComponent(container);
-		setHints(Arrays.asList(Window.Hint.FULL_SCREEN, Window.Hint.CENTERED, Window.Hint.NO_DECORATIONS));
 		Panel drawerAndName = new Panel(new BorderLayout());
-
-
-
 		container.addComponent(seaContainer.withBorder(Borders.singleLine("Sea")));
 		container.addComponent(opponentContainer.withBorder(Borders.singleLine("Opponent")));
 		playerName = new Label("");
@@ -75,6 +73,10 @@ public class GameWindow extends BasicWindow {
 		seaContainer.setLayoutData(BorderLayout.Location.CENTER);
 
 
+
+		actionBar = new ActionBar(this);
+		actionBar.setLayoutData(BorderLayout.Location.BOTTOM);
+		container.addComponent(actionBar);
 
 	}
 
@@ -108,5 +110,12 @@ public class GameWindow extends BasicWindow {
 	 */
 	public void setPlayerName(String playerName) {
 		this.playerName.setText(playerName);
+	}
+
+	/**
+	 * @return the actionBar
+	 */
+	public ActionBar getActionBar() {
+		return actionBar;
 	}
 }

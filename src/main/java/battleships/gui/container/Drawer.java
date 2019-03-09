@@ -10,24 +10,17 @@ import battleships.model.ShipType;
 public class Drawer extends Panel implements Chainable, ShipContainer {
 
 	private Sea sea;
+	private GameWindow game;
 
-
-	public Drawer(Sea sea) {
-		this();
-		setSea(sea);
-		sea.setDrawer(this);
-	}
-
-	public Drawer() {
+	public Drawer(GameWindow game) {
+		this.game = game;
 
 		// Initial ships:
-
 		addComponent(new Ship(ShipType.BOAT));
 		addComponent(new Ship(ShipType.BOAT));
 		addComponent(new Ship(ShipType.BOAT));
 		addComponent(new Ship(ShipType.FRIGATE));
 		addComponent(new Ship(ShipType.CARRIER));
-
 	}
 
 	public Optional<Ship> getByClass(ShipType type) {
@@ -35,8 +28,16 @@ public class Drawer extends Panel implements Chainable, ShipContainer {
 	}
 
 	public void takeFocus() {
+		takeFocus(false);
+	}
+
+	public void takeFocus(Boolean fromReverse) {
 		if (!getShips().isEmpty()) {
 			getShips().get(0).takeFocus();
+		} else if (!getSea().isEmpty() && !fromReverse) {
+			getSea().takeFocus();
+		} else {
+			getGame().getActionBar().takeFocus(fromReverse);
 		}
 	}
 
@@ -45,6 +46,25 @@ public class Drawer extends Panel implements Chainable, ShipContainer {
 	 */
 	public Sea getSea() {
 		return sea;
+	}
+
+	public Boolean isEmpty() {
+		return getShips().isEmpty();
+	}
+
+	public void notifyGameAboutReadyable() {
+		if (isEmpty()) {
+			game.getActionBar().enableReadyButton();
+		} else {
+			game.getActionBar().disableReadyButton();
+		}
+	}
+
+	/**
+	 * @return the game
+	 */
+	public GameWindow getGame() {
+		return game;
 	}
 
 	/**

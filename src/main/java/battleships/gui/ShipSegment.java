@@ -159,9 +159,11 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 				case ArrowLeft:
 					return Result.MOVE_FOCUS_PREVIOUS;
 				case Tab:
+					sea.getDrawer().getGame().getActionBar().takeFocus();
+					return Result.HANDLED;
 				case ReverseTab:
 				case Escape:
-					sea.getDrawer().takeFocus();
+					sea.getDrawer().takeFocus(true);
 					return Result.HANDLED;
 				case Enter:
 					ship.savePlacement();
@@ -190,8 +192,10 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 						return Result.MOVE_FOCUS_UP;
 					}
 				case Tab:
-				case ReverseTab:
 					drawer.getSea().takeFocus();
+					return Result.HANDLED;
+				case ReverseTab:
+					drawer.getGame().getActionBar().takeFocus(true);
 					return Result.HANDLED;
 				case Enter:
 					ship.setHeld(true);

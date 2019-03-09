@@ -204,6 +204,17 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 			((Chainable) getParent()).nextContainer().addComponent(this);
 		}
 		getSegments().iterator().next().takeFocus();
+		getDrawer().notifyGameAboutReadyable();
+	}
+
+	public Drawer getDrawer() {
+		if (getParent() instanceof Drawer) {
+			return (Drawer) getParent();
+		} else if (getParent() instanceof Sea) {
+			return ((Sea) getParent()).getDrawer();
+		} else {
+			return null;
+		}
 	}
 
 	/**

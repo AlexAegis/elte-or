@@ -270,6 +270,10 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	public void takeFocus() {
 		if (!getShips().isEmpty()) {
 			getShips().get(0).takeFocus();
+		} else if (!getDrawer().isEmpty()) {
+			getDrawer().takeFocus();
+		} else {
+			getDrawer().getGame().getActionBar().takeFocus();
 		}
 	}
 
@@ -339,4 +343,10 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 				}
 			};
 		}*/
+
+
+
+	public boolean isEmpty() {
+		return getShips().isEmpty();
+	}
 }
