@@ -9,9 +9,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import battleships.exception.AlreadyShotException;
 import battleships.exception.BorderShotException;
+import battleships.gui.element.ReadyLabel;
 import battleships.marker.ShotMarker;
 import battleships.model.Coord;
 import battleships.model.Shot;
+import battleships.state.Phase;
 
 /**
  * A class representing a player
@@ -24,6 +26,7 @@ public class Admiral {
 	private Map<Admiral, Admiral> knowledge = new HashMap<>();
 
 	private String name;
+	private Phase phase = Phase.PLACEMENT;
 
 	public Admiral(String name) {
 		this.name = name;
@@ -34,6 +37,20 @@ public class Admiral {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * @param phase the phase to set
+	 */
+	public void setPhase(Phase phase) {
+		this.phase = phase;
+	}
+
+	/**
+	 * @return the phase
+	 */
+	public Phase getPhase() {
+		return phase;
 	}
 
 	public Admiral(String name, List<Coord> shipPieces) {
@@ -98,6 +115,18 @@ public class Admiral {
 		return shot;
 	}
 
+
+	public void setReady(Boolean ready, ReadyLabel readyLabel) {
+		System.out.println("SETREADY" + ready);
+		if (ready) {
+			this.setPhase(Phase.READY);
+		} else {
+			this.setPhase(Phase.PLACEMENT);
+		}
+		if (readyLabel != null) {
+			readyLabel.refresh();
+		}
+	}
 
 
 	public void print(PrintStream ps) {
@@ -186,5 +215,13 @@ public class Admiral {
 
 	public void finishBorders() {
 		ships.forEach(ship -> ship.finishBorder());
+	}
+
+	public boolean isReady() {
+		return Phase.READY.equals(phase);
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }

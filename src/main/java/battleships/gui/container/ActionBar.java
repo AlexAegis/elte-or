@@ -26,6 +26,8 @@ public class ActionBar extends Panel {
 		this.game = game;
 		setLayoutManager(new GridLayout(4));
 		readyButton.setLayoutData(GridLayout.createHorizontallyEndAlignedLayoutData(1));
+		readyButton.addListener((button) -> getGame().getAdmiral().setReady(!getGame().getAdmiral().isReady(),
+				getGame().getReadyLabel()));
 		connectButton.setLayoutData(
 				GridLayout.createLayoutData(GridLayout.Alignment.BEGINNING, GridLayout.Alignment.BEGINNING));
 		showConnectButton();
@@ -169,7 +171,8 @@ public class ActionBar extends Panel {
 						return Result.HANDLED;
 					}
 					return actionBar.focusPreviousButton();
-
+				case Enter:
+					super.handleKeyStroke(keyStroke);
 				default:
 					return Result.UNHANDLED;
 			}

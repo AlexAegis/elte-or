@@ -27,20 +27,24 @@ import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 import battleships.Client;
+import battleships.gui.element.ReadyLabel;
 import battleships.model.Admiral;
+import battleships.state.Phase;
 
 public class GameWindow extends BasicWindow {
 	private Client client;
 	private Label playerName;
-	private Admiral admiral;
+	private Admiral admiral = new Admiral("");
 	private Boolean finished = false;
 	private Boolean closed = false;
 	private BasicWindow connect;
 	private Thread connectTry;
-
+	private ReadyLabel readyLabel;
 	private Drawer drawer;
 	private Sea sea;
 	private ActionBar actionBar;
+
+
 
 	public GameWindow(Client client, Terminal terminal, Screen screen) {
 		this.client = client;
@@ -63,6 +67,9 @@ public class GameWindow extends BasicWindow {
 		container.addComponent(opponentContainer.withBorder(Borders.singleLine("Opponent")));
 		playerName = new Label("");
 		drawerAndName.addComponent(playerName);
+		readyLabel = new ReadyLabel(this, admiral);
+		readyLabel.setLayoutData(BorderLayout.Location.BOTTOM);
+		drawerAndName.addComponent(readyLabel);
 		drawerAndName.addComponent(drawer.withBorder(Borders.singleLine("Drawer")));
 
 		playerName.setLayoutData(BorderLayout.Location.TOP);
@@ -78,6 +85,20 @@ public class GameWindow extends BasicWindow {
 		actionBar.setLayoutData(BorderLayout.Location.BOTTOM);
 		container.addComponent(actionBar);
 
+	}
+
+	/**
+	 * @return the admiral
+	 */
+	public Admiral getAdmiral() {
+		return admiral;
+	}
+
+	/**
+	 * @return the readyLabel
+	 */
+	public ReadyLabel getReadyLabel() {
+		return readyLabel;
 	}
 
 	/**
@@ -110,6 +131,7 @@ public class GameWindow extends BasicWindow {
 	 */
 	public void setPlayerName(String playerName) {
 		this.playerName.setText(playerName);
+		this.admiral.setName(playerName);
 	}
 
 	/**
