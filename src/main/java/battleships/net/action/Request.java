@@ -18,4 +18,8 @@ public class Request implements Serializable {
 		return id;
 	}
 
+	@Override
+	public String toString() {
+		return "{ id: " + id + " }";
+	}
 }

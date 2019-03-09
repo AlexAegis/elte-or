@@ -22,7 +22,7 @@ import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
-public class ConnectWindow extends BasicWindow {
+public class ConnectWindow extends BasicModal {
 
 	private static final Pattern IP_ADDRESS_PART = Pattern.compile(
 			"^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])[.]){0,3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])?$");
@@ -32,12 +32,12 @@ public class ConnectWindow extends BasicWindow {
 
 	private Panel connectForm = new Panel();
 
+	private Label hostLabel = new Label("IP Address");
 	private TextBox hostBox;
-	private Label hostBoxLabel = new Label("IP Address");
+	private Label portLabel = new Label("Port");
 	private TextBox portBox;
-	private Label portBoxLabel = new Label("Port");
-	private Button connectButton;
 	private EmptySpace emptySpace = new EmptySpace();
+	private Button connectButton;
 
 	public ConnectWindow(Client client) {
 		setTitle("Connect");
@@ -68,9 +68,9 @@ public class ConnectWindow extends BasicWindow {
 		}).subscribe(optional -> {
 			optional.ifPresentOrElse((conn) -> close(), () -> {
 				connectForm.removeAllComponents();
-				connectForm.addComponent(hostBoxLabel);
+				connectForm.addComponent(hostLabel);
 				connectForm.addComponent(hostBox);
-				connectForm.addComponent(portBoxLabel);
+				connectForm.addComponent(portLabel);
 				connectForm.addComponent(portBox);
 				connectForm.addComponent(emptySpace);
 				connectForm.addComponent(connectButton);
@@ -80,23 +80,9 @@ public class ConnectWindow extends BasicWindow {
 
 	}
 
+
 	public void takeFocus() {
 		hostBox.takeFocus();
-	}
-
-	public static void briefError(TextBox textBox) {
-		Theme t = textBox.getTheme();
-		new Thread(() -> {
-			try {
-				textBox.invalidate();
-				textBox.setTheme(LanternaThemes.getRegisteredTheme("conqueror"));
-				Thread.sleep(400);
-				textBox.setTheme(t);
-				textBox.invalidate();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}).start();
 	}
 
 }

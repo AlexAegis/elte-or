@@ -72,6 +72,7 @@ import io.reactivex.subjects.Subject;
 import battleships.gui.container.ConnectWindow;
 import battleships.gui.container.Drawer;
 import battleships.gui.container.GameWindow;
+import battleships.gui.container.RegistrationWindow;
 import battleships.gui.container.Sea;
 import battleships.model.Admiral;
 import battleships.model.Coord;
@@ -104,12 +105,7 @@ public class Client implements Runnable {
 
 	private GameWindow game;
 	private ConnectWindow connectWindow;
-
-	private Socket _server;
-	private ObjectOutputStream _oos;
-	private ObjectInputStream _ois;
-	private Boolean finished = false;
-	private Boolean closed = false;
+	private RegistrationWindow registrationWindow;
 
 	private MultiWindowTextGUI gui;
 	private List<Disposable> disposables = new ArrayList<>();
@@ -120,12 +116,15 @@ public class Client implements Runnable {
 		CommandLine.run(new Client(), System.err, args);
 	}
 
-	public void fieldInitFromFile(Sea sea) {
+	public void fieldInitFromFile(Admiral admiral, Sea sea) {
 		initialFiles.forEach(file -> {
 			try (BufferedReader fin = new BufferedReader(new FileReader(file))) {
 				var placementObject = new JSONParser().parse(fin);
 				if (placementObject instanceof Map) {
 					var placementsHolder = (Map<String, List<Map<String, String>>>) placementObject;
+					var name = ((Map<String, String>) placementObject).get("name");
+					admiral.setName(name);
+
 					var placements = placementsHolder.get("placements");
 					for (var placement : placements) {
 						sea.getDrawer().getByClass(ShipType.valueOf(placement.get("class"))).ifPresent(ship -> {
@@ -163,10 +162,22 @@ public class Client implements Runnable {
 				}));
 	}
 
-	public Observable<Optional<Response>> sendRequest(Request req) {
-		return connection().switchMap(conn -> {
-			return Observable.fromCallable(() -> conn.send(req));
+	public void tryRegister(String name) {
+		this.<RegisterResult>sendRequest(new Register(name)).subscribe(opt -> {
+			opt.ifPresentOrElse(res -> {
+				System.out.println("got back name: " + res.getTarget());
+				getGame().getAdmiral().setName(res.getTarget());
+				registrationWindow.close();
+			}, () -> {
+				System.out.println("err while reg");
+			});
 		});
+	}
+
+	public <T extends Response> Observable<Optional<T>> sendRequest(Request req) {
+		return connection().switchMap(conn -> {
+			return Observable.fromCallable(() -> conn.<T>send(req));
+		}).take(1);
 	}
 
 	public Observable<Connection> connection() {
@@ -183,20 +194,23 @@ public class Client implements Runnable {
 			terminal.setBackgroundColor(TextColor.Factory.fromString("#000000"));
 			screen.startScreen();
 			game = new GameWindow(this, terminal, screen);
-
 			gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
-
 			gui.addWindow(game);
 
 			connectWindow = new ConnectWindow(this);
 			gui.addWindow(connectWindow);
 			gui.moveToTop(connectWindow);
 			connectWindow.takeFocus();
-			getObservableConnection().onNext(Observable.just(Optional.empty()));
-
 			tryConnect(host, port);
-
 			gui.waitForWindowToClose(connectWindow);
+
+			registrationWindow = new RegistrationWindow(this);
+			gui.addWindow(registrationWindow);
+			gui.moveToTop(registrationWindow);
+			registrationWindow.takeFocus();
+			tryRegister(getGame().getAdmiral().getName());
+			gui.waitForWindowToClose(registrationWindow);
+
 			gui.waitForWindowToClose(game);
 
 
@@ -206,25 +220,25 @@ public class Client implements Runnable {
 			connection().subscribe(conn -> conn.close()).dispose();
 		}
 
-/*														if (game.getPlayerName().getText() != null && !game.getPlayerName().getText().isEmpty()) {
-																		conn.oos.writeObject(new Register(game.getPlayerName().getText()));
-																		} else {
-																		conn.oos.writeObject(new Register());
-																		}
-																		conn.oos.flush();
-																		Logger.getGlobal().info("Sent registration");
-																		RegisterResult rrs = (RegisterResult) conn.ois.readObject();
-																		Logger.getGlobal().info("Recieved registration result" + rrs.getTarget());
-																		game.setPlayerName(rrs.getTarget());
-																		Logger.getGlobal().info("Client joined, name: " + game.getPlayerName().getText());
+		/*														if (game.getPlayerName().getText() != null && !game.getPlayerName().getText().isEmpty()) {
+																				conn.oos.writeObject(new Register(game.getPlayerName().getText()));
+																				} else {
+																				conn.oos.writeObject(new Register());
+																				}
+																				conn.oos.flush();
+																				Logger.getGlobal().info("Sent registration");
+																				RegisterResult rrs = (RegisterResult) conn.ois.readObject();
+																				Logger.getGlobal().info("Recieved registration result" + rrs.getTarget());
+																				game.setPlayerName(rrs.getTarget());
+																				Logger.getGlobal().info("Client joined, name: " + game.getPlayerName().getText());
 
-																		if (rrs.getTarget() != null && !rrs.getTarget().isEmpty()) {
-																		// Login success
-																		System.out.println("SUCCESSFUL LOGIN");
-																		connect.close();
-																		connect.getConnectTry().interrupt();
-																		game.invalidate();
-																		}*/
+																				if (rrs.getTarget() != null && !rrs.getTarget().isEmpty()) {
+																				// Login success
+																				System.out.println("SUCCESSFUL LOGIN");
+																				connect.close();
+																				connect.getConnectTry().interrupt();
+																				game.invalidate();
+																				}*/
 
 		/*
 				try (Connection con = null) {
@@ -308,4 +322,11 @@ public class Client implements Runnable {
 		return port;
 	}
 
+
+	/**
+	 * @return the game
+	 */
+	public GameWindow getGame() {
+		return game;
+	}
 }

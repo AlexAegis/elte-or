@@ -36,7 +36,11 @@ public class Connection implements AutoCloseable {
 
 	public <T extends Response> Optional<T> send(Request req) {
 		try {
+			System.out.println("server.isConnected(): " + server.isConnected());
+			System.out.println("server.isClosed(): " + server.isClosed());
+			System.out.println("Write req: " + req.toString());
 			oos.writeObject(req);
+			oos.flush();
 			return Optional.of((T) ois.readObject());
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();

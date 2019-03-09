@@ -61,7 +61,7 @@ public class GameWindow extends BasicWindow {
 		sea.setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER, true,
 				true, 1, 1));
 		seaContainer.addComponent(sea);
-		client.fieldInitFromFile(sea);
+		client.fieldInitFromFile(admiral, sea);
 
 		Panel drawerAndName = new Panel(new BorderLayout());
 		container.addComponent(seaContainer.withBorder(Borders.singleLine("Sea")));
@@ -92,7 +92,7 @@ public class GameWindow extends BasicWindow {
 	 * @return the client
 	 */
 	public Client getClient() {
-	  return client;
+		return client;
 	}
 
 	/**
