@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import battleships.exception.AlreadyShotException;
 import battleships.exception.BorderShotException;
+import battleships.gui.container.GameWindow;
 import battleships.gui.element.ReadyLabel;
 import battleships.marker.ShotMarker;
 import battleships.model.Coord;
@@ -28,8 +29,17 @@ public class Admiral {
 	private String name;
 	private Phase phase = Phase.PLACEMENT;
 
+	public GameWindow game;
+
 	public Admiral(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * @param game the game to set
+	 */
+	public void setGame(GameWindow game) {
+		this.game = game;
 	}
 
 	/**
@@ -117,7 +127,6 @@ public class Admiral {
 
 
 	public void setReady(Boolean ready, ReadyLabel readyLabel) {
-		System.out.println("SETREADY" + ready);
 		if (ready) {
 			this.setPhase(Phase.READY);
 		} else {
@@ -217,8 +226,14 @@ public class Admiral {
 		ships.forEach(ship -> ship.finishBorder());
 	}
 
-	public boolean isReady() {
-		return Phase.READY.equals(phase);
+	public Boolean isReady() {
+		if (Phase.PLACEMENT.equals(phase)) {
+			return false;
+		} else if (Phase.READY.equals(phase)) {
+			return true;
+		} else {
+			return null;
+		}
 	}
 
 	public void setName(String name) {

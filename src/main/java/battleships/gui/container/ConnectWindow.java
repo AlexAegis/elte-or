@@ -1,6 +1,8 @@
 package battleships.gui.container;
 
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import com.googlecode.lanterna.bundle.LanternaThemes;
@@ -15,49 +17,36 @@ import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextBox;
 import com.googlecode.lanterna.gui2.Window;
 import battleships.Client;
+import battleships.net.Connection;
+import io.reactivex.Maybe;
+import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 
 public class ConnectWindow extends BasicWindow {
-	private Client client;
-	Thread connectTry;
+
 	private static final Pattern IP_ADDRESS_PART = Pattern.compile(
 			"^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])[.]){0,3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])?$");
 
 	private static final String IP_ADDRESS_FULL =
 			"^(25[0-5]|2[0-4]\\d|1\\d{2}|\\d{1,2})\\.(25[0-5]|2[0-4]\\d|1\\d{2}|\\d{1,2})\\.(25[0-5]|2[0-4]\\d|1\\d{2}|\\d{1,2})\\.(25[0-5]|2[0-4]\\d|1\\d{2}|\\d{1,2})$";
 
-	Panel connectForm;
-	TextBox hostBox;
-	TextBox portBox;
+	private Panel connectForm = new Panel();
+
+	private TextBox hostBox;
+	private Label hostBoxLabel = new Label("IP Address");
+	private TextBox portBox;
+	private Label portBoxLabel = new Label("Port");
+	private Button connectButton;
+	private EmptySpace emptySpace = new EmptySpace();
 
 	public ConnectWindow(Client client) {
-		this.client = client;
 		setTitle("Connect");
-		setHints(Arrays.asList(Window.Hint.MODAL));
-		connectForm = new Panel();
+		setHints(Arrays.asList(Window.Hint.MODAL, Window.Hint.CENTERED));
+
 		connectForm.setLayoutManager(new GridLayout(2));
-		setComponent(connectForm);
-
-		connectForm.addComponent(new Label("IP Address"));
-		hostBox = new TextBox(client.getHost()).setValidationPattern(IP_ADDRESS_PART).addTo(connectForm);
-
-		connectForm.addComponent(new Label("Port"));
-		portBox = new TextBox(client.getPort().toString()).setValidationPattern(Pattern.compile("[0-9]{0,4}"))
-				.addTo(connectForm);
-		//portBox.invalidate();
-		//portBox.setTheme(LanternaThemes.getRegisteredTheme("conqueror"));
-		connectForm.addComponent(new EmptySpace());
-
-		connectTry = new Thread(() -> {
-			try {
-				Thread.sleep(500);
-				connectForm.getChildren().stream().forEach(child -> connectForm.addComponent(child));
-				takeFocus();
-			} catch (InterruptedException e) {
-				Logger.getGlobal().info("Connect window interrupted");
-			}
-		});
-
-		new Button("Connect", () -> {
+		hostBox = new TextBox(client.getHost()).setValidationPattern(IP_ADDRESS_PART);
+		portBox = new TextBox(client.getPort().toString()).setValidationPattern(Pattern.compile("[0-9]{0,4}"));
+		connectButton = new Button("Connect", () -> {
 			Boolean valid = true;
 			if (!portBox.getText().matches("[0-9]{4}")) {
 				briefError(portBox);
@@ -68,12 +57,26 @@ public class ConnectWindow extends BasicWindow {
 				valid &= false;
 			}
 			if (valid) {
-				client.setHost(hostBox.getText());
-				client.setPort(Integer.parseInt(portBox.getText()));
-				connectForm.removeAllComponents();
-				connectTry.start();
+				client.tryConnect(hostBox.getText(), Integer.parseInt(portBox.getText()));
 			}
-		}).addTo(connectForm);
+		});
+		setComponent(connectForm);
+		client.getConnection().subscribeOn(Schedulers.newThread()).switchMap(e -> {
+			connectForm.removeAllComponents();
+			connectForm.addComponent(new Label("Connecting"));
+			return e;
+		}).subscribe(optional -> {
+			optional.ifPresentOrElse((conn) -> close(), () -> {
+				connectForm.removeAllComponents();
+				connectForm.addComponent(hostBoxLabel);
+				connectForm.addComponent(hostBox);
+				connectForm.addComponent(portBoxLabel);
+				connectForm.addComponent(portBox);
+				connectForm.addComponent(emptySpace);
+				connectForm.addComponent(connectButton);
+				hostBox.takeFocus();
+			});
+		});
 
 	}
 
@@ -96,10 +99,4 @@ public class ConnectWindow extends BasicWindow {
 		}).start();
 	}
 
-	/**
-	 * @return the connectTry
-	 */
-	public Thread getConnectTry() {
-		return connectTry;
-	}
 }

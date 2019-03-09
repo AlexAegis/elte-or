@@ -48,6 +48,7 @@ public class GameWindow extends BasicWindow {
 
 	public GameWindow(Client client, Terminal terminal, Screen screen) {
 		this.client = client;
+		this.admiral.setGame(this);
 		Panel container = new Panel(new BorderLayout());
 		setComponent(container);
 		setHints(Arrays.asList(Window.Hint.FULL_SCREEN, Window.Hint.CENTERED, Window.Hint.NO_DECORATIONS));
@@ -85,6 +86,13 @@ public class GameWindow extends BasicWindow {
 		actionBar.setLayoutData(BorderLayout.Location.BOTTOM);
 		container.addComponent(actionBar);
 
+	}
+
+	/**
+	 * @return the client
+	 */
+	public Client getClient() {
+	  return client;
 	}
 
 	/**

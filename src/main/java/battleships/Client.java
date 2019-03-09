@@ -19,8 +19,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.TimerTask;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import com.googlecode.lanterna.TerminalPosition;
@@ -45,11 +47,28 @@ import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
+import com.jakewharton.rxrelay2.BehaviorRelay;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import battleships.net.Connection;
 import battleships.net.action.Attack;
 import battleships.net.action.Register;
 import battleships.net.result.RegisterResult;
+import battleships.net.result.Response;
+import io.reactivex.Completable;
+import io.reactivex.Emitter;
+import io.reactivex.Flowable;
+import io.reactivex.Notification;
+import io.reactivex.Observable;
+import io.reactivex.Scheduler;
+import io.reactivex.Single;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.internal.schedulers.SchedulerWhen;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.BehaviorSubject;
+import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.SingleSubject;
+import io.reactivex.subjects.Subject;
 import battleships.gui.container.ConnectWindow;
 import battleships.gui.container.Drawer;
 import battleships.gui.container.GameWindow;
@@ -83,14 +102,19 @@ public class Client implements Runnable {
 			description = "Port of the server  (default: ${DEFAULT-VALUE})")
 	private Integer port = 6668;
 
-	GameWindow game;
-	ConnectWindow connect;
+	private GameWindow game;
+	private ConnectWindow connectWindow;
 
-	Socket _server;
-	Boolean finished = false;
-	Boolean closed = false;
+	private Socket _server;
+	private ObjectOutputStream _oos;
+	private ObjectInputStream _ois;
+	private Boolean finished = false;
+	private Boolean closed = false;
 
-	Thread net;
+	private MultiWindowTextGUI gui;
+	private List<Disposable> disposables = new ArrayList<>();
+	private BehaviorSubject<Observable<Optional<Connection>>> connection$ = BehaviorSubject.create();
+
 
 	public static void main(String[] args) {
 		CommandLine.run(new Client(), System.err, args);
@@ -125,20 +149,101 @@ public class Client implements Runnable {
 		});
 	}
 
+	/**
+	 * @return the connection
+	 */
+	public BehaviorSubject<Observable<Optional<Connection>>> getConnection() {
+		return connection$;
+	}
+
+	public void tryConnect(String host, Integer port) {
+		getConnection().onNext(Observable.fromCallable(() -> Optional.of(new Connection(host, port)))
+				.subscribeOn(Schedulers.newThread()).onErrorResumeNext(error -> {
+					return Observable.just(Optional.empty());
+				}));
+	}
 
 	@Override
 	public void run() {
 		Logger.getGlobal().setLevel(app.loglevel.getLevel());
 
 
-		// Network
+		try (Terminal terminal = new DefaultTerminalFactory().createTerminal();
+				Screen screen = new TerminalScreen(terminal);) {
+			terminal.setBackgroundColor(TextColor.Factory.fromString("#000000"));
+			screen.startScreen();
+			game = new GameWindow(this, terminal, screen);
 
-		net = new Thread(() -> {
-			while (_server == null && !closed) {
-				try (Socket server = new Socket(host, port);
-						ObjectOutputStream oos = new ObjectOutputStream(server.getOutputStream());
-						ObjectInputStream ois = new ObjectInputStream(server.getInputStream());) {
-					_server = server;
+			gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
+
+			gui.addWindow(game);
+
+			connectWindow = new ConnectWindow(this);
+			gui.addWindow(connectWindow);
+			gui.moveToTop(connectWindow);
+			connectWindow.takeFocus();
+			getConnection().onNext(Observable.just(Optional.empty()));
+
+			tryConnect(host, port);
+
+			gui.waitForWindowToClose(connectWindow);
+			gui.waitForWindowToClose(game);
+
+
+		} catch (IOException |
+
+				ArrayIndexOutOfBoundsException e) {
+			e.printStackTrace();
+		} finally {
+			closed = true;
+
+		}
+
+
+
+		// Network
+		/*	Observable<Response> obs = Observable.<Response>create((sub) -> {
+				// answer
+				sub.onNext(null);
+			});
+			obs.doOnDispose(() -> {
+				// eliminate
+			});*/
+
+
+
+		/*
+																		if (game.getPlayerName().getText() != null && !game.getPlayerName().getText().isEmpty()) {
+																		conn.oos.writeObject(new Register(game.getPlayerName().getText()));
+																		} else {
+																		conn.oos.writeObject(new Register());
+																		}
+																		conn.oos.flush();
+																		Logger.getGlobal().info("Sent registration");
+																		RegisterResult rrs = (RegisterResult) conn.ois.readObject();
+																		Logger.getGlobal().info("Recieved registration result" + rrs.getTarget());
+																		game.setPlayerName(rrs.getTarget());
+																		Logger.getGlobal().info("Client joined, name: " + game.getPlayerName().getText());
+
+																		if (rrs.getTarget() != null && !rrs.getTarget().isEmpty()) {
+																		// Login success
+																		System.out.println("SUCCESSFUL LOGIN");
+																		connect.close();
+																		connect.getConnectTry().interrupt();
+																		game.invalidate();
+																		}*/
+
+
+		/*	disposables.add(obs.subscribe((response) -> {
+				// Question
+
+			}));*/
+
+
+
+		/*
+				try (Connection con = null) {
+					connected = true;
 					if (game.getPlayerName().getText() != null && !game.getPlayerName().getText().isEmpty()) {
 						oos.writeObject(new Register(game.getPlayerName().getText()));
 					} else {
@@ -170,67 +275,6 @@ public class Client implements Runnable {
 										}*/
 
 
-					Thread recieveThread = new Thread(() -> {
-						System.out.println("Recieve");
-						/*while (!finished) {
-
-						}*/
-					});
-					recieveThread.start();
-
-					Thread sendThread = new Thread(() -> {
-						System.out.println("Send");
-					});
-					sendThread.start();
-
-					/**
-					 * Main loop reads actions
-
-					while (true) {
-						try {
-							String nl = console.nextLine();
-							System.out.println("Input: " + nl);
-							if (nl.equals("exit")) {
-								break;
-							}
-							Attack attack = new Attack(id, null, new Coord(nl));
-							oos.writeObject(attack);
-							oos.flush();
-							System.out.println("Attack sent to: " + attack.getTarget().toString());
-							String result = recieve(in);
-							if (result.equals("not your turn")) {
-								throw new IllegalArgumentException("not your turn");
-							}
-							if (result.equals("error")) {
-								throw new IllegalArgumentException("Bad input");
-							}
-							if (result.equals("won") || result.equals("lose")) {
-								break;
-							}
-							System.out.println(result);
-						} catch (IllegalArgumentException e) {
-							System.out.println(e.getMessage());
-						}
-					} */
-				} catch (UnknownHostException e) {
-					e.printStackTrace();
-				} catch (ConnectException e) {
-					Logger.getGlobal().info("Connection failed, start the server!");
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e1) {
-						Logger.getGlobal().info("Connecting interrupted");
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				}
-			}
-		});
-
-
 		/*
 				Sea opponent = new Sea(admiral);
 				opponent.setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER,
@@ -238,40 +282,6 @@ public class Client implements Runnable {
 				opponentContainer.addComponent(opponent);
 		*/
 
-		try (Terminal terminal = new DefaultTerminalFactory().createTerminal();
-				Screen screen = new TerminalScreen(terminal);) {
-			terminal.setBackgroundColor(TextColor.Factory.fromString("#000000"));
-			screen.startScreen();
-			game = new GameWindow(this, terminal, screen);
-			connect = new ConnectWindow(this);
-			net.start();
-			MultiWindowTextGUI gui =
-					new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
-
-			gui.addWindow(game);
-
-			if (_server == null) {
-				gui.addWindow(connect);
-				gui.moveToTop(connect);
-
-				connect.takeFocus();
-				gui.waitForWindowToClose(connect);
-			}
-			game.takeFocus();
-
-			gui.waitForWindowToClose(game);
-		} catch (IOException | ArrayIndexOutOfBoundsException e) {
-			e.printStackTrace();
-		} finally {
-			if (getNet() != null) {
-				getNet().interrupt();
-			}
-
-			if (connect != null && connect.getConnectTry() != null) {
-				connect.getConnectTry().interrupt();
-			}
-			closed = true;
-		}
 
 
 	}
@@ -281,6 +291,7 @@ public class Client implements Runnable {
 		@Override
 		public void run() {
 		}
+
 	}
 
 	/**
@@ -297,12 +308,6 @@ public class Client implements Runnable {
 		this.port = port;
 	}
 
-	/**
-	 * @return the net
-	 */
-	public Thread getNet() {
-		return net;
-	}
 
 	/**
 	 * @return the host

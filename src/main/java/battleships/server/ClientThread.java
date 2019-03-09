@@ -50,7 +50,7 @@ public class ClientThread extends Thread {
 		clientSpawner.spawn();
 		try (ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
 				ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream());) {
-			Register register = (Register) ois.readObject();
+			/*Register register = (Register) ois.readObject();
 			Logger.getGlobal().info("Register: " + (register.getId() == null ? "No id given" : register.getId()));
 			Admiral finalAdmiral;
 			if (register.getId() == null) {
@@ -62,6 +62,7 @@ public class ClientThread extends Thread {
 			oos.flush();
 
 			System.out.println("REgister finished sent result: " + finalAdmiral.getName());
+			*/
 			/*
 
 

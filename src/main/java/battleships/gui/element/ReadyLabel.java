@@ -30,7 +30,9 @@ public class ReadyLabel extends Label {
 	}
 
 	public void refresh() {
-		if (admiral.isReady()) {
+		if (admiral.isReady() == null) {
+
+		} else if (admiral.isReady()) {
 			setForegroundColor(readyColor);
 			setText("Ready");
 		} else {
