@@ -47,12 +47,12 @@ import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
-import com.jakewharton.rxrelay2.BehaviorRelay;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import battleships.net.Connection;
 import battleships.net.action.Attack;
 import battleships.net.action.Register;
+import battleships.net.action.Request;
 import battleships.net.result.RegisterResult;
 import battleships.net.result.Response;
 import io.reactivex.Completable;
@@ -113,7 +113,7 @@ public class Client implements Runnable {
 
 	private MultiWindowTextGUI gui;
 	private List<Disposable> disposables = new ArrayList<>();
-	private BehaviorSubject<Observable<Optional<Connection>>> connection$ = BehaviorSubject.create();
+	private BehaviorSubject<Observable<Optional<Connection>>> observableConnection = BehaviorSubject.create();
 
 
 	public static void main(String[] args) {
@@ -152,15 +152,25 @@ public class Client implements Runnable {
 	/**
 	 * @return the connection
 	 */
-	public BehaviorSubject<Observable<Optional<Connection>>> getConnection() {
-		return connection$;
+	public BehaviorSubject<Observable<Optional<Connection>>> getObservableConnection() {
+		return observableConnection;
 	}
 
 	public void tryConnect(String host, Integer port) {
-		getConnection().onNext(Observable.fromCallable(() -> Optional.of(new Connection(host, port)))
+		getObservableConnection().onNext(Observable.fromCallable(() -> Optional.of(new Connection(host, port)))
 				.subscribeOn(Schedulers.newThread()).onErrorResumeNext(error -> {
 					return Observable.just(Optional.empty());
 				}));
+	}
+
+	public Observable<Optional<Response>> sendRequest(Request req) {
+		return connection().switchMap(conn -> {
+			return Observable.fromCallable(() -> conn.send(req));
+		});
+	}
+
+	public Observable<Connection> connection() {
+		return getObservableConnection().switchMap(conn -> conn).switchMap(conn -> Observable.just(conn.get()));
 	}
 
 	@Override
@@ -182,7 +192,7 @@ public class Client implements Runnable {
 			gui.addWindow(connectWindow);
 			gui.moveToTop(connectWindow);
 			connectWindow.takeFocus();
-			getConnection().onNext(Observable.just(Optional.empty()));
+			getObservableConnection().onNext(Observable.just(Optional.empty()));
 
 			tryConnect(host, port);
 
@@ -190,30 +200,13 @@ public class Client implements Runnable {
 			gui.waitForWindowToClose(game);
 
 
-		} catch (IOException |
-
-				ArrayIndexOutOfBoundsException e) {
+		} catch (IOException | ArrayIndexOutOfBoundsException e) {
 			e.printStackTrace();
 		} finally {
-			closed = true;
-
+			connection().subscribe(conn -> conn.close()).dispose();
 		}
 
-
-
-		// Network
-		/*	Observable<Response> obs = Observable.<Response>create((sub) -> {
-				// answer
-				sub.onNext(null);
-			});
-			obs.doOnDispose(() -> {
-				// eliminate
-			});*/
-
-
-
-		/*
-																		if (game.getPlayerName().getText() != null && !game.getPlayerName().getText().isEmpty()) {
+/*														if (game.getPlayerName().getText() != null && !game.getPlayerName().getText().isEmpty()) {
 																		conn.oos.writeObject(new Register(game.getPlayerName().getText()));
 																		} else {
 																		conn.oos.writeObject(new Register());
@@ -232,14 +225,6 @@ public class Client implements Runnable {
 																		connect.getConnectTry().interrupt();
 																		game.invalidate();
 																		}*/
-
-
-		/*	disposables.add(obs.subscribe((response) -> {
-				// Question
-
-			}));*/
-
-
 
 		/*
 				try (Connection con = null) {

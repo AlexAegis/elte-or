@@ -61,7 +61,7 @@ public class ConnectWindow extends BasicWindow {
 			}
 		});
 		setComponent(connectForm);
-		client.getConnection().subscribeOn(Schedulers.newThread()).switchMap(e -> {
+		client.getObservableConnection().subscribeOn(Schedulers.newThread()).switchMap(e -> {
 			connectForm.removeAllComponents();
 			connectForm.addComponent(new Label("Connecting"));
 			return e;
