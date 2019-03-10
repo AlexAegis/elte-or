@@ -1,6 +1,7 @@
 package battleships.net;
 
 import java.io.IOException;
+import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
@@ -96,9 +97,12 @@ public class Connection implements AutoCloseable {
 			oos.writeObject(response);
 			oos.flush();
 			Logger.getGlobal().info("Packet sent as response: " + response.toString());
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+		//	e.printStackTrace();
+			System.out.println("NOT SERIALIZABLE AND OR CANT WRITE " + e.getMessage());
 		}
+
+
 
 	}
 
@@ -121,6 +125,7 @@ public class Connection implements AutoCloseable {
 	 * @return the admiral
 	 */
 	public Admiral getAdmiral() {
+		System.out.println("GETTING THE ADMRAL IN A CONN " + this + " TO: " + admiral);
 		return admiral;
 	}
 
@@ -128,6 +133,7 @@ public class Connection implements AutoCloseable {
 	 * @param admiral the admiral to set
 	 */
 	public void setAdmiral(Admiral admiral) {
+		System.out.println("SETTING THE ADMRAL IN A CONN " + this + " TO: " + admiral);
 		this.admiral = admiral;
 	}
 

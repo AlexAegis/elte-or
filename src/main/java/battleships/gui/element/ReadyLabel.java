@@ -12,22 +12,30 @@ public class ReadyLabel extends Label {
 	TextColor notReadyColor = TextColor.Factory.fromString("#FF1122");
 	Admiral admiral;
 
-	public ReadyLabel(GameWindow game, Admiral admiral) {
+	public ReadyLabel(GameWindow game) {
 		super("");
 		this.game = game;
-		this.admiral = admiral;
 		refresh();
 	}
 
+	/**
+	 * @param admiral the admiral to set
+	 */
+	public void setAdmiral(Admiral admiral) {
+		this.admiral = admiral;
+	}
+
 	public void refresh() {
-		if (admiral.isReady() == null) {
-			setText("");
-		} else if (admiral.isReady()) {
-			setForegroundColor(readyColor);
-			setText("Ready");
-		} else {
-			setForegroundColor(notReadyColor);
-			setText("Not Ready");
+		if (admiral != null) {
+			if (admiral.isReady() == null) {
+				setText("");
+			} else if (admiral.isReady()) {
+				setForegroundColor(readyColor);
+				setText("Ready");
+			} else {
+				setForegroundColor(notReadyColor);
+				setText("Not Ready");
+			}
 		}
 		invalidate();
 	}

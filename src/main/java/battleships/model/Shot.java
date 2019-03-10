@@ -1,9 +1,13 @@
 package battleships.model;
 
 import battleships.model.Admiral;
+import java.io.Serializable;
 import battleships.marker.ShotMarker;
 
-public class Shot {
+public class Shot implements Serializable {
+
+	private static final long serialVersionUID = 931846051594234878L;
+
 	private Admiral source;
 	private Coord target;
 	private ShotMarker result;

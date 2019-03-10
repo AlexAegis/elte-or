@@ -45,8 +45,8 @@ public class ClientThread extends Thread {
 			} else {
 				finalAdmiral = table.getAdmiral(register.getId());
 			}
-			oos.writeObject(new RegisterResult(finalAdmiral.getName(), table.getSize()));
-			oos.flush();
+			// oos.writeObject(new RegisterResult(finalAdmiral.getName(), table.getSize()));
+			// oos.flush();
 
 			System.out.println("REgister finished sent result: " + finalAdmiral.getName());
 

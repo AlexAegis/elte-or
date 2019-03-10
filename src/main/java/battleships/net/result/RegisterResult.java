@@ -1,7 +1,6 @@
 package battleships.net.result;
 
 import java.io.Serializable;
-import com.googlecode.lanterna.TerminalSize;
 import battleships.model.Admiral;
 import battleships.model.Coord;
 
@@ -10,18 +9,19 @@ public class RegisterResult extends Response implements Serializable {
 	private static final long serialVersionUID = -3835713132392076715L;
 
 	private Coord tableSize;
-	private Admiral existing;
+	private Admiral admiral;
 
-	public RegisterResult(String target, Coord tableSize) {
+	public RegisterResult(String target, Coord tableSize, Admiral admiral) {
 		super(target);
 		this.tableSize = tableSize;
+		this.admiral = admiral;
 	}
 
 	/**
-	 * @return the existing
+	 * @return the admiral, existing or not
 	 */
-	public Admiral getExisting() {
-		return existing;
+	public Admiral getAdmiral() {
+		return admiral;
 	}
 
 	/**
@@ -33,7 +33,8 @@ public class RegisterResult extends Response implements Serializable {
 
 	@Override
 	public String toString() {
-		return "RegisterResult: { target: " + this.getTarget() + " tableSize: " + this.getTableSize() + " } ";
+		return "RegisterResult: { target: " + this.getTarget() + " tableSize: " + this.getTableSize() + " admiral: "
+				+ getAdmiral() + " } ";
 	}
 
 

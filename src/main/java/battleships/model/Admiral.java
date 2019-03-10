@@ -2,6 +2,7 @@ package battleships.model;
 
 import java.beans.Transient;
 import java.io.PrintStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,7 +23,10 @@ import battleships.state.Phase;
 /**
  * A class representing a player
  */
-public class Admiral {
+public class Admiral implements Serializable {
+
+	private static final long serialVersionUID = 2452332968381664354L;
+
 	private List<Ship> ships = new ArrayList<>();
 	private List<Shot> miss = new ArrayList<>();
 
@@ -252,5 +256,9 @@ public class Admiral {
 			game.getPlayerName().setText(name);
 		}
 		this.name = name;
+	}
+
+	public void refresh() {
+		setName(getName());
 	}
 }

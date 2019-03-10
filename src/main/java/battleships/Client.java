@@ -139,20 +139,13 @@ public class Client implements Runnable {
 				// Successful
 				System.out.println("SUCC REG for: " + res.getTarget());
 				registrationWindow.close();
+				System.out.println("GOT ADMIRAL OBJECT: " + res.getAdmiral());
+				getGame().setAdmiral(res.getAdmiral());
+				//getGame().getAdmiral().setGame(getGame());
+				getGame().getAdmiral().refresh();
+				fieldInitFromFile(getGame().getAdmiral(), getGame().getSea());
 
 
-				getGame().getAdmiral().setName(res.getTarget());
-
-
-				if (res.getExisting() != null) {
-					System.out.println("EXISTINGGG");
-				} else {
-					System.out.println("NEW MAATTCH");
-					// NewMatch
-					fieldInitFromFile(getGame().getAdmiral(), getGame().getSea());
-
-
-				}
 
 				game.getDrawer().takeFocus();
 				// Setup table

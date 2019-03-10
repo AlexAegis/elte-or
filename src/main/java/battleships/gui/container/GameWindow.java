@@ -17,7 +17,7 @@ import battleships.model.Admiral;
 public class GameWindow extends BasicWindow {
 	private Client client;
 	private Label playerName;
-	private Admiral admiral = new Admiral("");
+	private Admiral admiral;
 	private Boolean finished = false;
 	private Boolean closed = false;
 	private BasicWindow connect;
@@ -31,12 +31,11 @@ public class GameWindow extends BasicWindow {
 
 	public GameWindow(Client client, Terminal terminal, Screen screen) {
 		this.client = client;
-		this.admiral.setGame(this);
 		Panel container = new Panel(new BorderLayout());
 		setComponent(container);
 		setHints(Arrays.asList(Window.Hint.FULL_SCREEN, Window.Hint.CENTERED, Window.Hint.NO_DECORATIONS));
 		drawer = new Drawer(this);
-		sea = new Sea(admiral, drawer);
+		sea = new Sea(drawer);
 		Panel seaContainer = new Panel(new GridLayout(1));
 		Panel opponentContainer = new Panel(new GridLayout(3));
 		sea.setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER, true,
@@ -49,7 +48,7 @@ public class GameWindow extends BasicWindow {
 		container.addComponent(opponentContainer.withBorder(Borders.singleLine("Opponent")));
 		playerName = new Label("");
 		drawerAndName.addComponent(playerName);
-		readyLabel = new ReadyLabel(this, admiral);
+		readyLabel = new ReadyLabel(this);
 		readyLabel.setLayoutData(BorderLayout.Location.BOTTOM);
 		drawerAndName.addComponent(readyLabel);
 		drawerAndName.addComponent(drawer.withBorder(Borders.singleLine("Drawer")));
@@ -128,5 +127,12 @@ public class GameWindow extends BasicWindow {
 	 */
 	public ActionBar getActionBar() {
 		return actionBar;
+	}
+
+	public void setAdmiral(Admiral admiral) {
+		this.admiral = admiral;
+		readyLabel.setAdmiral(admiral);
+		sea.setAdmiral(admiral);
+		// MAKE THE FIELD AND KNOWLEDGE AND DRAWERR FROM THIS
 	}
 }

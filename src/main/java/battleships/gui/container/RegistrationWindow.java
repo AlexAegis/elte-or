@@ -29,8 +29,9 @@ public class RegistrationWindow extends BasicModal {
 
 		registrationForm.setLayoutManager(new GridLayout(2));
 		nameBox = new TextBox(
-				client.getGame().getAdmiral().getName() == null ? "" : client.getGame().getAdmiral().getName())
-						.setValidationPattern(Pattern.compile("[A-Za-z0-9]*"));
+				client.getGame().getAdmiral() == null || client.getGame().getAdmiral().getName() == null ? ""
+						: client.getGame().getAdmiral().getName())
+								.setValidationPattern(Pattern.compile("[A-Za-z0-9]*"));
 
 		registerButton = new Button("Login", () -> {
 			Boolean valid = true;
@@ -59,7 +60,7 @@ public class RegistrationWindow extends BasicModal {
 		gui.addWindow(this);
 		gui.moveToTop(this);
 		takeFocus();
-		if (client.getGame().getAdmiral().getName() != null) {
+		if (client.getGame().getAdmiral() != null && client.getGame().getAdmiral().getName() != null) {
 			client.tryRegister(client.getGame().getAdmiral().getName());
 		}
 		waitUntilClosed();

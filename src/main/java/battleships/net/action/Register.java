@@ -7,7 +7,6 @@ import battleships.Server;
 import battleships.model.Coord;
 import battleships.net.Connection;
 import battleships.net.result.RegisterResult;
-import battleships.net.result.Response;
 
 public class Register extends Request<RegisterResult> implements Serializable {
 
@@ -26,18 +25,19 @@ public class Register extends Request<RegisterResult> implements Serializable {
 			Optional<Client> answerFromClient) {
 		return answerFromServer.map(server -> {
 			if (server.getTable().getAdmiral(getId()) == null) {
+				System.out.println("CREATED A NEW");
 				connection.setAdmiral(server.getTable().addAdmiral(getId()));
 			} else if (server.getTable().getAdmiral(getId()) != null
 					&& server.getConnectedAdmirals().get(server.getTable().getAdmiral(getId())) != null) {
-				var res = new RegisterResult(null, null);
-				res.setError("Taken");
-				return res;
-
+				System.out.println("ERRORRRR");
+				return new RegisterResult(null, null, null); // taken
 			} else {
+				System.out.println("EGGZISTING");
 				connection.setAdmiral(server.getTable().getAdmiral(getId()));
 			}
 			server.getConnectedAdmirals().put(connection.getAdmiral(), connection);
-			return new RegisterResult(getId(), new Coord(10, 10));
+			System.out.println("CONN ADDM: " + connection.getAdmiral());
+			return new RegisterResult(getId(), new Coord(10, 10), connection.getAdmiral());
 		});
 	}
 

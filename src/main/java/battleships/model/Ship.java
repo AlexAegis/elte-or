@@ -1,5 +1,6 @@
 package battleships.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -14,7 +15,10 @@ import battleships.model.Coord;
 import battleships.model.Direction;
 import battleships.model.Shot;
 
-public class Ship {
+public class Ship implements Serializable {
+
+	private static final long serialVersionUID = -2344500726175518632L;
+
 	private Map<Coord, Shot> body = new HashMap<>();
 	private Set<Coord> border = new HashSet<>();
 	private Boolean horizontal;
