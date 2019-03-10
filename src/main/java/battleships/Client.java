@@ -104,13 +104,16 @@ public class Client implements Runnable {
 
 	public void fieldInitFromFile(Admiral admiral, Sea sea) {
 		initialFiles.forEach(file -> {
+			System.out.println("FUILLLLEE for: " + admiral + " sea: " + sea);
 			try (BufferedReader fin = new BufferedReader(new FileReader(file))) {
 				var placementObject = new JSONParser().parse(fin);
 				if (placementObject instanceof Map) {
 					var placementsHolder = (Map<String, List<Map<String, String>>>) placementObject;
 					var placements = placementsHolder.get("placements");
 					for (var placement : placements) {
+						System.out.println("PLACEMENETTTT");
 						sea.getDrawer().getByClass(ShipType.valueOf(placement.get("class"))).ifPresent(ship -> {
+							System.out.println("DRAWERSHIPPP");
 							Coord coord = new Coord(placement.get("position"));
 							try {
 								ship.setLayoutTo(Direction.valueOf(placement.get("orientation")));
@@ -158,13 +161,6 @@ public class Client implements Runnable {
 				registrationWindow.close();
 				System.out.println("GOT ADMIRAL OBJECT: " + res.getAdmiral());
 				getGame().setAdmiral(res.getAdmiral());
-				//getGame().getAdmiral().setGame(getGame());
-				getGame().getAdmiral().refresh();
-				fieldInitFromFile(getGame().getAdmiral(), getGame().getSea());
-
-
-
-				game.getDrawer().takeFocus();
 				// Setup table
 
 			} else {

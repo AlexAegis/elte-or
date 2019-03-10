@@ -131,8 +131,14 @@ public class GameWindow extends BasicWindow {
 
 	public void setAdmiral(Admiral admiral) {
 		this.admiral = admiral;
-		readyLabel.setAdmiral(admiral);
-		sea.setAdmiral(admiral);
+		admiral.setGame(this);
+		System.out.println("Admiral's name is " + admiral.getName());
+
+
+		client.fieldInitFromFile(getAdmiral(), getSea()); // It's allowed because if it's existing then the drawer will be empty to begin with
+		getDrawer().takeFocus();
+
+
 		// MAKE THE FIELD AND KNOWLEDGE AND DRAWERR FROM THIS
 	}
 }

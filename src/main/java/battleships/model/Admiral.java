@@ -48,6 +48,9 @@ public class Admiral implements Serializable {
 	 */
 	public void setGame(GameWindow game) {
 		this.game = game;
+		game.getReadyLabel().setAdmiral(this);
+		game.getSea().setAdmiral(this);
+		refresh();
 	}
 
 	/**
@@ -134,21 +137,27 @@ public class Admiral implements Serializable {
 	}
 
 
-	public void setReady(Boolean ready, ReadyLabel readyLabel) {
-		if (readyLabel != null) {
-			readyLabel.refresh();
-		}
+	public void setReady(Boolean ready) {
 		if (this.game != null) {
+			if (game.getReadyLabel() != null) {
+				game.getReadyLabel().refresh();
+			}
 			this.game.getClient().sendRequest(new Ready(getName(), ready)).subscribe(res -> {
 				if (res.getReady()) {
 					this.setPhase(Phase.READY);
 				} else {
 					this.setPhase(Phase.PLACEMENT);
 				}
-				if (readyLabel != null) {
-					readyLabel.refresh();
+				if (game.getReadyLabel() != null) {
+					game.getReadyLabel().refresh();
 				}
 			});
+		} else {
+			if (ready) {
+				this.setPhase(Phase.READY);
+			} else {
+				this.setPhase(Phase.PLACEMENT);
+			}
 		}
 	}
 
@@ -260,5 +269,7 @@ public class Admiral implements Serializable {
 
 	public void refresh() {
 		setName(getName());
+		setReady(isReady());
 	}
+
 }
