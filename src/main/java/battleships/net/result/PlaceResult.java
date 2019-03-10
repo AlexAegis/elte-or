@@ -27,4 +27,5 @@ public class PlaceResult extends Response implements Serializable {
 		return "PlaceResult: { target: " + this.getTarget() + " valid: " + this.getValid() + " } ";
 	}
 
+
 }

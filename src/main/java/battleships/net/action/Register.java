@@ -22,29 +22,30 @@ public class Register extends Request<RegisterResult> implements Serializable {
 	}
 
 	@Override
-	public void respond(Connection connection, Optional<Server> fromServer, Optional<Client> fromClient) {
-		fromServer.ifPresent(server -> {
+	public Optional<RegisterResult> response(Connection connection, Optional<Server> answerFromServer,
+			Optional<Client> answerFromClient) {
+		return answerFromServer.map(server -> {
 			if (server.getTable().getAdmiral(getId()) == null) {
 				connection.setAdmiral(server.getTable().addAdmiral(getId()));
 			} else if (server.getTable().getAdmiral(getId()) != null
 					&& server.getConnectedAdmirals().get(server.getTable().getAdmiral(getId())) != null) {
 				var res = new RegisterResult(null, null);
 				res.setError("Taken");
-				connection.respond(res);
-				return;
+				return res;
+
 			} else {
 				connection.setAdmiral(server.getTable().getAdmiral(getId()));
 			}
 			server.getConnectedAdmirals().put(connection.getAdmiral(), connection);
-			connection.respond(new RegisterResult(getId(), new Coord(10, 10)));
+			return new RegisterResult(getId(), new Coord(10, 10));
 		});
-
 	}
+
 
 
 	@Override
 	public String toString() {
-		return " Register: { id: " + id + " } ";
+		return " Register: { id: " + getId() + " } ";
 	}
 
 }

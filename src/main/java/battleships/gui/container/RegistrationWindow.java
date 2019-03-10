@@ -58,7 +58,7 @@ public class RegistrationWindow extends BasicModal {
 		setComponent(registrationForm);
 		gui.addWindow(this);
 		gui.moveToTop(this);
-		this.takeFocus();
+		takeFocus();
 		if (client.getGame().getAdmiral().getName() != null) {
 			client.tryRegister(client.getGame().getAdmiral().getName());
 		}

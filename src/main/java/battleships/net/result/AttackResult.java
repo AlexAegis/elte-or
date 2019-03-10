@@ -27,4 +27,5 @@ public class AttackResult extends Response implements Serializable {
 		return "AttackResult: { target: " + this.getTarget() + " success: " + this.getSuccess() + " } ";
 	}
 
+
 }

@@ -44,8 +44,11 @@ public class Attack extends Request<AttackResult> implements Serializable {
 	}
 
 	@Override
-	public void respond(Connection connection, Optional<Server> fromServer, Optional<Client> fromClient) {
-
+	public Optional<AttackResult> response(Connection connection, Optional<Server> fromServer,
+			Optional<Client> fromClient) {
+		return fromServer.map(server -> {
+			return new AttackResult("", null);
+		});
 	}
 
 

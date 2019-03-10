@@ -11,7 +11,7 @@ import battleships.net.result.Response;
 public abstract class Request<T extends Response> extends Packet implements Serializable {
 
 	private static final long serialVersionUID = -1396265613021084526L;
-	String id;
+	protected String id;
 
 	public Request(String id) {
 		this.id = id;
@@ -29,5 +29,10 @@ public abstract class Request<T extends Response> extends Packet implements Seri
 		return "{ id: " + id + " }";
 	}
 
-	public abstract void respond(Connection connection, Optional<Server> fromServer, Optional<Client> fromClient);
+	public void respond(Connection connection, Optional<Server> answerFromServer, Optional<Client> answerFromClient) {
+		connection.respond(response(connection, answerFromServer, answerFromClient).orElse(null));
+	}
+
+	public abstract Optional<T> response(Connection connection, Optional<Server> answerFromServer,
+			Optional<Client> answerFromClient);
 }

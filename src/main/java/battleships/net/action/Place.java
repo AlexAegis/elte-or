@@ -26,8 +26,11 @@ public class Place extends Request<PlaceResult> implements Serializable {
 	}
 
 	@Override
-	public void respond(Connection connection, Optional<Server> fromServer, Optional<Client> fromClient) {
-
+	public Optional<PlaceResult> response(Connection connection, Optional<Server> fromServer,
+			Optional<Client> fromClient) {
+		return fromServer.map(server -> {
+			return new PlaceResult("", null);
+		});
 	}
 
 }

@@ -3,7 +3,7 @@ package battleships.net.result;
 import java.io.Serializable;
 import battleships.net.Packet;
 
-public class Response extends Packet implements Serializable {
+public abstract class Response extends Packet implements Serializable {
 
 	private static final long serialVersionUID = 5037733141987271620L;
 
@@ -35,4 +35,5 @@ public class Response extends Packet implements Serializable {
 	public void setTarget(String target) {
 		this.target = target;
 	}
+
 }

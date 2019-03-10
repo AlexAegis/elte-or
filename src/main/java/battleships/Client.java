@@ -134,10 +134,35 @@ public class Client implements Runnable {
 	}
 
 	public void tryRegister(String name) {
-		this.<RegisterResult>sendRequest(new Register(name)).subscribe(res -> {
-			getGame().getAdmiral().setName(res.getTarget());
-			registrationWindow.close();
-			game.getDrawer().takeFocus();
+		this.sendRequest(new Register(name)).subscribe(res -> {
+			if (res.getTarget() != null && !res.getTarget().isEmpty()) {
+				// Successful
+				System.out.println("SUCC REG for: " + res.getTarget());
+				registrationWindow.close();
+
+
+				getGame().getAdmiral().setName(res.getTarget());
+
+
+				if (res.getExisting() != null) {
+					System.out.println("EXISTINGGG");
+				} else {
+					System.out.println("NEW MAATTCH");
+					// NewMatch
+					fieldInitFromFile(getGame().getAdmiral(), getGame().getSea());
+
+
+				}
+
+				game.getDrawer().takeFocus();
+				// Setup table
+
+			} else {
+				System.out.println("NOT SUCC REG");
+			}
+
+
+
 		});
 	}
 

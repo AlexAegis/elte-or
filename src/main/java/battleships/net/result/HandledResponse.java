@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 public class HandledResponse extends Response implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -4585364190409805340L;
 
 	public HandledResponse() {
 		super(null);
@@ -18,5 +18,7 @@ public class HandledResponse extends Response implements Serializable {
 	public String toString() {
 		return "HandledResponse";
 	}
+
+
 
 }

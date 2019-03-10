@@ -24,11 +24,12 @@ public class Ready extends Request<ReadyResult> implements Serializable {
 	}
 
 	@Override
-	public void respond(Connection connection, Optional<Server> fromServer, Optional<Client> fromClient) {
+	public Optional<ReadyResult> response(Connection connection, Optional<Server> answerFromServer,
+			Optional<Client> answerFromClient) {
 		System.out.println("RESPONDING TO A READY");
-		fromServer.ifPresent(server -> {
+		return answerFromServer.map(server -> {
 			server.getTable().getAdmiral(id).setPhase(isReady() ? Phase.READY : Phase.PLACEMENT);
-			connection.respond(new ReadyResult(id, ready));
+			return new ReadyResult(id, ready);
 		});
 	}
 

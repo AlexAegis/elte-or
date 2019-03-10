@@ -1,5 +1,6 @@
 package battleships.model;
 
+import java.beans.Transient;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +32,8 @@ public class Admiral {
 	private String name;
 	private Phase phase = Phase.PLACEMENT;
 
-	public GameWindow game;
+
+	public transient GameWindow game;
 
 	public Admiral(String name) {
 		this.name = name;
