@@ -2,6 +2,7 @@ package battleships.net.action;
 
 import java.io.Serializable;
 import java.util.Optional;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 import battleships.Client;
 import battleships.Server;
@@ -41,18 +42,25 @@ public class Ready extends Request<ReadyResult> implements Serializable {
 		if (answerFromServer.isPresent()) {
 			return answerFromServer.map(server -> {
 				var reqAdm = server.getTable().getAdmiral(getRequester());
+				System.out.println("reqAdm: " + reqAdm);
+				var whoAdm = server.getTable().getAdmiral(getWho());
+				System.out.println("whoAdm: " + whoAdm);
 				reqAdm.setPhase(isReady() ? Phase.READY : Phase.PLACEMENT);
 
 				// This guy is now ready, lets tell everyone else
-				server.getEveryOtherConnectedAdmiralsExcept(reqAdm).forEach(conn -> {
-					conn.send(new Ready(conn.getAdmiral().getName(), reqAdm.getName(), isReady()));
+				server.getEveryOtherConnectedAdmiralsExcept().forEach(conn -> {
+					conn.send(new Ready(conn.getAdmiral().getName(), whoAdm.getName(), whoAdm.isReady()))
+							.subscribe(ack -> {
+								Logger.getGlobal().info("Nofified about readyness, here's the acknowledgement: " + ack);
+							});
 				});
 				return new ReadyResult(getRequester(), ready);
 			});
 		} else {
 			return answerFromClient.map(client -> {
-				System.out.println("GOT A GUY WHO IS READY OR NOT!!!" + getRequester() + " isReady " + ready);
-				client.getGame().getOpponentBar().getOpponentByName(getRequester()).ifPresent(opponent -> {
+				System.out.println("GOT A GUY WHO IS READY OR NOT!!! req: " + getRequester() + " who: " + getWho()
+						+ "isReady " + ready);
+				client.getGame().getOpponentBar().getOpponentByName(getWho()).ifPresent(opponent -> {
 					opponent.get().setReady(isReady());
 					opponent.getLabel().refresh();
 				});

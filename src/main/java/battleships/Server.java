@@ -7,6 +7,7 @@ import picocli.CommandLine.ParentCommand;
 import java.net.ServerSocket;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,9 +89,9 @@ public class Server implements Runnable {
 	/**
 	* @return the connectedAdmirals
 	*/
-	public Stream<Connection> getEveryOtherConnectedAdmiralsExcept(Admiral admiral) {
+	public Stream<Connection> getEveryOtherConnectedAdmiralsExcept(Admiral... admirals) {
 		return getConnectedAdmirals().entrySet().stream().filter(Objects::nonNull).filter(e -> {
-			return !e.getKey().equals(admiral);
+			return !Arrays.asList(admirals).contains(e.getKey());
 		}).map(Entry::getValue).filter(Objects::nonNull);
 	}
 
