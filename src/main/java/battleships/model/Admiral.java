@@ -23,7 +23,7 @@ import battleships.state.Phase;
 /**
  * A class representing a player
  */
-public class Admiral implements Serializable {
+public class Admiral implements Comparable<Admiral>, Serializable {
 
 	private static final long serialVersionUID = 2452332968381664354L;
 
@@ -281,6 +281,11 @@ public class Admiral implements Serializable {
 	public void refresh() {
 		setName(getName());
 		setReady(isReady());
+	}
+
+	@Override
+	public int compareTo(Admiral o) {
+		return getName().compareTo(o.getName());
 	}
 
 }

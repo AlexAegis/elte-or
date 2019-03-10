@@ -12,14 +12,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import battleships.model.Admiral;
 import battleships.model.Table;
 import battleships.net.Connection;
 import battleships.server.ClientThread;
+import battleships.state.Phase;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.processors.PublishProcessor;
@@ -53,15 +57,21 @@ public class Server implements Runnable {
 	private Map<Admiral, Connection> connectedAdmirals = new HashMap<>();
 	private PublishProcessor<Connection> connections = PublishProcessor.create();
 
+	private Phase phase;
+
+	private Admiral currentAdmiral;
 
 	@Override
 	public void run() {
+		phase = Phase.PLACEMENT;
 		try {
 			this.server = new ServerSocket(port);
 			System.out.println("STARTSERVER");
 
 			connections.parallel().runOn(Schedulers.newThread()).map(connection -> {
-				spawn();
+				if (Phase.PLACEMENT.equals(getPhase())) {
+					spawn();
+				}
 				return connection;
 			}).sequential().subscribe();
 			spawn();
@@ -87,12 +97,27 @@ public class Server implements Runnable {
 	}
 
 	/**
+	 * @return the phase
+	 */
+	public Phase getPhase() {
+		return phase;
+	}
+
+	/**
 	* @return the connectedAdmirals
 	*/
 	public Stream<Connection> getEveryOtherConnectedAdmiralsExcept(Admiral... admirals) {
 		return getConnectedAdmirals().entrySet().stream().filter(Objects::nonNull).filter(e -> {
 			return !Arrays.asList(admirals).contains(e.getKey());
 		}).map(Entry::getValue).filter(Objects::nonNull);
+	}
+
+	public Boolean isEveryOneOnTheSamePhase(Phase stage) {
+		return getConnectedAdmirals().entrySet().stream().allMatch(entry -> entry.getKey().getPhase().equals(stage));
+	}
+
+	public Boolean isAtLeastNPlayers(int i) {
+		return getConnectedAdmirals().entrySet().stream().map(Entry::getValue).filter(Objects::nonNull).count() >= i;
 	}
 
 
@@ -103,4 +128,49 @@ public class Server implements Runnable {
 	public Table getTable() {
 		return table;
 	}
+
+	public void setPhase(Phase phase) {
+		this.phase = phase;
+		if (Phase.PLACEMENT.equals(getPhase())) {
+			Logger.getGlobal().info("dispose the last listening thread");
+			connections.lastElement().onTerminateDetach();
+		}
+	}
+
+	/**
+	 * @param currentAdmiral the currentAdmiral to set
+	 */
+	public void setCurrentAdmiral(Admiral currentAdmiral) {
+		this.currentAdmiral = currentAdmiral;
+	}
+
+	public Admiral getCurrentAdmiral() {
+		if (currentAdmiral == null) {
+			turnAdmirals();
+		}
+		return currentAdmiral;
+	}
+
+	public void turnAdmirals() {
+		nextAdmiralInTurn().ifPresent(this::setCurrentAdmiral);
+	}
+
+	public Optional<Admiral> nextAdmiralInTurn() {
+		if (currentAdmiral == null) {
+			return Optional.of(getConnectedAdmirals().keySet().stream().sorted().collect(Collectors.toList()).get(0));
+		} else {
+			Boolean thisOne = false;
+			for (var admi : getConnectedAdmirals().keySet().stream().sorted().collect(Collectors.toList())) {
+				if (thisOne) {
+					return Optional.of(admi);
+				}
+				if (admi.equals(currentAdmiral)) {
+					thisOne = true;
+				}
+			}
+			return Optional.<Admiral>empty();
+		}
+	}
+
+
 }
