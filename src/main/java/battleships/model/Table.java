@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import com.googlecode.lanterna.TerminalSize;
 import battleships.marker.TableMarker;
 import battleships.model.Coord;
 import battleships.model.Shot;

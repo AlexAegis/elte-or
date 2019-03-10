@@ -3,20 +3,13 @@ package battleships.gui;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
-import com.googlecode.lanterna.gui2.AbsoluteLayout;
 import com.googlecode.lanterna.gui2.AbstractInteractableComponent;
 import com.googlecode.lanterna.gui2.Interactable;
 import com.googlecode.lanterna.gui2.InteractableRenderer;
-import com.googlecode.lanterna.gui2.LayoutManager;
-import com.googlecode.lanterna.gui2.LinearLayout;
 import com.googlecode.lanterna.gui2.TextGUIGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
-import com.googlecode.lanterna.input.KeyType;
 import battleships.gui.container.Drawer;
 import battleships.gui.container.Sea;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {

@@ -1,35 +1,18 @@
 package battleships.gui.container;
 
-import java.io.IOException;
-import java.net.Socket;
 import java.util.Arrays;
-import java.util.logging.Logger;
-import java.util.regex.Pattern;
-import com.googlecode.lanterna.TerminalSize;
-import com.googlecode.lanterna.TextColor;
-import com.googlecode.lanterna.bundle.LanternaThemes;
-import com.googlecode.lanterna.graphics.Theme;
 import com.googlecode.lanterna.gui2.BasicWindow;
-import com.googlecode.lanterna.gui2.Border;
 import com.googlecode.lanterna.gui2.BorderLayout;
 import com.googlecode.lanterna.gui2.Borders;
-import com.googlecode.lanterna.gui2.Button;
-import com.googlecode.lanterna.gui2.DefaultWindowManager;
-import com.googlecode.lanterna.gui2.EmptySpace;
 import com.googlecode.lanterna.gui2.GridLayout;
 import com.googlecode.lanterna.gui2.Label;
-import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
 import com.googlecode.lanterna.gui2.Panel;
-import com.googlecode.lanterna.gui2.TextBox;
 import com.googlecode.lanterna.gui2.Window;
 import com.googlecode.lanterna.screen.Screen;
-import com.googlecode.lanterna.screen.TerminalScreen;
-import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 import battleships.Client;
 import battleships.gui.element.ReadyLabel;
 import battleships.model.Admiral;
-import battleships.state.Phase;
 
 public class GameWindow extends BasicWindow {
 	private Client client;

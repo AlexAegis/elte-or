@@ -6,7 +6,6 @@ import battleships.Client;
 import battleships.Server;
 import battleships.model.Coord;
 import battleships.net.Connection;
-import battleships.net.result.Response;
 
 public class Place extends Request implements Serializable {
 

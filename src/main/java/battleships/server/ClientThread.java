@@ -1,27 +1,14 @@
 package battleships.server;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
 import java.util.logging.Logger;
-import battleships.exception.AlreadyShotException;
-import battleships.exception.BorderShotException;
 import battleships.misc.Spawner;
-import battleships.model.Shot;
 import battleships.model.Admiral;
 import battleships.model.Table;
-import lesson04.BattleShipsServer;
-import battleships.Server;
-import battleships.net.action.Attack;
-import battleships.net.action.Place;
 import battleships.net.action.Register;
 import battleships.net.result.RegisterResult;
 

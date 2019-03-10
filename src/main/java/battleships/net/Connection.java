@@ -12,12 +12,9 @@ import battleships.Server;
 import battleships.model.Admiral;
 import battleships.net.action.Request;
 import battleships.net.result.Response;
-import io.reactivex.Maybe;
 import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
-import io.reactivex.subjects.PublishSubject;
 
 public class Connection implements AutoCloseable {
 

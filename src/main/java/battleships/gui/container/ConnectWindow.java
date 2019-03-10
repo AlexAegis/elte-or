@@ -1,14 +1,7 @@
 package battleships.gui.container;
 
-import java.io.IOException;
 import java.util.Arrays;
-import java.util.Optional;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import com.googlecode.lanterna.bundle.LanternaThemes;
-import com.googlecode.lanterna.graphics.Theme;
-import com.googlecode.lanterna.gui2.BasePane;
-import com.googlecode.lanterna.gui2.BasicWindow;
 import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.EmptySpace;
 import com.googlecode.lanterna.gui2.GridLayout;
@@ -17,8 +10,6 @@ import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextBox;
 import com.googlecode.lanterna.gui2.Window;
 import battleships.Client;
-import io.reactivex.Maybe;
-import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
 public class ConnectWindow extends BasicModal {
