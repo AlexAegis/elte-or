@@ -76,41 +76,94 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 		return false;
 	}
 
+	public Result onSeaLeft(Sea sea) {
+		if (sea.placementValidFromLeft(ship)) {
+			moveShipInDirection(battleships.model.Direction.LEFT);
+		} else {
+			briefError();
+		}
+		return Result.HANDLED;
+	}
+
+	public Result onSeaDown(Sea sea) {
+		if (sea.placementValidFromBottom(ship)) {
+			moveShipInDirection(battleships.model.Direction.DOWN);
+		} else {
+			briefError();
+		}
+		return Result.HANDLED;
+	}
+
+	public Result onSeaRight(Sea sea) {
+		if (sea.placementValidFromRight(ship)) {
+			moveShipInDirection(battleships.model.Direction.RIGHT);
+		} else {
+			briefError();
+		}
+		return Result.HANDLED;
+	}
+
+	public Result onSeaUp(Sea sea) {
+		if (sea.placementValidFromTop(ship)) {
+			moveShipInDirection(battleships.model.Direction.UP);
+		} else {
+			briefError();
+		}
+		return Result.HANDLED;
+	}
+
+	public Result inDrawerUpLeft(Drawer drawer) {
+		if (drawer.isFirstShip(ship)) {
+			drawer.focusLastShip();
+			return Result.HANDLED;
+		} else {
+			return Result.MOVE_FOCUS_UP;
+		}
+	}
+
+	public Result inDrawerDownRight(Drawer drawer) {
+		if (drawer.isLastShip(ship)) {
+			drawer.focusFirstShip();
+			return Result.HANDLED;
+		} else {
+			return Result.MOVE_FOCUS_DOWN;
+		}
+	}
 
 	@Override
 	public synchronized Result handleKeyStroke(KeyStroke keyStroke) {
 
 		if (isOnSea() && ship.isHeld()) {
 			var sea = ((Sea) ship.getParent());
+
+			if (keyStroke.getCharacter() != null) {
+				switch (keyStroke.getCharacter()) {
+					case 'W':
+					case 'w':
+						return onSeaUp(sea);
+					case 'A':
+					case 'a':
+						return onSeaLeft(sea);
+					case 'S':
+					case 's':
+						return onSeaDown(sea);
+					case 'D':
+					case 'd':
+						return onSeaRight(sea);
+					default:
+				}
+			}
+
+
 			switch (keyStroke.getKeyType()) {
 				case ArrowDown:
-					if (sea.placementValidFromBottom(ship)) {
-						moveShipInDirection(battleships.model.Direction.DOWN);
-					} else {
-						briefError();
-					}
-					return Result.HANDLED;
+					return onSeaDown(sea);
 				case ArrowLeft:
-					if (sea.placementValidFromLeft(ship)) {
-						moveShipInDirection(battleships.model.Direction.LEFT);
-					} else {
-						briefError();
-					}
-					return Result.HANDLED;
+					return onSeaLeft(sea);
 				case ArrowRight:
-					if (sea.placementValidFromRight(ship)) {
-						moveShipInDirection(battleships.model.Direction.RIGHT);
-					} else {
-						briefError();
-					}
-					return Result.HANDLED;
+					return onSeaRight(sea);
 				case ArrowUp:
-					if (sea.placementValidFromTop(ship)) {
-						moveShipInDirection(battleships.model.Direction.UP);
-					} else {
-						briefError();
-					}
-					return Result.HANDLED;
+					return onSeaUp(sea);
 				case Enter:
 					if (!sea.placementValid(ship)) {
 						briefError();
@@ -144,6 +197,23 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 		// When the cursor is on the sea and not holding any items and when in placement mode
 		if (isOnSea() && !ship.isHeld()) {
 			var sea = ((Sea) ship.getParent());
+
+			if (keyStroke.getCharacter() != null) {
+				switch (keyStroke.getCharacter()) {
+					case 'W':
+					case 'w':
+					case 'A':
+					case 'a':
+						return Result.MOVE_FOCUS_PREVIOUS;
+					case 'S':
+					case 's':
+					case 'D':
+					case 'd':
+						return Result.MOVE_FOCUS_NEXT;
+					default:
+				}
+			}
+
 			switch (keyStroke.getKeyType()) {
 				case ArrowDown:
 				case ArrowRight:
@@ -169,21 +239,22 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 
 		if (isInDrawer()) {
 			var drawer = ((Drawer) ship.getParent());
+			switch (keyStroke.getCharacter()) {
+				case 'W':
+				case 'A':
+					return inDrawerUpLeft(drawer);
+				case 'S':
+				case 'D':
+					return inDrawerDownRight(drawer);
+				default:
+			}
 			switch (keyStroke.getKeyType()) {
+				case ArrowRight:
 				case ArrowDown:
-					if (drawer.isLastShip(ship)) {
-						drawer.focusFirstShip();
-						return Result.HANDLED;
-					} else {
-						return Result.MOVE_FOCUS_DOWN;
-					}
+					return inDrawerDownRight(drawer);
+				case ArrowLeft:
 				case ArrowUp:
-					if (drawer.isFirstShip(ship)) {
-						drawer.focusLastShip();
-						return Result.HANDLED;
-					} else {
-						return Result.MOVE_FOCUS_UP;
-					}
+					return inDrawerUpLeft(drawer);
 				case Tab:
 					drawer.getSea().takeFocus();
 					return Result.HANDLED;
