@@ -79,4 +79,9 @@ public class RegistrationWindow extends BasicModal {
 		nameBox.takeFocus();
 	}
 
+
+	public void briefError() {
+		briefError(nameBox);
+	}
+
 }

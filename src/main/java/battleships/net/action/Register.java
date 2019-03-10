@@ -35,38 +35,45 @@ public class Register extends Request<RegisterResult> implements Serializable {
 		if (answerFromServer.isPresent()) {
 			return answerFromServer.map(server -> {
 				var reqAdm = server.getTable().getAdmiral(getRequester());
-				System.out.println("FOUND GUY " + reqAdm);
 				if (reqAdm == null) {
-					System.out.println("CREATED A NEW");
 					connection.setAdmiral(server.getTable().addAdmiral(getRequester()));
 				} else if (reqAdm != null && server.getConnectedAdmirals().get(reqAdm) != null) {
-					System.out.println("ERRORRRR");
 					return new RegisterResult(null, null, null); // taken
 				} else {
-					System.out.println("EGGZISTING");
 					connection.setAdmiral(reqAdm);
 				}
 				server.getConnectedAdmirals().put(connection.getAdmiral(), connection);
-				System.out.println("CONN ADDM: " + connection.getAdmiral());
 
 				// Notify every other player about the registration
-
 				server.getEveryOtherConnectedAdmiralsExcept(connection.getAdmiral()).forEach(otherConn -> {
+
+					connection.getAdmiral().getKnowledge().putIfAbsent(otherConn.getAdmiral().getName(),
+							new Admiral(otherConn.getAdmiral().getName()));
+					connection.getAdmiral().getKnowledge().get(otherConn.getAdmiral().getName())
+							.setPhase(otherConn.getAdmiral().getPhase());
+
 					Logger.getGlobal().info("Sending notification about registration to: " + otherConn.getAdmiral());
 					otherConn.send(new Register(otherConn.getAdmiral().getName(), connection.getAdmiral().getName(),
-							otherConn.getAdmiral().isReady())).subscribe(res -> {
-								System.out.println("SENT REG TO OTHER CLIENT" + res);
+							connection.getAdmiral().isReady())).subscribe(res -> {
+								Logger.getGlobal().info("Notified other client about a registration " + res);
 							});
 				});
 
-				return new RegisterResult(getRequester(), new Coord(10, 10), connection.getAdmiral());
+
+				return new RegisterResult(getRequester(), server.getTable().getSize(), connection.getAdmiral());
 			});
 		} else {
 			return answerFromClient.map(client -> {
 				// A new opponent arrived
-				System.out.println("NEW OPPONENT LOGGED IN:" + this.toString());
-				client.getGame().getOpponentBar().addOpponent(getWho(), isInitialReady());
-				return new RegisterResult(getRequester(), new Coord(10, 10), connection.getAdmiral());
+				Logger.getGlobal().info("A new opponent registered on the server " + this.toString());
+				if (!client.getGame().getAdmiral().getName().equals(getWho())) {
+					client.getGame().getOpponentBar().addOpponent(getWho(), isInitialReady());
+					return new RegisterResult(getRequester(), null, connection.getAdmiral());
+				} else {
+					System.out.println("Spiderman.jpg");
+				}
+				return new RegisterResult(null, null, null);
+
 			});
 		}
 

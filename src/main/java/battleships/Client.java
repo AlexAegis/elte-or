@@ -164,8 +164,11 @@ public class Client implements Runnable {
 				getGame().setTableSize(res.getTableSize().convertToTerminalSize());
 				getGame().setAdmiral(res.getAdmiral());
 
+
+
 				// Setup table
 			} else {
+				getGame().getClient().getRegistrationWindow().briefError();
 				System.out.println("NOT SUCC REG");
 			}
 		});

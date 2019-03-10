@@ -59,9 +59,9 @@ public class Connection implements AutoCloseable {
 
 	@Override
 	public void close() throws IOException {
-		//oos.close();
-		//ois.close();
-		//clientSocket.close();
+		oos.close();
+		ois.close();
+		clientSocket.close();
 	}
 
 	public void listen() throws IOException {

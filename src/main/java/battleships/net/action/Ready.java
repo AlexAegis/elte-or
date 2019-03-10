@@ -43,6 +43,7 @@ public class Ready extends Request<ReadyResult> implements Serializable {
 			return answerFromServer.map(server -> {
 				var reqAdm = server.getTable().getAdmiral(getRequester());
 				var whoAdm = server.getTable().getAdmiral(getWho());
+				System.out.println(" READY REQQ reqAdm: " + reqAdm + " whoAdm: " + whoAdm + " isReady() " + isReady());
 				whoAdm.setReady(isReady());
 
 				// This guy is now ready, lets tell everyone else

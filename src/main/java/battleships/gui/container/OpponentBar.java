@@ -43,10 +43,12 @@ public class OpponentBar extends Panel implements OpponentContainer {
 	}
 
 	public void addOpponent(String admiralName, Boolean ready) {
-		System.out.println("add opp:" + admiralName);
-		game.getAdmiral().getKnowledge().putIfAbsent(admiralName, new Admiral(admiralName).setReady(ready));
-		addComponent(new Opponent(game, admiralName));
-		invalidate();
+		System.out.println("add opp:" + admiralName + " cando? " + (game != null));
+		if (game != null) {
+			game.getAdmiral().getKnowledge().putIfAbsent(admiralName, new Admiral(admiralName).setReady(ready));
+			addComponent(new Opponent(game, admiralName));
+			invalidate();
+		}
 	}
 
 	public void removeOpponent(String admiralName) {

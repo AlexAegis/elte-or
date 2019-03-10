@@ -246,11 +246,6 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 	public Map<String, Admiral> getKnowledge() {
 		return knowledge;
 	}
-	/*
-		public String toString(Admiral target) {
-			knowledge.putIfAbsent(target, new Admiral(target.getName()));
-			return knowledge.get(target).toString();
-		}*/
 
 	@Override
 	public String toString() {
