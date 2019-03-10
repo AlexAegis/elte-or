@@ -11,8 +11,8 @@ public class RegisterResult extends Response implements Serializable {
 	private Coord tableSize;
 	private Admiral admiral;
 
-	public RegisterResult(String target, Coord tableSize, Admiral admiral) {
-		super(target);
+	public RegisterResult(String recipient, Coord tableSize, Admiral admiral) {
+		super(recipient);
 		this.tableSize = tableSize;
 		this.admiral = admiral;
 	}
@@ -33,7 +33,7 @@ public class RegisterResult extends Response implements Serializable {
 
 	@Override
 	public String toString() {
-		return "RegisterResult: { target: " + this.getTarget() + " tableSize: " + this.getTableSize() + " admiral: "
+		return "RegisterResult: { target: " + this.getRecipient() + " tableSize: " + this.getTableSize() + " admiral: "
 				+ getAdmiral() + " } ";
 	}
 

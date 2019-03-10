@@ -11,22 +11,22 @@ import battleships.net.result.Response;
 public abstract class Request<T extends Response> extends Packet implements Serializable {
 
 	private static final long serialVersionUID = -1396265613021084526L;
-	protected String id;
+	protected String requester;
 
-	public Request(String id) {
-		this.id = id;
+	public Request(String requester) {
+		this.requester = requester;
 	}
 
 	/**
-	 * @return the id
+	 * @return the requester
 	 */
-	public String getId() {
-		return id;
+	public String getRequester() {
+		return requester;
 	}
 
 	@Override
 	public String toString() {
-		return "{ id: " + id + " }";
+		return "{ requester: " + requester + " }";
 	}
 
 	public void respond(Connection connection, Optional<Server> answerFromServer, Optional<Client> answerFromClient) {

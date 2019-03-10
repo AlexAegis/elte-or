@@ -142,7 +142,7 @@ public class Admiral implements Serializable {
 			if (game.getReadyLabel() != null) {
 				game.getReadyLabel().refresh();
 			}
-			this.game.getClient().sendRequest(new Ready(getName(), ready)).subscribe(res -> {
+			this.game.getClient().sendRequest(new Ready(getName(), getName(), ready)).subscribe(res -> {
 				if (res.getReady()) {
 					this.setPhase(Phase.READY);
 				} else {

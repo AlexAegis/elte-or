@@ -10,8 +10,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Stream;
 import battleships.model.Admiral;
 import battleships.model.Table;
 import battleships.net.Connection;
@@ -81,6 +84,17 @@ public class Server implements Runnable {
 	public Map<Admiral, Connection> getConnectedAdmirals() {
 		return connectedAdmirals;
 	}
+
+	/**
+	* @return the connectedAdmirals
+	*/
+	public Stream<Connection> getEveryOtherConnectedAdmiralsExcept(Admiral admiral) {
+		return getConnectedAdmirals().entrySet().stream().filter(Objects::nonNull).filter(e -> {
+			return !e.getKey().equals(admiral);
+		}).map(Entry::getValue).filter(Objects::nonNull);
+	}
+
+
 
 	/**
 	 * @return the table

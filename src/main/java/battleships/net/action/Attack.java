@@ -4,10 +4,10 @@ import java.io.Serializable;
 import java.util.Optional;
 import battleships.Client;
 import battleships.Server;
+import battleships.model.Admiral;
 import battleships.model.Coord;
 import battleships.net.Connection;
 import battleships.net.result.AttackResult;
-import battleships.net.result.Response;
 
 public class Attack extends Request<AttackResult> implements Serializable {
 
@@ -16,18 +16,12 @@ public class Attack extends Request<AttackResult> implements Serializable {
 	private Integer to;
 	private Coord target;
 
-	public Attack(String id, Integer to, Coord target) {
-		super(id);
+	public Attack(String requester, Integer to, Coord target) {
+		super(requester);
 		this.to = to;
 		this.target = target;
 	}
 
-	/**
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
 
 	/**
 	 * @return the to

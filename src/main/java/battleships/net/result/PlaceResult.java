@@ -2,6 +2,7 @@ package battleships.net.result;
 
 import java.io.Serializable;
 import com.googlecode.lanterna.TerminalSize;
+import battleships.model.Admiral;
 import battleships.model.Coord;
 
 public class PlaceResult extends Response implements Serializable {
@@ -10,8 +11,8 @@ public class PlaceResult extends Response implements Serializable {
 
 	private Boolean valid;
 
-	public PlaceResult(String target, Boolean valid) {
-		super(target);
+	public PlaceResult(String recipient, Boolean valid) {
+		super(recipient);
 		this.valid = valid;
 	}
 
@@ -24,7 +25,7 @@ public class PlaceResult extends Response implements Serializable {
 
 	@Override
 	public String toString() {
-		return "PlaceResult: { target: " + this.getTarget() + " valid: " + this.getValid() + " } ";
+		return "PlaceResult: { target: " + this.getRecipient() + " valid: " + this.getValid() + " } ";
 	}
 
 

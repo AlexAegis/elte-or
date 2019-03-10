@@ -154,10 +154,10 @@ public class Client implements Runnable {
 	}
 
 	public void tryRegister(String name) {
-		this.sendRequest(new Register(name)).subscribe(res -> {
-			if (res.getTarget() != null && !res.getTarget().isEmpty()) {
+		this.sendRequest(new Register(name, name)).subscribe(res -> {
+			if (res.getRecipient() != null && !res.getRecipient().isEmpty()) {
 				// Successful
-				System.out.println("SUCC REG for: " + res.getTarget());
+				System.out.println("SUCC REG for: " + res.getRecipient());
 				registrationWindow.close();
 				System.out.println("GOT ADMIRAL OBJECT: " + res.getAdmiral());
 				getGame().setAdmiral(res.getAdmiral());

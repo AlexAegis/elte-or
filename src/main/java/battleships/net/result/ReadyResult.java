@@ -2,6 +2,7 @@ package battleships.net.result;
 
 import java.io.Serializable;
 import com.googlecode.lanterna.TerminalSize;
+import battleships.model.Admiral;
 import battleships.model.Coord;
 
 public class ReadyResult extends Response implements Serializable {
@@ -10,8 +11,8 @@ public class ReadyResult extends Response implements Serializable {
 
 	private Boolean ready;
 
-	public ReadyResult(String target, Boolean ready) {
-		super(target);
+	public ReadyResult(String recipient, Boolean ready) {
+		super(recipient);
 		this.ready = ready;
 	}
 
@@ -24,7 +25,7 @@ public class ReadyResult extends Response implements Serializable {
 
 	@Override
 	public String toString() {
-		return "ReadyResult: { target: " + this.getTarget() + " ready: " + this.getReady() + " } ";
+		return "ReadyResult: { who: " + this.getRecipient() + " ready: " + this.getReady() + " } ";
 	}
 
 }

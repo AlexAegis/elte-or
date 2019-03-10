@@ -1,25 +1,31 @@
 package battleships.net.result;
 
 import java.io.Serializable;
+import battleships.model.Admiral;
 import battleships.net.Packet;
 
 public abstract class Response extends Packet implements Serializable {
 
 	private static final long serialVersionUID = 5037733141987271620L;
 
-	private String target;
+	private String recipient;
 
 	private String error;
 
-	public Response(String target) {
-		this.target = target;
+	public Response(String recipient) {
+		this.recipient = recipient;
+	}
+
+
+	public String getRecipient() {
+		return recipient;
 	}
 
 	/**
-	 * @return the target
+	 * @param recipient the recipient to set
 	 */
-	public String getTarget() {
-		return target;
+	public void setRecipient(String recipient) {
+		this.recipient = recipient;
 	}
 
 	/**
@@ -30,10 +36,10 @@ public abstract class Response extends Packet implements Serializable {
 	}
 
 	/**
-	 * @param target the target to set
+	 * @return the error
 	 */
-	public void setTarget(String target) {
-		this.target = target;
+	public String getError() {
+		return error;
 	}
 
 }

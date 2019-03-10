@@ -24,7 +24,7 @@ public class AttackResult extends Response implements Serializable {
 
 	@Override
 	public String toString() {
-		return "AttackResult: { target: " + this.getTarget() + " success: " + this.getSuccess() + " } ";
+		return "AttackResult: { recipient: " + this.getRecipient() + " success: " + this.getSuccess() + " } ";
 	}
 
 
