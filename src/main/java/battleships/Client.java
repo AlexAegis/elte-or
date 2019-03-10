@@ -124,15 +124,11 @@ public class Client implements Runnable {
 	public void tryConnect(String host, Integer port) {
 		Observable.fromCallable(() -> {
 			try {
-				Logger.getGlobal().info("Trying to connect...");
 				return Optional.of(new Connection(this, host, port));
-
 			} catch (IOException e) {
-				Logger.getGlobal().info("Failed connect");
 				return Optional.<Connection>empty();
 			}
-		}).subscribeOn(Schedulers.newThread()).subscribe(optConn -> {
-			Logger.getGlobal().info("Connection sending succ: " + optConn.isPresent());
+		}).subscribeOn(Schedulers.newThread()).take(1).subscribe(optConn -> {
 			getConnection().onNext(optConn);
 		});
 	}
@@ -146,17 +142,14 @@ public class Client implements Runnable {
 	}
 
 	public <T extends Response> Observable<T> sendRequest(Request<T> req) {
-		return connection().switchMap(conn -> {
-			System.out.println("Switching to connection: " + conn);
-			return conn.<T>send(req);
-		});
+		return connection().switchMap(conn -> conn.<T>send(req).switchIfEmpty(e -> {
+			System.out.println("Connection failed");
+			connectWindow.show(gui);
+		}));
 	}
 
 	public Observable<Connection> connection() {
-		return getConnection().map(conn -> {
-			System.out.println("mapping optional connecc: isPresent " + conn.isPresent());
-			return conn.orElse(null);
-		});
+		return getConnection().map(conn -> conn.orElse(null));
 	}
 
 	@Override
@@ -173,26 +166,9 @@ public class Client implements Runnable {
 			gui.addWindow(game);
 
 			connectWindow = new ConnectWindow(this);
-			gui.addWindow(connectWindow);
-			gui.moveToTop(connectWindow);
-			connectWindow.takeFocus();
-
-
-			tryConnect(host, port);
-			gui.waitForWindowToClose(connectWindow);
-
 			registrationWindow = new RegistrationWindow(this);
-			gui.addWindow(registrationWindow);
-			gui.moveToTop(registrationWindow);
-			registrationWindow.takeFocus();
-			if (getGame().getAdmiral().getName() != null) {
-				tryRegister(getGame().getAdmiral().getName());
-			}
-			gui.waitForWindowToClose(registrationWindow);
-
+			showConnectWindow();
 			gui.waitForWindowToClose(game);
-
-
 		} catch (IOException | ArrayIndexOutOfBoundsException e) {
 			e.printStackTrace();
 		} finally {
@@ -270,12 +246,11 @@ public class Client implements Runnable {
 
 	}
 
-
-	static class DisplayCountdown extends TimerTask {
-		@Override
-		public void run() {
-		}
-
+	/**
+	 * @return the connectWindow
+	 */
+	public ConnectWindow getConnectWindow() {
+		return connectWindow;
 	}
 
 	/**
@@ -313,5 +288,21 @@ public class Client implements Runnable {
 	 */
 	public GameWindow getGame() {
 		return game;
+	}
+
+	public void showConnectWindow() {
+		getConnectWindow().show(gui);
+	}
+
+	/**
+	 * @return the registrationWindow
+	 */
+	public RegistrationWindow getRegistrationWindow() {
+		return registrationWindow;
+	}
+
+	public void showRegistrationWindow() {
+		getRegistrationWindow().show(gui);
+
 	}
 }

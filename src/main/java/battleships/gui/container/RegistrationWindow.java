@@ -6,6 +6,7 @@ import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.EmptySpace;
 import com.googlecode.lanterna.gui2.GridLayout;
 import com.googlecode.lanterna.gui2.Label;
+import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextBox;
 import com.googlecode.lanterna.gui2.Window;
@@ -19,8 +20,10 @@ public class RegistrationWindow extends BasicModal {
 	private TextBox nameBox;
 	private EmptySpace emptySpace = new EmptySpace();
 	private Button registerButton;
+	private Client client;
 
 	public RegistrationWindow(Client client) {
+		this.client = client;
 		setTitle("Register");
 		setHints(Arrays.asList(Window.Hint.MODAL, Window.Hint.CENTERED));
 
@@ -47,7 +50,19 @@ public class RegistrationWindow extends BasicModal {
 		registrationForm.addComponent(nameBox);
 		registrationForm.addComponent(emptySpace);
 		registrationForm.addComponent(registerButton);
+
+	}
+
+
+	public void show(MultiWindowTextGUI gui) {
 		setComponent(registrationForm);
+		gui.addWindow(this);
+		gui.moveToTop(this);
+		this.takeFocus();
+		if (client.getGame().getAdmiral().getName() != null) {
+			client.tryRegister(client.getGame().getAdmiral().getName());
+		}
+		waitUntilClosed();
 	}
 
 	public void takeFocus() {

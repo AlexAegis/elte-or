@@ -6,6 +6,7 @@ import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.EmptySpace;
 import com.googlecode.lanterna.gui2.GridLayout;
 import com.googlecode.lanterna.gui2.Label;
+import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextBox;
 import com.googlecode.lanterna.gui2.Window;
@@ -28,8 +29,10 @@ public class ConnectWindow extends BasicModal {
 	private TextBox portBox;
 	private EmptySpace emptySpace = new EmptySpace();
 	private Button connectButton;
+	Client client;
 
 	public ConnectWindow(Client client) {
+		this.client = client;
 		setTitle("Connect");
 		setHints(Arrays.asList(Window.Hint.MODAL, Window.Hint.CENTERED));
 
@@ -53,11 +56,25 @@ public class ConnectWindow extends BasicModal {
 				client.tryConnect(hostBox.getText(), Integer.parseInt(portBox.getText()));
 			}
 		});
+
+	}
+
+
+	public void takeFocus() {
+		hostBox.takeFocus();
+	}
+
+
+	public void show(MultiWindowTextGUI gui) {
+
+		setComponent(connectForm);
 		connectForm.removeAllComponents();
 		connectForm.addComponent(new Label("Connecting"));
-		setComponent(connectForm);
 		client.getConnection().subscribeOn(Schedulers.io()).subscribe(optional -> {
-			optional.ifPresentOrElse((conn) -> close(), () -> {
+			optional.ifPresentOrElse((conn) -> {
+
+				close();
+			}, () -> {
 
 				connectForm.removeAllComponents();
 				connectForm.addComponent(hostLabel);
@@ -69,11 +86,13 @@ public class ConnectWindow extends BasicModal {
 				hostBox.takeFocus();
 			});
 		});
-	}
+		gui.addWindow(this);
+		gui.moveToTop(this);
+		this.takeFocus();
+		client.tryConnect(hostBox.getText(), Integer.parseInt(portBox.getText()));
+		waitUntilClosed();
 
-
-	public void takeFocus() {
-		hostBox.takeFocus();
+		client.showRegistrationWindow();
 	}
 
 }

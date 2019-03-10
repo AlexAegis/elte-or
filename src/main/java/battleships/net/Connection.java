@@ -77,7 +77,12 @@ public class Connection implements AutoCloseable {
 				}
 				Logger.getGlobal().info("Listener closes");
 			} catch (ClassNotFoundException | IOException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
+				Logger.getGlobal().info("CONNECTION ERRORED, LISTENER STOPS");
+				optionalClient.ifPresent(client -> {
+					client.getConnection().onNext(Optional.empty());
+					client.showConnectWindow();
+				});
 				close();
 				return false;
 			}
@@ -107,7 +112,7 @@ public class Connection implements AutoCloseable {
 			listenerSource.onNext(handledResponse);
 			return last;
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logger.getGlobal().info("Connection failed.. sending empty");
 			return Observable.empty();
 		}
 	}
