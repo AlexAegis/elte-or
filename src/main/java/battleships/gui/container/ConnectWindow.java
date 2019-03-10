@@ -17,7 +17,6 @@ import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextBox;
 import com.googlecode.lanterna.gui2.Window;
 import battleships.Client;
-import battleships.net.ClientConnection;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
@@ -57,16 +56,19 @@ public class ConnectWindow extends BasicModal {
 				valid &= false;
 			}
 			if (valid) {
+				connectForm.removeAllComponents();
+				connectForm.addComponent(new Label("Connecting"));
+				invalidate();
 				client.tryConnect(hostBox.getText(), Integer.parseInt(portBox.getText()));
 			}
 		});
+		connectForm.removeAllComponents();
+		connectForm.addComponent(new Label("Connecting"));
 		setComponent(connectForm);
-		client.getObservableConnection().subscribeOn(Schedulers.io()).switchMap(e -> {
-			connectForm.removeAllComponents();
-			connectForm.addComponent(new Label("Connecting"));
-			return e;
-		}).subscribe(optional -> {
+		client.getObservableConnection().subscribeOn(Schedulers.io()).subscribe(optional -> {
+			System.out.println("DO CONNECCCC" + optional.isPresent());
 			optional.ifPresentOrElse((conn) -> close(), () -> {
+
 				connectForm.removeAllComponents();
 				connectForm.addComponent(hostLabel);
 				connectForm.addComponent(hostBox);
@@ -77,6 +79,7 @@ public class ConnectWindow extends BasicModal {
 				hostBox.takeFocus();
 			});
 		});
+
 
 	}
 

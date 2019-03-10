@@ -1,8 +1,9 @@
 package battleships.net.result;
 
 import java.io.Serializable;
+import battleships.net.Packet;
 
-public class Response implements Serializable {
+public class Response extends Packet implements Serializable {
 
 	private static final long serialVersionUID = 5037733141987271620L;
 

@@ -17,7 +17,6 @@ import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextBox;
 import com.googlecode.lanterna.gui2.Window;
 import battleships.Client;
-import battleships.net.ClientConnection;
 import battleships.net.action.Register;
 import battleships.net.result.RegisterResult;
 import io.reactivex.Maybe;
@@ -50,9 +49,7 @@ public class RegistrationWindow extends BasicModal {
 			}
 			if (valid) {
 				System.out.println("VALID REGFORM");
-				//	client.tryConnect(nameBox.getText(), Integer.parseInt(portBox.getText()));
 				client.tryRegister(nameBox.getText());
-
 			} else {
 				System.out.println("INVALID REGFORM");
 			}

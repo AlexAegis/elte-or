@@ -49,7 +49,7 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import battleships.net.ClientConnection;
+import battleships.net.Connection;
 import battleships.net.action.Attack;
 import battleships.net.action.Register;
 import battleships.net.action.Request;
@@ -58,6 +58,7 @@ import battleships.net.result.Response;
 import io.reactivex.Completable;
 import io.reactivex.Emitter;
 import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 import io.reactivex.Notification;
 import io.reactivex.Observable;
 import io.reactivex.Scheduler;
@@ -67,6 +68,7 @@ import io.reactivex.internal.schedulers.SchedulerWhen;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.ReplaySubject;
 import io.reactivex.subjects.SingleSubject;
 import io.reactivex.subjects.Subject;
 import battleships.gui.container.ConnectWindow;
@@ -109,7 +111,7 @@ public class Client implements Runnable {
 
 	private MultiWindowTextGUI gui;
 	private List<Disposable> disposables = new ArrayList<>();
-	private BehaviorSubject<Observable<Optional<ClientConnection>>> observableConnection = BehaviorSubject.create();
+	private ReplaySubject<Optional<Connection>> observableConnection = ReplaySubject.create();
 
 
 	public static void main(String[] args) {
@@ -151,37 +153,46 @@ public class Client implements Runnable {
 	/**
 	 * @return the connection
 	 */
-	public BehaviorSubject<Observable<Optional<ClientConnection>>> getObservableConnection() {
+	public ReplaySubject<Optional<Connection>> getObservableConnection() {
 		return observableConnection;
 	}
 
 	public void tryConnect(String host, Integer port) {
-		getObservableConnection().onNext(Observable.fromCallable(() -> Optional.of(new ClientConnection(host, port)))
-				.subscribeOn(Schedulers.io()).onErrorResumeNext(error -> {
+		System.out.println("TRY CONNECT");
+		Observable.fromCallable(() -> {
+			try {
+				getObservableConnection().onNext(Optional.of(new Connection(this, host, port)));
+			} catch (IOException e) {
+				getObservableConnection().onNext(Optional.empty());
+			}
+			return Observable.just(0);
+		}).take(1).subscribeOn(Schedulers.newThread()).subscribe();
+
+
+
+		/*getObservableConnection().onNext(Observable.fromCallable(() -> Optional.of(new Connection(this, host, port)))
+				.take(1).subscribeOn(Schedulers.io()).doOnEach(e -> {
+					System.out.println("EMITTT " + e);
+				}).onErrorResumeNext(error -> {
 					return Observable.just(Optional.empty());
-				}));
+				}));*/
 	}
 
 	public void tryRegister(String name) {
-		this.<RegisterResult>sendRequest(new Register(name)).subscribe(opt -> {
-			opt.ifPresentOrElse(res -> {
-				System.out.println("got back name: " + res.getTarget());
-				getGame().getAdmiral().setName(res.getTarget());
-				registrationWindow.close();
-			}, () -> {
-				System.out.println("err while reg");
-			});
+		this.<RegisterResult>sendRequest(new Register(name)).subscribe(res -> {
+			getGame().getAdmiral().setName(res.getTarget());
+			registrationWindow.close();
 		});
 	}
 
-	public <T extends Response> Observable<Optional<T>> sendRequest(Request req) {
+	public Observable<Response> sendRequest(Request req) {
 		return connection().switchMap(conn -> {
-			return Observable.fromCallable(() -> conn.<T>send(req));
-		}).take(1);
+			return conn.send(req);
+		});
 	}
 
-	public Observable<ClientConnection> connection() {
-		return getObservableConnection().switchMap(conn -> conn).switchMap(conn -> Observable.just(conn.get()));
+	public Observable<Connection> connection() {
+		return getObservableConnection().map(conn -> conn.orElse(null));
 	}
 
 	@Override
@@ -201,6 +212,8 @@ public class Client implements Runnable {
 			gui.addWindow(connectWindow);
 			gui.moveToTop(connectWindow);
 			connectWindow.takeFocus();
+
+
 			tryConnect(host, port);
 			gui.waitForWindowToClose(connectWindow);
 
@@ -219,7 +232,13 @@ public class Client implements Runnable {
 		} catch (IOException | ArrayIndexOutOfBoundsException e) {
 			e.printStackTrace();
 		} finally {
-			connection().subscribe(conn -> conn.close()).dispose();
+			getObservableConnection().subscribe(conn -> conn.ifPresent(c -> {
+				try {
+					c.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			})).dispose();
 		}
 
 		/*														if (game.getPlayerName().getText() != null && !game.getPlayerName().getText().isEmpty()) {

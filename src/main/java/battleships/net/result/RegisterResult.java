@@ -22,4 +22,9 @@ public class RegisterResult extends Response implements Serializable {
 		return tableSize;
 	}
 
+	@Override
+	public String toString() {
+		return "RegisterResult: { target: " + this.getTarget() + " tableSize: " + this.getTableSize() + " } ";
+	}
+
 }

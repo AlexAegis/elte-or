@@ -24,7 +24,6 @@ public class Register extends Request implements Serializable {
 	@Override
 	public void respond(Connection connection, Optional<Server> fromServer, Optional<Client> fromClient) {
 		fromServer.ifPresent(server -> {
-			System.out.println("reg: " + toString());
 			if (server.getTable().getAdmiral(getId()) == null) {
 				connection.setAdmiral(server.getTable().addAdmiral(getId()));
 			} else if (server.getTable().getAdmiral(getId()) != null
@@ -40,6 +39,12 @@ public class Register extends Request implements Serializable {
 			connection.respond(new RegisterResult(getId(), new Coord(10, 10)));
 		});
 
+	}
+
+
+	@Override
+	public String toString() {
+		return " Register: { id: " + id + " } ";
 	}
 
 }

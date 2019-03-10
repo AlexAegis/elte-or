@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 import battleships.model.Admiral;
 import battleships.model.Coord;
 import battleships.model.Table;
-import battleships.net.ClientConnection;
 import battleships.net.Connection;
 import battleships.net.action.Register;
 import battleships.net.action.Request;
@@ -73,76 +72,25 @@ public class Server implements Runnable {
 	public void run() {
 		try {
 			this.server = new ServerSocket(port);
-
+			System.out.println("STARTSERVER");
 
 			connections.parallel().runOn(Schedulers.newThread()).map(connection -> {
-				Connection sc = new Connection(server);
 				spawn();
-				return sc;
-			}).sequential().subscribe(conn -> {
-				while (!conn.isClosed()) {
-					try {
-						conn.listen().ifPresent(request -> {
-							request.respond(conn, Optional.of(this), Optional.empty());
-						});
-					} catch (IOException e) {
-						connectedAdmirals.put(conn.getAdmiral(), null);
-						e.printStackTrace();
-					}
-				}
-			});
+				return connection;
+			}).sequential().subscribe();
 			spawn();
 			connections.blockingSubscribe();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-
-		/*
-
-				publishProcessor.parallel(10).runOn(Schedulers.newThread()).sequential().subscribe(a -> {
-					System.out.println(a);
-					Thread.sleep(200);
-					System.out.println("LOL");
-				}, err -> {
-					System.out.println("ERROR");
-				}, () -> {
-					System.out.println("COMP");
-				});
-				System.out.println("SUBB");*/
-
-		/*behaviorProcessor.parallel().runOn(Schedulers.newThread()).sequential().subscribe(a -> {
-			//while (true) {
-				System.out.println(a);
-
-			//}
-		});*/
-
-
-		/*
-				Logger.getGlobal().info("Server run, listening on port: " + port);
-				table = new Table();
-				try {
-					server = new ServerSocket(port);
-					spawn();
-				} catch (IOException e) {
-					e.printStackTrace();
-				} finally {
-					try {
-						executor.awaitTermination(10, TimeUnit.DAYS);
-						// TODO: Because of autospawning the last one wont terminate. Have to manually terminate after game end.
-						server.close();
-					} catch (IOException | InterruptedException e) {
-						e.printStackTrace();
-					}
-				}*/
 	}
 
 	public Disposable spawn() {
 		System.out.println("Spawn");
-		return Observable.fromCallable(() -> new Connection(server)).subscribeOn(Schedulers.io()).subscribe(newConn -> {
-			connections.onNext(newConn);
-		});
+		return Observable.fromCallable(() -> new Connection(this, server)).subscribeOn(Schedulers.io()).take(1)
+				.subscribe(newConn -> {
+					connections.onNext(newConn);
+				});
 	}
 
 	/**
