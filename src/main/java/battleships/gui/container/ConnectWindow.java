@@ -17,7 +17,7 @@ import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextBox;
 import com.googlecode.lanterna.gui2.Window;
 import battleships.Client;
-import battleships.net.Connection;
+import battleships.net.ClientConnection;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
@@ -61,7 +61,7 @@ public class ConnectWindow extends BasicModal {
 			}
 		});
 		setComponent(connectForm);
-		client.getObservableConnection().subscribeOn(Schedulers.newThread()).switchMap(e -> {
+		client.getObservableConnection().subscribeOn(Schedulers.io()).switchMap(e -> {
 			connectForm.removeAllComponents();
 			connectForm.addComponent(new Label("Connecting"));
 			return e;

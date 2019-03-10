@@ -17,7 +17,7 @@ import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextBox;
 import com.googlecode.lanterna.gui2.Window;
 import battleships.Client;
-import battleships.net.Connection;
+import battleships.net.ClientConnection;
 import battleships.net.action.Register;
 import battleships.net.result.RegisterResult;
 import io.reactivex.Maybe;

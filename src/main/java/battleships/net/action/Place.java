@@ -1,7 +1,12 @@
 package battleships.net.action;
 
 import java.io.Serializable;
+import java.util.Optional;
+import battleships.Client;
+import battleships.Server;
 import battleships.model.Coord;
+import battleships.net.Connection;
+import battleships.net.result.Response;
 
 public class Place extends Request implements Serializable {
 
@@ -19,4 +24,10 @@ public class Place extends Request implements Serializable {
 	public Coord getPiece() {
 		return piece;
 	}
+
+	@Override
+	public void respond(Connection connection, Optional<Server> fromServer, Optional<Client> fromClient) {
+
+	}
+
 }

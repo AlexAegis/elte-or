@@ -49,7 +49,7 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import battleships.net.Connection;
+import battleships.net.ClientConnection;
 import battleships.net.action.Attack;
 import battleships.net.action.Register;
 import battleships.net.action.Request;
@@ -109,7 +109,7 @@ public class Client implements Runnable {
 
 	private MultiWindowTextGUI gui;
 	private List<Disposable> disposables = new ArrayList<>();
-	private BehaviorSubject<Observable<Optional<Connection>>> observableConnection = BehaviorSubject.create();
+	private BehaviorSubject<Observable<Optional<ClientConnection>>> observableConnection = BehaviorSubject.create();
 
 
 	public static void main(String[] args) {
@@ -151,13 +151,13 @@ public class Client implements Runnable {
 	/**
 	 * @return the connection
 	 */
-	public BehaviorSubject<Observable<Optional<Connection>>> getObservableConnection() {
+	public BehaviorSubject<Observable<Optional<ClientConnection>>> getObservableConnection() {
 		return observableConnection;
 	}
 
 	public void tryConnect(String host, Integer port) {
-		getObservableConnection().onNext(Observable.fromCallable(() -> Optional.of(new Connection(host, port)))
-				.subscribeOn(Schedulers.newThread()).onErrorResumeNext(error -> {
+		getObservableConnection().onNext(Observable.fromCallable(() -> Optional.of(new ClientConnection(host, port)))
+				.subscribeOn(Schedulers.io()).onErrorResumeNext(error -> {
 					return Observable.just(Optional.empty());
 				}));
 	}
@@ -180,7 +180,7 @@ public class Client implements Runnable {
 		}).take(1);
 	}
 
-	public Observable<Connection> connection() {
+	public Observable<ClientConnection> connection() {
 		return getObservableConnection().switchMap(conn -> conn).switchMap(conn -> Observable.just(conn.get()));
 	}
 
@@ -208,7 +208,9 @@ public class Client implements Runnable {
 			gui.addWindow(registrationWindow);
 			gui.moveToTop(registrationWindow);
 			registrationWindow.takeFocus();
-			tryRegister(getGame().getAdmiral().getName());
+			if (getGame().getAdmiral().getName() != null) {
+				tryRegister(getGame().getAdmiral().getName());
+			}
 			gui.waitForWindowToClose(registrationWindow);
 
 			gui.waitForWindowToClose(game);
