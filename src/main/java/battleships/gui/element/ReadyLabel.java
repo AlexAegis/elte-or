@@ -21,7 +21,7 @@ public class ReadyLabel extends Label {
 
 	public void refresh() {
 		if (admiral.isReady() == null) {
-
+			setText("");
 		} else if (admiral.isReady()) {
 			setForegroundColor(readyColor);
 			setText("Ready");

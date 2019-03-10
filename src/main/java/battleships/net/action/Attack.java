@@ -6,9 +6,10 @@ import battleships.Client;
 import battleships.Server;
 import battleships.model.Coord;
 import battleships.net.Connection;
+import battleships.net.result.AttackResult;
 import battleships.net.result.Response;
 
-public class Attack extends Request implements Serializable {
+public class Attack extends Request<AttackResult> implements Serializable {
 
 	private static final long serialVersionUID = 2548027608585366873L;
 

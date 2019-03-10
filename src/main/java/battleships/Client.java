@@ -145,12 +145,13 @@ public class Client implements Runnable {
 		this.<RegisterResult>sendRequest(new Register(name)).subscribe(res -> {
 			getGame().getAdmiral().setName(res.getTarget());
 			registrationWindow.close();
+			game.getDrawer().takeFocus();
 		});
 	}
 
-	public Observable<Response> sendRequest(Request req) {
+	public <T extends Response> Observable<T> sendRequest(Request<T> req) {
 		return connection().switchMap(conn -> {
-			return conn.send(req);
+			return conn.<T>send(req);
 		});
 	}
 

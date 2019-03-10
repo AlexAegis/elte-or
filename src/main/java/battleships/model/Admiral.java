@@ -14,6 +14,8 @@ import battleships.gui.element.ReadyLabel;
 import battleships.marker.ShotMarker;
 import battleships.model.Coord;
 import battleships.model.Shot;
+import battleships.net.action.Ready;
+import battleships.net.result.ReadyResult;
 import battleships.state.Phase;
 
 /**
@@ -127,13 +129,20 @@ public class Admiral {
 
 
 	public void setReady(Boolean ready, ReadyLabel readyLabel) {
-		if (ready) {
-			this.setPhase(Phase.READY);
-		} else {
-			this.setPhase(Phase.PLACEMENT);
-		}
 		if (readyLabel != null) {
 			readyLabel.refresh();
+		}
+		if (this.game != null) {
+			this.game.getClient().sendRequest(new Ready(getName(), ready)).subscribe(res -> {
+				if (res.getReady()) {
+					this.setPhase(Phase.READY);
+				} else {
+					this.setPhase(Phase.PLACEMENT);
+				}
+				if (readyLabel != null) {
+					readyLabel.refresh();
+				}
+			});
 		}
 	}
 
@@ -237,6 +246,9 @@ public class Admiral {
 	}
 
 	public void setName(String name) {
+		if (game != null && game.getPlayerName() != null && name != null) {
+			game.getPlayerName().setText(name);
+		}
 		this.name = name;
 	}
 }

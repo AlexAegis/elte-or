@@ -9,7 +9,7 @@ import battleships.net.Connection;
 import battleships.net.result.RegisterResult;
 import battleships.net.result.Response;
 
-public class Register extends Request implements Serializable {
+public class Register extends Request<RegisterResult> implements Serializable {
 
 	private static final long serialVersionUID = 1426172622574286083L;
 

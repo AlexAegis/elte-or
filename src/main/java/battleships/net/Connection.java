@@ -11,6 +11,7 @@ import battleships.Client;
 import battleships.Server;
 import battleships.model.Admiral;
 import battleships.net.action.Request;
+import battleships.net.result.HandledResponse;
 import battleships.net.result.Response;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
@@ -24,8 +25,9 @@ public class Connection implements AutoCloseable {
 	private ObjectOutputStream oos;
 	private ObjectInputStream ois;
 
-
-	private BehaviorSubject<Response> listener = BehaviorSubject.create();
+	private final HandledResponse handledResponse = new HandledResponse();
+	private BehaviorSubject<Response> listenerSource = BehaviorSubject.create();
+	private Observable<Response> listener = listenerSource.filter(r -> !handledResponse.equals(r));
 	private Optional<Server> optionalServer = Optional.empty();
 	private Optional<Client> optionalClient = Optional.empty();
 
@@ -70,7 +72,7 @@ public class Connection implements AutoCloseable {
 					if (packet instanceof Request) {
 						((Request) packet).respond(this, optionalServer, optionalClient);
 					} else if (packet instanceof Response) {
-						listener.onNext((Response) packet);
+						listenerSource.onNext((Response) packet);
 					}
 				}
 				Logger.getGlobal().info("Listener closes");
@@ -95,13 +97,14 @@ public class Connection implements AutoCloseable {
 
 	}
 
-	public Observable<Response> send(Request req) {
+	public <T extends Response> Observable<T> send(Request<T> req) {
 		try {
 			oos.writeObject(req);
 			oos.flush();
 			Logger.getGlobal().info("Packet sent as request: " + req.toString());
-			var last = listener.take(1);
-			return listener.take(1);
+			var last = (Observable<T>) listener.take(1);
+			listenerSource.onNext(handledResponse);
+			return last;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return Observable.empty();
@@ -126,7 +129,7 @@ public class Connection implements AutoCloseable {
 	 * @return the listener
 	 */
 	public BehaviorSubject<Response> getListener() {
-		return listener;
+		return listenerSource;
 	}
 
 }
