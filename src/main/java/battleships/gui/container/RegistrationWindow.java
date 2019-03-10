@@ -1,6 +1,7 @@
 package battleships.gui.container;
 
 import java.util.Arrays;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.EmptySpace;
@@ -22,6 +23,8 @@ public class RegistrationWindow extends BasicModal {
 	private Button registerButton;
 	private Client client;
 
+	public static final String NAME_PATTERN = "[A-Za-z0-9]+";
+
 	public RegistrationWindow(Client client) {
 		this.client = client;
 		setTitle("Register");
@@ -35,7 +38,7 @@ public class RegistrationWindow extends BasicModal {
 
 		registerButton = new Button("Login", () -> {
 			Boolean valid = true;
-			if (nameBox.getText().isEmpty() || !nameBox.getText().matches("[A-Za-z0-9]+")) {
+			if (nameBox.getText().isEmpty() || !nameBox.getText().matches(NAME_PATTERN)) {
 				briefError(nameBox);
 				valid &= false;
 			}
@@ -57,6 +60,12 @@ public class RegistrationWindow extends BasicModal {
 
 	public void show(MultiWindowTextGUI gui) {
 		setComponent(registrationForm);
+		try {
+			client.nameFromFile().ifPresent(nameBox::setText);
+		} catch (IllegalStateException e) {
+			Logger.getGlobal().info("Supplied name is invalid");
+		}
+
 		gui.addWindow(this);
 		gui.moveToTop(this);
 		takeFocus();

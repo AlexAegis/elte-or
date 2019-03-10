@@ -92,6 +92,7 @@ public class ConnectWindow extends BasicModal {
 		client.tryConnect(hostBox.getText(), Integer.parseInt(portBox.getText()));
 		waitUntilClosed();
 
+
 		client.showRegistrationWindow();
 	}
 

@@ -1,4 +1,5 @@
 {
+	"name": "PlayerTwo",
 	"placements": [
 		{ "position": "1,1", "class": "FRIGATE", "orientation": "HORIZONTAL" },
 		{ "position": "3,9", "class": "BOAT", "orientation": "HORIZONTAL" },

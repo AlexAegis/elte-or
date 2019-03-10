@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.TimerTask;
 import java.util.logging.Logger;
@@ -82,15 +83,31 @@ public class Client implements Runnable {
 		CommandLine.run(new Client(), System.err, args);
 	}
 
+	public Optional<String> nameFromFile() {
+		return initialFiles.stream().map(file -> {
+			try (BufferedReader fin = new BufferedReader(new FileReader(file))) {
+				var placementObject = new JSONParser().parse(fin);
+				if (placementObject instanceof Map) {
+					var placementsHolder = (Map<String, List<Map<String, String>>>) placementObject;
+					var name = ((Map<String, String>) placementObject).get("name");
+					if (name != null && !name.isEmpty() && name.matches(RegistrationWindow.NAME_PATTERN)) {
+						System.out.println("Registering from file");
+						return name;
+					}
+				}
+			} catch (IOException | ParseException | ClassCastException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}).filter(Objects::nonNull).findAny();
+	}
+
 	public void fieldInitFromFile(Admiral admiral, Sea sea) {
 		initialFiles.forEach(file -> {
 			try (BufferedReader fin = new BufferedReader(new FileReader(file))) {
 				var placementObject = new JSONParser().parse(fin);
 				if (placementObject instanceof Map) {
 					var placementsHolder = (Map<String, List<Map<String, String>>>) placementObject;
-					var name = ((Map<String, String>) placementObject).get("name");
-					admiral.setName(name);
-
 					var placements = placementsHolder.get("placements");
 					for (var placement : placements) {
 						sea.getDrawer().getByClass(ShipType.valueOf(placement.get("class"))).ifPresent(ship -> {
