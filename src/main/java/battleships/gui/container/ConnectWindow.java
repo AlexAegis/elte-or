@@ -56,8 +56,7 @@ public class ConnectWindow extends BasicModal {
 		connectForm.removeAllComponents();
 		connectForm.addComponent(new Label("Connecting"));
 		setComponent(connectForm);
-		client.getObservableConnection().subscribeOn(Schedulers.io()).subscribe(optional -> {
-			System.out.println("DO CONNECCCC" + optional.isPresent());
+		client.getConnection().subscribeOn(Schedulers.io()).subscribe(optional -> {
 			optional.ifPresentOrElse((conn) -> close(), () -> {
 
 				connectForm.removeAllComponents();
@@ -70,8 +69,6 @@ public class ConnectWindow extends BasicModal {
 				hostBox.takeFocus();
 			});
 		});
-
-
 	}
 
 

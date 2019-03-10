@@ -31,7 +31,7 @@ public class RegistrationWindow extends BasicModal {
 
 		registerButton = new Button("Login", () -> {
 			Boolean valid = true;
-			if (!nameBox.getText().matches("[A-Za-z0-9]+")) {
+			if (nameBox.getText().isEmpty() || !nameBox.getText().matches("[A-Za-z0-9]+")) {
 				briefError(nameBox);
 				valid &= false;
 			}

@@ -99,6 +99,7 @@ public class Connection implements AutoCloseable {
 
 	public <T extends Response> Observable<T> send(Request<T> req) {
 		try {
+			Logger.getGlobal().info("Sending Packet as request: " + req.toString());
 			oos.writeObject(req);
 			oos.flush();
 			Logger.getGlobal().info("Packet sent as request: " + req.toString());

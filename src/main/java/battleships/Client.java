@@ -34,6 +34,7 @@ import battleships.net.result.Response;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.ReplaySubject;
 import battleships.gui.container.ConnectWindow;
 import battleships.gui.container.GameWindow;
@@ -74,7 +75,7 @@ public class Client implements Runnable {
 
 	private MultiWindowTextGUI gui;
 	private List<Disposable> disposables = new ArrayList<>();
-	private ReplaySubject<Optional<Connection>> observableConnection = ReplaySubject.create();
+	private BehaviorSubject<Optional<Connection>> connection = BehaviorSubject.create();
 
 
 	public static void main(String[] args) {
@@ -116,29 +117,24 @@ public class Client implements Runnable {
 	/**
 	 * @return the connection
 	 */
-	public ReplaySubject<Optional<Connection>> getObservableConnection() {
-		return observableConnection;
+	public BehaviorSubject<Optional<Connection>> getConnection() {
+		return connection;
 	}
 
 	public void tryConnect(String host, Integer port) {
-		System.out.println("TRY CONNECT");
 		Observable.fromCallable(() -> {
 			try {
-				getObservableConnection().onNext(Optional.of(new Connection(this, host, port)));
+				Logger.getGlobal().info("Trying to connect...");
+				return Optional.of(new Connection(this, host, port));
+
 			} catch (IOException e) {
-				getObservableConnection().onNext(Optional.empty());
+				Logger.getGlobal().info("Failed connect");
+				return Optional.<Connection>empty();
 			}
-			return Observable.just(0);
-		}).take(1).subscribeOn(Schedulers.newThread()).subscribe();
-
-
-
-		/*getObservableConnection().onNext(Observable.fromCallable(() -> Optional.of(new Connection(this, host, port)))
-				.take(1).subscribeOn(Schedulers.io()).doOnEach(e -> {
-					System.out.println("EMITTT " + e);
-				}).onErrorResumeNext(error -> {
-					return Observable.just(Optional.empty());
-				}));*/
+		}).subscribeOn(Schedulers.newThread()).subscribe(optConn -> {
+			Logger.getGlobal().info("Connection sending succ: " + optConn.isPresent());
+			getConnection().onNext(optConn);
+		});
 	}
 
 	public void tryRegister(String name) {
@@ -151,12 +147,16 @@ public class Client implements Runnable {
 
 	public <T extends Response> Observable<T> sendRequest(Request<T> req) {
 		return connection().switchMap(conn -> {
+			System.out.println("Switching to connection: " + conn);
 			return conn.<T>send(req);
 		});
 	}
 
 	public Observable<Connection> connection() {
-		return getObservableConnection().map(conn -> conn.orElse(null));
+		return getConnection().map(conn -> {
+			System.out.println("mapping optional connecc: isPresent " + conn.isPresent());
+			return conn.orElse(null);
+		});
 	}
 
 	@Override
@@ -196,7 +196,7 @@ public class Client implements Runnable {
 		} catch (IOException | ArrayIndexOutOfBoundsException e) {
 			e.printStackTrace();
 		} finally {
-			getObservableConnection().subscribe(conn -> conn.ifPresent(c -> {
+			getConnection().subscribe(conn -> conn.ifPresent(c -> {
 				try {
 					c.close();
 				} catch (IOException e) {
