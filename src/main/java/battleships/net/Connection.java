@@ -1,5 +1,6 @@
 package battleships.net;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
@@ -58,9 +59,9 @@ public class Connection implements AutoCloseable {
 
 	@Override
 	public void close() throws IOException {
-		oos.close();
-		ois.close();
-		clientSocket.close();
+		//oos.close();
+		//ois.close();
+		//clientSocket.close();
 	}
 
 	public void listen() throws IOException {
@@ -78,13 +79,13 @@ public class Connection implements AutoCloseable {
 				}
 				Logger.getGlobal().info("Listener closes");
 			} catch (ClassNotFoundException | IOException e) {
-				//e.printStackTrace();
-				Logger.getGlobal().info("CONNECTION ERRORED, LISTENER STOPS");
+				e.printStackTrace();
+				Logger.getGlobal().info("CONNECTION ERRORED, LISTENER STOPS" + e.getMessage());
 				optionalClient.ifPresent(client -> {
 					client.getConnection().onNext(Optional.empty());
 					client.showConnectWindow();
 				});
-				close();
+				// close();
 				return false;
 			}
 			return true;
@@ -98,7 +99,7 @@ public class Connection implements AutoCloseable {
 			oos.flush();
 			Logger.getGlobal().info("Packet sent as response: " + response.toString());
 		} catch (Exception e) {
-		//	e.printStackTrace();
+			//	e.printStackTrace();
 			System.out.println("NOT SERIALIZABLE AND OR CANT WRITE " + e.getMessage());
 		}
 
@@ -108,7 +109,6 @@ public class Connection implements AutoCloseable {
 
 	public <T extends Response> Observable<T> send(Request<T> req) {
 		try {
-			Logger.getGlobal().info("Sending Packet as request: " + req.toString());
 			oos.writeObject(req);
 			oos.flush();
 			Logger.getGlobal().info("Packet sent as request: " + req.toString());
@@ -125,7 +125,6 @@ public class Connection implements AutoCloseable {
 	 * @return the admiral
 	 */
 	public Admiral getAdmiral() {
-		System.out.println("GETTING THE ADMRAL IN A CONN " + this + " TO: " + admiral);
 		return admiral;
 	}
 
@@ -133,7 +132,6 @@ public class Connection implements AutoCloseable {
 	 * @param admiral the admiral to set
 	 */
 	public void setAdmiral(Admiral admiral) {
-		System.out.println("SETTING THE ADMRAL IN A CONN " + this + " TO: " + admiral);
 		this.admiral = admiral;
 	}
 

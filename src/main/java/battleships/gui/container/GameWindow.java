@@ -1,6 +1,7 @@
 package battleships.gui.container;
 
 import java.util.Arrays;
+import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.gui2.BasicWindow;
 import com.googlecode.lanterna.gui2.BorderLayout;
 import com.googlecode.lanterna.gui2.Borders;
@@ -26,29 +27,31 @@ public class GameWindow extends BasicWindow {
 	private Drawer drawer;
 	private Sea sea;
 	private ActionBar actionBar;
+	private OpponentBar opponentBar;
+	private Panel seaContainer;
+	private Panel drawerAndName;
+	TerminalSize tableSize;
 
-
+	private Panel gameForm;
 
 	public GameWindow(Client client, Terminal terminal, Screen screen) {
 		this.client = client;
-		Panel container = new Panel(new BorderLayout());
-		setComponent(container);
+		gameForm = new Panel(new BorderLayout());
+		setComponent(gameForm);
 		setHints(Arrays.asList(Window.Hint.FULL_SCREEN, Window.Hint.CENTERED, Window.Hint.NO_DECORATIONS));
 		drawer = new Drawer(this);
-		sea = new Sea(drawer);
-		Panel seaContainer = new Panel(new GridLayout(1));
-		Panel opponentContainer = new Panel(new GridLayout(3));
-		sea.setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER, true,
-				true, 1, 1));
-		seaContainer.addComponent(sea);
+
+		seaContainer = new Panel(new GridLayout(1));
+		opponentBar = new OpponentBar(); // Empty dummy
+		gameForm.addComponent(opponentBar.withBorder(Borders.singleLine("Opponents")));
+		drawerAndName = new Panel(new BorderLayout());
+		gameForm.addComponent(seaContainer.withBorder(Borders.singleLine("Sea")));
 
 
-		Panel drawerAndName = new Panel(new BorderLayout());
-		container.addComponent(seaContainer.withBorder(Borders.singleLine("Sea")));
-		container.addComponent(opponentContainer.withBorder(Borders.singleLine("Opponent")));
+
 		playerName = new Label("");
 		drawerAndName.addComponent(playerName);
-		readyLabel = new ReadyLabel(this);
+		readyLabel = new ReadyLabel(this, null);
 		readyLabel.setLayoutData(BorderLayout.Location.BOTTOM);
 		drawerAndName.addComponent(readyLabel);
 		drawerAndName.addComponent(drawer.withBorder(Borders.singleLine("Drawer")));
@@ -56,7 +59,7 @@ public class GameWindow extends BasicWindow {
 		playerName.setLayoutData(BorderLayout.Location.TOP);
 		drawer.setLayoutData(BorderLayout.Location.CENTER);
 
-		container.addComponent(drawerAndName);
+		gameForm.addComponent(drawerAndName);
 		drawerAndName.setLayoutData(BorderLayout.Location.LEFT);
 		seaContainer.setLayoutData(BorderLayout.Location.CENTER);
 
@@ -64,8 +67,15 @@ public class GameWindow extends BasicWindow {
 
 		actionBar = new ActionBar(this);
 		actionBar.setLayoutData(BorderLayout.Location.BOTTOM);
-		container.addComponent(actionBar);
+		gameForm.addComponent(actionBar);
+	}
 
+
+	/**
+	 * @return the opponentBar
+	 */
+	public OpponentBar getOpponentBar() {
+		return opponentBar;
 	}
 
 	/**
@@ -134,11 +144,31 @@ public class GameWindow extends BasicWindow {
 		admiral.setGame(this);
 		System.out.println("Admiral's name is " + admiral.getName());
 
+		client.fieldInitFromFile(getAdmiral(), getSea());
 
-		client.fieldInitFromFile(getAdmiral(), getSea()); // It's allowed because if it's existing then the drawer will be empty to begin with
+		System.out.println("INIT DONE DRAWER FOCC" + getDrawer().getChildCount());
 		getDrawer().takeFocus();
+		getAdmiral().getKnowledge().keySet().forEach(getOpponentBar()::addOpponent);
+
 
 
 		// MAKE THE FIELD AND KNOWLEDGE AND DRAWERR FROM THIS
+	}
+
+	/**
+	 * @return the tablSize
+	 */
+	public TerminalSize getTableSize() {
+		return tableSize;
+	}
+
+	public void setTableSize(TerminalSize tableSize) {
+		this.tableSize = tableSize;
+		sea = new Sea(tableSize, drawer);
+		opponentBar.setGame(this);
+		sea.setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER, true,
+				true, 1, 1));
+		seaContainer.addComponent(sea);
+		invalidate();
 	}
 }

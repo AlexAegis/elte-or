@@ -35,7 +35,7 @@ public class Ships {
 			try {
 				for (var attack : attacks) {
 					table.shoot("1", "0", attack);
-					System.out.println(table.getAdmiral("1").toString(table.getAdmiral("0")));
+					System.out.println(table.getAdmiral("1").toString(/*table.getAdmiral("0")*/));
 				}
 			} catch (IllegalAccessException | IllegalArgumentException e) {
 				e.printStackTrace();

@@ -50,7 +50,7 @@ public class BasicBattleShipsServer {
 					}
 					table.shoot("1", "0", new Coord(input));
 					System.out.println(table.toString());
-					out.println(table.getAdmiral("1").toString(table.getAdmiral("0")));
+					out.println(table.getAdmiral("1").toString(/*table.getAdmiral("0")*/));
 				} catch (IllegalArgumentException e) {
 					System.out.println(e.getMessage() + input);
 					out.println(e.getMessage());

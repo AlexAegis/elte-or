@@ -30,8 +30,8 @@ public class Admiral implements Serializable {
 	private List<Ship> ships = new ArrayList<>();
 	private List<Shot> miss = new ArrayList<>();
 
-	// The Admiral used as a key is the real one, the value is the mock of that admiral
-	private Map<Admiral, Admiral> knowledge = new HashMap<>();
+	// The Admiral used as a key is name, the value is the mock of that admiral
+	private Map<String, Admiral> knowledge = new HashMap<>();
 
 	private String name;
 	private Phase phase = Phase.PLACEMENT;
@@ -50,6 +50,7 @@ public class Admiral implements Serializable {
 		this.game = game;
 		game.getReadyLabel().setAdmiral(this);
 		game.getSea().setAdmiral(this);
+		game.getReadyLabel().setAdmiral(this);
 		refresh();
 	}
 
@@ -107,6 +108,8 @@ public class Admiral implements Serializable {
 	}
 
 	/**
+	 * SERVER METHOD
+	 *
 	 * Each ship can check if it's hit it or not.
 	 * This does the exact same amount of checks if I were
 	 * to search the hit among the coordinates containing ships.
@@ -115,7 +118,7 @@ public class Admiral implements Serializable {
 	 */
 	public Shot shoot(Admiral admiral, Coord target) throws AlreadyShotException, BorderShotException {
 		var shot = new Shot(this, target, ShotMarker.MISS);
-		knowledge.putIfAbsent(admiral, new Admiral(admiral.getName()));
+		// knowledge.putIfAbsent(admiral, new Admiral(admiral.getName()));
 		if (knowledge.values().stream().flatMap(a -> a.ships.stream()).flatMap(ship -> ship.getBorder().stream())
 				.anyMatch(coord -> coord.equals(target))) {
 			throw new BorderShotException();
@@ -136,22 +139,28 @@ public class Admiral implements Serializable {
 		return shot;
 	}
 
+	public Admiral setReady(Boolean ready) {
+		return setReady(ready, false);
+	}
 
-	public void setReady(Boolean ready) {
+	public Admiral setReady(Boolean ready, Boolean broadcast) {
 		if (this.game != null) {
 			if (game.getReadyLabel() != null) {
 				game.getReadyLabel().refresh();
 			}
-			this.game.getClient().sendRequest(new Ready(getName(), getName(), ready)).subscribe(res -> {
-				if (res.getReady()) {
-					this.setPhase(Phase.READY);
-				} else {
-					this.setPhase(Phase.PLACEMENT);
-				}
-				if (game.getReadyLabel() != null) {
-					game.getReadyLabel().refresh();
-				}
-			});
+			if (broadcast) {
+				this.game.getClient().sendRequest(new Ready(getName(), getName(), ready)).subscribe(res -> {
+					if (res.getReady()) {
+						this.setPhase(Phase.READY);
+					} else {
+						this.setPhase(Phase.PLACEMENT);
+					}
+					if (game.getReadyLabel() != null) {
+						game.getReadyLabel().refresh();
+					}
+				});
+			}
+
 		} else {
 			if (ready) {
 				this.setPhase(Phase.READY);
@@ -159,6 +168,7 @@ public class Admiral implements Serializable {
 				this.setPhase(Phase.PLACEMENT);
 			}
 		}
+		return this;
 	}
 
 
@@ -176,11 +186,12 @@ public class Admiral implements Serializable {
 	 * Prints out the knowledge about the opponent if admiral is given
 	 * @return
 	 */
+	@Deprecated
 	public String field(Admiral admiral) {
 		var field = Table.empty();
 		if (admiral != null) {
-			knowledge.putIfAbsent(admiral, new Admiral(admiral.getName()));
-			knowledge.get(admiral).print(field);
+			// knowledge.putIfAbsent(admiral, new Admiral(admiral.getName()));
+			// knowledge.get(admiral).print(field);
 		} else {
 			print(field);
 		}
@@ -232,18 +243,18 @@ public class Admiral implements Serializable {
 	/**
 	 * @return the knowledge
 	 */
-	public Map<Admiral, Admiral> getKnowledge() {
+	public Map<String, Admiral> getKnowledge() {
 		return knowledge;
 	}
-
-	public String toString(Admiral target) {
-		knowledge.putIfAbsent(target, new Admiral(target.getName()));
-		return knowledge.get(target).toString();
-	}
+	/*
+		public String toString(Admiral target) {
+			knowledge.putIfAbsent(target, new Admiral(target.getName()));
+			return knowledge.get(target).toString();
+		}*/
 
 	@Override
 	public String toString() {
-		return field() + "\n" + state();
+		return "Admiral: { name: " + getName() + " state: " + state() + " knowledge: " + getKnowledge() + " }";
 	}
 
 	public void finishBorders() {

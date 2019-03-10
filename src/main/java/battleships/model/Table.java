@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import battleships.marker.TableMarker;
 import battleships.model.Coord;
@@ -23,6 +24,9 @@ public class Table {
 
 	public Admiral addAdmiral(String id) {
 		Admiral admiral = new Admiral(id);
+		admirals.entrySet().stream().filter(e -> !e.getKey().equals(id)).map(Entry::getKey).forEach(key -> {
+			admiral.getKnowledge().put(key, new Admiral(key));
+		});
 		admirals.put(id, admiral);
 		return admiral;
 	}
@@ -101,7 +105,7 @@ public class Table {
 		if (current == null) {
 			turn();
 		}
-		return current.toString(lastTarget());
+		return ""; //current.toString(lastTarget());
 	}
 
 	public Admiral lastTarget() throws IllegalAccessException {

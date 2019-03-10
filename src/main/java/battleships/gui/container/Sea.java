@@ -39,10 +39,15 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 
 	private Ship focused;
 
-	public Sea(Drawer drawer) {
+
+	public Sea(TerminalSize size, Drawer drawer) {
+		this(size);
 		setDrawer(drawer);
 		drawer.setSea(this);
-		setLayoutManager(new SeaLayout(new TerminalSize(width, height)));
+	}
+
+	public Sea(TerminalSize size) {
+		setLayoutManager(new SeaLayout(size));
 		IntStream.range(0, width * height).forEach(i -> addComponent(new Water(this)));
 		this.getLayoutManager().doLayout(getPreferredSize(), (List<Component>) getChildren());
 	}

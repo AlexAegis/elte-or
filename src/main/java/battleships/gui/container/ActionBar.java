@@ -26,7 +26,7 @@ public class ActionBar extends Panel {
 		this.game = game;
 		setLayoutManager(new GridLayout(4));
 		readyButton.setLayoutData(GridLayout.createHorizontallyEndAlignedLayoutData(1));
-		readyButton.addListener((button) -> getGame().getAdmiral().setReady(!getGame().getAdmiral().isReady()));
+		readyButton.addListener((button) -> getGame().getAdmiral().setReady(!getGame().getAdmiral().isReady(), true));
 		connectButton.setLayoutData(
 				GridLayout.createLayoutData(GridLayout.Alignment.BEGINNING, GridLayout.Alignment.BEGINNING));
 		showConnectButton();

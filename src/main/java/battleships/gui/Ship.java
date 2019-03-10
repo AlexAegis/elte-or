@@ -171,7 +171,7 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 
 	public void setLayoutTo(Direction direction) {
 		setLayoutManager(Direction.VERTICAL.equals(direction) ? Ship.VERTICAL : Ship.HORIZONTAL);
-		setSize(getLayoutManager().getPreferredSize(new ArrayList<>(getChildren())));
+		setSize(getLayoutManager().getPreferredSize(new ArrayList<>(getSegments())));
 		orientation = direction;
 	}
 

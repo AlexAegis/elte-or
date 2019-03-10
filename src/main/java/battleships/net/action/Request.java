@@ -26,7 +26,7 @@ public abstract class Request<T extends Response> extends Packet implements Seri
 
 	@Override
 	public String toString() {
-		return "{ requester: " + requester + " }";
+		return getClass().getName() + "{ requester: " + requester + " }";
 	}
 
 	public void respond(Connection connection, Optional<Server> answerFromServer, Optional<Client> answerFromClient) {

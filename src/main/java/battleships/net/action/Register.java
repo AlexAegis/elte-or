@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 import battleships.Client;
 import battleships.Server;
 import battleships.model.Admiral;
@@ -20,10 +21,12 @@ public class Register extends Request<RegisterResult> implements Serializable {
 	}
 
 	private String who;
+	private Boolean initialReady;
 
-	public Register(String requester, String who) {
+	public Register(String requester, String who, Boolean initialReady) {
 		super(requester);
 		this.who = who;
+		this.initialReady = initialReady;
 	}
 
 	@Override
@@ -32,6 +35,7 @@ public class Register extends Request<RegisterResult> implements Serializable {
 		if (answerFromServer.isPresent()) {
 			return answerFromServer.map(server -> {
 				var reqAdm = server.getTable().getAdmiral(getRequester());
+				System.out.println("FOUND GUY " + reqAdm);
 				if (reqAdm == null) {
 					System.out.println("CREATED A NEW");
 					connection.setAdmiral(server.getTable().addAdmiral(getRequester()));
@@ -48,8 +52,9 @@ public class Register extends Request<RegisterResult> implements Serializable {
 				// Notify every other player about the registration
 
 				server.getEveryOtherConnectedAdmiralsExcept(connection.getAdmiral()).forEach(otherConn -> {
-					otherConn.send(new Register(otherConn.getAdmiral().getName(), connection.getAdmiral().getName()))
-							.subscribe(res -> {
+					Logger.getGlobal().info("Sending notification about registration to: " + otherConn.getAdmiral());
+					otherConn.send(new Register(otherConn.getAdmiral().getName(), connection.getAdmiral().getName(),
+							otherConn.getAdmiral().isReady())).subscribe(res -> {
 								System.out.println("SENT REG TO OTHER CLIENT" + res);
 							});
 				});
@@ -60,7 +65,8 @@ public class Register extends Request<RegisterResult> implements Serializable {
 			return answerFromClient.map(client -> {
 				// A new opponent arrived
 				System.out.println("NEW OPPONENT LOGGED IN:" + this.toString());
-				return null;
+				client.getGame().getOpponentBar().addOpponent(getWho(), isInitialReady());
+				return new RegisterResult(getRequester(), new Coord(10, 10), connection.getAdmiral());
 			});
 		}
 
@@ -73,9 +79,14 @@ public class Register extends Request<RegisterResult> implements Serializable {
 		return who;
 	}
 
+	public Boolean isInitialReady() {
+		return initialReady;
+	}
+
 	@Override
 	public String toString() {
-		return " Register: { requester: " + getRequester() + " who: " + getWho() + "} ";
+		return " Register: { requester: " + getRequester() + " who: " + getWho() + " initialReady: " + initialReady
+				+ "} ";
 	}
 
 }

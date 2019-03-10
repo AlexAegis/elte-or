@@ -134,7 +134,7 @@ public class LegacyTable {
 		if (current == null) {
 			turn();
 		}
-		return current.toString(lastTarget());
+		return ""; //current.toString(lastTarget());
 	}
 
 	public Admiral lastTarget() throws IllegalAccessException {

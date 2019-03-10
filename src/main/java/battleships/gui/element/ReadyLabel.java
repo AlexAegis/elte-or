@@ -6,15 +6,16 @@ import battleships.gui.container.GameWindow;
 import battleships.model.Admiral;
 
 public class ReadyLabel extends Label {
-	GameWindow game;
+	private GameWindow game;
 
-	TextColor readyColor = TextColor.Factory.fromString("#11FF22");
-	TextColor notReadyColor = TextColor.Factory.fromString("#FF1122");
-	Admiral admiral;
+	private TextColor readyColor = TextColor.Factory.fromString("#11FF22");
+	private TextColor notReadyColor = TextColor.Factory.fromString("#FF1122");
+	private Admiral admiral;
 
-	public ReadyLabel(GameWindow game) {
+	public ReadyLabel(GameWindow game, Admiral admiral) {
 		super("");
 		this.game = game;
+		this.admiral = admiral;
 		refresh();
 	}
 
@@ -31,10 +32,10 @@ public class ReadyLabel extends Label {
 				setText("");
 			} else if (admiral.isReady()) {
 				setForegroundColor(readyColor);
-				setText("Ready");
+				setText(admiral == null || admiral.equals(game.getAdmiral()) ? "Ready" : admiral.getName());
 			} else {
 				setForegroundColor(notReadyColor);
-				setText("Not Ready");
+				setText(admiral == null || admiral.equals(game.getAdmiral()) ? "Not Ready" : admiral.getName());
 			}
 		}
 		invalidate();

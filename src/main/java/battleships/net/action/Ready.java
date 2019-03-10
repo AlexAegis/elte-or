@@ -44,17 +44,19 @@ public class Ready extends Request<ReadyResult> implements Serializable {
 				reqAdm.setPhase(isReady() ? Phase.READY : Phase.PLACEMENT);
 
 				// This guy is now ready, lets tell everyone else
-				server.getTable().getAdmirals().stream().filter(admiral -> !admiral.equals(getRequester()))
-						.forEach(admiral -> {
-							connection.send(new Ready(admiral.getName(), reqAdm.getName(), isReady()));
-						});
+				server.getEveryOtherConnectedAdmiralsExcept(reqAdm).forEach(conn -> {
+					conn.send(new Ready(conn.getAdmiral().getName(), reqAdm.getName(), isReady()));
+				});
 				return new ReadyResult(getRequester(), ready);
 			});
 		} else {
 			return answerFromClient.map(client -> {
 				System.out.println("GOT A GUY WHO IS READY OR NOT!!!" + getRequester() + " isReady " + ready);
-
-				return new ReadyResult(getRequester(), ready);
+				client.getGame().getOpponentBar().getOpponentByName(getRequester()).ifPresent(opponent -> {
+					opponent.get().setReady(isReady());
+					opponent.getLabel().refresh();
+				});
+				return new ReadyResult(getRequester(), isReady());
 			});
 		}
 

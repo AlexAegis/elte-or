@@ -104,31 +104,32 @@ public class Client implements Runnable {
 
 	public void fieldInitFromFile(Admiral admiral, Sea sea) {
 		initialFiles.forEach(file -> {
-			System.out.println("FUILLLLEE for: " + admiral + " sea: " + sea);
 			try (BufferedReader fin = new BufferedReader(new FileReader(file))) {
 				var placementObject = new JSONParser().parse(fin);
 				if (placementObject instanceof Map) {
 					var placementsHolder = (Map<String, List<Map<String, String>>>) placementObject;
 					var placements = placementsHolder.get("placements");
 					for (var placement : placements) {
-						System.out.println("PLACEMENETTTT");
 						sea.getDrawer().getByClass(ShipType.valueOf(placement.get("class"))).ifPresent(ship -> {
-							System.out.println("DRAWERSHIPPP");
 							Coord coord = new Coord(placement.get("position"));
-							try {
-								ship.setLayoutTo(Direction.valueOf(placement.get("orientation")));
-							} catch (IllegalArgumentException e) {
-								ship.setLayoutTo(Direction.HORIZONTAL);
-							}
-							ship.setPosition(new TerminalPosition(coord.getX(), coord.getY()));
-							if (sea.placementValid(ship)) {
-								sea.addComponent(ship);
-								sea.sendRipple(ship);
-							}
+							gui.getGUIThread().invokeLater(() -> {
+								try {
+									ship.setLayoutTo(Direction.valueOf(placement.get("orientation")));
+								} catch (Exception e) {
+									e.printStackTrace();
+									ship.setLayoutTo(Direction.HORIZONTAL);
+								}
+								ship.setPosition(new TerminalPosition(coord.getX(), coord.getY()));
+								if (sea.placementValid(ship)) {
+									sea.addComponent(ship);
+									sea.sendRipple(ship);
+								}
+							});
+
 						});
 					}
 				}
-			} catch (IOException | ParseException | ClassCastException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		});
@@ -154,21 +155,19 @@ public class Client implements Runnable {
 	}
 
 	public void tryRegister(String name) {
-		this.sendRequest(new Register(name, name)).subscribe(res -> {
+		this.sendRequest(new Register(name, name, false)).subscribe(res -> {
 			if (res.getRecipient() != null && !res.getRecipient().isEmpty()) {
 				// Successful
 				System.out.println("SUCC REG for: " + res.getRecipient());
 				registrationWindow.close();
 				System.out.println("GOT ADMIRAL OBJECT: " + res.getAdmiral());
+				getGame().setTableSize(res.getTableSize().convertToTerminalSize());
 				getGame().setAdmiral(res.getAdmiral());
-				// Setup table
 
+				// Setup table
 			} else {
 				System.out.println("NOT SUCC REG");
 			}
-
-
-
 		});
 	}
 
@@ -190,6 +189,7 @@ public class Client implements Runnable {
 
 		try (Terminal terminal = new DefaultTerminalFactory().createTerminal();
 				Screen screen = new TerminalScreen(terminal);) {
+
 			terminal.setBackgroundColor(TextColor.Factory.fromString("#000000"));
 			screen.startScreen();
 			game = new GameWindow(this, terminal, screen);
@@ -199,17 +199,26 @@ public class Client implements Runnable {
 			connectWindow = new ConnectWindow(this);
 			registrationWindow = new RegistrationWindow(this);
 			showConnectWindow();
+
+			// gui.getGUIThread();
+
+
 			gui.waitForWindowToClose(game);
 		} catch (IOException | ArrayIndexOutOfBoundsException e) {
 			e.printStackTrace();
 		} finally {
-			getConnection().subscribe(conn -> conn.ifPresent(c -> {
-				try {
-					c.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			})).dispose();
+			Logger.getGlobal().info("Client Finally, closing down connection" + getConnection());
+			getConnection().subscribe(conn -> {
+				System.out.println("conn on finally: " + conn);
+				conn.ifPresent(c -> {
+					System.out.println("c on finally: " + c);
+					try {
+						c.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				});
+			});
 		}
 
 		/*														if (game.getPlayerName().getText() != null && !game.getPlayerName().getText().isEmpty()) {
