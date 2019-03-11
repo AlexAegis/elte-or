@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketOption;
 import java.util.Optional;
 import java.util.logging.Logger;
 import battleships.Client;
@@ -16,6 +17,7 @@ import battleships.net.action.Request;
 import battleships.net.result.HandledResponse;
 import battleships.net.result.Response;
 import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
 
@@ -36,7 +38,10 @@ public class Connection implements AutoCloseable {
 	public Connection(Server server, ServerSocket serverSocket) throws IOException {
 		optionalServer = Optional.of(server);
 		this.server = serverSocket;
+		System.out.println("!!!!!!!!!!!!!!!!!!!BEFORE ACCEPT");
 		clientSocket = serverSocket.accept();
+
+		System.out.println("!!!!!!!!!!!!!!!!!!AFTER ACCEPT");
 		oos = new ObjectOutputStream(clientSocket.getOutputStream());
 		ois = new ObjectInputStream(clientSocket.getInputStream());
 		Logger.getGlobal().info("Create Connection from server");
@@ -59,26 +64,49 @@ public class Connection implements AutoCloseable {
 
 	@Override
 	public void close() throws IOException {
-		oos.close();
-		ois.close();
-		clientSocket.close();
+		System.out.println("CLOSING1");
+		try {
+			oos.close();
+		} catch (Exception e) {
+			System.out.println("OOS CLOSE FAIL");
+		}
+
+
+
+		System.out.println("CLOSING2");
+
+		try {
+			ois.close();
+		} catch (Exception e) {
+			System.out.println("OIS CLOSE FAIL");
+		}
+
+		System.out.println("CLOSING3");
+
+		try {
+			clientSocket.close();
+		} catch (Exception e) {
+			System.out.println("clientSocket CLOSE FAIL");
+		}
+
+		System.out.println("CLOSING4");
 	}
 
 	public void listen() throws IOException {
 		Logger.getGlobal().info("Listener starts!");
 		Observable.fromCallable(() -> {
-			try {
-				while (!isClosed()) {
-					var packet = (Packet) ois.readObject();
-					Logger.getGlobal().info("Listened to a Packet: " + packet.toString());
-					if (packet instanceof Request) {
-						((Request) packet).respond(this, optionalServer, optionalClient);
-					} else if (packet instanceof Response) {
-						listenerSource.onNext((Response) packet);
-					}
+			//try {
+			while (!isClosed()) {
+				var packet = (Packet) ois.readObject();
+				Logger.getGlobal().info("Listened to a Packet: " + packet.toString());
+				if (packet instanceof Request) {
+					((Request) packet).respond(this, optionalServer, optionalClient);
+				} else if (packet instanceof Response) {
+					listenerSource.onNext((Response) packet);
 				}
-				Logger.getGlobal().info("Listener closes");
-			} catch (ClassNotFoundException | IOException e) {
+			}
+			return true;
+			/*} catch (ClassNotFoundException | IOException e) {
 				e.printStackTrace();
 				Logger.getGlobal().info("CONNECTION ERRORED, LISTENER STOPS" + e.getMessage());
 				optionalClient.ifPresent(client -> {
@@ -87,9 +115,19 @@ public class Connection implements AutoCloseable {
 				});
 				// close();
 				return false;
-			}
-			return true;
-		}).subscribeOn(Schedulers.newThread()).subscribe();
+			}*/
+		}).subscribeOn(Schedulers.newThread()).onErrorReturnItem(false).subscribe(next -> {
+			Logger.getGlobal().info("Client resolved");
+			optionalClient.ifPresent(client -> {
+				//client.getConnection().onNext(Optional.empty());
+				client.showConnectWindow();
+			});
+
+			optionalServer.ifPresent(server -> {
+				System.out.println("SErver is here" + getAdmiral());
+
+			});
+		});
 
 	}
 
@@ -125,6 +163,7 @@ public class Connection implements AutoCloseable {
 	 * @return the admiral
 	 */
 	public Admiral getAdmiral() {
+		System.out.println("Admiral is in " + this + " is " + admiral);
 		return admiral;
 	}
 
@@ -132,6 +171,7 @@ public class Connection implements AutoCloseable {
 	 * @param admiral the admiral to set
 	 */
 	public void setAdmiral(Admiral admiral) {
+		System.out.println("Admiral is set in " + this + " to " + admiral);
 		this.admiral = admiral;
 	}
 

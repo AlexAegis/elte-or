@@ -26,8 +26,11 @@ import battleships.server.ClientThread;
 import battleships.state.Phase;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.processors.AsyncProcessor;
 import io.reactivex.processors.PublishProcessor;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.Subject;
 
 @Command(name = "server", sortOptions = false,
 		header = {"", "@|cyan  _____     _   _   _     _____ _   _                                     |@",
@@ -52,10 +55,9 @@ public class Server implements Runnable {
 	List<ClientThread> clients = new ArrayList<>();
 	private ServerSocket server;
 	Table table = new Table();
-	ExecutorService executor = Executors.newCachedThreadPool();
 
 	private Map<Admiral, Connection> connectedAdmirals = new HashMap<>();
-	private PublishProcessor<Connection> connections = PublishProcessor.create();
+	private AsyncProcessor<Connection> connections = AsyncProcessor.create();
 
 	private Phase phase;
 
@@ -67,15 +69,14 @@ public class Server implements Runnable {
 		try {
 			this.server = new ServerSocket(port);
 			System.out.println("STARTSERVER");
-
+			spawn();
 			connections.parallel().runOn(Schedulers.newThread()).map(connection -> {
 				if (Phase.PLACEMENT.equals(getPhase())) {
-					spawn();
+					// spawn();
 				}
 				return connection;
-			}).sequential().subscribe();
-			spawn();
-			connections.blockingSubscribe();
+			}).sequential().blockingSubscribe();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -83,10 +84,19 @@ public class Server implements Runnable {
 
 	public Disposable spawn() {
 		System.out.println("Spawn");
-		return Observable.fromCallable(() -> new Connection(this, server)).subscribeOn(Schedulers.io()).take(1)
-				.subscribe(newConn -> {
-					connections.onNext(newConn);
-				});
+		return Observable.fromCallable(() -> {
+			if (!server.isClosed()) {
+				return Optional.of(new Connection(this, server));
+			} else {
+				return Optional.<Connection>empty();
+			}
+		}).repeat(10).subscribeOn(Schedulers.newThread()).subscribe(newConn -> {
+			System.out.println("MADE NEW CONNNNNNNN");
+			newConn.ifPresentOrElse(conn -> connections.onNext(conn), () -> {
+				System.out.println("NO CONNNNNNNN");
+			});
+
+		});
 	}
 
 	/**

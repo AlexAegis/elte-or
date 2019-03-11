@@ -37,7 +37,7 @@ public class Register extends Request<RegisterResult> implements Serializable {
 				var reqAdm = server.getTable().getAdmiral(getRequester());
 				if (reqAdm == null) {
 					connection.setAdmiral(server.getTable().addAdmiral(getRequester()));
-				} else if (reqAdm != null && server.getConnectedAdmirals().get(reqAdm) != null) {
+				} else if (reqAdm != null && !server.getConnectedAdmirals().get(reqAdm).isClosed()) {
 					return new RegisterResult(null, null, null); // taken
 				} else {
 					connection.setAdmiral(reqAdm);
