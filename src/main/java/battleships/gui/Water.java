@@ -1,13 +1,13 @@
 package battleships.gui;
 
-import com.googlecode.lanterna.TextColor;
+import battleships.gui.container.Sea;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.AbstractInteractableComponent;
 import com.googlecode.lanterna.gui2.InteractableRenderer;
 import com.googlecode.lanterna.gui2.TextGUIGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
-import battleships.gui.container.Sea;
 import io.reactivex.Observable;
 
 import java.util.concurrent.TimeUnit;

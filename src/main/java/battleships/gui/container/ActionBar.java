@@ -1,17 +1,14 @@
 package battleships.gui.container;
 
+import com.googlecode.lanterna.gui2.Button;
+import com.googlecode.lanterna.gui2.GridLayout;
+import com.googlecode.lanterna.gui2.Interactable.Result;
+import com.googlecode.lanterna.gui2.Panel;
+import com.googlecode.lanterna.input.KeyStroke;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import com.googlecode.lanterna.gui2.Button;
-import com.googlecode.lanterna.gui2.Direction;
-import com.googlecode.lanterna.gui2.EmptySpace;
-import com.googlecode.lanterna.gui2.GridLayout;
-import com.googlecode.lanterna.gui2.Interactable;
-import com.googlecode.lanterna.gui2.LinearLayout;
-import com.googlecode.lanterna.gui2.Panel;
-import com.googlecode.lanterna.gui2.Interactable.Result;
-import com.googlecode.lanterna.input.KeyStroke;
 
 public class ActionBar extends Panel {
 	private BarButton connectButton = new BarButton(this, "Connect");

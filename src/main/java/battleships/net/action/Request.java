@@ -1,12 +1,13 @@
 package battleships.net.action;
 
-import java.io.Serializable;
-import java.util.Optional;
 import battleships.Client;
 import battleships.Server;
 import battleships.net.Connection;
 import battleships.net.Packet;
 import battleships.net.result.Response;
+
+import java.io.Serializable;
+import java.util.Optional;
 
 public abstract class Request<T extends Response> extends Packet implements Serializable {
 

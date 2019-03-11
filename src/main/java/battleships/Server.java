@@ -1,45 +1,32 @@
 package battleships;
 
+import battleships.model.Admiral;
+import battleships.model.Table;
+import battleships.net.Connection;
+import battleships.state.Phase;
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParentCommand;
-import java.net.ServerSocket;
+
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.net.ServerSocket;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import battleships.model.Admiral;
-import battleships.model.Table;
-import battleships.net.Connection;
-import battleships.server.ClientThread;
-import battleships.state.Phase;
-import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.processors.AsyncProcessor;
-import io.reactivex.processors.PublishProcessor;
-import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.PublishSubject;
-import io.reactivex.subjects.Subject;
 
 @Command(name = "server", sortOptions = false,
-		header = {"", "@|cyan  _____     _   _   _     _____ _   _                                     |@",
-				"@|cyan | __  |___| |_| |_| |___|   __| |_|_|___ ___    ___ ___ ___ _ _ ___ ___  |@",
-				"@|cyan | __ -| .'|  _|  _| | -_|__   |   | | . |_ -|  |_ -| -_|  _| | | -_|  _| |@",
-				"@|cyan |_____|__,|_| |_| |_|___|_____|_|_|_|  _|___|  |___|___|_|  \\_/|___|_|   |@",
-				"@|cyan                                     |_|                                 |@"},
-		descriptionHeading = "@|bold %nDescription|@:%n", description = {"", "Client application for BattleShips",},
-		optionListHeading = "@|bold %nOptions|@:%n", footer = {"", "Author: AlexAegis"})
+	header = {"", "@|cyan  _____     _   _   _     _____ _   _                                     |@",
+		"@|cyan | __  |___| |_| |_| |___|   __| |_|_|___ ___    ___ ___ ___ _ _ ___ ___  |@",
+		"@|cyan | __ -| .'|  _|  _| | -_|__   |   | | . |_ -|  |_ -| -_|  _| | | -_|  _| |@",
+		"@|cyan |_____|__,|_| |_| |_|___|_____|_|_|_|  _|___|  |___|___|_|  \\_/|___|_|   |@",
+		"@|cyan                                     |_|                                 |@"},
+	descriptionHeading = "@|bold %nDescription|@:%n", description = {"", "Client application for BattleShips",},
+	optionListHeading = "@|bold %nOptions|@:%n", footer = {"", "Author: AlexAegis"})
 public class Server implements Runnable {
 
 	@ParentCommand
@@ -52,57 +39,34 @@ public class Server implements Runnable {
 		CommandLine.run(new Server(), System.err, args);
 	}
 
-	List<ClientThread> clients = new ArrayList<>();
-	private ServerSocket server;
-	Table table = new Table();
-
-	private Map<Admiral, Connection> connectedAdmirals = new HashMap<>();
-	private AsyncProcessor<Connection> connections = AsyncProcessor.create();
-
+	private Table table = new Table();
+	private Map<String, Connection> connectedAdmirals = new HashMap<>();
 	private Phase phase;
-
-	private Admiral currentAdmiral;
+	private String currentAdmiral;
 
 	@Override
 	public void run() {
 		phase = Phase.PLACEMENT;
 		try {
-			this.server = new ServerSocket(port);
-			System.out.println("STARTSERVER");
-			spawn();
-			connections.parallel().runOn(Schedulers.newThread()).map(connection -> {
-				if (Phase.PLACEMENT.equals(getPhase())) {
-					// spawn();
-				}
-				return connection;
-			}).sequential().blockingSubscribe();
-
+			var server = new ServerSocket(port);
+			Flowable.fromCallable(() -> new Connection(this, server))
+				.repeat()
+				.parallel()
+				.runOn(Schedulers.newThread())
+				.flatMap(connection -> connection.onTerminateDetach().toFlowable(BackpressureStrategy.BUFFER))
+				.sequential()
+				.blockingSubscribe(next -> {
+					System.out.println("BLOCKSUBBED TO A PACKET");
+				});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public Disposable spawn() {
-		System.out.println("Spawn");
-		return Observable.fromCallable(() -> {
-			if (!server.isClosed()) {
-				return Optional.of(new Connection(this, server));
-			} else {
-				return Optional.<Connection>empty();
-			}
-		}).repeat(10).subscribeOn(Schedulers.newThread()).subscribe(newConn -> {
-			System.out.println("MADE NEW CONNNNNNNN");
-			newConn.ifPresentOrElse(conn -> connections.onNext(conn), () -> {
-				System.out.println("NO CONNNNNNNN");
-			});
-
-		});
-	}
-
 	/**
 	 * @return the connectedAdmirals
 	 */
-	public Map<Admiral, Connection> getConnectedAdmirals() {
+	public Map<String, Connection> getConnectedAdmirals() {
 		return connectedAdmirals;
 	}
 
@@ -113,26 +77,33 @@ public class Server implements Runnable {
 		return phase;
 	}
 
-	/**
-	* @return the connectedAdmirals
-	*/
 	public Stream<Connection> getEveryOtherConnectedAdmiralsExcept(Admiral... admirals) {
-		return getConnectedAdmirals().entrySet().stream().filter(Objects::nonNull).filter(e -> !Arrays.asList(admirals).contains(e.getKey())).map(Entry::getValue).filter(Objects::nonNull);
+		return getEveryOtherConnectedAdmiralsExcept(Arrays.stream(admirals).map(Admiral::getName).toArray(String[]::new));
+	}
+	/**
+	 * @return the connectedAdmirals
+	 */
+	public Stream<Connection> getEveryOtherConnectedAdmiralsExcept(String... admirals) {
+		return getConnectedAdmirals().entrySet().stream().filter(e -> !Arrays.asList(admirals).contains(e.getKey())).map(Entry::getValue).filter(Objects::nonNull);
 	}
 
 
 	public Stream<Connection> getEveryConnectedAdmirals() {
-		return getConnectedAdmirals().entrySet().stream().filter(Objects::nonNull).map(Entry::getValue).filter(Objects::nonNull);
+		return getConnectedAdmirals().entrySet().stream().map(Entry::getValue).filter(Objects::nonNull);
 	}
 
 	public Boolean isEveryOneOnTheSamePhase(Phase stage) {
-		return getConnectedAdmirals().entrySet().stream().allMatch(entry -> entry.getKey().getPhase().equals(stage));
+		return getConnectedAdmirals().entrySet().stream()
+			.map(Entry::getValue)
+			.map(Connection::getAdmiral)
+			.filter(Objects::nonNull)
+			.map(Admiral::getPhase)
+			.allMatch(stage::equals);
 	}
 
 	public Boolean isAtLeastNPlayers(int i) {
 		return getConnectedAdmirals().entrySet().stream().map(Entry::getValue).filter(Objects::nonNull).count() >= i;
 	}
-
 
 
 	/**
@@ -144,24 +115,20 @@ public class Server implements Runnable {
 
 	public void setPhase(Phase phase) {
 		this.phase = phase;
-		if (Phase.PLACEMENT.equals(getPhase())) {
-			Logger.getGlobal().info("dispose the last listening thread");
-			connections.lastElement().onTerminateDetach();
-		}
 	}
 
 	/**
 	 * @param currentAdmiral the currentAdmiral to set
 	 */
 	public void setCurrentAdmiral(Admiral currentAdmiral) {
-		this.currentAdmiral = currentAdmiral;
+		this.currentAdmiral = currentAdmiral.getName();
 	}
 
 	public Admiral getCurrentAdmiral() {
 		if (currentAdmiral == null) {
 			turnAdmirals();
 		}
-		return currentAdmiral;
+		return getConnectedAdmirals().get(currentAdmiral).getAdmiral();
 	}
 
 	public void turnAdmirals() {
@@ -170,12 +137,12 @@ public class Server implements Runnable {
 
 	public Optional<Admiral> nextAdmiralInTurn() {
 		if (currentAdmiral == null) {
-			return Optional.of(getConnectedAdmirals().keySet().stream().sorted().collect(Collectors.toList()).get(0));
+			return Optional.ofNullable(getConnectedAdmirals().get(getConnectedAdmirals().keySet().stream().sorted().collect(Collectors.toList()).get(0)).getAdmiral());
 		} else {
 			Boolean thisOne = false;
 			for (var admi : getConnectedAdmirals().keySet().stream().sorted().collect(Collectors.toList())) {
 				if (thisOne) {
-					return Optional.of(admi);
+					return Optional.ofNullable(getConnectedAdmirals().get(admi).getAdmiral());
 				}
 				if (admi.equals(currentAdmiral)) {
 					thisOne = true;

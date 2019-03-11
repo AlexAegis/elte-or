@@ -1,15 +1,14 @@
 package battleships.net.action;
 
+import battleships.Client;
+import battleships.Server;
+import battleships.net.Connection;
+import battleships.net.result.TurnResult;
+import battleships.state.Phase;
+
 import java.io.Serializable;
 import java.util.Optional;
 import java.util.logging.Logger;
-import battleships.Client;
-import battleships.Server;
-import battleships.model.Coord;
-import battleships.net.Connection;
-import battleships.net.result.PlaceResult;
-import battleships.net.result.TurnResult;
-import battleships.state.Phase;
 
 public class Turn extends Request<TurnResult> implements Serializable {
 

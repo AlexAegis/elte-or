@@ -1,16 +1,5 @@
 package battleships.net;
 
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketOption;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 import battleships.Client;
 import battleships.Server;
 import battleships.model.Admiral;
@@ -18,14 +7,21 @@ import battleships.net.action.Request;
 import battleships.net.result.HandledResponse;
 import battleships.net.result.Response;
 import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.Observer;
 import io.reactivex.subjects.BehaviorSubject;
 
-public class Connection implements AutoCloseable {
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class Connection extends Observable<Packet> implements AutoCloseable {
 
 	private Admiral admiral;
-	private ServerSocket server;
 	private Socket clientSocket;
 	private ObjectOutputStream oos;
 	private ObjectInputStream ois;
@@ -38,7 +34,6 @@ public class Connection implements AutoCloseable {
 
 	public Connection(Server server, ServerSocket serverSocket) throws IOException {
 		optionalServer = Optional.of(server);
-		this.server = serverSocket;
 		System.out.println("!!!!!!!!!!!!!!!!!!!BEFORE ACCEPT");
 		clientSocket = serverSocket.accept();
 
@@ -46,7 +41,6 @@ public class Connection implements AutoCloseable {
 		oos = new ObjectOutputStream(clientSocket.getOutputStream());
 		ois = new ObjectInputStream(clientSocket.getInputStream());
 		Logger.getGlobal().info("Create Connection from server");
-		listen();
 	}
 
 	public Connection(Client client, String host, Integer port) throws IOException {
@@ -55,7 +49,44 @@ public class Connection implements AutoCloseable {
 		oos = new ObjectOutputStream(clientSocket.getOutputStream());
 		ois = new ObjectInputStream(clientSocket.getInputStream());
 		Logger.getGlobal().info("Create Connection from client");
-		listen();
+	}
+
+	@Override
+	protected void subscribeActual(Observer<? super Packet> observer) {
+		Logger.getGlobal().info("Listener started");
+		try {
+			while (!isClosed()) {
+				System.out.println("STILL GOING BABY isClosed(): " + isClosed());
+				var packet = (Packet) ois.readObject();
+				System.out.println("ACTUALLY READ A PAKK! " + packet);
+				if (packet instanceof Request) {
+					((Request) packet).respond(this, optionalServer, optionalClient);
+				} else if (packet instanceof Response) {
+					listenerSource.onNext((Response) packet);
+				}
+				optionalServer.ifPresent(server -> {
+					observer.onNext(packet); // The queue inside is null for some reason if called in the client
+				});
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			Logger.getGlobal().severe("Listener errored out for "+ getAdmiral() +": pssst " + e.getMessage());
+			optionalServer.ifPresent(server -> {
+				System.out.println("                                                                   IM GON FUCK U UP");
+				server.getConnectedAdmirals().remove(getAdmiral().getName());
+			});
+			observer.onComplete();
+			// observer.onError(e);
+		} finally {
+			Logger.getGlobal().info("Client resolved");
+			optionalClient.ifPresent(client -> {
+				//client.getConnection().onNext(Optional.empty());
+				client.showConnectWindow();
+			});
+			observer.onComplete();
+		}
+
 	}
 
 
@@ -65,97 +96,40 @@ public class Connection implements AutoCloseable {
 
 	@Override
 	public void close() throws IOException {
-		System.out.println("CLOSING1");
+		System.out.println("Closing Connection");
 		try {
 			oos.close();
 		} catch (Exception e) {
-			System.out.println("OOS CLOSE FAIL");
 		}
-
-
-
-		System.out.println("CLOSING2");
-
 		try {
 			ois.close();
 		} catch (Exception e) {
-			System.out.println("OIS CLOSE FAIL");
 		}
-
-		System.out.println("CLOSING3");
-
 		try {
 			clientSocket.close();
 		} catch (Exception e) {
-			System.out.println("clientSocket CLOSE FAIL");
 		}
-
-		System.out.println("CLOSING4");
-	}
-
-	public void listen() throws IOException {
-		Logger.getGlobal().info("Listener starts!");
-		Observable.fromCallable(() -> {
-			//try {
-			while (!isClosed()) {
-				var packet = (Packet) ois.readObject();
-				Logger.getGlobal().info("Listened to a Packet: " + packet.toString());
-				if (packet instanceof Request) {
-					((Request) packet).respond(this, optionalServer, optionalClient);
-				} else if (packet instanceof Response) {
-					listenerSource.onNext((Response) packet);
-				}
-			}
-			return true;
-			/*} catch (ClassNotFoundException | IOException e) {
-				e.printStackTrace();
-				Logger.getGlobal().info("CONNECTION ERRORED, LISTENER STOPS" + e.getMessage());
-				optionalClient.ifPresent(client -> {
-					client.getConnection().onNext(Optional.empty());
-					client.showConnectWindow();
-				});
-				// close();
-				return false;
-			}*/
-		}).subscribeOn(Schedulers.newThread()).onErrorReturnItem(false).subscribe(next -> {
-			Logger.getGlobal().info("Client resolved");
-			optionalClient.ifPresent(client -> {
-				//client.getConnection().onNext(Optional.empty());
-				client.showConnectWindow();
-			});
-
-			optionalServer.ifPresent(server -> {
-				System.out.println("SErver is here" + getAdmiral());
-
-			});
-		});
-
 	}
 
 	public void respond(Response response) {
 		try {
 			oos.writeObject(response);
 			oos.flush();
-			Logger.getGlobal().info("Packet sent as response: " + response.toString());
+			Logger.getGlobal().log(Level.INFO, "Packet sent as response: {0}", response);
 		} catch (Exception e) {
 			//	e.printStackTrace();
 			System.out.println("NOT SERIALIZABLE AND OR CANT WRITE " + e.getMessage());
 		}
-
-
-
 	}
 
 
-	public <T extends Response> Observable<T> send(Request<T> req) {
+	public <T extends Response> Observable<T> send(Request<T> request) {
 		try {
-			oos.writeObject(req);
+			oos.writeObject(request);
 			oos.flush();
-			Logger.getGlobal().info("..- sent as request: " + req.toString());
-			var last = (Observable<T>) listener.take(1);
-			Logger.getGlobal().info("..- Packet sent as request got result: " + last.toString());
+			Logger.getGlobal().log(Level.INFO, "Packet sent as request: {0}", request);
 			listenerSource.onNext(handledResponse);
-			return last;
+			return (Observable<T>) listener.take(1);
 		} catch (IOException e) {
 			Logger.getGlobal().info("Connection failed.. sending empty");
 			return Observable.empty();
@@ -166,7 +140,6 @@ public class Connection implements AutoCloseable {
 	 * @return the admiral
 	 */
 	public Admiral getAdmiral() {
-		System.out.println("Admiral is in " + this + " is " + admiral);
 		return admiral;
 	}
 
@@ -176,13 +149,6 @@ public class Connection implements AutoCloseable {
 	public void setAdmiral(Admiral admiral) {
 		System.out.println("Admiral is set in " + this + " to " + admiral);
 		this.admiral = admiral;
-	}
-
-	/**
-	 * @return the listener
-	 */
-	public BehaviorSubject<Response> getListener() {
-		return listenerSource;
 	}
 
 }

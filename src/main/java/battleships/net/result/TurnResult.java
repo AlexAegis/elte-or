@@ -1,9 +1,6 @@
 package battleships.net.result;
 
 import java.io.Serializable;
-import com.googlecode.lanterna.TerminalSize;
-import battleships.model.Admiral;
-import battleships.model.Coord;
 
 public class TurnResult extends Response implements Serializable {
 

@@ -1,9 +1,10 @@
 package battleships.gui.layout;
 
+import battleships.gui.ShipSegment;
+import com.googlecode.lanterna.gui2.Container;
+
 import java.util.List;
 import java.util.stream.Collectors;
-import com.googlecode.lanterna.gui2.Container;
-import battleships.gui.ShipSegment;
 
 public interface SegmentContainer extends Container {
 	default List<ShipSegment> getSegments() {

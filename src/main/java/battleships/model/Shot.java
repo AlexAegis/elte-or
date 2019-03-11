@@ -1,8 +1,8 @@
 package battleships.model;
 
-import battleships.model.Admiral;
-import java.io.Serializable;
 import battleships.marker.ShotMarker;
+
+import java.io.Serializable;
 
 public class Shot implements Serializable {
 

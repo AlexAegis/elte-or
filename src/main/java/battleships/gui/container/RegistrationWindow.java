@@ -1,17 +1,11 @@
 package battleships.gui.container;
 
+import battleships.Client;
+import com.googlecode.lanterna.gui2.*;
+
 import java.util.Arrays;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import com.googlecode.lanterna.gui2.Button;
-import com.googlecode.lanterna.gui2.EmptySpace;
-import com.googlecode.lanterna.gui2.GridLayout;
-import com.googlecode.lanterna.gui2.Label;
-import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
-import com.googlecode.lanterna.gui2.Panel;
-import com.googlecode.lanterna.gui2.TextBox;
-import com.googlecode.lanterna.gui2.Window;
-import battleships.Client;
 
 public class RegistrationWindow extends BasicModal {
 
@@ -54,17 +48,17 @@ public class RegistrationWindow extends BasicModal {
 		registrationForm.addComponent(nameBox);
 		registrationForm.addComponent(emptySpace);
 		registrationForm.addComponent(registerButton);
-
-	}
-
-
-	public void show(MultiWindowTextGUI gui) {
 		setComponent(registrationForm);
 		try {
 			client.nameFromFile().ifPresent(nameBox::setText);
 		} catch (IllegalStateException e) {
 			Logger.getGlobal().info("Supplied name is invalid");
 		}
+
+	}
+
+
+	public void show(MultiWindowTextGUI gui) {
 
 		gui.addWindow(this);
 		gui.moveToTop(this);

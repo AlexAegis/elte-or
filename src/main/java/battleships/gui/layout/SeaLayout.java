@@ -1,12 +1,13 @@
 package battleships.gui.layout;
 
+import battleships.gui.Water;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.gui2.Component;
-import battleships.gui.Water;
+import com.googlecode.lanterna.gui2.LayoutManager;
+
 import java.util.List;
 import java.util.stream.Collectors;
-import com.googlecode.lanterna.gui2.LayoutManager;
 
 public class SeaLayout implements LayoutManager {
 

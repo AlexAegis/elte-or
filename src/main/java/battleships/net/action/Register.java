@@ -1,24 +1,18 @@
 package battleships.net.action;
 
-import java.io.Serializable;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Map.Entry;
-import java.util.logging.Logger;
 import battleships.Client;
 import battleships.Server;
 import battleships.model.Admiral;
-import battleships.model.Coord;
 import battleships.net.Connection;
 import battleships.net.result.RegisterResult;
+
+import java.io.Serializable;
+import java.util.Optional;
+import java.util.logging.Logger;
 
 public class Register extends Request<RegisterResult> implements Serializable {
 
 	private static final long serialVersionUID = 1426172622574286083L;
-
-	public Register() {
-		super(null);
-	}
 
 	private Admiral who;
 
@@ -35,12 +29,12 @@ public class Register extends Request<RegisterResult> implements Serializable {
 				var reqAdm = server.getTable().getAdmiral(getRequester());
 				if (reqAdm == null) {
 					connection.setAdmiral(server.getTable().addAdmiral(getRequester()));
-				} else if (reqAdm != null && !server.getConnectedAdmirals().get(reqAdm).isClosed()) {
+				} else if (server.getConnectedAdmirals().get(getRequester()) != null && !server.getConnectedAdmirals().get(getRequester()).isClosed()) {
 					return new RegisterResult(null, null, null); // taken
 				} else {
 					connection.setAdmiral(reqAdm);
 				}
-				server.getConnectedAdmirals().put(connection.getAdmiral(), connection);
+				server.getConnectedAdmirals().put(connection.getAdmiral().getName(), connection);
 
 				// Notify every other player about the registration
 				server.getEveryOtherConnectedAdmiralsExcept(connection.getAdmiral()).forEach(otherConn -> {

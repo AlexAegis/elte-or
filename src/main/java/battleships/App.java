@@ -1,15 +1,16 @@
 package battleships;
 
+import battleships.misc.Levels;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.IVersionProvider;
 import picocli.CommandLine.Option;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.jar.Manifest;
 import java.util.logging.Logger;
-import battleships.misc.Levels;
 
 @Command(name = "App", sortOptions = false, header = {"", "@|cyan  _____     _   _   _     _____ _   _        |@",
 		"@|cyan | __  |___| |_| |_| |___|   __| |_|_|___ ___ |@",

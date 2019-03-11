@@ -1,17 +1,15 @@
 package battleships.net.action;
 
-import java.io.Serializable;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
-import java.util.stream.Stream;
 import battleships.Client;
 import battleships.Server;
 import battleships.model.Admiral;
 import battleships.net.Connection;
 import battleships.net.result.ReadyResult;
-import battleships.net.result.Response;
 import battleships.state.Phase;
+
+import java.io.Serializable;
+import java.util.Optional;
+import java.util.logging.Logger;
 
 public class Ready extends Request<ReadyResult> implements Serializable {
 

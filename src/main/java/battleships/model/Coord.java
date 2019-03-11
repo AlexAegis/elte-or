@@ -1,8 +1,9 @@
 package battleships.model;
 
+import com.googlecode.lanterna.TerminalSize;
+
 import java.io.Serializable;
 import java.util.Objects;
-import com.googlecode.lanterna.TerminalSize;
 
 public class Coord implements Comparable<Coord>, Serializable {
 	private static final long serialVersionUID = 7066738546729358350L;

@@ -1,21 +1,21 @@
 package battleships.gui;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.gui2.Container;
-import com.googlecode.lanterna.gui2.Direction;
-import com.googlecode.lanterna.gui2.LinearLayout;
-import com.googlecode.lanterna.gui2.Panel;
 import battleships.gui.container.Drawer;
 import battleships.gui.container.Sea;
 import battleships.gui.layout.SegmentContainer;
 import battleships.misc.Chainable;
 import battleships.misc.Switchable;
 import battleships.model.ShipType;
+import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.gui2.Container;
+import com.googlecode.lanterna.gui2.Direction;
+import com.googlecode.lanterna.gui2.LinearLayout;
+import com.googlecode.lanterna.gui2.Panel;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
 
 public class Ship extends Panel implements Switchable, SegmentContainer, Comparable<Ship> {
 

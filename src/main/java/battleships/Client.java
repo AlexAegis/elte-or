@@ -1,20 +1,16 @@
 package battleships;
 
-import picocli.CommandLine;
-import picocli.CommandLine.Command;
-import picocli.CommandLine.Option;
-import picocli.CommandLine.ParentCommand;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.TimerTask;
-import java.util.logging.Logger;
+import battleships.gui.container.ConnectWindow;
+import battleships.gui.container.GameWindow;
+import battleships.gui.container.RegistrationWindow;
+import battleships.gui.container.Sea;
+import battleships.model.Admiral;
+import battleships.model.Coord;
+import battleships.model.ShipType;
+import battleships.net.Connection;
+import battleships.net.action.Register;
+import battleships.net.action.Request;
+import battleships.net.result.Response;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.DefaultWindowManager;
@@ -25,25 +21,22 @@ import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import battleships.net.Connection;
-import battleships.net.action.Register;
-import battleships.net.action.Request;
-import battleships.net.result.RegisterResult;
-import battleships.net.result.Response;
 import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
-import io.reactivex.subjects.ReplaySubject;
-import battleships.gui.container.ConnectWindow;
-import battleships.gui.container.GameWindow;
-import battleships.gui.container.RegistrationWindow;
-import battleships.gui.container.Sea;
-import battleships.model.Admiral;
-import battleships.model.Coord;
-import battleships.model.ShipType;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.ParentCommand;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
+import java.util.logging.Logger;
 
 @Command(name = "client", sortOptions = false,
 		header = {"", "@|cyan  _____     _   _   _     _____ _   _                _ _         _    |@",
@@ -75,7 +68,7 @@ public class Client implements Runnable {
 	private RegistrationWindow registrationWindow;
 
 	private MultiWindowTextGUI gui;
-	private BehaviorSubject<Optional<Connection>> connection = BehaviorSubject.create();
+	private BehaviorSubject<Connection> connection = BehaviorSubject.create();
 
 	public static void main(String[] args) {
 		CommandLine.run(new Client(), System.err, args);
@@ -136,24 +129,43 @@ public class Client implements Runnable {
 	/**
 	 * @return the connection
 	 */
-	public BehaviorSubject<Optional<Connection>> getConnection() {
+	public BehaviorSubject<Connection> getConnection() {
 		return connection;
 	}
 
 	public void tryConnect(String host, Integer port) {
+		Logger.getGlobal().info("Trying a connect!");
 		Observable.fromCallable(() -> {
-			try {
-				return Optional.of(new Connection(this, host, port));
-			} catch (IOException e) {
-				return Optional.<Connection>empty();
-			}
-		}).subscribeOn(Schedulers.newThread()).take(1).subscribe(optConn -> {
-			getConnection().onNext(optConn);
+			System.out.println("Callable got called!");
+			connectWindow.showConnecting();
+			return new Connection(this, host, port);
+		}).subscribeOn(Schedulers.newThread()).subscribe(getConnection()::onNext, err -> {
+			System.out.println("ERR HANDL CONN FAIL " + err);
+			gui.getGUIThread().invokeLater(() -> {
+				System.out.println("Invokeeeed");
+				connectWindow.showConnectionForm();
+			});
+		}, () -> {
+			System.out.println("Completed try connect");
 		});
+		getConnection().switchMap(conn -> {
+			connectWindow.close();
+			return conn;
+		}).subscribeOn(Schedulers.newThread()).subscribe(next -> {
+			System.out.println("Client got pakk: " + next);
+
+		}, err -> {
+			System.out.println("Client listener errored");
+		}, () -> {
+
+			System.out.println(" CONNECTION COMPLETED!!!!");
+		});
+
 	}
 
 	public void tryRegister(String name) {
-		this.sendRequest(new Register(name, null)).subscribe(res -> {
+		this.sendRequest(new Register(name, getGame().getAdmiral())).subscribe(res -> {
+			System.out.println("ANSWER FOR DA REGGG");
 			if (res.getRecipient() != null && !res.getRecipient().isEmpty()) {
 				// Successful
 				System.out.println("SUCC REG for: " + res.getRecipient());
@@ -161,8 +173,6 @@ public class Client implements Runnable {
 				System.out.println("GOT ADMIRAL OBJECT: " + res.getAdmiral());
 				getGame().setTableSize(res.getTableSize().convertToTerminalSize());
 				getGame().setAdmiral(res.getAdmiral());
-
-
 
 				// Setup table
 			} else {
@@ -173,15 +183,12 @@ public class Client implements Runnable {
 	}
 
 	public <T extends Response> Observable<T> sendRequest(Request<T> req) {
-		return connection().switchMap(conn -> conn.send(req)).switchIfEmpty(e -> {
-			System.out.println("Connection failed");
+		return getConnection().switchMap(conn -> conn.send(req)).switchIfEmpty(e -> {
+			System.out.println("switchIfEmpty failed");
 			// connectWindow.show(gui);
 		});
 	}
 
-	public Observable<Connection> connection() {
-		return getConnection().map(conn -> conn.orElse(null));
-	}
 
 	@Override
 	public void run() {
@@ -199,6 +206,9 @@ public class Client implements Runnable {
 
 			connectWindow = new ConnectWindow(this);
 			registrationWindow = new RegistrationWindow(this);
+			tryConnect(host, port);
+
+
 			showConnectWindow();
 
 			// gui.getGUIThread();
@@ -211,14 +221,13 @@ public class Client implements Runnable {
 			Logger.getGlobal().info("Client Finally, closing down connection" + getConnection());
 			getConnection().subscribe(conn -> {
 				System.out.println("conn on finally: " + conn);
-				conn.ifPresent(c -> {
-					System.out.println("c on finally: " + c);
-					try {
-						c.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				});
+
+				try {
+					conn.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
 			});
 		}
 
@@ -282,7 +291,6 @@ public class Client implements Runnable {
 						true, true, 1, 1));
 				opponentContainer.addComponent(opponent);
 		*/
-
 
 
 	}

@@ -1,15 +1,12 @@
 package battleships.gui.container;
 
-import java.util.Optional;
-import com.googlecode.lanterna.TerminalSize;
-import com.googlecode.lanterna.gui2.BorderLayout;
-import com.googlecode.lanterna.gui2.Borders;
-import com.googlecode.lanterna.gui2.Direction;
-import com.googlecode.lanterna.gui2.Label;
-import com.googlecode.lanterna.gui2.LinearLayout;
-import com.googlecode.lanterna.gui2.Panel;
 import battleships.gui.layout.OpponentContainer;
 import battleships.model.Admiral;
+import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.gui2.BorderLayout;
+import com.googlecode.lanterna.gui2.Direction;
+import com.googlecode.lanterna.gui2.LinearLayout;
+import com.googlecode.lanterna.gui2.Panel;
 
 public class OpponentBar extends Panel implements OpponentContainer {
 	private GameWindow game;

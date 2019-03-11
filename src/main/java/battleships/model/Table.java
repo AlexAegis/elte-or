@@ -1,14 +1,13 @@
 package battleships.model;
 
+import battleships.marker.TableMarker;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import battleships.marker.TableMarker;
-import battleships.model.Coord;
-import battleships.model.Shot;
 
 public class Table {
 	private Map<String, Admiral> admirals = new HashMap<>();

@@ -1,17 +1,13 @@
 package battleships.gui.container;
 
-import java.util.Arrays;
-import java.util.regex.Pattern;
-import com.googlecode.lanterna.gui2.Button;
-import com.googlecode.lanterna.gui2.EmptySpace;
-import com.googlecode.lanterna.gui2.GridLayout;
-import com.googlecode.lanterna.gui2.Label;
-import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
-import com.googlecode.lanterna.gui2.Panel;
-import com.googlecode.lanterna.gui2.TextBox;
-import com.googlecode.lanterna.gui2.Window;
 import battleships.Client;
+import com.googlecode.lanterna.gui2.*;
+import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
+
+import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 public class ConnectWindow extends BasicModal {
 
@@ -26,6 +22,7 @@ public class ConnectWindow extends BasicModal {
 	private Label hostLabel = new Label("IP Address");
 	private TextBox hostBox;
 	private Label portLabel = new Label("Port");
+	private Label connectingLabel = new Label("Connecting   ");
 	private TextBox portBox;
 	private EmptySpace emptySpace = new EmptySpace();
 	private Button connectButton;
@@ -50,13 +47,11 @@ public class ConnectWindow extends BasicModal {
 				valid &= false;
 			}
 			if (valid) {
-				connectForm.removeAllComponents();
-				connectForm.addComponent(new Label("Connecting"));
-				invalidate();
+				showConnecting();
 				client.tryConnect(hostBox.getText(), Integer.parseInt(portBox.getText()));
 			}
 		});
-
+		setComponent(connectForm);
 	}
 
 
@@ -64,33 +59,52 @@ public class ConnectWindow extends BasicModal {
 		hostBox.takeFocus();
 	}
 
+	public void showConnecting() {
+		connectForm.removeAllComponents();
+		connectForm.addComponent(connectingLabel);
+		Observable.interval(200, TimeUnit.MILLISECONDS).take(50).takeUntil(client.getConnection()).subscribeOn(Schedulers.computation()).subscribe(next -> {
+			if(next % 4 == 0) {
+				connectingLabel.setText("Connecting   ");
+			}
+			if(next % 4 == 1) {
+				connectingLabel.setText("Connecting.  ");
+			}
+			if(next % 4 == 2) {
+				connectingLabel.setText("Connecting.. ");
+			}
+			if(next % 4 == 3) {
+				connectingLabel.setText("Connecting...");
+			}
+			connectingLabel.invalidate();
+		}, err -> {
+		}, this::close);
+	}
+
+	public void showConnectionForm() {
+		connectForm.removeAllComponents();
+		connectForm.addComponent(hostLabel);
+		connectForm.addComponent(hostBox);
+		connectForm.addComponent(portLabel);
+		connectForm.addComponent(portBox);
+		connectForm.addComponent(emptySpace);
+		connectForm.addComponent(connectButton);
+		hostBox.takeFocus();
+		invalidate();
+	}
 
 	public void show(MultiWindowTextGUI gui) {
-
-		setComponent(connectForm);
-		connectForm.removeAllComponents();
-		connectForm.addComponent(new Label("Connecting"));
-		client.getConnection().subscribeOn(Schedulers.io()).subscribe(optional -> {
-			optional.ifPresentOrElse((conn) -> {
-				close();
-			}, () -> {
-				connectForm.removeAllComponents();
-				connectForm.addComponent(hostLabel);
-				connectForm.addComponent(hostBox);
-				connectForm.addComponent(portLabel);
-				connectForm.addComponent(portBox);
-				connectForm.addComponent(emptySpace);
-				connectForm.addComponent(connectButton);
-				hostBox.takeFocus();
-			});
+		client.getConnection().subscribeOn(Schedulers.newThread()).subscribe(connection -> {
+			System.out.println("Connectiuon made!, ConnectWindow closes");
+			close();
+		}, err -> {
+			System.out.println("Connection made an error, time to be a hero!");
+			showConnectionForm();
+			client.showConnectWindow();
 		});
 		gui.addWindow(this);
 		gui.moveToTop(this);
 		this.takeFocus();
-		client.tryConnect(hostBox.getText(), Integer.parseInt(portBox.getText()));
 		waitUntilClosed();
-
-
 		client.showRegistrationWindow();
 	}
 

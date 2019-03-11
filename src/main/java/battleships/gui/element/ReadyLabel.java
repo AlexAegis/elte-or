@@ -1,9 +1,9 @@
 package battleships.gui.element;
 
-import com.googlecode.lanterna.TextColor;
-import com.googlecode.lanterna.gui2.Label;
 import battleships.gui.container.GameWindow;
 import battleships.model.Admiral;
+import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.gui2.Label;
 
 public class ReadyLabel extends Label {
 	private GameWindow game;

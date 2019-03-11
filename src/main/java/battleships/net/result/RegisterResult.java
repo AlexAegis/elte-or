@@ -1,8 +1,9 @@
 package battleships.net.result;
 
-import java.io.Serializable;
 import battleships.model.Admiral;
 import battleships.model.Coord;
+
+import java.io.Serializable;
 
 public class RegisterResult extends Response implements Serializable {
 

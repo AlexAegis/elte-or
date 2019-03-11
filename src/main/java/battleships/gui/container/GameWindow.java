@@ -1,20 +1,15 @@
 package battleships.gui.container;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import com.googlecode.lanterna.TerminalSize;
-import com.googlecode.lanterna.gui2.BasicWindow;
-import com.googlecode.lanterna.gui2.BorderLayout;
-import com.googlecode.lanterna.gui2.Borders;
-import com.googlecode.lanterna.gui2.GridLayout;
-import com.googlecode.lanterna.gui2.Label;
-import com.googlecode.lanterna.gui2.Panel;
-import com.googlecode.lanterna.gui2.Window;
-import com.googlecode.lanterna.screen.Screen;
-import com.googlecode.lanterna.terminal.Terminal;
 import battleships.Client;
 import battleships.gui.element.ReadyLabel;
 import battleships.model.Admiral;
+import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.screen.Screen;
+import com.googlecode.lanterna.terminal.Terminal;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class GameWindow extends BasicWindow {
 	private Client client;

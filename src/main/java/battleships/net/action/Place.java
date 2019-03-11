@@ -1,12 +1,13 @@
 package battleships.net.action;
 
-import java.io.Serializable;
-import java.util.Optional;
 import battleships.Client;
 import battleships.Server;
 import battleships.model.Coord;
 import battleships.net.Connection;
 import battleships.net.result.PlaceResult;
+
+import java.io.Serializable;
+import java.util.Optional;
 
 public class Place extends Request<PlaceResult> implements Serializable {
 

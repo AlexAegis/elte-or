@@ -1,8 +1,8 @@
 package battleships.gui.container;
 
-import com.googlecode.lanterna.gui2.Panel;
 import battleships.gui.element.ReadyLabel;
 import battleships.model.Admiral;
+import com.googlecode.lanterna.gui2.Panel;
 
 public class Opponent extends Panel {
 

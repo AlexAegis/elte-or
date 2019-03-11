@@ -1,28 +1,22 @@
 package battleships.model;
 
-import java.beans.Transient;
+import battleships.exception.AlreadyShotException;
+import battleships.exception.BorderShotException;
+import battleships.gui.container.GameWindow;
+import battleships.gui.container.Opponent;
+import battleships.gui.container.Sea;
+import battleships.marker.ShotMarker;
+import battleships.net.action.Ready;
+import battleships.state.Phase;
+
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import battleships.exception.AlreadyShotException;
-import battleships.exception.BorderShotException;
-import battleships.gui.container.GameWindow;
-import battleships.gui.container.Opponent;
-import battleships.gui.container.Sea;
-import battleships.gui.element.ReadyLabel;
-import battleships.marker.ShotMarker;
-import battleships.model.Coord;
-import battleships.model.Shot;
-import battleships.net.action.Ready;
-import battleships.net.result.ReadyResult;
-import battleships.state.Phase;
 
 /**
  * A class representing a player
