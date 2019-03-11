@@ -8,6 +8,9 @@ import com.googlecode.lanterna.gui2.InteractableRenderer;
 import com.googlecode.lanterna.gui2.TextGUIGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
 import battleships.gui.container.Sea;
+import io.reactivex.Observable;
+
+import java.util.concurrent.TimeUnit;
 
 public class Water extends AbstractInteractableComponent<Water> {
 
@@ -20,7 +23,7 @@ public class Water extends AbstractInteractableComponent<Water> {
 
 
 	/**
-	 * @param type
+	 * @param sea
 	 */
 	public Water(Sea sea) {
 		this.sea = sea;
@@ -28,27 +31,23 @@ public class Water extends AbstractInteractableComponent<Water> {
 	}
 
 	public void startRipple() {
-		new Thread(() -> {
-			try {
+		Observable.interval(100, TimeUnit.MILLISECONDS).take(4).doFinally(() -> {
+			currentFore = Palette.WATER;
+			currentBack = Palette.WATER;
+			invalidate();
+		}).subscribe(next -> {
+			if(next == 0) {
 				currentFore = Palette.WATER_RIPPLE_1;
 				currentBack = Palette.WATER_RIPPLE_2;
-				invalidate();
-				Thread.sleep(170);
+			} else if(next == 1) {
 				currentFore = Palette.WATER_RIPPLE_0;
 				currentBack = Palette.WATER_RIPPLE_1;
-				invalidate();
-				Thread.sleep(170);
+			} else {
 				currentFore = Palette.WATER_RIPPLE_1;
 				currentBack = Palette.WATER_RIPPLE_0;
-				invalidate();
-				Thread.sleep(400);
-				currentFore = Palette.WATER;
-				currentBack = Palette.WATER;
-				invalidate();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
 			}
-		}).start();
+			invalidate();
+		});
 	}
 
 
