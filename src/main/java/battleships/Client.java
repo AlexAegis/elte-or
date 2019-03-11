@@ -173,10 +173,10 @@ public class Client implements Runnable {
 	}
 
 	public <T extends Response> Observable<T> sendRequest(Request<T> req) {
-		return connection().switchMap(conn -> conn.<T>send(req).switchIfEmpty(e -> {
+		return connection().switchMap(conn -> conn.send(req)).switchIfEmpty(e -> {
 			System.out.println("Connection failed");
 			// connectWindow.show(gui);
-		}));
+		});
 	}
 
 	public Observable<Connection> connection() {

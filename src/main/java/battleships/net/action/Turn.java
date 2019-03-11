@@ -46,7 +46,6 @@ public class Turn extends Request<TurnResult> implements Serializable {
 		} else {
 			return answerFromClient.map(client -> {
 				// Client got turn data, set the opponents graphics accordingly, or start turn for yourself
-
 				var isItMe = client.getGame().getAdmiral().getName().equals(getWho());
 				if (isItMe) {
 					Logger.getGlobal().info("Its my turn!");
@@ -54,15 +53,14 @@ public class Turn extends Request<TurnResult> implements Serializable {
 				} else {
 					Logger.getGlobal().info("Its NOT my turn!");
 					client.getGame().getAdmiral().setPhase(Phase.GAME);
-					client.getGame().getAdmiral().getKnowledge().forEach((k, a) -> {
-						if (k.equals(getWho())) {
-							a.setPhase(Phase.ACTIVE);
-						} else {
-							a.setPhase(Phase.GAME);
-						}
-					});
 				}
-
+				client.getGame().getAdmiral().getKnowledge().forEach((k, a) -> {
+					if (k.equals(getWho())) {
+						a.setPhase(Phase.ACTIVE);
+					} else {
+						a.setPhase(Phase.GAME);
+					}
+				});
 				return new TurnResult(getRequester(), isItMe);
 			});
 		}

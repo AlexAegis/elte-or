@@ -35,12 +35,19 @@ public class OpponentBar extends Panel implements OpponentContainer {
 	}
 
 	public void addOpponent(Admiral admiral) {
+		admiral.getKnowledge().clear();
 		/*
 		When adding an opponent we dont know anything about it, only its name
 		*/
-		game.getAdmiral().getKnowledge().putIfAbsent(admiral.getName(),
-				new Admiral(admiral.getName()).setReady(admiral.isReady()).setSea(new Sea(game.getTableSize())));
-		addComponent(new Opponent(game, admiral));
+		if(game.getAdmiral().getKnowledge().containsKey(admiral.getName())) {
+			System.out.println("THIS OPPO GUY IS ---ALREADY--- IN THE MAIN KNOWLEDGE");
+		} else {
+			System.out.println("THIS OPPO GUY IS !!!NOT!!! IN THE MAIN KNOWLEDGE");
+		}
+		admiral.setSea(new Sea(game.getTableSize()));
+		var copy = new Admiral(admiral.getName()).setReady(admiral.isReady()).setSea(admiral.getSea());
+		game.getAdmiral().getKnowledge().put(admiral.getName(), copy);
+		addComponent(new Opponent(game, copy));
 		invalidate();
 	}
 

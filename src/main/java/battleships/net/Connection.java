@@ -9,6 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketOption;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import battleships.Client;
 import battleships.Server;
@@ -145,12 +146,14 @@ public class Connection implements AutoCloseable {
 
 	}
 
+
 	public <T extends Response> Observable<T> send(Request<T> req) {
 		try {
 			oos.writeObject(req);
 			oos.flush();
-			Logger.getGlobal().info("Packet sent as request: " + req.toString());
+			Logger.getGlobal().info("..- sent as request: " + req.toString());
 			var last = (Observable<T>) listener.take(1);
+			Logger.getGlobal().info("..- Packet sent as request got result: " + last.toString());
 			listenerSource.onNext(handledResponse);
 			return last;
 		} catch (IOException e) {

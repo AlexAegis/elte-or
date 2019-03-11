@@ -117,9 +117,12 @@ public class Server implements Runnable {
 	* @return the connectedAdmirals
 	*/
 	public Stream<Connection> getEveryOtherConnectedAdmiralsExcept(Admiral... admirals) {
-		return getConnectedAdmirals().entrySet().stream().filter(Objects::nonNull).filter(e -> {
-			return !Arrays.asList(admirals).contains(e.getKey());
-		}).map(Entry::getValue).filter(Objects::nonNull);
+		return getConnectedAdmirals().entrySet().stream().filter(Objects::nonNull).filter(e -> !Arrays.asList(admirals).contains(e.getKey())).map(Entry::getValue).filter(Objects::nonNull);
+	}
+
+
+	public Stream<Connection> getEveryConnectedAdmirals() {
+		return getConnectedAdmirals().entrySet().stream().filter(Objects::nonNull).map(Entry::getValue).filter(Objects::nonNull);
 	}
 
 	public Boolean isEveryOneOnTheSamePhase(Phase stage) {

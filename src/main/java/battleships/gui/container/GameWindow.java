@@ -1,5 +1,6 @@
 package battleships.gui.container;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.gui2.BasicWindow;
@@ -149,7 +150,9 @@ public class GameWindow extends BasicWindow {
 		client.fieldInitFromFile(getAdmiral(), admiral.getSea());
 
 		// Register knowledge as opponents
-		getAdmiral().getKnowledge().values().forEach(getOpponentBar()::addOpponent);
+		var alreadyKnownAdmirals = new ArrayList<>(getAdmiral().getKnowledge().values());
+		getAdmiral().getKnowledge().clear();
+		alreadyKnownAdmirals.forEach(getOpponentBar()::addOpponent);
 		admiral.refresh();
 		invalidate();
 		getDrawer().takeFocus();

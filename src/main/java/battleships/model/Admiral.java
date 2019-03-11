@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import battleships.exception.AlreadyShotException;
 import battleships.exception.BorderShotException;
@@ -82,7 +83,7 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 	 */
 	public void setPhase(Phase phase) {
 		this.phase = phase;
-		System.out.println("PHASE: " + phase + " game: " + whenPlayer + " oppon: " + whenOpponent);
+		System.out.println("PHASE: " + phase + " game: " + whenPlayer + " oppon: " + whenOpponent + " where: " + this);
 		if(whenPlayer != null) {
 			switch (phase) {
 				case READY:
@@ -187,25 +188,16 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 	public Admiral setReady(boolean ready) {
 		if(whenPlayer != null) {
 			whenPlayer.getClient().sendRequest(new Ready(getName(), getName(), ready)).subscribe(res -> {
-				if (res.getReady()) {
-					setPhase(Phase.READY);
-				} else {
-					setPhase(Phase.PLACEMENT);
-				}
+				Logger.getGlobal().info("Notified the server about my ready state! " + res);
 			});
-		} else if(whenOpponent != null) {
-			if (ready) {
-				setPhase(Phase.READY);
-			} else {
-				setPhase(Phase.PLACEMENT);
-			}
-		} else {
-			if (ready) {
-				setPhase(Phase.READY);
-			} else {
-				setPhase(Phase.PLACEMENT);
-			}
 		}
+
+		if (ready) {
+			setPhase(Phase.READY);
+		} else {
+			setPhase(Phase.PLACEMENT);
+		}
+
 		return this;
 	}
 
@@ -287,7 +279,7 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 
 	@Override
 	public String toString() {
-		return "Admiral: { name: " + getName() + " state: " + state() + " knowledge: " + getKnowledge() + " }";
+		return "A("+hashCode()+"):{name: " + getName() + " state: " + state() + " isPlayer?: " + (whenPlayer != null) + " isOpponent?: " + (whenOpponent != null) + " knowledge: " + getKnowledge().entrySet().stream().map(e -> "k: " + e.getKey() + " Adm name: " + e.getValue().getName() + " hash: "+ e.getValue().hashCode() + " isPlayer? " + (e.getValue().whenPlayer != null) + " isOpponent? " + (e.getValue().whenOpponent != null)).collect(Collectors.joining(",")) + " }";
 	}
 
 	public void finishBorders() {

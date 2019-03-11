@@ -2,6 +2,7 @@ package battleships.net.action;
 
 import java.io.Serializable;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 import battleships.Client;
@@ -59,9 +60,9 @@ public class Ready extends Request<ReadyResult> implements Serializable {
 				if (server.isAtLeastNPlayers(2) && server.isEveryOneOnTheSamePhase(Phase.READY)) {
 					Logger.getGlobal().info("Everybody ready!");
 					server.setPhase(Phase.GAME);
-					server.getEveryOtherConnectedAdmiralsExcept().forEach((conn) -> {
-						Admiral ad = server.getCurrentAdmiral();
-						conn.send(new Turn(conn.getAdmiral().getName(), ad.getName())).subscribe(ack -> {
+					server.getEveryConnectedAdmirals().forEach(conn -> {
+						Admiral firstTurnAdmiral = server.getCurrentAdmiral();
+						conn.send(new Turn(conn.getAdmiral().getName(), firstTurnAdmiral.getName())).subscribe(ack -> {
 							Logger.getGlobal().info("Sent turn data, got ack: " + ack);
 						});
 					});
@@ -75,10 +76,6 @@ public class Ready extends Request<ReadyResult> implements Serializable {
 				System.out.println("GOT A GUY WHO IS READY OR NOT!!! req: " + getRequester() + " who: " + getWho()
 						+ "isReady " + ready);
 				client.getGame().getAdmiral().getKnowledge().get(getWho()).setReady(isReady());
-				/*client.getGame().getOpponentBar().getOpponentByName(getWho()).ifPresent(opponent -> {
-					opponent.getAdmiral().setReady(isReady());
-					opponent.getLabel().refresh();
-				});*/
 				return new ReadyResult(getRequester(), isReady());
 			});
 		}
