@@ -34,24 +34,14 @@ public class OpponentBar extends Panel implements OpponentContainer {
 		setPreferredSize(game.getTableSize());
 	}
 
-	public Optional<Opponent> getOpponentByName(String name) {
-		return getOpponents().stream().filter(opponent -> name.equals(opponent.getName())).findFirst();
+	public void addOpponent(Admiral admiral) {
+		/*
+		When adding an opponent we dont know anything about it, only its name
+		*/
+		game.getAdmiral().getKnowledge().putIfAbsent(admiral.getName(),
+				new Admiral(admiral.getName()).setReady(admiral.isReady()).setSea(new Sea(game.getTableSize())));
+		addComponent(new Opponent(game, admiral));
+		invalidate();
 	}
 
-	public void addOpponent(String admiralName) {
-		addOpponent(admiralName, false);
-	}
-
-	public void addOpponent(String admiralName, Boolean ready) {
-		System.out.println("add opp:" + admiralName + " cando? " + (game != null));
-		if (game != null) {
-			game.getAdmiral().getKnowledge().putIfAbsent(admiralName, new Admiral(admiralName).setReady(ready));
-			addComponent(new Opponent(game, admiralName));
-			invalidate();
-		}
-	}
-
-	public void removeOpponent(String admiralName) {
-		getOpponentByName(admiralName).ifPresent(this::removeComponent);
-	}
 }

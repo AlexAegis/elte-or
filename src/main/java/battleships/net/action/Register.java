@@ -20,13 +20,11 @@ public class Register extends Request<RegisterResult> implements Serializable {
 		super(null);
 	}
 
-	private String who;
-	private Boolean initialReady;
+	private Admiral who;
 
-	public Register(String requester, String who, Boolean initialReady) {
+	public Register(String requester, Admiral who) {
 		super(requester);
 		this.who = who;
-		this.initialReady = initialReady;
 	}
 
 	@Override
@@ -53,8 +51,8 @@ public class Register extends Request<RegisterResult> implements Serializable {
 							.setPhase(otherConn.getAdmiral().getPhase());
 
 					Logger.getGlobal().info("Sending notification about registration to: " + otherConn.getAdmiral());
-					otherConn.send(new Register(otherConn.getAdmiral().getName(), connection.getAdmiral().getName(),
-							connection.getAdmiral().isReady())).subscribe(res -> {
+					otherConn.send(new Register(otherConn.getAdmiral().getName(), connection.getAdmiral()))
+							.subscribe(res -> {
 								Logger.getGlobal().info("Notified other client about a registration " + res);
 							});
 				});
@@ -66,9 +64,9 @@ public class Register extends Request<RegisterResult> implements Serializable {
 			return answerFromClient.map(client -> {
 				// A new opponent arrived
 				Logger.getGlobal().info("A new opponent registered on the server " + this.toString());
-				if (!client.getGame().getAdmiral().getName().equals(getWho())) {
-					client.getGame().getOpponentBar().addOpponent(getWho(), isInitialReady());
-					return new RegisterResult(getRequester(), null, connection.getAdmiral());
+				if (!client.getGame().getAdmiral().getName().equals(getWho().getName())) {
+					client.getGame().getOpponentBar().addOpponent(getWho());
+					return new RegisterResult(getRequester(), null, null);
 				} else {
 					System.out.println("Spiderman.jpg");
 				}
@@ -82,18 +80,13 @@ public class Register extends Request<RegisterResult> implements Serializable {
 	/**
 	 * @return the who
 	 */
-	public String getWho() {
+	public Admiral getWho() {
 		return who;
-	}
-
-	public Boolean isInitialReady() {
-		return initialReady;
 	}
 
 	@Override
 	public String toString() {
-		return " Register: { requester: " + getRequester() + " who: " + getWho() + " initialReady: " + initialReady
-				+ "} ";
+		return " Register: { requester: " + getRequester() + " who: " + getWho() + " ";
 	}
 
 }

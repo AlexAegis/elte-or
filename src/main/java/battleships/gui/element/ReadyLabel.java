@@ -10,13 +10,14 @@ public class ReadyLabel extends Label {
 
 	private TextColor readyColor = TextColor.Factory.fromString("#11FF22");
 	private TextColor notReadyColor = TextColor.Factory.fromString("#FF1122");
+	private TextColor baseColor = TextColor.Factory.fromString("#111111");
 	private Admiral admiral;
 
 	public ReadyLabel(GameWindow game, Admiral admiral) {
 		super("");
 		this.game = game;
 		this.admiral = admiral;
-		refresh();
+		//refresh();
 	}
 
 	/**
@@ -26,18 +27,21 @@ public class ReadyLabel extends Label {
 		this.admiral = admiral;
 	}
 
-	public void refresh() {
-		if (admiral != null) {
-			if (admiral.isReady() == null) {
-				setText("");
-			} else if (admiral.isReady()) {
-				setForegroundColor(readyColor);
-				setText(admiral == null || admiral.equals(game.getAdmiral()) ? "Ready" : admiral.getName());
-			} else {
-				setForegroundColor(notReadyColor);
-				setText(admiral == null || admiral.equals(game.getAdmiral()) ? "Not Ready" : admiral.getName());
-			}
-		}
+	public void base() {
+		setForegroundColor(baseColor);
+		setText(admiral == null || admiral.equals(game.getAdmiral()) ? "" : admiral.getName());
+		invalidate();
+	}
+
+	public void ready() {
+		setForegroundColor(readyColor);
+		setText(admiral == null || admiral.equals(game.getAdmiral()) ? "Ready" : admiral.getName());
+		invalidate();
+	}
+
+	public void notReady() {
+		setForegroundColor(notReadyColor);
+		setText(admiral == null || admiral.equals(game.getAdmiral()) ? "Not Ready" : admiral.getName());
 		invalidate();
 	}
 }

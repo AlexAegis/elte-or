@@ -74,10 +74,11 @@ public class Ready extends Request<ReadyResult> implements Serializable {
 			return answerFromClient.map(client -> {
 				System.out.println("GOT A GUY WHO IS READY OR NOT!!! req: " + getRequester() + " who: " + getWho()
 						+ "isReady " + ready);
-				client.getGame().getOpponentBar().getOpponentByName(getWho()).ifPresent(opponent -> {
-					opponent.get().setReady(isReady());
+				client.getGame().getAdmiral().getKnowledge().get(getWho()).setReady(isReady());
+				/*client.getGame().getOpponentBar().getOpponentByName(getWho()).ifPresent(opponent -> {
+					opponent.getAdmiral().setReady(isReady());
 					opponent.getLabel().refresh();
-				});
+				});*/
 				return new ReadyResult(getRequester(), isReady());
 			});
 		}

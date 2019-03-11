@@ -10,17 +10,17 @@ public class Opponent extends Panel {
 	private String name;
 
 	private ReadyLabel label;
-	private Sea sea;
+	private Admiral admiral;
 
-	public Opponent(GameWindow game, String name) {
+	public Opponent(GameWindow game, Admiral admiral) {
 		this.game = game;
-		this.name = name;
-		label = new ReadyLabel(game, get());
+		this.admiral = admiral;
+		label = new ReadyLabel(game, admiral);
+		admiral.setSea(new Sea(game.getTableSize()));
+		admiral.setOpponent(this);
 		addComponent(label);
-		sea = new Sea(game.getTableSize());
-		sea.setAdmiral(get());
-		addComponent(sea);
-		System.out.println("new opponent created, admi:" + get());
+		addComponent(admiral.getSea());
+		System.out.println("new opponent created, admi:" + admiral);
 	}
 
 	/**
@@ -37,14 +37,8 @@ public class Opponent extends Panel {
 		return label;
 	}
 
-	/**
-	 * @return the sea
-	 */
-	public Sea getSea() {
-		return sea;
+	public Admiral getAdmiral() {
+		return admiral;
 	}
 
-	public Admiral get() {
-		return game.getAdmiral().getKnowledge().get(name);
-	}
 }

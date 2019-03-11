@@ -5,6 +5,7 @@ import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.gui2.Component;
 import com.googlecode.lanterna.gui2.Direction;
+import com.googlecode.lanterna.gui2.GridLayout;
 import com.googlecode.lanterna.gui2.Interactable;
 import com.googlecode.lanterna.gui2.Panel;
 import battleships.model.Admiral;
@@ -31,7 +32,6 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 
 	private Drawer drawer;
 
-	private Admiral admiral;
 	private TerminalPosition cursor;
 
 	private Integer width = 10;
@@ -39,27 +39,20 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 
 	private Ship focused;
 
-
 	public Sea(TerminalSize size, Drawer drawer) {
 		this(size);
 		setDrawer(drawer);
 		drawer.setSea(this);
+
 	}
 
 	public Sea(TerminalSize size) {
 		setLayoutManager(new SeaLayout(size));
 		IntStream.range(0, width * height).forEach(i -> addComponent(new Water(this)));
+		setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER, true, true,
+				1, 1));
 		this.getLayoutManager().doLayout(getPreferredSize(), (List<Component>) getChildren());
 	}
-
-	/**
-	 * @param admiral the admiral to set
-	 */
-	public void setAdmiral(Admiral admiral) {
-		this.admiral = admiral;
-	}
-
-
 
 	public void sendRipple(Ship ship) {
 		var waves = ripple(ship.getPosition(), ship.getType().getLength(), 4, ship.getOrientation());

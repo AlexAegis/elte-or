@@ -232,7 +232,7 @@
 		},
 		{
 			"name": "App Server/Client Double Client",
-			"configurations": ["App Server", "App Client", "App Client"]
+			"configurations": ["App Server", "App Client", "App Client 2"]
 		}
 	]
 }

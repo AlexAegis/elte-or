@@ -75,9 +75,7 @@ public class Client implements Runnable {
 	private RegistrationWindow registrationWindow;
 
 	private MultiWindowTextGUI gui;
-	private List<Disposable> disposables = new ArrayList<>();
 	private BehaviorSubject<Optional<Connection>> connection = BehaviorSubject.create();
-
 
 	public static void main(String[] args) {
 		CommandLine.run(new Client(), System.err, args);
@@ -155,7 +153,7 @@ public class Client implements Runnable {
 	}
 
 	public void tryRegister(String name) {
-		this.sendRequest(new Register(name, name, false)).subscribe(res -> {
+		this.sendRequest(new Register(name, null)).subscribe(res -> {
 			if (res.getRecipient() != null && !res.getRecipient().isEmpty()) {
 				// Successful
 				System.out.println("SUCC REG for: " + res.getRecipient());
@@ -346,6 +344,5 @@ public class Client implements Runnable {
 
 	public void showRegistrationWindow() {
 		getRegistrationWindow().show(gui);
-
 	}
 }

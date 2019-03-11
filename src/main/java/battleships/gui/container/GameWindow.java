@@ -25,7 +25,6 @@ public class GameWindow extends BasicWindow {
 	private Thread connectTry;
 	private ReadyLabel readyLabel;
 	private Drawer drawer;
-	private Sea sea;
 	private ActionBar actionBar;
 	private OpponentBar opponentBar;
 	private Panel seaContainer;
@@ -106,13 +105,6 @@ public class GameWindow extends BasicWindow {
 		return drawer;
 	}
 
-	/**
-	 * @return the sea
-	 */
-	public Sea getSea() {
-		return sea;
-	}
-
 	public void takeFocus() {
 		setFocusedInteractable(getDrawer().getShips().iterator().next().getSegments().iterator().next());
 	}
@@ -139,18 +131,28 @@ public class GameWindow extends BasicWindow {
 		return actionBar;
 	}
 
+	/**
+	 * Sets the player, the main admiral. Every other admiral will be a knowledge of this one.
+	 * @param admiral
+	 */
 	public void setAdmiral(Admiral admiral) {
 		this.admiral = admiral;
 		admiral.setGame(this);
+		admiral.refresh();
 		System.out.println("Admiral's name is " + admiral.getName());
 
-		client.fieldInitFromFile(getAdmiral(), getSea());
+		admiral.setSea(new Sea(getTableSize(), drawer));
+		opponentBar.setGame(this);
+		seaContainer.addComponent(admiral.getSea());
 
-		System.out.println("INIT DONE DRAWER FOCC" + getDrawer().getChildCount());
+
+		client.fieldInitFromFile(getAdmiral(), admiral.getSea());
+
+		// Register knowledge as opponents
+		getAdmiral().getKnowledge().values().forEach(getOpponentBar()::addOpponent);
+		admiral.refresh();
+		invalidate();
 		getDrawer().takeFocus();
-		getAdmiral().getKnowledge().keySet().forEach(getOpponentBar()::addOpponent);
-
-
 
 		// MAKE THE FIELD AND KNOWLEDGE AND DRAWERR FROM THIS
 	}
@@ -164,11 +166,7 @@ public class GameWindow extends BasicWindow {
 
 	public void setTableSize(TerminalSize tableSize) {
 		this.tableSize = tableSize;
-		sea = new Sea(tableSize, drawer);
 		opponentBar.setGame(this);
-		sea.setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER, true,
-				true, 1, 1));
-		seaContainer.addComponent(sea);
-		invalidate();
+
 	}
 }

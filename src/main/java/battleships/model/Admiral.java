@@ -8,10 +8,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import battleships.exception.AlreadyShotException;
 import battleships.exception.BorderShotException;
 import battleships.gui.container.GameWindow;
+import battleships.gui.container.Opponent;
+import battleships.gui.container.Sea;
 import battleships.gui.element.ReadyLabel;
 import battleships.marker.ShotMarker;
 import battleships.model.Coord;
@@ -31,27 +34,40 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 	private List<Shot> miss = new ArrayList<>();
 
 	// The Admiral used as a key is name, the value is the mock of that admiral
-	private Map<String, Admiral> knowledge = new HashMap<>();
+	private HashMap<String, Admiral> knowledge = new HashMap<>();
 
 	private String name;
+	private transient Sea sea;
+	private transient Opponent whenOpponent;
+	private transient GameWindow whenPlayer;
+
 	private Phase phase = Phase.PLACEMENT;
-
-
-	public transient GameWindow game;
 
 	public Admiral(String name) {
 		this.name = name;
 	}
 
 	/**
+	 * @param sea the sea to set
+	 */
+	public Admiral setSea(Sea sea) {
+		// TODO Put everything on the sea from ships
+		this.sea = sea;
+		return this;
+	}
+
+	/**
+	 * @return the sea
+	 */
+	public Sea getSea() {
+		return sea;
+	}
+
+	/**
 	 * @param game the game to set
 	 */
 	public void setGame(GameWindow game) {
-		this.game = game;
-		game.getReadyLabel().setAdmiral(this);
-		game.getSea().setAdmiral(this);
-		game.getReadyLabel().setAdmiral(this);
-		refresh();
+		this.whenPlayer = game;
 	}
 
 	/**
@@ -66,6 +82,34 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 	 */
 	public void setPhase(Phase phase) {
 		this.phase = phase;
+		System.out.println("PHASE: " + phase + " game: " + whenPlayer + " oppon: " + whenOpponent);
+		if(whenPlayer != null) {
+			switch (phase) {
+				case READY:
+					whenPlayer.getReadyLabel().ready();
+					break;
+				case PLACEMENT:
+					whenPlayer.getReadyLabel().notReady();
+					break;
+				default:
+					whenPlayer.getReadyLabel().base();
+
+			}
+		}
+		if(whenOpponent != null) {
+			switch (phase) {
+				case READY:
+					whenOpponent.getLabel().ready();
+					break;
+				case PLACEMENT:
+					whenOpponent.getLabel().notReady();
+					break;
+				default:
+					whenOpponent.getLabel().base();
+
+			}
+		}
+
 	}
 
 	/**
@@ -139,33 +183,27 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 		return shot;
 	}
 
-	public Admiral setReady(Boolean ready) {
-		return setReady(ready, false);
-	}
 
-	public Admiral setReady(Boolean ready, Boolean broadcast) {
-		if (this.game != null) {
-			if (game.getReadyLabel() != null) {
-				game.getReadyLabel().refresh();
+	public Admiral setReady(boolean ready) {
+		if(whenPlayer != null) {
+			whenPlayer.getClient().sendRequest(new Ready(getName(), getName(), ready)).subscribe(res -> {
+				if (res.getReady()) {
+					setPhase(Phase.READY);
+				} else {
+					setPhase(Phase.PLACEMENT);
+				}
+			});
+		} else if(whenOpponent != null) {
+			if (ready) {
+				setPhase(Phase.READY);
+			} else {
+				setPhase(Phase.PLACEMENT);
 			}
-			if (broadcast) {
-				this.game.getClient().sendRequest(new Ready(getName(), getName(), ready)).subscribe(res -> {
-					if (res.getReady()) {
-						this.setPhase(Phase.READY);
-					} else {
-						this.setPhase(Phase.PLACEMENT);
-					}
-					if (game.getReadyLabel() != null) {
-						game.getReadyLabel().refresh();
-					}
-				});
-			}
-
 		} else {
 			if (ready) {
-				this.setPhase(Phase.READY);
+				setPhase(Phase.READY);
 			} else {
-				this.setPhase(Phase.PLACEMENT);
+				setPhase(Phase.PLACEMENT);
 			}
 		}
 		return this;
@@ -243,7 +281,7 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 	/**
 	 * @return the knowledge
 	 */
-	public Map<String, Admiral> getKnowledge() {
+	public HashMap<String, Admiral> getKnowledge() {
 		return knowledge;
 	}
 
@@ -267,8 +305,8 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 	}
 
 	public void setName(String name) {
-		if (game != null && game.getPlayerName() != null && name != null) {
-			game.getPlayerName().setText(name);
+		if(whenPlayer != null) {
+			whenPlayer.getPlayerName().setText(name);
 		}
 		this.name = name;
 	}
@@ -281,6 +319,13 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 	@Override
 	public int compareTo(Admiral o) {
 		return getName().compareTo(o.getName());
+	}
+
+	public Admiral setOpponent(Opponent opponent) {
+		System.out.println("setOpponent OPTIOOONNNAL");
+		whenOpponent = opponent;
+		refresh();
+		return this;
 	}
 
 }
