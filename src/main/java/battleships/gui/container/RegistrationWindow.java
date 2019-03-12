@@ -57,7 +57,7 @@ public class RegistrationWindow extends BasicModal {
 
 	}
 
-	public void show() {
+	public void  show() {
 		client.getGui().addWindow(this);
 		client.getGui().moveToTop(this);
 		takeFocus();

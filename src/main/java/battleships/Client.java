@@ -1,9 +1,6 @@
 package battleships;
 
-import battleships.gui.container.ConnectWindow;
-import battleships.gui.container.GameWindow;
-import battleships.gui.container.RegistrationWindow;
-import battleships.gui.container.Sea;
+import battleships.gui.container.*;
 import battleships.model.Admiral;
 import battleships.model.Coord;
 import battleships.model.ShipType;
@@ -12,13 +9,11 @@ import battleships.net.action.Register;
 import battleships.net.action.Request;
 import battleships.net.result.Response;
 import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.bundle.LanternaThemes;
 import com.googlecode.lanterna.graphics.PropertyTheme;
-import com.googlecode.lanterna.gui2.DefaultWindowManager;
-import com.googlecode.lanterna.gui2.Direction;
-import com.googlecode.lanterna.gui2.EmptySpace;
-import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
+import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
@@ -219,12 +214,15 @@ public class Client implements Runnable {
 
 			connectWindow = new ConnectWindow(this);
 			registrationWindow = new RegistrationWindow(this);
-			tryConnect(host, port);
+			//tryConnect(host, port);
+			//showConnectWindow();
 
 
-			showConnectWindow();
+			var testWin = new BasicWindow("Test");
+			testWin.setHints(Arrays.asList(Window.Hint.MODAL, Window.Hint.CENTERED));
 
-			// gui.getGUIThread();
+			testWin.setComponent(new SeaContainer(new Sea(new TerminalSize(10, 10))));
+			gui.addWindow(testWin);
 
 
 			gui.waitForWindowToClose(game);
@@ -232,7 +230,7 @@ public class Client implements Runnable {
 			e.printStackTrace();
 		} finally {
 			Logger.getGlobal().info("Client Finally, closing down connection" + getConnection());
-			getConnection().subscribe(conn -> {
+			getConnection().take(1).blockingSubscribe(conn -> {
 				System.out.println("conn on finally: " + conn);
 
 				try {
@@ -240,72 +238,8 @@ public class Client implements Runnable {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-
 			});
 		}
-
-		/*														if (game.getPlayerName().getText() != null && !game.getPlayerName().getText().isEmpty()) {
-																				conn.oos.writeObject(new Register(game.getPlayerName().getText()));
-																				} else {
-																				conn.oos.writeObject(new Register());
-																				}
-																				conn.oos.flush();
-																				Logger.getGlobal().info("Sent registration");
-																				RegisterResult rrs = (RegisterResult) conn.ois.readObject();
-																				Logger.getGlobal().info("Recieved registration result" + rrs.getTarget());
-																				game.setPlayerName(rrs.getTarget());
-																				Logger.getGlobal().info("Client joined, name: " + game.getPlayerName().getText());
-
-																				if (rrs.getTarget() != null && !rrs.getTarget().isEmpty()) {
-																				// Login success
-																				System.out.println("SUCCESSFUL LOGIN");
-																				connect.close();
-																				connect.getConnectTry().interrupt();
-																				game.invalidate();
-																				}*/
-
-		/*
-				try (Connection con = null) {
-					connected = true;
-					if (game.getPlayerName().getText() != null && !game.getPlayerName().getText().isEmpty()) {
-						oos.writeObject(new Register(game.getPlayerName().getText()));
-					} else {
-						oos.writeObject(new Register());
-					}
-					oos.flush();
-					Logger.getGlobal().info("Sent registration");
-					RegisterResult rrs = (RegisterResult) ois.readObject();
-					Logger.getGlobal().info("Recieved registration result" + rrs.getTarget());
-					game.setPlayerName(rrs.getTarget());
-					Logger.getGlobal().info("Client joined, name: " + game.getPlayerName().getText());
-
-					if (rrs.getTarget() != null && !rrs.getTarget().isEmpty()) {
-						// Login success
-						System.out.println("SUCCESSFUL LOGIN");
-						connect.close();
-						connect.getConnectTry().interrupt();
-						game.invalidate();
-					}
-					/*
-										if (!game..isEmpty()) {
-											System.out.println("Default pieces detected, sending data");
-											oos.writeObject(
-													initialPieces.stream().map(piece -> new Place(id, piece)).collect(Collectors.toList()));
-											oos.flush();
-
-											out.println("init placement finished");
-											out.flush();
-										}*/
-
-
-		/*
-				Sea opponent = new Sea(admiral);
-				opponent.setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER,
-						true, true, 1, 1));
-				opponentContainer.addComponent(opponent);
-		*/
-
-
 	}
 
 	/**
