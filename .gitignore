@@ -38,3 +38,5 @@ build/
 # Output
 
 *.out
+
+out/
