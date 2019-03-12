@@ -1,7 +1,7 @@
 package battleships;
 
 import battleships.gui.container.*;
-import battleships.model.Admiral;
+import battleships.gui.container.SeaContainer;
 import battleships.model.Coord;
 import battleships.model.ShipType;
 import battleships.net.Connection;
@@ -214,19 +214,21 @@ public class Client implements Runnable {
 
 			connectWindow = new ConnectWindow(this);
 			registrationWindow = new RegistrationWindow(this);
-			//tryConnect(host, port);
-			//showConnectWindow();
+			tryConnect(host, port);
+			showConnectWindow();
 
 
-			var testWin = new BasicWindow("Test");
+			/*var testWin = new BasicWindow("Test");
 			testWin.setHints(Arrays.asList(Window.Hint.MODAL, Window.Hint.CENTERED));
 
 			testWin.setComponent(new SeaContainer(new Sea(new TerminalSize(10, 10))));
 			gui.addWindow(testWin);
 
+			testWin.waitUntilClosed();
+*/
 
 			gui.waitForWindowToClose(game);
-		} catch (IOException | ArrayIndexOutOfBoundsException e) {
+		} catch (Exception /*IOException | ArrayIndexOutOfBoundsException*/ e) {
 			e.printStackTrace();
 		} finally {
 			Logger.getGlobal().info("Client Finally, closing down connection" + getConnection());

@@ -41,7 +41,6 @@ public class OpponentBar extends Panel implements OpponentContainer {
 		} else {
 			System.out.println("THIS OPPO GUY IS !!!NOT!!! IN THE MAIN KNOWLEDGE");
 		}
-		admiral.setSea(new Sea(game.getTableSize()));
 		var copy = new Admiral(admiral.getName()).setReady(admiral.isReady()).setSea(admiral.getSea());
 		game.getAdmiral().getKnowledge().put(admiral.getName(), copy);
 		addComponent(new Opponent(game, copy));

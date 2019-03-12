@@ -19,7 +19,7 @@ public class Opponent extends Panel {
 		admiral.setSea(new Sea(game.getTableSize()));
 		admiral.setOpponent(this);
 		addComponent(label);
-		addComponent(admiral.getSea());
+		addComponent(new SeaContainer(admiral.getSea()));
 		System.out.println("new opponent created, admi:" + admiral);
 	}
 

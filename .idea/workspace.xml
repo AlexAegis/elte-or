@@ -5,13 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e9fc54b6-7ad8-4c50-9c86-12c7d09a261d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/battleships/gui/container/Ruler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/battleships/gui/container/SeaContainer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/battleships/gui/element/Number.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/battleships/gui/element/Ruler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/battleships/gui/layout/LabelContainer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/battleships/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/battleships/Client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/battleships/gui/container/RegistrationWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/battleships/gui/container/RegistrationWindow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/battleships/gui/container/GameWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/battleships/gui/container/GameWindow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/battleships/gui/container/Opponent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/battleships/gui/container/Opponent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/battleships/gui/container/OpponentBar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/battleships/gui/container/OpponentBar.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/battleships/gui/container/Ruler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/battleships/gui/container/Sea.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/battleships/gui/container/Sea.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/battleships/gui/container/SeaContainer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/battleships/gui/container/SeaContainer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/battleships/gui/element/Number.java" beforeDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/.gradle/" />
@@ -113,7 +117,7 @@
           <entry key="classpath" value="1" />
           <entry key="gradle" value="2" />
           <entry key="gradlew" value="1" />
-          <entry key="java" value="145" />
+          <entry key="java" value="159" />
           <entry key="json" value="1" />
           <entry key="md" value="3" />
           <entry key="properties" value="2" />
@@ -123,7 +127,7 @@
         <counts>
           <entry key="Eclipse" value="1" />
           <entry key="Groovy" value="2" />
-          <entry key="JAVA" value="145" />
+          <entry key="JAVA" value="159" />
           <entry key="JSON" value="1" />
           <entry key="Manifest" value="1" />
           <entry key="Markdown" value="3" />
@@ -134,18 +138,18 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="gradle" value="112" />
-          <entry key="java" value="8940" />
+          <entry key="java" value="11044" />
           <entry key="json" value="30" />
           <entry key="properties" value="266" />
-          <entry key="txt" value="44" />
+          <entry key="txt" value="49" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Groovy" value="112" />
-          <entry key="JAVA" value="8940" />
+          <entry key="JAVA" value="11044" />
           <entry key="JSON" value="30" />
-          <entry key="PLAIN_TEXT" value="44" />
+          <entry key="PLAIN_TEXT" value="49" />
           <entry key="Properties" value="266" />
         </counts>
       </usages-collector>
@@ -180,147 +184,121 @@
     </session>
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.314631">
-      <split-first>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/main/java/battleships/Client.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="800">
-                  <caret line="223" column="41" lean-forward="true" selection-start-line="223" selection-start-column="41" selection-end-line="223" selection-end-column="41" />
-                  <folding>
-                    <element signature="imports" expanded="true" />
-                    <element signature="e#3327#3328#0" expanded="true" />
-                    <element signature="e#3381#3382#0" expanded="true" />
-                    <element signature="e#5059#5060#0" expanded="true" />
-                    <element signature="e#5083#5084#0" expanded="true" />
-                    <element signature="e#10659#10660#0" expanded="true" />
-                    <element signature="e#10686#10687#0" expanded="true" />
-                    <element signature="e#10765#10766#0" expanded="true" />
-                    <element signature="e#10788#10789#0" expanded="true" />
-                    <element signature="e#10868#10869#0" expanded="true" />
-                    <element signature="e#10891#10892#0" expanded="true" />
-                    <element signature="e#10951#10952#0" expanded="true" />
-                    <element signature="e#10969#10970#0" expanded="true" />
-                    <element signature="e#11029#11030#0" expanded="true" />
-                    <element signature="e#11047#11048#0" expanded="true" />
-                    <element signature="e#11111#11112#0" expanded="true" />
-                    <element signature="e#11129#11130#0" expanded="true" />
-                    <element signature="e#11165#11166#0" expanded="true" />
-                    <element signature="e#11200#11201#0" expanded="true" />
-                    <element signature="e#11299#11300#0" expanded="true" />
-                    <element signature="e#11331#11332#0" expanded="true" />
-                    <element signature="e#11372#11373#0" expanded="true" />
-                    <element signature="e#11412#11413#0" expanded="true" />
-                    <element signature="e#12083#12084#0" expanded="true" />
-                    <element signature="e#12095#12096#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/RegistrationWindow.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="173">
-                  <caret line="28" column="4" lean-forward="true" selection-start-line="28" selection-start-column="4" selection-end-line="28" selection-end-column="4" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/Sea.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="336">
-                  <caret line="38" column="26" lean-forward="true" selection-start-line="38" selection-start-column="26" selection-end-line="38" selection-end-column="26" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/SeaContainer.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="496">
-                  <caret line="17" column="40" selection-start-line="17" selection-start-column="40" selection-end-line="17" selection-end-column="40" />
-                  <folding>
-                    <element signature="imports" expanded="true" />
-                    <element signature="e#258#259#0" expanded="true" />
-                    <element signature="e#275#276#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/element/Number.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="286">
-                  <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
-                  <folding>
-                    <element signature="imports" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/main/java/battleships/App.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="384">
-                  <caret line="34" selection-start-line="34" selection-end-line="34" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/BasicModal.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="454">
-                  <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
-                  <folding>
-                    <element signature="imports" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/ConnectWindow.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="388">
-                  <caret line="36" column="4" selection-start-line="36" selection-start-column="4" selection-end-line="36" selection-end-column="73" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/main/resources/battleships/theme-royale-disabled.properties">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="286">
-                  <caret line="58" column="1" lean-forward="true" selection-start-line="58" selection-start-column="1" selection-end-line="58" selection-end-column="1" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-first>
-      <split-second>
-        <leaf>
-          <file pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/Ruler.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="710">
-                  <caret line="31" column="42" selection-start-line="31" selection-start-column="42" selection-end-line="31" selection-end-column="42" />
-                  <folding>
-                    <element signature="imports" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-second>
-    </splitter>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/battleships/Client.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="639">
+              <caret line="171" column="32" lean-forward="true" selection-start-line="171" selection-start-column="32" selection-end-line="171" selection-end-column="32" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#3327#3328#0" expanded="true" />
+                <element signature="e#3381#3382#0" expanded="true" />
+                <element signature="e#5059#5060#0" expanded="true" />
+                <element signature="e#5083#5084#0" expanded="true" />
+                <element signature="e#8773#8774#0" expanded="true" />
+                <element signature="e#8800#8801#0" expanded="true" />
+                <element signature="e#8879#8880#0" expanded="true" />
+                <element signature="e#8902#8903#0" expanded="true" />
+                <element signature="e#8982#8983#0" expanded="true" />
+                <element signature="e#9005#9006#0" expanded="true" />
+                <element signature="e#9065#9066#0" expanded="true" />
+                <element signature="e#9083#9084#0" expanded="true" />
+                <element signature="e#9143#9144#0" expanded="true" />
+                <element signature="e#9161#9162#0" expanded="true" />
+                <element signature="e#9225#9226#0" expanded="true" />
+                <element signature="e#9243#9244#0" expanded="true" />
+                <element signature="e#9279#9280#0" expanded="true" />
+                <element signature="e#9311#9312#0" expanded="true" />
+                <element signature="e#9410#9411#0" expanded="true" />
+                <element signature="e#9442#9443#0" expanded="true" />
+                <element signature="e#9483#9484#0" expanded="true" />
+                <element signature="e#9520#9521#0" expanded="true" />
+                <element signature="e#9559#9560#0" expanded="true" />
+                <element signature="e#9576#9577#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/GameWindow.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="739">
+              <caret line="148" column="63" selection-start-line="148" selection-start-column="63" selection-end-line="148" selection-end-column="63" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/OpponentBar.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="561">
+              <caret line="34" column="39" lean-forward="true" selection-start-line="34" selection-start-column="39" selection-end-line="34" selection-end-column="39" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/Opponent.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="362">
+              <caret line="14" column="11" selection-start-line="14" selection-start-column="11" selection-end-line="14" selection-end-column="11" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/RegistrationWindow.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="730">
+              <caret line="64" column="25" selection-start-line="64" selection-start-column="25" selection-end-line="64" selection-end-column="25" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/SeaContainer.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="331">
+              <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#258#259#0" expanded="true" />
+                <element signature="e#275#276#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/element/ReadyLabel.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="64">
+              <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/Drawer.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="263">
+              <caret line="40" column="54" selection-start-line="40" selection-start-column="54" selection-end-line="40" selection-end-column="54" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/ConnectWindow.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="388">
+              <caret line="36" column="4" selection-start-line="36" selection-start-column="4" selection-end-line="36" selection-end-column="73" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -788,12 +766,7 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/lesson02/model/Table.java" />
-        <option value="$PROJECT_DIR$/src/main/java/lesson02/model/Ship.java" />
-        <option value="$PROJECT_DIR$/src/main/java/battleships/gui/DummyObservable.java" />
         <option value="$PROJECT_DIR$/src/main/java/battleships/gui/container/Drawer.java" />
-        <option value="$PROJECT_DIR$/src/main/java/battleships/gui/container/Opponent.java" />
-        <option value="$PROJECT_DIR$/src/main/java/battleships/gui/container/Sea.java" />
         <option value="$PROJECT_DIR$/src/main/java/battleships/gui/element/ReadyLabel.java" />
         <option value="$PROJECT_DIR$/src/main/java/battleships/gui/layout/OpponentContainer.java" />
         <option value="$PROJECT_DIR$/src/main/java/battleships/gui/layout/SeaLayout.java" />
@@ -822,10 +795,8 @@
         <option value="$PROJECT_DIR$/src/main/java/battleships/Server.java" />
         <option value="$PROJECT_DIR$/src/main/java/battleships/net/Connection.java" />
         <option value="$PROJECT_DIR$/src/main/java/battleships/net/result/Response.java" />
-        <option value="$PROJECT_DIR$/src/main/java/battleships/gui/container/OpponentBar.java" />
         <option value="$PROJECT_DIR$/src/main/java/battleships/net/action/Disconnect.java" />
         <option value="$PROJECT_DIR$/src/main/java/battleships/gui/ShipSegment.java" />
-        <option value="$PROJECT_DIR$/src/main/java/battleships/gui/container/GameWindow.java" />
         <option value="$PROJECT_DIR$/src/main/resources/example/placements.1.json" />
         <option value="$PROJECT_DIR$/src/main/java/battleships/gui/layout/Royale.java" />
         <option value="$PROJECT_DIR$/src/main/java/battleships/gui/container/BasicModal.java" />
@@ -834,11 +805,18 @@
         <option value="$PROJECT_DIR$/src/main/resources/battleships/theme-royale-disabled.properties" />
         <option value="$PROJECT_DIR$/src/main/java/battleships/gui/container/ConnectWindow.java" />
         <option value="$PROJECT_DIR$/src/main/java/battleships/gui/container/RegistrationWindow.java" />
-        <option value="$PROJECT_DIR$/src/main/java/battleships/gui/element/Number.java" />
         <option value="$PROJECT_DIR$/src/main/java/battleships/gui/container/SeaBorder.java" />
-        <option value="$PROJECT_DIR$/src/main/java/battleships/Client.java" />
-        <option value="$PROJECT_DIR$/src/main/java/battleships/gui/container/SeaContainer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/battleships/gui/layout/LabelContainer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/battleships/gui/element/Number.java" />
         <option value="$PROJECT_DIR$/src/main/java/battleships/gui/container/Ruler.java" />
+        <option value="$PROJECT_DIR$/src/main/java/battleships/gui/element/SeaContainer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/battleships/gui/element/Ruler.java" />
+        <option value="$PROJECT_DIR$/src/main/java/battleships/Client.java" />
+        <option value="$PROJECT_DIR$/src/main/java/battleships/gui/container/GameWindow.java" />
+        <option value="$PROJECT_DIR$/src/main/java/battleships/gui/container/Opponent.java" />
+        <option value="$PROJECT_DIR$/src/main/java/battleships/gui/container/Sea.java" />
+        <option value="$PROJECT_DIR$/src/main/java/battleships/gui/container/SeaContainer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/battleships/gui/container/OpponentBar.java" />
       </list>
     </option>
   </component>
@@ -850,7 +828,7 @@
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="-10" />
-    <option name="width" value="3465" />
+    <option name="width" value="3785" />
     <option name="height" value="2115" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -1063,7 +1041,7 @@
     <property name="SearchEverywhereHistoryKey" value="SGR&#9;PSI&#9;JAVA://com.googlecode.lanterna.SGR&#10;dSwitc&#9;PSI&#9;JAVA://battleships.misc.Switchable#doSwitch&#10;fromFile&#9;PSI&#9;JAVA://battleships.Client#fieldInitFromFile&#10;Server&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/Server.java" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1552388938404" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1552394135492" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="project.structure.last.edited" value="Modules" />
@@ -1091,7 +1069,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.AppClient 1">
+  <component name="RunManager" selected="Application.AppClient 2">
     <configuration name="AppClient 1" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="battleships.App" />
       <module name="battleships_main" />
@@ -1229,7 +1207,7 @@
       <workItem from="1550198221946" duration="48000" />
       <workItem from="1551780023148" duration="346000" />
       <workItem from="1551962561174" duration="598000" />
-      <workItem from="1552302779494" duration="38081000" />
+      <workItem from="1552302779494" duration="43186000" />
     </task>
     <task id="LOCAL-00001" summary="added gradle">
       <created>1550151592245</created>
@@ -1273,7 +1251,14 @@
       <option name="project" value="LOCAL" />
       <updated>1552354306636</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="ruler">
+      <created>1552388964794</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1552388964794</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1288,13 +1273,13 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="43212000" />
+    <option name="totallyTimeSpent" value="48317000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="0" width="2772" height="1692" extended-state="0" />
+    <frame x="-8" y="0" width="3028" height="1692" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.14564897" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.11421833" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -1314,7 +1299,7 @@
       <window_info anchor="bottom" id="Database Changes" order="10" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="11" />
       <window_info anchor="bottom" id="Messages" order="12" weight="0.32969853" />
-      <window_info active="true" anchor="bottom" x="243" y="1010" width="1525" height="521" id="Run" order="13" visible="true" weight="0.31430405" />
+      <window_info anchor="bottom" x="243" y="1010" width="1525" height="521" id="Run" order="13" visible="true" weight="0.2719692" />
       <window_info anchor="right" id="Coverage" side_tool="true" weight="0.32964602" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -1343,58 +1328,10 @@
     <MESSAGE value="refactor" />
     <MESSAGE value="themes" />
     <MESSAGE value="term" />
-    <option name="LAST_COMMIT_MESSAGE" value="term" />
+    <MESSAGE value="ruler" />
+    <option name="LAST_COMMIT_MESSAGE" value="ruler" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/net/action/Request.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="416">
-          <caret line="39" lean-forward="true" selection-start-line="39" selection-end-line="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/net/action/Turn.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="832">
-          <caret line="62" column="61" lean-forward="true" selection-start-line="62" selection-start-column="61" selection-end-line="62" selection-end-column="61" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/net/result/AttackResult.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="29" lean-forward="true" selection-start-line="29" selection-end-line="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/net/result/HandledResponse.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="352">
-          <caret line="24" selection-start-line="24" selection-end-line="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/net/result/PlaceResult.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="32" selection-start-line="32" selection-end-line="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/net/result/ReadyResult.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="416">
-          <caret line="28" selection-start-line="28" selection-end-line="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/net/result/RegisterResult.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="560">
-          <caret line="42" selection-start-line="42" selection-end-line="42" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/battleships/net/result/TurnResult.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="432">
@@ -1482,13 +1419,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/OpponentBar.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="731">
-          <caret line="50" column="30" selection-start-line="50" selection-start-column="16" selection-end-line="50" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/ShipSegment.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="212">
@@ -1497,13 +1427,6 @@
             <element signature="e#7938#7939#0" expanded="true" />
             <element signature="e#7970#7971#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/GameWindow.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="532">
-          <caret line="142" lean-forward="true" selection-start-line="142" selection-end-line="142" />
         </state>
       </provider>
     </entry>
@@ -1550,13 +1473,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="655">
           <caret line="206" column="47" lean-forward="true" selection-start-line="206" selection-start-column="8" selection-end-line="206" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/Drawer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="290">
-          <caret line="57" column="37" selection-start-line="57" selection-start-column="37" selection-end-line="57" selection-end-column="37" />
         </state>
       </provider>
     </entry>
@@ -1835,20 +1751,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/RegistrationWindow.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="173">
-          <caret line="28" column="4" lean-forward="true" selection-start-line="28" selection-start-column="4" selection-end-line="28" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/Sea.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="336">
-          <caret line="38" column="26" lean-forward="true" selection-start-line="38" selection-start-column="26" selection-end-line="38" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.googlecode.lanterna/lanterna/3.0.1/1e6556c24ab63470a284bc60d050dc3912e675d3/lanterna-3.0.1-sources.jar!/com/googlecode/lanterna/gui2/BorderLayout.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="176">
@@ -1856,54 +1758,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/element/Number.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="286">
-          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/ConnectWindow.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="388">
           <caret line="36" column="4" selection-start-line="36" selection-start-column="4" selection-end-line="36" selection-end-column="73" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/Client.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="800">
-          <caret line="223" column="41" lean-forward="true" selection-start-line="223" selection-start-column="41" selection-end-line="223" selection-end-column="41" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#3327#3328#0" expanded="true" />
-            <element signature="e#3381#3382#0" expanded="true" />
-            <element signature="e#5059#5060#0" expanded="true" />
-            <element signature="e#5083#5084#0" expanded="true" />
-            <element signature="e#10659#10660#0" expanded="true" />
-            <element signature="e#10686#10687#0" expanded="true" />
-            <element signature="e#10765#10766#0" expanded="true" />
-            <element signature="e#10788#10789#0" expanded="true" />
-            <element signature="e#10868#10869#0" expanded="true" />
-            <element signature="e#10891#10892#0" expanded="true" />
-            <element signature="e#10951#10952#0" expanded="true" />
-            <element signature="e#10969#10970#0" expanded="true" />
-            <element signature="e#11029#11030#0" expanded="true" />
-            <element signature="e#11047#11048#0" expanded="true" />
-            <element signature="e#11111#11112#0" expanded="true" />
-            <element signature="e#11129#11130#0" expanded="true" />
-            <element signature="e#11165#11166#0" expanded="true" />
-            <element signature="e#11200#11201#0" expanded="true" />
-            <element signature="e#11299#11300#0" expanded="true" />
-            <element signature="e#11331#11332#0" expanded="true" />
-            <element signature="e#11372#11373#0" expanded="true" />
-            <element signature="e#11412#11413#0" expanded="true" />
-            <element signature="e#12083#12084#0" expanded="true" />
-            <element signature="e#12095#12096#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1928,10 +1786,141 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar://C:/Program Files/Java/jdk-11.0.2/lib/src.zip!/java.base/java/lang/Character.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="383">
+          <caret line="7934" column="28" selection-start-line="7934" selection-start-column="28" selection-end-line="7934" selection-end-column="28" />
+          <folding>
+            <element signature="e#312416#312417#0" expanded="true" />
+            <element signature="e#312473#312474#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/layout/OpponentContainer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="14" lean-forward="true" selection-end-line="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/element/Number.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="182">
+          <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#470#471#0" expanded="true" />
+            <element signature="e#488#489#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/Drawer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="263">
+          <caret line="40" column="54" selection-start-line="40" selection-start-column="54" selection-end-line="40" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/element/ReadyLabel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="64">
+          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/layout/LabelContainer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="9" column="33" selection-start-line="9" selection-start-column="33" selection-end-line="9" selection-end-column="33" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.reactivex.rxjava2/rxjava/2.2.7/973432567aabd7dda36a4d33bf040f76ae9845ce/rxjava-2.2.7-sources.jar!/io/reactivex/Observable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="845">
+          <caret line="7479" column="31" selection-start-line="7479" selection-start-column="31" selection-end-line="7479" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/element/Ruler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-331">
+          <caret line="10" column="35" lean-forward="true" selection-start-line="10" selection-start-column="35" selection-end-line="10" selection-end-column="35" />
+          <folding>
+            <element signature="e#807#808#0" expanded="true" />
+            <element signature="e#850#851#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/Client.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="639">
+          <caret line="171" column="32" lean-forward="true" selection-start-line="171" selection-start-column="32" selection-end-line="171" selection-end-column="32" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3327#3328#0" expanded="true" />
+            <element signature="e#3381#3382#0" expanded="true" />
+            <element signature="e#5059#5060#0" expanded="true" />
+            <element signature="e#5083#5084#0" expanded="true" />
+            <element signature="e#8773#8774#0" expanded="true" />
+            <element signature="e#8800#8801#0" expanded="true" />
+            <element signature="e#8879#8880#0" expanded="true" />
+            <element signature="e#8902#8903#0" expanded="true" />
+            <element signature="e#8982#8983#0" expanded="true" />
+            <element signature="e#9005#9006#0" expanded="true" />
+            <element signature="e#9065#9066#0" expanded="true" />
+            <element signature="e#9083#9084#0" expanded="true" />
+            <element signature="e#9143#9144#0" expanded="true" />
+            <element signature="e#9161#9162#0" expanded="true" />
+            <element signature="e#9225#9226#0" expanded="true" />
+            <element signature="e#9243#9244#0" expanded="true" />
+            <element signature="e#9279#9280#0" expanded="true" />
+            <element signature="e#9311#9312#0" expanded="true" />
+            <element signature="e#9410#9411#0" expanded="true" />
+            <element signature="e#9442#9443#0" expanded="true" />
+            <element signature="e#9483#9484#0" expanded="true" />
+            <element signature="e#9520#9521#0" expanded="true" />
+            <element signature="e#9559#9560#0" expanded="true" />
+            <element signature="e#9576#9577#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/GameWindow.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="739">
+          <caret line="148" column="63" selection-start-line="148" selection-start-column="63" selection-end-line="148" selection-end-column="63" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/Sea.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="36" lean-forward="true" selection-start-line="36" selection-end-line="36" />
+          <folding>
+            <element signature="e#1063#1064#0" expanded="true" />
+            <element signature="e#1102#1103#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/RegistrationWindow.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="730">
+          <caret line="64" column="25" selection-start-line="64" selection-start-column="25" selection-end-line="64" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/SeaContainer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="496">
-          <caret line="17" column="40" selection-start-line="17" selection-start-column="40" selection-end-line="17" selection-end-column="40" />
+        <state relative-caret-position="331">
+          <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#258#259#0" expanded="true" />
@@ -1940,13 +1929,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/Ruler.java">
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.googlecode.lanterna/lanterna/3.0.1/1e6556c24ab63470a284bc60d050dc3912e675d3/lanterna-3.0.1-sources.jar!/com/googlecode/lanterna/gui2/Panel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="710">
-          <caret line="31" column="42" selection-start-line="31" selection-start-column="42" selection-end-line="31" selection-end-column="42" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="370">
+          <caret line="65" column="17" selection-start-line="65" selection-start-column="17" selection-end-line="65" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/Opponent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="362">
+          <caret line="14" column="11" selection-start-line="14" selection-start-column="11" selection-end-line="14" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/battleships/gui/container/OpponentBar.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="561">
+          <caret line="34" column="39" lean-forward="true" selection-start-line="34" selection-start-column="39" selection-end-line="34" selection-end-column="39" />
         </state>
       </provider>
     </entry>

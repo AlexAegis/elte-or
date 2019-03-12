@@ -31,8 +31,13 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 
 	private Integer width = 10;
 	private Integer height = 10;
+	private SeaContainer seaContainer;
 
 	private Ship focused;
+
+	public void setSeaContainer(SeaContainer seaContainer) {
+		this.seaContainer = seaContainer;
+	}
 
 	public Sea(TerminalSize size, Drawer drawer) {
 		this(size);

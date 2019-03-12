@@ -139,8 +139,7 @@ public class GameWindow extends BasicWindow {
 
 		admiral.setSea(new Sea(getTableSize(), drawer));
 		opponentBar.setGame(this);
-		seaContainer.addComponent(admiral.getSea());
-
+		seaContainer.addComponent(new SeaContainer(admiral.getSea()));
 
 		client.fieldInitFromFile(admiral.getSea());
 
