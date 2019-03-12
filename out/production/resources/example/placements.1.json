@@ -2,8 +2,10 @@
 	"name": "PlayerOne",
 	"placements": [
 		{ "position": "2,2", "class": "FRIGATE", "orientation": "HORIZONTAL" },
-		{ "position": "9,9", "class": "BOAT", "orientation": "HORIZONTAL" },
-		{ "position": "3,6", "class": "BOAT", "orientation": "HORIZONTAL" },
-		{ "position": "6,5", "class": "SUBMARINE", "orientation": "VERTICAL" }
+		{ "position": "7,7", "class": "BOAT", "orientation": "HORIZONTAL" },
+		{ "position": "5,4", "class": "BOAT", "orientation": "VERTICAL" },
+		{ "position": "1,0", "class": "BOAT", "orientation": "HORIZONTAL" },
+		{ "position": "6,5", "class": "SUBMARINE", "orientation": "VERTICAL" },
+		{ "position": "9,0", "class": "CARRIER", "orientation": "VERTICAL" }
 	]
 }

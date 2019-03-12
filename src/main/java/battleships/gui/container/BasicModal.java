@@ -19,7 +19,7 @@ public class BasicModal extends BasicWindow {
 		var thr = new Thread(() -> {
 			try {
 				textBox.invalidate();
-				textBox.setTheme(LanternaThemes.getRegisteredTheme("conqueror"));
+				textBox.setTheme(LanternaThemes.getRegisteredTheme("royale-disabled"));
 				Thread.sleep(400);
 				textBox.setTheme(t);
 				textBox.invalidate();

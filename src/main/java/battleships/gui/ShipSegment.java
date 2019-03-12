@@ -239,15 +239,20 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 
 		if (isInDrawer()) {
 			var drawer = ((Drawer) ship.getParent());
+			if (keyStroke.getCharacter() != null) {
 			switch (keyStroke.getCharacter()) {
 				case 'W':
+				case 'w':
 				case 'A':
+				case 'a':
 					return inDrawerUpLeft(drawer);
 				case 'S':
+				case 's':
 				case 'D':
+				case 'd':
 					return inDrawerDownRight(drawer);
 				default:
-			}
+			}}
 			switch (keyStroke.getKeyType()) {
 				case ArrowRight:
 				case ArrowDown:

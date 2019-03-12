@@ -142,7 +142,7 @@ public class GameWindow extends BasicWindow {
 		seaContainer.addComponent(admiral.getSea());
 
 
-		client.fieldInitFromFile(getAdmiral(), admiral.getSea());
+		client.fieldInitFromFile(admiral.getSea());
 
 		// Register knowledge as opponents
 		var alreadyKnownAdmirals = new ArrayList<>(getAdmiral().getKnowledge().values());

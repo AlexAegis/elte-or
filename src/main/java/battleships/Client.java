@@ -13,6 +13,8 @@ import battleships.net.action.Request;
 import battleships.net.result.Response;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.bundle.LanternaThemes;
+import com.googlecode.lanterna.graphics.PropertyTheme;
 import com.googlecode.lanterna.gui2.DefaultWindowManager;
 import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.EmptySpace;
@@ -39,28 +41,28 @@ import java.util.*;
 import java.util.logging.Logger;
 
 @Command(name = "client", sortOptions = false,
-		header = {"", "@|cyan  _____     _   _   _     _____ _   _                _ _         _    |@",
-				"@|cyan | __  |___| |_| |_| |___|   __| |_|_|___ ___    ___| |_|___ ___| |_  |@",
-				"@|cyan | __ -| .'|  _|  _| | -_|__   |   | | . |_ -|  |  _| | | -_|   |  _| |@",
-				"@|cyan |_____|__,|_| |_| |_|___|_____|_|_|_|  _|___|  |___|_|_|___|_|_|_|   |@",
-				"@|cyan                                     |_|                              |@"},
-		descriptionHeading = "@|bold %nDescription|@:%n", description = {"", "Client application for BattleShips",},
-		optionListHeading = "@|bold %nOptions|@:%n", footer = {"", "Author: AlexAegis"})
+	header = {"", "@|cyan  _____     _   _   _     _____ _   _                _ _         _    |@",
+		"@|cyan | __  |___| |_| |_| |___|   __| |_|_|___ ___    ___| |_|___ ___| |_  |@",
+		"@|cyan | __ -| .'|  _|  _| | -_|__   |   | | . |_ -|  |  _| | | -_|   |  _| |@",
+		"@|cyan |_____|__,|_| |_| |_|___|_____|_|_|_|  _|___|  |___|_|_|___|_|_|_|   |@",
+		"@|cyan                                     |_|                              |@"},
+	descriptionHeading = "@|bold %nDescription|@:%n", description = {"", "Client application for BattleShips",},
+	optionListHeading = "@|bold %nOptions|@:%n", footer = {"", "Author: AlexAegis"})
 public class Client implements Runnable {
 
 	@ParentCommand
 	private App app;
 
 	@Option(names = {"-i", "--init", "--initialFiles"}, paramLabel = "<files>", arity = "1..*",
-			description = "Initial placements")
+		description = "Initial placements")
 	private List<File> initialFiles = new ArrayList<>();
 
 	@Option(names = {"-h", "--host"}, paramLabel = "<host>",
-			description = "IP Address of the server (default: ${DEFAULT-VALUE})")
+		description = "IP Address of the server (default: ${DEFAULT-VALUE})")
 	private String host = "127.0.0.1";
 
 	@Option(names = {"-p", "--port"}, paramLabel = "<host>",
-			description = "Port of the server  (default: ${DEFAULT-VALUE})")
+		description = "Port of the server  (default: ${DEFAULT-VALUE})")
 	private Integer port = 6668;
 
 	private GameWindow game;
@@ -93,32 +95,32 @@ public class Client implements Runnable {
 		}).filter(Objects::nonNull).findAny();
 	}
 
-	public void fieldInitFromFile(Admiral admiral, Sea sea) {
+	public void fieldInitFromFile(Sea sea) {
 		initialFiles.forEach(file -> {
 			try (BufferedReader fin = new BufferedReader(new FileReader(file))) {
 				var placementObject = new JSONParser().parse(fin);
 				if (placementObject instanceof Map) {
 					var placementsHolder = (Map<String, List<Map<String, String>>>) placementObject;
 					var placements = placementsHolder.get("placements");
-					for (var placement : placements) {
-						sea.getDrawer().getByClass(ShipType.valueOf(placement.get("class"))).ifPresent(ship -> {
-							Coord coord = new Coord(placement.get("position"));
-							gui.getGUIThread().invokeLater(() -> {
+					gui.getGUIThread().invokeLater(() -> {
+						for (var placement : placements) {
+							sea.getDrawer().getByClass(ShipType.valueOf(placement.get("class"))).ifPresent(ship -> {
 								try {
+									Coord coord = new Coord(placement.get("position"));
+									ship.setPosition(new TerminalPosition(coord.getX(), coord.getY()));
 									ship.setLayoutTo(Direction.valueOf(placement.get("orientation")));
 								} catch (Exception e) {
 									e.printStackTrace();
-									ship.setLayoutTo(Direction.HORIZONTAL);
 								}
-								ship.setPosition(new TerminalPosition(coord.getX(), coord.getY()));
 								if (sea.placementValid(ship)) {
 									sea.addComponent(ship);
 									sea.sendRipple(ship);
+
 								}
 							});
-
-						});
-					}
+						}
+						sea.getDrawer().notifyGameAboutReadyable();
+					});
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -194,14 +196,25 @@ public class Client implements Runnable {
 	public void run() {
 		Logger.getGlobal().setLevel(app.loglevel.getLevel());
 
-
+		try {
+			var royaleProps = new Properties();
+			royaleProps.load(getClass().getResourceAsStream("theme-royale.properties"));
+			var royaleDisabledProps = new Properties();
+			royaleDisabledProps.load(getClass().getResourceAsStream("theme-royale-disabled.properties"));
+			LanternaThemes.registerTheme("royale", new PropertyTheme(royaleProps));
+			LanternaThemes.registerTheme("royale-disabled", new PropertyTheme(royaleDisabledProps));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		try (Terminal terminal = new DefaultTerminalFactory().createTerminal();
-				Screen screen = new TerminalScreen(terminal);) {
+		     Screen screen = new TerminalScreen(terminal)) {
 
 			terminal.setBackgroundColor(TextColor.Factory.fromString("#000000"));
 			screen.startScreen();
 			game = new GameWindow(this, terminal, screen);
+
 			gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
+			gui.setTheme(LanternaThemes.getRegisteredTheme("royale"));
 			gui.addWindow(game);
 
 			connectWindow = new ConnectWindow(this);

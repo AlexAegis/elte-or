@@ -1,5 +1,6 @@
 package battleships.gui.container;
 
+import com.googlecode.lanterna.bundle.LanternaThemes;
 import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.GridLayout;
 import com.googlecode.lanterna.gui2.Interactable.Result;
@@ -26,7 +27,7 @@ public class ActionBar extends Panel {
 		readyButton.addListener((button) -> getGame().getAdmiral().setReady(!getGame().getAdmiral().isReady()));
 		connectButton.setLayoutData(
 				GridLayout.createLayoutData(GridLayout.Alignment.BEGINNING, GridLayout.Alignment.BEGINNING));
-		showConnectButton();
+		//showConnectButton();
 		showReadyButton();
 		disableReadyButton();
 	}
@@ -81,11 +82,13 @@ public class ActionBar extends Panel {
 
 	public void disableReadyButton() {
 		readyButton.setEnabled(false);
+		readyButton.setTheme(LanternaThemes.getRegisteredTheme("royale-disabled"));
 		invalidate();
 	}
 
 	public void enableReadyButton() {
 		readyButton.setEnabled(true);
+		readyButton.setTheme(LanternaThemes.getRegisteredTheme("royale"));
 		invalidate();
 	}
 
