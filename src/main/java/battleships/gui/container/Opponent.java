@@ -1,8 +1,11 @@
 package battleships.gui.container;
 
 import battleships.gui.element.ReadyLabel;
+import battleships.gui.element.Ship;
 import battleships.model.Admiral;
 import com.googlecode.lanterna.gui2.Panel;
+
+import java.util.stream.Collectors;
 
 public class Opponent extends Panel {
 
@@ -30,6 +33,10 @@ public class Opponent extends Panel {
 		return name;
 	}
 
+	public GameWindow getGame() {
+		return game;
+	}
+
 	/**
 	 * @return the label
 	 */
@@ -41,4 +48,8 @@ public class Opponent extends Panel {
 		return admiral;
 	}
 
+	@Override
+	public String toString() {
+		return getAdmiral().getName() + "\n Ships:\n" + getAdmiral().getShips().stream().map(Object::toString).collect(Collectors.joining("\n"));
+	}
 }

@@ -15,28 +15,25 @@ public class GameWindow extends BasicWindow {
 	private Client client;
 	private Label playerName;
 	private Admiral admiral;
-	private Boolean finished = false;
-	private Boolean closed = false;
-	private BasicWindow connect;
-	private Thread connectTry;
 	private ReadyLabel readyLabel;
 	private Drawer drawer;
 	private ActionBar actionBar;
 	private OpponentBar opponentBar;
 	private Panel seaContainer;
 	private Panel drawerAndName;
-	TerminalSize tableSize;
+	private TerminalSize tableSize;
 
 	private Panel gameForm;
+	private Inspector inspector;
 
-	public GameWindow(Client client, Terminal terminal, Screen screen) {
+	public GameWindow(Client client) {
 		this.client = client;
 		gameForm = new Panel(new BorderLayout());
 		setComponent(gameForm);
 		setHints(Arrays.asList(Window.Hint.FULL_SCREEN, Window.Hint.CENTERED, Window.Hint.NO_DECORATIONS));
 		drawer = new Drawer(this);
 
-		seaContainer = new Panel(new GridLayout(1));
+		seaContainer = new Panel(new GridLayout(1)).setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER));
 		opponentBar = new OpponentBar(); // Empty dummy
 		gameForm.addComponent(opponentBar.withBorder(Borders.singleLine("Opponents")));
 		drawerAndName = new Panel(new BorderLayout());
@@ -56,7 +53,6 @@ public class GameWindow extends BasicWindow {
 
 		gameForm.addComponent(drawerAndName);
 		drawerAndName.setLayoutData(BorderLayout.Location.LEFT);
-		seaContainer.setLayoutData(BorderLayout.Location.CENTER);
 
 
 
@@ -135,12 +131,11 @@ public class GameWindow extends BasicWindow {
 		this.admiral = admiral;
 		admiral.setGame(this);
 		admiral.refresh();
-		System.out.println("Admiral's name is " + admiral.getName());
-
 		admiral.setSea(new Sea(getTableSize(), drawer));
 		opponentBar.setGame(this);
 		seaContainer.addComponent(new SeaContainer(admiral.getSea()));
-
+		inspector = new Inspector();
+		gameForm.addComponent(inspector.setLayoutData(BorderLayout.Location.RIGHT).withBorder(Borders.singleLine("Inspect")));
 		client.fieldInitFromFile(admiral.getSea());
 
 		// Register knowledge as opponents
@@ -152,6 +147,10 @@ public class GameWindow extends BasicWindow {
 		getDrawer().takeFocus();
 
 		// MAKE THE FIELD AND KNOWLEDGE AND DRAWERR FROM THIS
+	}
+
+	public Inspector getInspector() {
+		return inspector;
 	}
 
 	/**

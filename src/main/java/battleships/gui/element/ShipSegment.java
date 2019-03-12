@@ -1,7 +1,9 @@
-package battleships.gui;
+package battleships.gui.element;
 
+import battleships.gui.Palette;
 import battleships.gui.container.Drawer;
 import battleships.gui.container.Sea;
+import battleships.state.Phase;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
@@ -154,7 +156,6 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 				}
 			}
 
-
 			switch (keyStroke.getKeyType()) {
 				case ArrowDown:
 					return onSeaDown(sea);
@@ -165,12 +166,14 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 				case ArrowUp:
 					return onSeaUp(sea);
 				case Enter:
-					if (!sea.placementValid(ship)) {
-						briefError();
-					} else {
-						ship.setHeld(false);
-						sea.sendRipple(ship);
-						sea.getDrawer().takeFocus();
+					if(Phase.PLACEMENT.equals(getShip().getSea().getAdmiral().getPhase())) {
+						if (!sea.placementValid(ship)) {
+							briefError();
+						} else {
+							ship.setHeld(false);
+							sea.sendRipple(ship);
+							sea.getDrawer().takeFocus();
+						}
 					}
 					return Result.HANDLED;
 				case Escape:
@@ -229,9 +232,15 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 					sea.getDrawer().takeFocus(true);
 					return Result.HANDLED;
 				case Enter:
-					ship.savePlacement();
-					ship.saveParent();
-					ship.setHeld(true);
+					if(Phase.PLACEMENT.equals(getShip().getSea().getAdmiral().getPhase())) {
+						ship.savePlacement();
+						ship.saveParent();
+						ship.setHeld(true);
+					} else {
+						// Do Inspect
+						getShip().getSea().getAdmiral().inspect(getShip());
+					}
+
 					return Result.HANDLED;
 				default:
 			}
@@ -290,6 +299,10 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 			previouslyInFocus.takeFocus();
 		}*/
 		super.afterEnterFocus(direction, previouslyInFocus);
+	}
+
+	public Boolean isDamaged() {
+		return damaged;
 	}
 
 	/**

@@ -1,5 +1,6 @@
-package battleships.gui;
+package battleships.gui.element;
 
+import battleships.gui.Palette;
 import battleships.gui.container.Sea;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;

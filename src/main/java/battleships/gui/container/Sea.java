@@ -1,12 +1,13 @@
 package battleships.gui.container;
 
-import battleships.gui.Ship;
-import battleships.gui.ShipSegment;
-import battleships.gui.Water;
+import battleships.gui.element.Ship;
+import battleships.gui.element.ShipSegment;
+import battleships.gui.element.Water;
 import battleships.gui.layout.SeaLayout;
 import battleships.gui.layout.ShipContainer;
 import battleships.gui.layout.WaterContainer;
 import battleships.misc.Chainable;
+import battleships.model.Admiral;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
@@ -15,6 +16,7 @@ import com.googlecode.lanterna.gui2.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -35,15 +37,12 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 
 	private Ship focused;
 
-	public void setSeaContainer(SeaContainer seaContainer) {
-		this.seaContainer = seaContainer;
-	}
+	private Admiral admiral;
 
 	public Sea(TerminalSize size, Drawer drawer) {
 		this(size);
 		setDrawer(drawer);
 		drawer.setSea(this);
-
 	}
 
 	public Sea(TerminalSize size) {
@@ -51,6 +50,8 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 		IntStream.range(0, width * height).forEach(i -> addComponent(new Water(this)));
 		setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER, true, true,
 				1, 1));
+		setPreferredSize(size);
+		setSize(size);
 		this.getLayoutManager().doLayout(getPreferredSize(), (List<Component>) getChildren());
 	}
 
@@ -73,6 +74,14 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 			}
 		}).start();
 
+	}
+
+	public SeaContainer getSeaContainer() {
+		return seaContainer;
+	}
+
+	public void setSeaContainer(SeaContainer seaContainer) {
+		this.seaContainer = seaContainer;
 	}
 
 	/**
@@ -152,7 +161,7 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	}
 
 
-	public Function<ShipSegment, TerminalPosition> bodyPieceFlattener =
+	private static final Function<ShipSegment, TerminalPosition> bodyPieceFlattener =
 			bodyPiece -> bodyPiece.getPosition().withRelative(bodyPiece.getParent().getPosition());
 
 	public static List<TerminalPosition> nthRipple(TerminalPosition anchor, Integer count, Integer iteration,
@@ -248,6 +257,14 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 		return result;
 	}
 
+	public Admiral getAdmiral() {
+		return admiral;
+	}
+
+	public void setAdmiral(Admiral admiral) {
+		this.admiral = admiral;
+	}
+
 	/**
 	 * @return the height
 	 */
@@ -263,12 +280,15 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	}
 
 	public void takeFocus() {
+		// TODO: If its targeting, target water blocks!!!
 		if (!getShips().isEmpty()) {
 			getShips().get(0).takeFocus();
 		} else if (!getDrawer().isEmpty()) {
 			getDrawer().takeFocus();
-		} else {
+		} else if (!getDrawer().getGame().getActionBar().isEmpty()) {
 			getDrawer().getGame().getActionBar().takeFocus();
+		} else {
+			Logger.getGlobal().severe("FOCUS LOST!");
 		}
 	}
 
@@ -279,11 +299,11 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 				focused = ((ShipSegment) fromThis).getShip();
 			}
 			if (focused == null) {
-				return (Interactable) getShips().get(0).getHead();
+				return getShips().get(0).getHead();
 			} else {
 				var sortedShips = getShips().stream().sorted().collect(Collectors.toList());
 				var focusedSortedIndex = sortedShips.indexOf(focused);
-				return (Interactable) sortedShips
+				return sortedShips
 						.get(((focusedSortedIndex + (forward ? 1 : -1)) + sortedShips.size()) % sortedShips.size())
 						.getHead();
 			}
@@ -305,41 +325,6 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	public Interactable nextFocus(Interactable fromThis) {
 		return focusCalc(fromThis, true);
 	}
-	/*
-		@Override
-		protected ComponentRenderer<Sea> createDefaultRenderer() {
-			return new ComponentRenderer<Sea>() {
-
-				@Override
-				public TerminalSize getPreferredSize(Sea component) {
-					synchronized (components) {
-						cachedPreferredSize = layoutManager.getPreferredSize(components);
-					}
-					return cachedPreferredSize;
-				}
-
-				@Override
-				public void drawComponent(TextGUIGraphics graphics, Sea component) {
-					if (isInvalid()) {
-						layout(graphics.getSize());
-					}
-
-					// Reset the area
-					graphics.applyThemeStyle(getThemeDefinition().getNormal());
-					graphics.fill(' ');
-
-					synchronized (components) {
-						for (Component child : components) {
-							TextGUIGraphics componentGraphics =
-									graphics.newTextGraphics(child.getPosition(), child.getSize());
-							child.draw(componentGraphics);
-						}
-					}
-				}
-			};
-		}*/
-
-
 
 	public boolean isEmpty() {
 		return getShips().isEmpty();

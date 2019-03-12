@@ -1,6 +1,6 @@
 package battleships.gui.layout;
 
-import battleships.gui.Water;
+import battleships.gui.element.Water;
 import com.googlecode.lanterna.gui2.Container;
 
 import java.util.List;

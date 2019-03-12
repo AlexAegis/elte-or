@@ -48,6 +48,7 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 	public Admiral setSea(Sea sea) {
 		// TODO Put everything on the sea from ships
 		this.sea = sea;
+		sea.setAdmiral(this);
 		return this;
 	}
 
@@ -86,9 +87,20 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 				case PLACEMENT:
 					whenPlayer.getReadyLabel().notReady();
 					break;
+				case GAME:
+					// What to do when it's not my turn?
+					whenPlayer.getActionBar().hideReadyButton();
+					// Focus on sea, inspect your ships
+					whenPlayer.getAdmiral().getSea().takeFocus();
+					break;
+				case ACTIVE:
+					// What to do when it's my turn?
+					whenPlayer.getActionBar().hideReadyButton();
+					// Choose a target
+					//whenPlayer.getOpponentBar().takeFocus();
+					break;
 				default:
 					whenPlayer.getReadyLabel().base();
-
 			}
 		}
 		if(whenOpponent != null) {
@@ -273,7 +285,7 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 
 	@Override
 	public String toString() {
-		return "A("+hashCode()+"):{name: " + getName() + " state: " + state() + " isPlayer?: " + (whenPlayer != null) + " isOpponent?: " + (whenOpponent != null) + " knowledge: " + getKnowledge().entrySet().stream().map(e -> "k: " + e.getKey() + " Adm name: " + e.getValue().getName() + " hash: "+ e.getValue().hashCode() + " isPlayer? " + (e.getValue().whenPlayer != null) + " isOpponent? " + (e.getValue().whenOpponent != null)).collect(Collectors.joining(",")) + " }";
+		return "A("+hashCode()+"):{name: " + getName() + " phase: " + getPhase() + " isPlayer?: " + (whenPlayer != null) + " isOpponent?: " + (whenOpponent != null) + " knowledge: " + getKnowledge().entrySet().stream().map(e -> "k: " + e.getKey() + " Adm name: " + e.getValue().getName() + " hash: "+ e.getValue().hashCode() + " isPlayer? " + (e.getValue().whenPlayer != null) + " isOpponent? " + (e.getValue().whenOpponent != null)).collect(Collectors.joining(",")) + " }";
 	}
 
 	public void finishBorders() {
@@ -314,4 +326,14 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 		return this;
 	}
 
+	public void inspect(battleships.gui.element.Ship ship) {
+		if(whenPlayer != null) {
+			Logger.getGlobal().info("Inspecting own ship: " + ship);
+			whenPlayer.getInspector().inspect(ship);
+		}
+		if(whenOpponent != null) {
+			Logger.getGlobal().info("Inspecting opponents ship: " + ship);
+			whenOpponent.getGame().getInspector().inspect(ship);
+		}
+	}
 }

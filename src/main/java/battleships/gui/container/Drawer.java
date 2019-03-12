@@ -1,6 +1,6 @@
 package battleships.gui.container;
 
-import battleships.gui.Ship;
+import battleships.gui.element.Ship;
 import battleships.gui.layout.ShipContainer;
 import battleships.misc.Chainable;
 import battleships.model.ShipType;

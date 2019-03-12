@@ -1,10 +1,11 @@
-package battleships.gui;
+package battleships.gui.element;
 
 import battleships.gui.container.Drawer;
 import battleships.gui.container.Sea;
 import battleships.gui.layout.SegmentContainer;
 import battleships.misc.Chainable;
 import battleships.misc.Switchable;
+import battleships.model.Admiral;
 import battleships.model.ShipType;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.gui2.Container;
@@ -12,13 +13,14 @@ import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.LinearLayout;
 import com.googlecode.lanterna.gui2.Panel;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Ship extends Panel implements Switchable, SegmentContainer, Comparable<Ship> {
-
 
 	private ShipType type;
 
@@ -136,18 +138,6 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 		resetOriginalPosition();
 	}
 
-	/**
-	 * Themes:
-	 *
-	 * default
-	 * defrost
-	 * bigsnake
-	 * conqueror
-	 * businessmachine
-	 * blaster
-	 *
-	 * @param type
-	 */
 	public Ship(ShipType type) {
 		this.type = type;
 		setLayoutToHorizontal();
@@ -217,6 +207,16 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 		}
 	}
 
+	public Sea getSea() {
+		if (getParent() instanceof Sea) {
+			return (Sea) getParent();
+		} else if (getParent() instanceof Drawer) {
+			return ((Drawer) getParent()).getSea();
+		} else {
+			return null;
+		}
+	}
+
 	/**
 	 * @return the type
 	 */
@@ -237,4 +237,8 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 				: getPosition().getRow() - o.getPosition().getRow();
 	}
 
+	@Override
+	public String toString() {
+		return type.getName() + "\n" + (type.getLength() - getBody().stream().filter(ShipSegment::isDamaged).count()) + "/" + type.getLength();
+	}
 }

@@ -162,27 +162,21 @@ public class Client implements Runnable {
 
 	public void tryRegister(String name) {
 		this.sendRequest(new Register(name, getGame().getAdmiral())).subscribe(res -> {
-			System.out.println("ANSWER FOR DA REGGG");
 			if (res.getRecipient() != null && !res.getRecipient().isEmpty()) {
-				// Successful
-				System.out.println("SUCC REG for: " + res.getRecipient());
+				Logger.getGlobal().fine("Successful registration");
 				registrationWindow.close();
-				System.out.println("GOT ADMIRAL OBJECT: " + res.getAdmiral());
 				getGame().setTableSize(res.getTableSize().convertToTerminalSize());
 				getGame().setAdmiral(res.getAdmiral());
-
-				// Setup table
 			} else {
+				Logger.getGlobal().fine("Unsuccessful registration");
 				getGame().getClient().getRegistrationWindow().briefError();
-				System.out.println("NOT SUCC REG");
 			}
 		});
 	}
 
 	public <T extends Response> Observable<T> sendRequest(Request<T> req) {
-		return getConnection().switchMap(conn -> conn.send(req)).switchIfEmpty(e -> {
-			System.out.println("switchIfEmpty failed");
-			// connectWindow.show(gui);
+		return getConnection().switchMap(conn -> conn.send(req)).onErrorResumeNext(e -> {
+			Logger.getGlobal().info("SendRequest errored out!");
 		});
 	}
 
@@ -201,12 +195,14 @@ public class Client implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		try (Terminal terminal = new DefaultTerminalFactory().createTerminal();
+		try (Terminal terminal = new DefaultTerminalFactory()
+										.setInitialTerminalSize(new TerminalSize(41, 30))
+										.createTerminal();
 		     Screen screen = new TerminalScreen(terminal)) {
 
 			terminal.setBackgroundColor(TextColor.Factory.fromString("#000000"));
 			screen.startScreen();
-			game = new GameWindow(this, terminal, screen);
+			game = new GameWindow(this);
 
 			gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
 			gui.setTheme(LanternaThemes.getRegisteredTheme("royale"));
@@ -217,7 +213,7 @@ public class Client implements Runnable {
 			tryConnect(host, port);
 			showConnectWindow();
 
-
+			screen.doResizeIfNecessary();
 			/*var testWin = new BasicWindow("Test");
 			testWin.setHints(Arrays.asList(Window.Hint.MODAL, Window.Hint.CENTERED));
 

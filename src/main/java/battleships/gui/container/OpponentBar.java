@@ -17,7 +17,7 @@ public class OpponentBar extends Panel implements OpponentContainer {
 		setLayoutData(BorderLayout.Location.TOP);
 		setLayoutManager(new LinearLayout(Direction.HORIZONTAL));
 
-		setPreferredSize(new TerminalSize(1, 10));
+		setPreferredSize(new TerminalSize(1, 13));
 
 		invalidate();
 		// TODO: Make it scrollable
@@ -41,9 +41,11 @@ public class OpponentBar extends Panel implements OpponentContainer {
 		} else {
 			System.out.println("THIS OPPO GUY IS !!!NOT!!! IN THE MAIN KNOWLEDGE");
 		}
-		var copy = new Admiral(admiral.getName()).setReady(admiral.isReady()).setSea(admiral.getSea());
+		var copy = new Admiral(admiral.getName()).setReady(admiral.isReady());
 		game.getAdmiral().getKnowledge().put(admiral.getName(), copy);
 		addComponent(new Opponent(game, copy));
+		setPreferredSize(copy.getSea().getSeaContainer().getPreferredSize().withRelative(1, 1));
+		//calculatePreferredSize();
 		invalidate();
 	}
 
