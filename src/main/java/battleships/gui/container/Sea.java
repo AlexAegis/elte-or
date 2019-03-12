@@ -218,10 +218,10 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 
 	public static List<TerminalPosition> nthRipple(TerminalPosition anchor, Integer length, Integer count,
 			Integer iteration, Direction orientaton) {
-		if (iteration < 1 || iteration > count) {
+		if (iteration < 0 || iteration > count) {
 			throw new IllegalArgumentException();
 		}
-		return ripple(anchor, length, count, orientaton, true).get(iteration - 1);
+		return ripple(anchor, length, count, orientaton, true).get(iteration);
 	}
 
 	public static List<List<TerminalPosition>> ripple(TerminalPosition anchor, Integer length, Integer count,
@@ -231,7 +231,7 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 		if(includeCenter) {
 			result.add(Arrays.asList(anchor));
 		}
-		for (int c = 1; c < count; c++) {
+		for (int c = 1; c <= count; c++) {
 			var iter = new ArrayList<TerminalPosition>();
 			var headpiece = false;
 			var tailpiece = false;
@@ -398,6 +398,6 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 				|| seaWater.getPosition().getRow() == water.getPosition().getRow())
 			.peek(Water::cross)
 			.collect(Collectors.toList());
-
+		getSeaContainer().highlight(water.getPosition());
 	}
 }

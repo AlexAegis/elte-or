@@ -112,7 +112,9 @@ public class Client implements Runnable {
 								if (sea.placementValid(ship)) {
 									sea.addComponent(ship);
 									sea.sendRipple(ship);
-
+								} else {
+									ship.setLayoutTo(Direction.HORIZONTAL);
+									ship.invalidate();
 								}
 							});
 						}
@@ -210,13 +212,13 @@ public class Client implements Runnable {
 			gui.setTheme(LanternaThemes.getRegisteredTheme("royale"));
 			gui.addWindow(game);
 
-			//connectWindow = new ConnectWindow(this);
-			//registrationWindow = new RegistrationWindow(this);
-			//tryConnect(host, port);
-			//showConnectWindow();
+			connectWindow = new ConnectWindow(this);
+			registrationWindow = new RegistrationWindow(this);
+			tryConnect(host, port);
+			showConnectWindow();
 
 			// Testbench start
-			var testWin = new BasicWindow("Test");
+			/*var testWin = new BasicWindow("Test");
 			testWin.setHints(Arrays.asList(Window.Hint.MODAL, Window.Hint.CENTERED));
 			game.setTableSize(new TerminalSize(10, 10));
 			var dummyOpponent = new Opponent(game, new Admiral("Dummy"));
@@ -238,7 +240,7 @@ public class Client implements Runnable {
 
 
 			testWin.waitUntilClosed();
-
+*/
 			// Testbench end
 
 			gui.waitForWindowToClose(game);

@@ -75,6 +75,10 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 	 * @param phase the phase to set
 	 */
 	public void setPhase(Phase phase) {
+		if(this.phase.ordinal() >= 2 && phase.ordinal() < 2) {
+			Logger.getGlobal().severe("!!! Tried to mess up a running game!");
+			return;
+		}
 		this.phase = phase;
 		System.out.println("PHASE: " + phase + " game: " + whenPlayer + " oppon: " + whenOpponent + " where: " + this);
 		if(whenPlayer != null) {
@@ -100,9 +104,7 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 					whenPlayer.getActionBar().hideReadyButton();
 					whenPlayer.getPlayerName().setForegroundColor(Palette.READY);
 					whenPlayer.getReadyLabel().hide();
-					// Choose a target TODO WRONG FOCUS
-					whenPlayer.getAdmiral().getSea().takeFocus();
-					// whenPlayer.getOpponentBar().takeFocus();
+					whenPlayer.getOpponentBar().takeFocus();
 					break;
 				default:
 					whenPlayer.getReadyLabel().base();

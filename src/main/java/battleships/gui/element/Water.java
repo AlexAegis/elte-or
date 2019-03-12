@@ -141,12 +141,14 @@ public class Water extends AbstractInteractableComponent<Water> {
 	@Override
 	protected void afterEnterFocus(FocusChangeDirection direction, Interactable previouslyInFocus) {
 		takeFocus();
+
 		super.afterEnterFocus(direction, previouslyInFocus);
 	}
 
 	@Override
 	protected void afterLeaveFocus(FocusChangeDirection direction, Interactable nextInFocus) {
 		currentBack = Palette.WATER;
+		getSea().getSeaContainer().resetHighlight();
 		invalidate();
 		super.afterLeaveFocus(direction, nextInFocus);
 	}
@@ -186,6 +188,16 @@ public class Water extends AbstractInteractableComponent<Water> {
 
 				sea.sendRipple(this, 400);
 				sea.sendExplosion(this);
+				return Result.HANDLED;
+			case Tab:
+				getSea().getAdmiral().whenOpponent().ifPresent(opponent ->
+					opponent.getGame().getOpponentBar().focusNext()
+				);
+				return Result.HANDLED;
+			case ReverseTab:
+				getSea().getAdmiral().whenOpponent().ifPresent(opponent ->
+					opponent.getGame().getOpponentBar().focusPrevious()
+				);
 				return Result.HANDLED;
 			case Escape:
 				// TODO: What to do.. what to do..

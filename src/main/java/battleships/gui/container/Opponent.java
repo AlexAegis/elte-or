@@ -63,6 +63,7 @@ public class Opponent extends Panel {
 	}
 
 	public Result takeFocus() {
+		System.out.println("HIGHLIGHTING OPPPPPPONENT!!!!!!!!! " + getAdmiral());
 		highlight();
 		return getAdmiral().getSea().takeFocus();
 	}

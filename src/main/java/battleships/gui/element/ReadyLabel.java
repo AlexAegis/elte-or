@@ -27,7 +27,7 @@ public class ReadyLabel extends Label {
 	}
 
 	public void base() {
-		setForegroundColor(Palette.BASE);
+		setForegroundColor(Palette.SMOKE);
 		setText(admiral == null || admiral.equals(game.getAdmiral()) ? "" : admiral.getName());
 		invalidate();
 	}

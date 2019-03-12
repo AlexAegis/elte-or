@@ -4,6 +4,9 @@ import battleships.gui.element.Ship;
 import battleships.gui.layout.ShipContainer;
 import battleships.misc.Chainable;
 import battleships.model.ShipType;
+import com.googlecode.lanterna.gui2.Component;
+import com.googlecode.lanterna.gui2.Direction;
+import com.googlecode.lanterna.gui2.LinearLayout;
 import com.googlecode.lanterna.gui2.Panel;
 
 import java.util.Optional;
@@ -15,13 +18,18 @@ public class Drawer extends Panel implements Chainable, ShipContainer {
 
 	public Drawer(GameWindow game) {
 		this.game = game;
-
+		setLayoutManager(new LinearLayout(Direction.VERTICAL).setSpacing(1));
 		// Initial ships:
 		addComponent(new Ship(ShipType.BOAT));
 		addComponent(new Ship(ShipType.BOAT));
 		addComponent(new Ship(ShipType.BOAT));
 		addComponent(new Ship(ShipType.FRIGATE));
 		addComponent(new Ship(ShipType.CARRIER));
+	}
+
+	@Override
+	public Panel addComponent(Component component) {
+		return super.addComponent(((Ship) component).setLayoutManager(new LinearLayout(Direction.HORIZONTAL).setSpacing(0)));
 	}
 
 	public Optional<Ship> getByClass(ShipType type) {

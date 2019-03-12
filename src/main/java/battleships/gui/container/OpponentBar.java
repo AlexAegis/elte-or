@@ -18,6 +18,10 @@ public class OpponentBar extends Panel implements OpponentContainer {
 
 		setPreferredSize(new TerminalSize(1, 13));
 
+
+
+		//new ScrollBar(Direction.HORIZONTAL).addTo(this);
+
 		invalidate();
 		// TODO: Make it scrollable
 	}
@@ -30,27 +34,30 @@ public class OpponentBar extends Panel implements OpponentContainer {
 		setPreferredSize(game.getTableSize());
 	}
 
+	@Override
+	public Panel addComponent(Component component) {
+		getOpponents().stream().filter(opponent -> opponent.getAdmiral().getName().equals(((Opponent) component).getAdmiral().getName()))
+			.map(Opponent::getAdmiral)
+			.forEach(this::removeOpponent);
+		return super.addComponent(component);
+	}
+
 	public void addOpponent(Admiral admiral) {
 		admiral.getKnowledge().clear();
-		/*
-		When adding an opponent we dont know anything about it, only its name
-		*/
-		if(game.getAdmiral().getKnowledge().containsKey(admiral.getName())) {
-			System.out.println("THIS OPPO GUY IS ---ALREADY--- IN THE MAIN KNOWLEDGE");
-		} else {
-			System.out.println("THIS OPPO GUY IS !!!NOT!!! IN THE MAIN KNOWLEDGE");
-		}
-		var copy = new Admiral(admiral.getName()).setReady(admiral.isReady());
-		game.getAdmiral().getKnowledge().put(admiral.getName(), copy);
-		addComponent(new Opponent(game, copy));
-		setPreferredSize(copy.getSea().getSeaContainer().getPreferredSize().withRelative(1, 1));
-		//calculatePreferredSize();
+		var copyOrExisting = game.getAdmiral().getKnowledge().getOrDefault(admiral.getName(), new Admiral(admiral.getName()).setReady(admiral.isReady()));
+		game.getAdmiral().getKnowledge().put(admiral.getName(), copyOrExisting);
+		//if(!game.getAdmiral().getKnowledge().containsKey(admiral.getName())) {
+			addComponent(new Opponent(game, copyOrExisting));
+		//}
+		System.out.println(copyOrExisting);
+		System.out.println(copyOrExisting.getSea());
+		setPreferredSize(copyOrExisting.getSea().getSeaContainer().getPreferredSize().withRelative(1, 1));
 		invalidate();
 	}
 
 	public void removeOpponent(Admiral admiral) {
 		getOpponents().stream().filter(opponent -> opponent.getAdmiral().equals(admiral)).forEach(this::removeComponent);
-		game.getAdmiral().getKnowledge().remove(admiral.getName());
+		// game.getAdmiral().getKnowledge().remove(admiral.getName());
 	}
 
 	public Result takeFocus() {
@@ -66,15 +73,18 @@ public class OpponentBar extends Panel implements OpponentContainer {
 	}
 
 	public Result focusChange(Boolean forward) {
+		System.out.println("<<<<<<<<<<<<<<<<<<<<<GETTING FOCUSSED");
 		var opponents = getOpponents();
 		if (!isEmpty()) {
+			System.out.println("<<<<<<NOTT EMPTY");
 			if (current == null) {
 				current = opponents.get(0);
-			} else {
-				current.unHighlight();
-				opponents.get((opponents.indexOf(current) + (forward ? 1 : -1) + opponents.size())
-					% opponents.size()).takeFocus();
 			}
+
+			current.unHighlight();
+			opponents.get((opponents.indexOf(current) + (forward ? 1 : -1) + opponents.size())
+				% opponents.size()).takeFocus();
+
 		}
 		return Result.HANDLED;
 	}

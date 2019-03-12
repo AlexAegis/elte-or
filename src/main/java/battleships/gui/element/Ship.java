@@ -150,7 +150,7 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 	}
 
 	public List<TerminalPosition> getBorder() {
-		return Sea.nthRipple(getPosition(), getType().getLength(), 2, 1, getOrientation());
+		return Sea.nthRipple(getPosition(), getType().getLength(), 1, 1, getOrientation());
 	}
 
 
