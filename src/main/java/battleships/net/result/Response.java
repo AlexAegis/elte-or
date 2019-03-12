@@ -1,10 +1,13 @@
 package battleships.net.result;
 
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import battleships.model.Admiral;
 import battleships.net.Packet;
 
-public abstract class Response extends Packet implements Serializable {
+public class Response extends Packet implements Serializable {
 
 	private static final long serialVersionUID = 5037733141987271620L;
 
@@ -42,4 +45,15 @@ public abstract class Response extends Packet implements Serializable {
 		return error;
 	}
 
+	@Override
+	public String toString() {
+		return "Response{" +
+			"recipient='" + recipient + '\'' +
+			", error='" + error + '\'' +
+			'}';
+	}
+
+	public void ack() {
+		Logger.getGlobal().log(Level.FINE,"Acknowledge Response: {0}", this);
+	}
 }

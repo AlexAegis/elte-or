@@ -3,6 +3,7 @@ package battleships.net;
 import battleships.Client;
 import battleships.Server;
 import battleships.model.Admiral;
+import battleships.net.action.Disconnect;
 import battleships.net.action.Request;
 import battleships.net.result.HandledResponse;
 import battleships.net.result.Response;
@@ -51,6 +52,7 @@ public class Connection extends Observable<Packet> implements AutoCloseable {
 		Logger.getGlobal().info("Create Connection from client");
 	}
 
+	@SuppressWarnings("ResultOfMethodCallIgnored")
 	@Override
 	protected void subscribeActual(Observer<? super Packet> observer) {
 		Logger.getGlobal().info("Listener started");
@@ -67,23 +69,17 @@ public class Connection extends Observable<Packet> implements AutoCloseable {
 				optionalServer.ifPresent(server -> {
 					observer.onNext(packet); // The queue inside is null for some reason if called in the client
 				});
-
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			Logger.getGlobal().severe("Listener errored out for "+ getAdmiral() +": pssst " + e.getMessage());
+			Logger.getGlobal().throwing(getClass().getName(), "subscribeActual", e);
 			optionalServer.ifPresent(server -> {
-				System.out.println("                                                                   IM GON FUCK U UP");
 				server.getConnectedAdmirals().remove(getAdmiral().getName());
+				server.getEveryConnectedAdmirals().forEach(connection -> connection.send(new Disconnect(getAdmiral().getName(), getAdmiral())).subscribe(Response::ack));
 			});
 			observer.onComplete();
-			// observer.onError(e);
 		} finally {
-			Logger.getGlobal().info("Client resolved");
-			optionalClient.ifPresent(client -> {
-				//client.getConnection().onNext(Optional.empty());
-				client.showConnectWindow();
-			});
+			Logger.getGlobal().info("Client disconnected, trying to reconnect..");
+			optionalClient.ifPresent(Client::showConnectWindow);
 			observer.onComplete();
 		}
 

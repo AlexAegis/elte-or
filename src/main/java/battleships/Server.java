@@ -16,8 +16,11 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static java.lang.System.*;
 
 @Command(name = "server", sortOptions = false,
 	header = {"", "@|cyan  _____     _   _   _     _____ _   _                                     |@",
@@ -36,30 +39,26 @@ public class Server implements Runnable {
 	private Integer port;
 
 	public static void main(String[] args) {
-		CommandLine.run(new Server(), System.err, args);
+		CommandLine.run(new Server(), err, args);
 	}
 
 	private Table table = new Table();
 	private Map<String, Connection> connectedAdmirals = new HashMap<>();
-	private Phase phase;
+	private Phase phase = Phase.PLACEMENT;
 	private String currentAdmiral;
 
 	@Override
 	public void run() {
-		phase = Phase.PLACEMENT;
-		try {
-			var server = new ServerSocket(port);
+		try(var server = new ServerSocket(port)) {
 			Flowable.fromCallable(() -> new Connection(this, server))
 				.repeat()
 				.parallel()
 				.runOn(Schedulers.newThread())
 				.flatMap(connection -> connection.onTerminateDetach().toFlowable(BackpressureStrategy.BUFFER))
 				.sequential()
-				.blockingSubscribe(next -> {
-					System.out.println("BLOCKSUBBED TO A PACKET");
-				});
+				.blockingSubscribe();
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logger.getGlobal().throwing(getClass().getName(), "run", e);
 		}
 	}
 
@@ -68,13 +67,6 @@ public class Server implements Runnable {
 	 */
 	public Map<String, Connection> getConnectedAdmirals() {
 		return connectedAdmirals;
-	}
-
-	/**
-	 * @return the phase
-	 */
-	public Phase getPhase() {
-		return phase;
 	}
 
 	public Stream<Connection> getEveryOtherConnectedAdmiralsExcept(Admiral... admirals) {
@@ -105,7 +97,6 @@ public class Server implements Runnable {
 		return getConnectedAdmirals().entrySet().stream().map(Entry::getValue).filter(Objects::nonNull).count() >= i;
 	}
 
-
 	/**
 	 * @return the table
 	 */
@@ -135,20 +126,20 @@ public class Server implements Runnable {
 		nextAdmiralInTurn().ifPresent(this::setCurrentAdmiral);
 	}
 
-	public Optional<Admiral> nextAdmiralInTurn() {
+	private Optional<Admiral> nextAdmiralInTurn() {
 		if (currentAdmiral == null) {
 			return Optional.ofNullable(getConnectedAdmirals().get(getConnectedAdmirals().keySet().stream().sorted().collect(Collectors.toList()).get(0)).getAdmiral());
 		} else {
-			Boolean thisOne = false;
-			for (var admi : getConnectedAdmirals().keySet().stream().sorted().collect(Collectors.toList())) {
+			var thisOne = false;
+			for (var admiral : getConnectedAdmirals().keySet().stream().sorted().collect(Collectors.toList())) {
 				if (thisOne) {
-					return Optional.ofNullable(getConnectedAdmirals().get(admi).getAdmiral());
+					return Optional.ofNullable(getConnectedAdmirals().get(admiral).getAdmiral());
 				}
-				if (admi.equals(currentAdmiral)) {
+				if (admiral.equals(currentAdmiral)) {
 					thisOne = true;
 				}
 			}
-			return Optional.<Admiral>empty();
+			return Optional.empty();
 		}
 	}
 

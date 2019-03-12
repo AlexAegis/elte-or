@@ -48,4 +48,8 @@ public class OpponentBar extends Panel implements OpponentContainer {
 		invalidate();
 	}
 
+	public void removeOpponent(Admiral admiral) {
+		getOpponents().stream().filter(opponent -> opponent.getAdmiral().equals(admiral)).forEach(this::removeComponent);
+		game.getAdmiral().getKnowledge().remove(admiral.getName());
+	}
 }
