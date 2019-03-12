@@ -98,16 +98,27 @@ public class Water extends AbstractInteractableComponent<Water> {
 			}
 			invalidate();
 		}).subscribe(next -> {
-			if(next == 0) {
-				currentFore = Palette.WATER_RIPPLE_1;
-				currentBack = Palette.WATER_RIPPLE_2;
-			} else if(next == 1) {
-				currentFore = Palette.WATER_RIPPLE_0;
-				currentBack = Palette.WATER_RIPPLE_1;
+			if(wave < 4) {
+				if(next == 0) {
+					currentFore = Palette.WATER_RIPPLE_1;
+					currentBack = Palette.WATER_RIPPLE_2;
+				} else if(next == 1) {
+					currentFore = Palette.WATER_RIPPLE_0;
+					currentBack = Palette.WATER_RIPPLE_1;
+				} else {
+					currentFore = Palette.WATER_RIPPLE_1;
+					currentBack = Palette.WATER_RIPPLE_0;
+				}
 			} else {
-				currentFore = Palette.WATER_RIPPLE_1;
-				currentBack = Palette.WATER_RIPPLE_0;
+				if(next == 0) {
+					currentFore = Palette.WATER_RIPPLE_0;
+					currentBack = Palette.WATER_RIPPLE_1;
+				} else if(next == 1) {
+					currentFore = Palette.WATER_RIPPLE_0;
+					currentBack = Palette.WATER_RIPPLE_0;
+				}
 			}
+
 			invalidate();
 		});
 	}
