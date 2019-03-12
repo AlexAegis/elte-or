@@ -100,6 +100,10 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 		doRipple(ripple(water.getPosition(), 1, 6, Direction.HORIZONTAL, false), delay);
 	}
 
+	public void sendExplosion(Ship ship) {
+		doExplosion(ripple(ship.getPosition(), ship.getType().getLength(), 4, Direction.HORIZONTAL, true));
+	}
+
 	public void sendExplosion(Water water) {
 		doExplosion(ripple(water.getPosition(), 1, 3, Direction.HORIZONTAL, true));
 	}

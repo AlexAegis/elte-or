@@ -50,11 +50,11 @@ public class Water extends AbstractInteractableComponent<Water> {
 					currentFore = Palette.EXPLOSION_CENTER;
 					currentBack = Palette.EXPLOSION_CENTER;
 				} else if(next == 1) {
-					currentFore = Palette.SMOKE;
+					currentFore = Palette.EXPLOSION_CENTER;
 					currentBack = Palette.EXPLOSION_OUTER;
 				} else {
-					currentFore = Palette.SMOKE_DARK;
-					currentBack = Palette.EXPLOSION_OUTER;
+					currentFore = Palette.EXPLOSION_OUTER;
+					currentBack = Palette.SMOKE_DARK;
 				}
 			} else if (wave == 1) {
 				if(next == 0) {
