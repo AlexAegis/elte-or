@@ -2,6 +2,7 @@ package battleships;
 
 import battleships.gui.container.*;
 import battleships.gui.container.SeaContainer;
+import battleships.model.Admiral;
 import battleships.model.Coord;
 import battleships.model.ShipType;
 import battleships.net.Connection;
@@ -33,6 +34,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 @Command(name = "client", sortOptions = false,
@@ -208,20 +210,36 @@ public class Client implements Runnable {
 			gui.setTheme(LanternaThemes.getRegisteredTheme("royale"));
 			gui.addWindow(game);
 
-			connectWindow = new ConnectWindow(this);
-			registrationWindow = new RegistrationWindow(this);
-			tryConnect(host, port);
-			showConnectWindow();
+			//connectWindow = new ConnectWindow(this);
+			//registrationWindow = new RegistrationWindow(this);
+			//tryConnect(host, port);
+			//showConnectWindow();
 
-			screen.doResizeIfNecessary();
-			/*var testWin = new BasicWindow("Test");
+			// Testbench start
+			var testWin = new BasicWindow("Test");
 			testWin.setHints(Arrays.asList(Window.Hint.MODAL, Window.Hint.CENTERED));
+			game.setTableSize(new TerminalSize(10, 10));
+			var dummyOpponent = new Opponent(game, new Admiral("Dummy"));
+			var testSea = new Sea(game.getTableSize());
+			dummyOpponent.getAdmiral().setSea(testSea);
+			testWin.setComponent(new SeaContainer(testSea));
 
-			testWin.setComponent(new SeaContainer(new Sea(new TerminalSize(10, 10))));
 			gui.addWindow(testWin);
+			testSea.sendRipple(new TerminalPosition(5, 5), 0);
+			Observable.timer(1000, TimeUnit.MILLISECONDS).subscribeOn(Schedulers.computation()).subscribe(next -> {
+
+				gui.getGUIThread().invokeLater(() -> {
+
+					testSea.takeFocus();
+					testWin.waitUntilClosed();
+				});
+
+			});
+
 
 			testWin.waitUntilClosed();
-*/
+
+			// Testbench end
 
 			gui.waitForWindowToClose(game);
 		} catch (Exception /*IOException | ArrayIndexOutOfBoundsException*/ e) {

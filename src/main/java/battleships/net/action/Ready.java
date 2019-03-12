@@ -5,6 +5,7 @@ import battleships.Server;
 import battleships.model.Admiral;
 import battleships.net.Connection;
 import battleships.net.result.ReadyResult;
+import battleships.state.Mode;
 import battleships.state.Phase;
 
 import java.io.Serializable;
@@ -53,13 +54,17 @@ public class Ready extends Request<ReadyResult> implements Serializable {
 							});
 				});
 
-
 				// State propagation logic. If there are at least 2 players and everyone is ready then notify them that the match started
 				if (server.isAtLeastNPlayers(2) && server.isEveryOneOnTheSamePhase(Phase.READY)) {
 					Logger.getGlobal().info("Everybody ready!");
 					server.setPhase(Phase.GAME);
 					server.getEveryConnectedAdmirals().forEach(conn -> {
 						Admiral firstTurnAdmiral = server.getCurrentAdmiral();
+
+						/* TODO: BATTLE ROYALE
+						if(Mode.ROYALE.equals(server.getMode())) {
+							firstTurnAdmiral = conn.getAdmiral(); // Free for all, bitches :)
+						}*/
 						conn.send(new Turn(conn.getAdmiral().getName(), firstTurnAdmiral.getName())).subscribe(ack -> {
 							Logger.getGlobal().info("Sent turn data, got ack: " + ack);
 						});

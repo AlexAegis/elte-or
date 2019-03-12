@@ -2,6 +2,7 @@ package battleships.model;
 
 import battleships.exception.AlreadyShotException;
 import battleships.exception.BorderShotException;
+import battleships.gui.Palette;
 import battleships.gui.container.GameWindow;
 import battleships.gui.container.Opponent;
 import battleships.gui.container.Sea;
@@ -11,10 +12,7 @@ import battleships.state.Phase;
 
 import java.io.PrintStream;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -89,15 +87,22 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 					break;
 				case GAME:
 					// What to do when it's not my turn?
+					Logger.getGlobal().info("It's not my turn!");
 					whenPlayer.getActionBar().hideReadyButton();
+					whenPlayer.getReadyLabel().hide();
+					whenPlayer.getPlayerName().setForegroundColor(Palette.SMOKE);
 					// Focus on sea, inspect your ships
 					whenPlayer.getAdmiral().getSea().takeFocus();
 					break;
 				case ACTIVE:
 					// What to do when it's my turn?
+					Logger.getGlobal().info("It's my turn!");
 					whenPlayer.getActionBar().hideReadyButton();
-					// Choose a target
-					//whenPlayer.getOpponentBar().takeFocus();
+					whenPlayer.getPlayerName().setForegroundColor(Palette.READY);
+					whenPlayer.getReadyLabel().hide();
+					// Choose a target TODO WRONG FOCUS
+					whenPlayer.getAdmiral().getSea().takeFocus();
+					// whenPlayer.getOpponentBar().takeFocus();
 					break;
 				default:
 					whenPlayer.getReadyLabel().base();
@@ -110,6 +115,16 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 					break;
 				case PLACEMENT:
 					whenOpponent.getLabel().notReady();
+					break;
+				case GAME:
+					// What does this opponent do when it's not his turn?
+					Logger.getGlobal().info("It's not his turn!");
+					whenOpponent.getLabel().base();
+					break;
+				case ACTIVE:
+					// What does this opponent do when it's his turn?
+					Logger.getGlobal().info("It's his turn!");
+					whenOpponent.getLabel().ready();
 					break;
 				default:
 					whenOpponent.getLabel().base();
@@ -133,8 +148,16 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 
 	public void placeAll(List<Coord> shipPieces) {
 		if (shipPieces != null) {
-			shipPieces.forEach(piece -> place(piece));
+			shipPieces.forEach(this::place);
 		}
+	}
+
+	public Optional<GameWindow> whenPlayer() {
+		return Optional.ofNullable(whenPlayer);
+	}
+
+	public Optional<Opponent> whenOpponent() {
+		return Optional.ofNullable(whenOpponent);
 	}
 
 	public void place(Coord shipPiece) {

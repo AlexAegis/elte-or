@@ -12,9 +12,15 @@ import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.gui2.Interactable.Result;
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -34,6 +40,7 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	private Integer width = 10;
 	private Integer height = 10;
 	private SeaContainer seaContainer;
+	private List<Water> previousCross;
 
 	private Ship focused;
 
@@ -55,25 +62,58 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 		this.getLayoutManager().doLayout(getPreferredSize(), (List<Component>) getChildren());
 	}
 
-	public void sendRipple(Ship ship) {
-		var waves = ripple(ship.getPosition(), ship.getType().getLength(), 4, ship.getOrientation());
-		new Thread(() -> {
-			try {
-				for (var wave : waves) {
-					Thread.sleep(200);
-					getWaters().forEach(water -> {
-						if (wave.contains(water.getPosition())) {
-							water.startRipple();
-							water.invalidate();
-						}
-					});
-				}
-				this.invalidate();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}).start();
+	public Disposable doExplosion(List<List<TerminalPosition>> waves) {
+		return Observable.zip(Observable.fromIterable(waves),
+			Observable.interval( 50, TimeUnit.MILLISECONDS),
+			(wave, time) -> wave)
+			.subscribeOn(Schedulers.computation())
+			.doOnComplete(this::invalidate).subscribe(next -> {
+				getWaters().forEach(water -> {
+					if (next.contains(water.getPosition())) {
+						water.startExplosion(waves.indexOf(next));
+						water.invalidate();
+					}
+				});
+			});
+	}
 
+	public Disposable doRipple(List<List<TerminalPosition>> waves, long delay) {
+		return Observable.zip(Observable.fromIterable(waves),
+			Observable.interval( delay,150, TimeUnit.MILLISECONDS),
+			(wave, time) -> wave)
+			.subscribeOn(Schedulers.computation())
+			.doOnComplete(this::invalidate).subscribe(next -> {
+			getWaters().forEach(water -> {
+				if (next.contains(water.getPosition())) {
+					water.startRipple(waves.indexOf(next));
+					water.invalidate();
+				}
+			});
+		});
+	}
+
+	public void sendRipple(Water water) {
+		sendRipple(water, 0);
+	}
+
+	public void sendRipple(Water water, long delay) {
+		doRipple(ripple(water.getPosition(), 1, 6, Direction.HORIZONTAL, false), delay);
+	}
+
+	public void sendExplosion(Water water) {
+		doExplosion(ripple(water.getPosition(), 1, 3, Direction.HORIZONTAL, true));
+	}
+
+	public void sendRipple(TerminalPosition position, long delay) {
+		doRipple(ripple(position, 1, 4, Direction.HORIZONTAL, false), delay);
+	}
+
+	public void sendRipple(Ship ship) {
+		sendRipple(ship, 0);
+	}
+
+	public void sendRipple(Ship ship, long delay) {
+		doRipple(ripple(ship.getPosition(), ship.getType().getLength(), 4, ship.getOrientation(), false), delay);
 	}
 
 	public SeaContainer getSeaContainer() {
@@ -169,7 +209,7 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 		if (iteration < 1 || iteration > count) {
 			throw new IllegalArgumentException();
 		}
-		return ripple(anchor, 1, count, orientaton).get(iteration - 1);
+		return ripple(anchor, 1, count, orientaton, true).get(iteration - 1);
 	}
 
 	public static List<TerminalPosition> nthRipple(TerminalPosition anchor, Integer length, Integer count,
@@ -177,13 +217,16 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 		if (iteration < 1 || iteration > count) {
 			throw new IllegalArgumentException();
 		}
-		return ripple(anchor, length, count, orientaton).get(iteration - 1);
+		return ripple(anchor, length, count, orientaton, true).get(iteration - 1);
 	}
 
 	public static List<List<TerminalPosition>> ripple(TerminalPosition anchor, Integer length, Integer count,
-			Direction orientaton) {
+			Direction orientaton, Boolean includeCenter) {
 		var result = new ArrayList<List<TerminalPosition>>();
 		length--;
+		if(includeCenter) {
+			result.add(Arrays.asList(anchor));
+		}
 		for (int c = 1; c < count; c++) {
 			var iter = new ArrayList<TerminalPosition>();
 			var headpiece = false;
@@ -279,17 +322,29 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 		return width;
 	}
 
-	public void takeFocus() {
-		// TODO: If its targeting, target water blocks!!!
-		if (!getShips().isEmpty()) {
-			getShips().get(0).takeFocus();
-		} else if (!getDrawer().isEmpty()) {
-			getDrawer().takeFocus();
-		} else if (!getDrawer().getGame().getActionBar().isEmpty()) {
-			getDrawer().getGame().getActionBar().takeFocus();
-		} else {
-			Logger.getGlobal().severe("FOCUS LOST!");
-		}
+	public Result takeFocus() {
+		return getAdmiral().whenOpponent().map(opponent -> {
+			System.out.println("LETS DO SOME TARGETING!!!");
+			opponent.getLabel();
+
+			if(!getWaters().isEmpty()) {
+				System.out.println("WATEERRRS SIZE" + getWaters().size() + " focus the " + getWaters().size() / 2);
+				getWaters().get(getWaters().size() / 2).takeFocus(); // Target the center first
+			}
+			return Result.HANDLED;
+		}).orElse(getAdmiral().whenPlayer().map(player -> {
+			if (!getShips().isEmpty()) {
+				getShips().get(0).takeFocus();
+			} else if (!getDrawer().isEmpty()) {
+				getDrawer().takeFocus();
+			} else if (!getDrawer().getGame().getActionBar().isEmpty()) {
+				getDrawer().getGame().getActionBar().takeFocus();
+			} else {
+				Logger.getGlobal().severe("FOCUS LOST!");
+				return Result.UNHANDLED;
+			}
+			return Result.HANDLED;
+		}).orElse(Result.UNHANDLED));
 	}
 
 
@@ -328,5 +383,17 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 
 	public boolean isEmpty() {
 		return getShips().isEmpty();
+	}
+
+	public void cross(Water water) {
+		if(previousCross != null) {
+			previousCross.forEach(Water::unCross);
+		}
+		previousCross = getWaters().stream().filter(seaWater ->
+			seaWater.getPosition().getColumn() == water.getPosition().getColumn()
+				|| seaWater.getPosition().getRow() == water.getPosition().getRow())
+			.peek(Water::cross)
+			.collect(Collectors.toList());
+
 	}
 }

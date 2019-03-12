@@ -3,6 +3,7 @@ package battleships;
 import battleships.model.Admiral;
 import battleships.model.Table;
 import battleships.net.Connection;
+import battleships.state.Mode;
 import battleships.state.Phase;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
@@ -38,6 +39,9 @@ public class Server implements Runnable {
 	@Option(names = {"-p", "--port"}, paramLabel = "<host>", description = "Port of the server", defaultValue = "6668")
 	private Integer port;
 
+	@Option(names = {"-m", "--mode"}, paramLabel = "<mode>", description = "Game mode selection!", defaultValue = "TURN")
+	private Mode mode;
+
 	public static void main(String[] args) {
 		CommandLine.run(new Server(), err, args);
 	}
@@ -60,6 +64,10 @@ public class Server implements Runnable {
 		} catch (IOException e) {
 			Logger.getGlobal().throwing(getClass().getName(), "run", e);
 		}
+	}
+
+	public Mode getMode() {
+		return mode;
 	}
 
 	/**

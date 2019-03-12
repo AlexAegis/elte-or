@@ -12,6 +12,10 @@ import com.googlecode.lanterna.gui2.Interactable;
 import com.googlecode.lanterna.gui2.InteractableRenderer;
 import com.googlecode.lanterna.gui2.TextGUIGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
+import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
+
+import java.util.concurrent.TimeUnit;
 
 
 public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
@@ -45,25 +49,17 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 		return ship;
 	}
 
-
-
 	public void briefError() {
 		ship.getChildren().stream().map(c -> (ShipSegment) c).forEach(s -> {
 			s.currentHighlighted = error;
 			s.currentHeld = error;
 		});
-		new Thread(() -> {
-			try {
-				Thread.sleep(200);
-				ship.getChildren().stream().map(c -> (ShipSegment) c).forEach(s -> {
-					s.currentHighlighted = highlighted;
-					s.currentHeld = held;
-				});
-				this.invalidate();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}).start();
+		Observable.timer(200, TimeUnit.MILLISECONDS).subscribeOn(Schedulers.computation()).subscribe(next ->
+			ship.getChildren().stream().map(c -> (ShipSegment) c).forEach(s -> {
+				s.currentHighlighted = highlighted;
+				s.currentHeld = held;
+			})
+		);
 	}
 
 	public Boolean isInDrawer() {
@@ -134,7 +130,6 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 
 	@Override
 	public synchronized Result handleKeyStroke(KeyStroke keyStroke) {
-
 		if (isOnSea() && ship.isHeld()) {
 			var sea = ((Sea) ship.getParent());
 
@@ -277,10 +272,10 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 					return Result.HANDLED;
 				case Enter:
 					ship.setHeld(true);
-
 					ship.savePlacement();
 					ship.saveParent();
 					ship.doSwitch();
+					drawer.getGame().getInspector().inspect(ship);
 					return Result.HANDLED;
 				default:
 			}

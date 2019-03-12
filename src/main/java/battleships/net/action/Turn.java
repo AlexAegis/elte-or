@@ -47,10 +47,8 @@ public class Turn extends Request<TurnResult> implements Serializable {
 				// Client got turn data, set the opponents graphics accordingly, or start turn for yourself
 				var isItMe = client.getGame().getAdmiral().getName().equals(getWho());
 				if (isItMe) {
-					Logger.getGlobal().info("Its my turn!");
 					client.getGame().getAdmiral().setPhase(Phase.ACTIVE);
 				} else {
-					Logger.getGlobal().info("Its NOT my turn!");
 					client.getGame().getAdmiral().setPhase(Phase.GAME);
 				}
 				client.getGame().getAdmiral().getKnowledge().forEach((k, a) -> {
