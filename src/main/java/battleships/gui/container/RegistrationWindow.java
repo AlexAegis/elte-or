@@ -57,11 +57,9 @@ public class RegistrationWindow extends BasicModal {
 
 	}
 
-
-	public void show(MultiWindowTextGUI gui) {
-
-		gui.addWindow(this);
-		gui.moveToTop(this);
+	public void show() {
+		client.getGui().addWindow(this);
+		client.getGui().moveToTop(this);
 		takeFocus();
 		if (client.getGame().getAdmiral() != null && client.getGame().getAdmiral().getName() != null) {
 			client.tryRegister(client.getGame().getAdmiral().getName());

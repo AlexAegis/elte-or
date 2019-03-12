@@ -143,7 +143,7 @@ public class Client implements Runnable {
 			return new Connection(this, host, port);
 		}).subscribeOn(Schedulers.newThread()).subscribe(getConnection()::onNext, err -> {
 			System.out.println("ERR HANDL CONN FAIL " + err);
-			gui.getGUIThread().invokeLater(() -> {
+			getGui().getGUIThread().invokeLater(() -> {
 				System.out.println("Invokeeeed");
 				connectWindow.showConnectionForm();
 			});
@@ -353,7 +353,7 @@ public class Client implements Runnable {
 	}
 
 	public void showConnectWindow() {
-		getConnectWindow().show(gui);
+		getConnectWindow().show();
 	}
 
 	/**
@@ -364,6 +364,10 @@ public class Client implements Runnable {
 	}
 
 	public void showRegistrationWindow() {
-		getRegistrationWindow().show(gui);
+		getRegistrationWindow().show();
+	}
+
+	public MultiWindowTextGUI getGui() {
+		return gui;
 	}
 }

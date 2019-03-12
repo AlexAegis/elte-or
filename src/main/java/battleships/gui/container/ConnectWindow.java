@@ -3,7 +3,9 @@ package battleships.gui.container;
 import battleships.Client;
 import com.googlecode.lanterna.gui2.*;
 import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.PublishSubject;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +28,8 @@ public class ConnectWindow extends BasicModal {
 	private TextBox portBox;
 	private EmptySpace emptySpace = new EmptySpace();
 	private Button connectButton;
-	Client client;
+	private Client client;
+	private PublishSubject<Boolean> animationTerminator = PublishSubject.create();
 
 	public ConnectWindow(Client client) {
 		this.client = client;
@@ -62,7 +65,7 @@ public class ConnectWindow extends BasicModal {
 	public void showConnecting() {
 		connectForm.removeAllComponents();
 		connectForm.addComponent(connectingLabel);
-		Observable.interval(200, TimeUnit.MILLISECONDS).take(50).takeUntil(client.getConnection()).subscribeOn(Schedulers.computation()).subscribe(next -> {
+		Observable.interval(200, TimeUnit.MILLISECONDS).takeUntil(animationTerminator).takeUntil(client.getConnection()).subscribeOn(Schedulers.computation()).subscribe(next -> {
 			if(next % 4 == 0) {
 				connectingLabel.setText("Connecting   ");
 			}
@@ -76,11 +79,11 @@ public class ConnectWindow extends BasicModal {
 				connectingLabel.setText("Connecting...");
 			}
 			connectingLabel.invalidate();
-		}, err -> {
-		}, this::close);
+		});
 	}
 
 	public void showConnectionForm() {
+		animationTerminator.onNext(true);
 		connectForm.removeAllComponents();
 		connectForm.addComponent(hostLabel);
 		connectForm.addComponent(hostBox);
@@ -92,7 +95,7 @@ public class ConnectWindow extends BasicModal {
 		invalidate();
 	}
 
-	public void show(MultiWindowTextGUI gui) {
+	public void show() {
 		client.getConnection().subscribeOn(Schedulers.newThread()).subscribe(connection -> {
 			System.out.println("Connectiuon made!, ConnectWindow closes");
 			close();
@@ -101,10 +104,12 @@ public class ConnectWindow extends BasicModal {
 			showConnectionForm();
 			client.showConnectWindow();
 		});
-		gui.addWindow(this);
-		gui.moveToTop(this);
+		;
+		client.getGui().addWindow(this);
+		client.getGui().moveToTop(this);
 		this.takeFocus();
 		waitUntilClosed();
+		animationTerminator.onNext(true);
 		client.showRegistrationWindow();
 	}
 
