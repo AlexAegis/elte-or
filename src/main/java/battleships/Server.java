@@ -37,34 +37,34 @@ public class Server implements Runnable {
 	@ParentCommand
 	private App app;
 
-	@Option(names = {"-p", "--port"}, paramLabel = "<host>", description = "Port of the server (default: ${DEFAULT-VALUE})", defaultValue = "6668")
+	@Option(names = {"-p", "--port"}, paramLabel = "<port>", description = "Port of the server (default: ${DEFAULT-VALUE})", defaultValue = "6668")
 	private Integer port;
 
 	@Option(names = {"-m", "--mode"}, paramLabel = "<mode>", description = "Game mode selection! Valid values: ${COMPLETION-CANDIDATES} (default: ${DEFAULT-VALUE})", defaultValue = "TURN")
 	private Mode mode;
 
-	@Option(names = {"-w", "--width"}, paramLabel = "<width>", description = "Height of the game area (default: ${DEFAULT-VALUE})", defaultValue = "10")
+	@Option(names = {"-w", "--width"}, paramLabel = "<int>", description = "Height of the game area (default: ${DEFAULT-VALUE})", defaultValue = "10")
 	private Integer width;
 
-	@Option(names = {"-h", "--height"}, paramLabel = "<height>", description = "Width of the game area (default: ${DEFAULT-VALUE})", defaultValue = "10")
+	@Option(names = {"-h", "--height"}, paramLabel = "<int>", description = "Width of the game area (default: ${DEFAULT-VALUE})", defaultValue = "10")
 	private Integer height;
 
-	@Option(names = {"-b", "--boat"}, paramLabel = "<boat>", description = "Available amount of boats (Size 1 ships) (default: ${DEFAULT-VALUE})", defaultValue = "0")
+	@Option(names = {"-b", "--boat"}, paramLabel = "<int>", description = "Available amount of boats (Size 1) (default: ${DEFAULT-VALUE})", defaultValue = "0")
 	private Integer boats;
 
-	@Option(names = {"-s", "--submarine"}, paramLabel = "<submarine>", description = "Available amount of submarines (Size 2 ships) (default: ${DEFAULT-VALUE})", defaultValue = "2")
+	@Option(names = {"-s", "--submarine"}, paramLabel = "<int>", description = "Available amount of submarines (Size 2) (default: ${DEFAULT-VALUE})", defaultValue = "2")
 	private Integer submarines;
 
-	@Option(names = {"-co", "--corvette"}, paramLabel = "<corvette>", description = "Available amount of corvettes (Size 3 ships) (default: ${DEFAULT-VALUE})", defaultValue = "2")
+	@Option(names = {"-co", "--corvette"}, paramLabel = "<int>", description = "Available amount of corvettes (Size 3) (default: ${DEFAULT-VALUE})", defaultValue = "2")
 	private Integer corvettes;
 
-	@Option(names = {"-f", "--frigate"}, paramLabel = "<frigate>", description = "Available amount of frigates (Size 5 ships) (default: ${DEFAULT-VALUE})", defaultValue = "1")
+	@Option(names = {"-f", "--frigate"}, paramLabel = "<int>", description = "Available amount of frigates (Size 5) (default: ${DEFAULT-VALUE})", defaultValue = "1")
 	private Integer frigates;
 
-	@Option(names = {"-d", "--destroyer"}, paramLabel = "<destroyer>", description = "Available amount of destroyers (Size 6 ships) (default: ${DEFAULT-VALUE})", defaultValue = "1")
+	@Option(names = {"-d", "--destroyer"}, paramLabel = "<int>", description = "Available amount of destroyers (Size 6) (default: ${DEFAULT-VALUE})", defaultValue = "1")
 	private Integer destroyers;
 
-	@Option(names = {"-ca", "--carrier"}, paramLabel = "<carriers>", description = "Available amount of carriers (Size 8 ships) (default: ${DEFAULT-VALUE})", defaultValue = "1")
+	@Option(names = {"-ca", "--carrier"}, paramLabel = "<int>", description = "Available amount of carriers (Size 8) (default: ${DEFAULT-VALUE})", defaultValue = "1")
 	private Integer carriers;
 
 	public static void main(String[] args) {
