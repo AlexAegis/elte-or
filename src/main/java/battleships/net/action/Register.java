@@ -5,9 +5,13 @@ import battleships.Server;
 import battleships.model.Admiral;
 import battleships.net.Connection;
 import battleships.net.result.RegisterResult;
+import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 
 import java.io.Serializable;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Register extends Request<RegisterResult> implements Serializable {
@@ -28,7 +32,12 @@ public class Register extends Request<RegisterResult> implements Serializable {
 			return answerFromServer.map(server -> {
 				var reqAdm = server.getTable().getAdmiral(getRequester());
 				if (reqAdm == null) {
+					Logger.getGlobal().log(Level.INFO, "A new admiral has joined: {0}", getRequester());
 					connection.setAdmiral(server.getTable().addAdmiral(getRequester()));
+					Logger.getGlobal().log(Level.INFO, "Added new admiral to the table: {0}", connection.getAdmiral());
+					// new Admiral
+
+					//server.getTable().addAdmiral()
 				} else if (server.getConnectedAdmirals().get(getRequester()) != null && !server.getConnectedAdmirals().get(getRequester()).isClosed()) {
 					return new RegisterResult(null, null, null); // taken
 				} else {
@@ -46,9 +55,10 @@ public class Register extends Request<RegisterResult> implements Serializable {
 
 					Logger.getGlobal().info("Sending notification about registration to: " + otherConn.getAdmiral());
 					otherConn.send(new Register(otherConn.getAdmiral().getName(), connection.getAdmiral()))
-							.subscribe(res -> {
-								Logger.getGlobal().info("Notified other client about a registration " + res);
-							});
+						.subscribe(res -> {
+							Logger.getGlobal().info("Notified other client about a registration " + res);
+						});
+
 				});
 
 

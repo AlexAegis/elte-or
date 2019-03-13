@@ -30,7 +30,7 @@ public class SeaContainer extends Panel {
 	}
 
 	public void highlight(TerminalPosition position) {
-		if( highlighted) {
+		if(highlighted) {
 			resetHighlight();
 		}
 		upper.highlight(position.getColumn());

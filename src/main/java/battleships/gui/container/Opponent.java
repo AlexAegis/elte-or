@@ -7,7 +7,6 @@ import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.Interactable.Result;
 
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Opponent extends Panel {
@@ -46,7 +45,7 @@ public class Opponent extends Panel {
 
 	@Override
 	public String toString() {
-		return getAdmiral().getName() + "\n Ships:\n" + getAdmiral().getShips().stream().map(Object::toString).collect(Collectors.joining("\n"));
+		return getAdmiral().getName() + "\n Ships:\n" + getAdmiral().getShipModels().stream().map(Object::toString).collect(Collectors.joining("\n"));
 	}
 
 	public void highlight() {

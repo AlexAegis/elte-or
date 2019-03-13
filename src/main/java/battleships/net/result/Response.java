@@ -34,8 +34,9 @@ public class Response extends Packet implements Serializable {
 	/**
 	 * @param error the error to set
 	 */
-	public void setError(String error) {
+	public Response setError(String error) {
 		this.error = error;
+		return this;
 	}
 
 	/**

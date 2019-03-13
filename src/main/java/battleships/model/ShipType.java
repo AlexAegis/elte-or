@@ -1,7 +1,13 @@
 package battleships.model;
 
+/**
+ * They have to be in order by size
+ */
 public enum ShipType {
-	CARRIER("Carrier", 7), FRIGATE("Frigate", 6), SUBMARINE("Submarine", 2), BOAT("Boat", 1);
+	BOAT("Boat", 1),
+	SUBMARINE("Submarine", 2),
+	FRIGATE("Frigate", 6),
+	CARRIER("Carrier", 7);
 
 	private String name;
 	private Integer length;

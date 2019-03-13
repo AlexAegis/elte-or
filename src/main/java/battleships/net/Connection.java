@@ -71,6 +71,7 @@ public class Connection extends Observable<Packet> implements AutoCloseable {
 				});
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			Logger.getGlobal().throwing(getClass().getName(), "subscribeActual", e);
 			optionalServer.ifPresent(server -> {
 				server.getConnectedAdmirals().remove(getAdmiral().getName());

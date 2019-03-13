@@ -5,7 +5,6 @@ import battleships.gui.container.Sea;
 import battleships.gui.layout.SegmentContainer;
 import battleships.misc.Chainable;
 import battleships.misc.Switchable;
-import battleships.model.Admiral;
 import battleships.model.ShipType;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.gui2.Container;
@@ -13,7 +12,6 @@ import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.LinearLayout;
 import com.googlecode.lanterna.gui2.Panel;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,10 +26,16 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 	private static final LinearLayout VERTICAL = new LinearLayout(Direction.VERTICAL).setSpacing(0);
 	private Direction orientation = Direction.HORIZONTAL;
 	private Boolean held = false;
+	private Boolean destroyed = false;
 
 	private TerminalPosition originalPosition;
 	private Direction originalOrientation;
 	private Container originalParent;
+
+
+	public void setType(ShipType type) {
+		this.type = type;
+	}
 
 	/**
 	* @return the held
@@ -149,6 +153,44 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 				.collect(Collectors.toList());
 	}
 
+	public void attachBodyOn(TerminalPosition position) {
+		if(getHead().getPosition().getRow() == position.getRow()) {
+			setLayoutTo(Direction.HORIZONTAL);
+		} else {
+			setLayoutTo(Direction.VERTICAL);
+		}
+
+		if (getHead().getPosition().compareTo(position) < 0) { // Head is behind, shift ship
+			setPosition(position);
+		}
+
+		addComponent(new ShipSegment(this));
+		updateWaterRelations();
+		// if its higher than the head, then this has to be the new head and translated
+
+		updateClass();
+	}
+
+	/**
+	 * I don't need to order them because they are in order by default
+	 */
+	private void updateClass() {
+		for (ShipType value : ShipType.values()) {
+			if(value.getLength() >= getBody().size()) {
+				setType(value);
+				break;
+			}
+		}
+	}
+
+	public void reveal(TerminalPosition position) {
+		getBodyAt(position).ifPresent(ShipSegment::reveal);
+	}
+
+	public Optional<ShipSegment> getBodyAt(TerminalPosition position) {
+		return getBody().stream().filter(body -> body.getRelativePosition().equals(position)).findFirst();
+	}
+
 	public List<TerminalPosition> getBorder() {
 		return Sea.nthRipple(getPosition(), getType().getLength(), 1, 1, getOrientation());
 	}
@@ -239,6 +281,42 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 
 	@Override
 	public String toString() {
-		return type.getName() + "\n" + (type.getLength() - getBody().stream().filter(ShipSegment::isDamaged).count()) + "/" + type.getLength();
+		return type.getName() + "\n" + (type.getLength() - getBody().stream().filter(ShipSegment::isDestroyed).count()) + "/" + type.getLength();
 	}
+
+	public void destroy() {
+		this.destroyed = true;
+		getBody().forEach(body -> body.setDestroyed(true));
+		getSea().sendExplosion(this);
+		getSea().sendRipple(this, 400);
+	}
+
+
+	public void updateWaterRelations() {
+		getBody().forEach(body -> {
+			System.out.println("-----------BOD PIECE!!!!");
+			getSea().getWaterAt(body.getRelativePosition()).ifPresentOrElse(water -> {
+				System.out.println("-------------WATER RELATION UPDATED!!");
+				body.setWater(null); // This will also empty the old water
+				water.setShipSegment(body); // This will also update the new body
+			}, () -> {
+				System.out.println("-------------WATER RELATION IS NOT!!!! UPDATED!!");
+			});
+
+		});
+	}
+
+	/**
+	 *
+	 * @param ship
+	 * @param position
+	 */
+	public void merge(Ship ship, TerminalPosition position) {
+		getSea().removeComponent(ship);
+		attachBodyOn(position);
+		ship.getBody().forEach(this::addComponent);
+		updateWaterRelations();
+		updateClass();
+	}
+
 }

@@ -1,5 +1,7 @@
 package battleships.model;
 
+import battleships.gui.element.Ship;
+import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 
 import java.io.Serializable;
@@ -12,7 +14,7 @@ public class Coord implements Comparable<Coord>, Serializable {
 
 	public static Coord center = new Coord(0, 0);
 
-	public Coord(String in) throws IllegalArgumentException {
+	public Coord(String in) {
 		if (!in.contains(",")) {
 			throw new IllegalArgumentException("Bad inputs");
 		}
@@ -22,7 +24,7 @@ public class Coord implements Comparable<Coord>, Serializable {
 		}
 		x = Integer.parseInt(split[0].trim());
 		y = Integer.parseInt(split[1].trim());
-		if (x == null || y == null || x < 0 || y < 0 || x >= 10 || y >= 10) {
+		if (x < 0 || y < 0 || x >= 10 || y >= 10) {
 			throw new IllegalArgumentException("Bad inputs");
 		}
 	}
@@ -34,6 +36,10 @@ public class Coord implements Comparable<Coord>, Serializable {
 	public Coord(int x, int y) {
 		this.x = x;
 		this.y = y;
+	}
+
+	public Coord(TerminalPosition position) {
+		this(position.getColumn(),position.getRow());
 	}
 
 	public TerminalSize convertToTerminalSize() {
@@ -66,7 +72,7 @@ public class Coord implements Comparable<Coord>, Serializable {
 
 	public Coord addInto(Coord other) {
 		x += other.x;
-		y += other.x;
+		y += other.y;
 		return this;
 	}
 
@@ -80,7 +86,7 @@ public class Coord implements Comparable<Coord>, Serializable {
 
 	@Override
 	public int compareTo(Coord o) {
-		return y == o.y ? x - o.x : y - o.y;
+		return y.equals(o.y) ? x - o.x : y - o.y;
 	}
 
 	@Override
@@ -90,7 +96,7 @@ public class Coord implements Comparable<Coord>, Serializable {
 		if (o == null || getClass() != o.getClass())
 			return false;
 		var coord = (Coord) o;
-		return x == coord.x && y == coord.y;
+		return x.equals(coord.x) && y.equals(coord.y);
 	}
 
 	@Override
@@ -102,4 +108,7 @@ public class Coord implements Comparable<Coord>, Serializable {
 		return "{x: " + x + ", y: " + y + "}";
 	}
 
+	public TerminalPosition convertToTerminalPosition() {
+		return new TerminalPosition(x, y);
+	}
 }

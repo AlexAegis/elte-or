@@ -60,7 +60,7 @@ public class LegacyTable {
 
 
 	public void finishShipBorders() {
-		admirals.values().stream().flatMap(admiral -> admiral.getShips().stream()).forEach(ship -> ship.finishBorder());
+		admirals.values().stream().flatMap(admiral -> admiral.getShipModels().stream()).forEach(ship -> ship.finishBorder());
 	}
 
 	public void shoot(String fromIndex, String toIndex, Coord target)

@@ -3,6 +3,8 @@ package battleships.gui.element;
 import battleships.gui.Palette;
 import battleships.gui.container.Drawer;
 import battleships.gui.container.Sea;
+import battleships.model.Coord;
+import battleships.model.Direction;
 import battleships.state.Phase;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
@@ -15,6 +17,7 @@ import com.googlecode.lanterna.input.KeyStroke;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
@@ -22,7 +25,7 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 
 
 	private Ship ship;
-	private Boolean damaged = false;
+	private Boolean destroyed = false;
 
 	private final TextColor highlighted = TextColor.Factory.fromString("#787777");
 	private final TextColor held = TextColor.Factory.fromString("#889999");
@@ -30,6 +33,7 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 	private TextColor currentHeld = held;
 	private TextColor basic = TextColor.Factory.fromString("#555555");
 	private TextColor error = TextColor.Factory.fromString("#AA5555");
+	private Water water;
 
 	public ShipSegment(Ship ship) {
 
@@ -37,7 +41,7 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 	}
 
 	public void damage() {
-		this.damaged = true;
+		this.destroyed = true;
 	}
 
 
@@ -167,6 +171,8 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 						} else {
 							ship.setHeld(false);
 							sea.sendRipple(ship);
+							// Update all segments, set water/segment relationship
+							ship.updateWaterRelations();
 							sea.getDrawer().takeFocus();
 						}
 					}
@@ -176,7 +182,9 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 						ship.resetOriginalPlacement();
 					} else {
 						ship.doSwitch();
+						ship.getBody().forEach(body -> body.setWater(null));
 					}
+
 					ship.setOriginalPosition(null);
 					ship.setOriginalParent(null);
 					ship.setHeld(false);
@@ -283,6 +291,28 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 		return Result.UNHANDLED;
 	}
 
+	public Water getWater() {
+		return water;
+	}
+
+	public void setWater(Water water) {
+		setWater(water, true);
+	}
+
+	public void setWater(Water water, Boolean otherSide) {
+		if(this.water != null) { // Detach the old if there's one
+			this.water.setShipSegment(null);
+		}
+		if(otherSide && water != null) { // Attach the new if there's one
+			water.setShipSegment(this, false);
+		}
+		this.water = water;
+	}
+
+	public TerminalPosition getRelativePosition() {
+		return getPosition().withRelative(getParent().getPosition());
+	}
+
 	public void moveShipInDirection(battleships.model.Direction direction) {
 		ship.setPosition(new TerminalPosition(ship.getPosition().getColumn() + direction.vector.getX(),
 				ship.getPosition().getRow() - direction.vector.getY()));
@@ -296,8 +326,38 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 		super.afterEnterFocus(direction, previouslyInFocus);
 	}
 
-	public Boolean isDamaged() {
-		return damaged;
+	public Boolean isDestroyed() {
+		return destroyed;
+	}
+
+	public void destroy() {
+		this.destroyed = true;
+		getShip().getSea().sendExplosion(getWater());
+		getShip().getSea().sendRipple(getWater(), 400);
+	}
+
+	public void reveal() {
+		getWater().reveal();
+
+		var reveals = Direction.cornersAndAxis(getShip().getOrientation().equals(com.googlecode.lanterna.gui2.Direction.VERTICAL)); // Reveal these too
+
+		if (getShip().getBody().size() == 1) { // This shipSegment is alone, only reveal the corners
+			reveals = Direction.corners();
+		}
+
+		reveals.stream()
+			.map(dir -> dir.vector)
+			.map(Coord::convertToTerminalPosition)
+			.forEach(pos -> getWater().getSea().getWaterAt(getWater().getPosition().withRelative(pos)).ifPresent(Water::reveal));
+
+	}
+
+	/**
+	 * This is the effectless version, should only used by the ship
+	 * @param destroyed
+	 */
+	void setDestroyed(boolean destroyed) {
+		this.destroyed = destroyed;
 	}
 
 	/**
@@ -335,7 +395,7 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 			} else {
 				graphics.setBackgroundColor(Palette.SHIP_BACK);
 			}
-			if (shipSegment.damaged) {
+			if (shipSegment.destroyed) {
 				graphics.fill('▒');
 			} else {
 				graphics.fill(' ');

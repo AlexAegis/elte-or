@@ -3,9 +3,7 @@ package battleships.net.action;
 import battleships.Client;
 import battleships.Server;
 import battleships.model.Admiral;
-import battleships.model.Coord;
 import battleships.net.Connection;
-import battleships.net.result.AttackResult;
 import battleships.net.result.Response;
 
 import java.io.Serializable;

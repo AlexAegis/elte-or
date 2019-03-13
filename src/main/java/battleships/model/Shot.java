@@ -9,18 +9,24 @@ public class Shot implements Serializable {
 	private static final long serialVersionUID = 931846051594234878L;
 
 	private Admiral source;
+	private Admiral recipient;
 	private Coord target;
 	private ShotMarker result;
 
-	public Shot(Admiral source, Coord target) {
+	public Shot(Admiral source, Admiral recipient, Coord target) {
 		this.source = source;
+		this.recipient = recipient;
 		this.target = target;
 		this.result = ShotMarker.MISS;
 	}
 
-	public Shot(Admiral source, Coord target, ShotMarker result) {
-		this(source, target);
+	public Shot(Admiral source, Admiral recipient, Coord target, ShotMarker result) {
+		this(source,recipient, target);
 		this.result = result;
+	}
+
+	public Admiral getRecipient() {
+		return recipient;
 	}
 
 	public void print(String[][] into) {

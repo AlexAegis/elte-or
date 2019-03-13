@@ -6,9 +6,11 @@ import battleships.gui.Palette;
 import battleships.gui.container.GameWindow;
 import battleships.gui.container.Opponent;
 import battleships.gui.container.Sea;
+import battleships.gui.element.ShipSegment;
 import battleships.marker.ShotMarker;
 import battleships.net.action.Ready;
 import battleships.state.Phase;
+import com.googlecode.lanterna.TerminalPosition;
 
 import java.io.PrintStream;
 import java.io.Serializable;
@@ -38,6 +40,10 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 
 	public Admiral(String name) {
 		this.name = name;
+	}
+
+	public void removeAllShipModels() {
+		ships.clear();
 	}
 
 	/**
@@ -172,15 +178,15 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 
 	public static void place(Admiral admiral, Coord shipPiece, Shot shot) {
 		var toBeRemoved = new ArrayList<Ship>();
-		admiral.getShips().stream()
+		admiral.getShipModels().stream()
 				.filter(ship -> ship.getBody().keySet().stream().anyMatch(coord -> coord.neighbours(shipPiece)))
 				.reduce((acc, next) -> {
 					toBeRemoved.add(next);
 					acc.merge(next);
 					return acc;
 				}).ifPresentOrElse(ship -> ship.addBody(shipPiece, shot),
-						() -> admiral.getShips().add(new Ship(admiral, shipPiece, shot)));
-		toBeRemoved.forEach(admiral.getShips()::remove);
+						() -> admiral.getShipModels().add(new Ship(admiral, shipPiece, shot)));
+		toBeRemoved.forEach(admiral.getShipModels()::remove);
 	}
 
 	/**
@@ -193,7 +199,9 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 	 *
 	 */
 	public Shot shoot(Admiral admiral, Coord target) throws AlreadyShotException, BorderShotException {
-		var shot = new Shot(this, target, ShotMarker.MISS);
+		var shot = new Shot(this, admiral, target, ShotMarker.MISS);
+
+		System.out.println(">>>>>>>>>> HAS KNOWLEDGE?? " + knowledge.containsKey(admiral.getName()));
 		// knowledge.putIfAbsent(admiral, new Admiral(admiral.getName()));
 		if (knowledge.values().stream().flatMap(a -> a.ships.stream()).flatMap(ship -> ship.getBorder().stream())
 				.anyMatch(coord -> coord.equals(target))) {
@@ -207,18 +215,30 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 			shot.setResult(ShotMarker.HIT);
 		} else {
 			admiral.getMiss().add(shot);
-			knowledge.get(admiral).getMiss().add(shot);
+			knowledge.get(admiral.getName()).getMiss().add(shot);
 		}
 		if (shotResults.contains(false) || shotResults.contains(true)) {
-			place(knowledge.get(admiral), shot.getTarget(), shot);
+			place(knowledge.get(admiral.getName()), shot.getTarget(), shot);
 		}
 		return shot;
 	}
 
-
+	/**
+	 * Client method
+	 * When readying, send all the ship coordinates to the server
+	 *
+	 * @param ready
+	 * @return
+	 */
 	public Admiral setReady(boolean ready) {
 		if(whenPlayer != null) {
-			whenPlayer.getClient().sendRequest(new Ready(getName(), getName(), ready)).subscribe(res -> {
+			var shipCoords = getSea().getShips().stream()
+				.flatMap(ship -> ship.getBody().stream())
+				.map(ShipSegment::getRelativePosition)
+				.map(Coord::new)
+				.collect(Collectors.toList());
+
+			whenPlayer.getClient().sendRequest(new Ready(getName(), getName(), shipCoords, ready)).subscribe(res -> {
 				Logger.getGlobal().info("Notified the server about my ready state! " + res);
 			});
 		}
@@ -275,7 +295,7 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 		} else {
 			admiral = this;
 		}
-		return admiral.getShips().stream().map(Ship::toString).collect(Collectors.joining("\n"));
+		return admiral.getShipModels().stream().map(Ship::toString).collect(Collectors.joining("\n"));
 	}
 
 	/**
@@ -297,7 +317,7 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 	/**
 	 * @return the ships
 	 */
-	public List<Ship> getShips() {
+	public List<Ship> getShipModels() {
 		return ships;
 	}
 
@@ -314,7 +334,7 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 	}
 
 	public void finishBorders() {
-		ships.forEach(ship -> ship.finishBorder());
+		ships.forEach(Ship::finishBorder);
 	}
 
 	public Boolean isReady() {

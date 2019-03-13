@@ -6,20 +6,20 @@ import battleships.gui.element.Water;
 import battleships.gui.layout.SeaLayout;
 import battleships.gui.layout.ShipContainer;
 import battleships.gui.layout.WaterContainer;
+import battleships.marker.ShotMarker;
 import battleships.misc.Chainable;
 import battleships.model.Admiral;
+import battleships.model.ShipType;
+import battleships.model.Shot;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
-import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.Interactable.Result;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.logging.Logger;
@@ -30,12 +30,7 @@ import java.util.stream.Stream;
 
 public class Sea extends Panel implements Chainable, ShipContainer, WaterContainer {
 
-
-	private TextColor colorWater = TextColor.Factory.fromString("#5555BB");
-
 	private Drawer drawer;
-
-	private TerminalPosition cursor;
 
 	private Integer width = 10;
 	private Integer height = 10;
@@ -45,16 +40,25 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	private Ship focused;
 
 	private Admiral admiral;
+	private Water lastFocused;
 
 	public Sea(TerminalSize size, Drawer drawer) {
-		this(size);
+		this(size, drawer, false);
+	}
+
+	public Sea(TerminalSize size, Drawer drawer, Boolean initiallyRevealed) {
+		this(size, initiallyRevealed);
 		setDrawer(drawer);
 		drawer.setSea(this);
 	}
 
 	public Sea(TerminalSize size) {
+		this(size, false);
+	}
+
+	public Sea(TerminalSize size, Boolean initiallyRevealed) {
 		setLayoutManager(new SeaLayout(size));
-		IntStream.range(0, width * height).forEach(i -> addComponent(new Water(this)));
+		IntStream.range(0, width * height).forEach(i -> addComponent(new Water(this, initiallyRevealed)));
 		setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER, true, true,
 				1, 1));
 		setPreferredSize(size);
@@ -108,6 +112,9 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 		doExplosion(ripple(water.getPosition(), 1, 3, Direction.HORIZONTAL, true));
 	}
 
+	public void sendRipple(TerminalPosition position) {
+		sendRipple(position, 0);
+	}
 	public void sendRipple(TerminalPosition position, long delay) {
 		doRipple(ripple(position, 1, 4, Direction.HORIZONTAL, false), delay);
 	}
@@ -118,6 +125,13 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 
 	public void sendRipple(Ship ship, long delay) {
 		doRipple(ripple(ship.getPosition(), ship.getType().getLength(), 4, ship.getOrientation(), false), delay);
+	}
+
+	public void doTremor() {
+		getWaters().forEach(water -> {
+			water.startRipple(4); // 4 is a small wave
+			water.invalidate();
+		});
 	}
 
 	public SeaContainer getSeaContainer() {
@@ -187,13 +201,13 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	public Boolean placementValid(Ship ship) {
 		var takenPositions = getShips().stream()
 				.flatMap(seaShip -> seaShip.equals(ship) ? Stream.empty() : seaShip.getBody().stream()) // Every other ship
-				.map(bodyPieceFlattener).collect(Collectors.toSet());
+				.map(bodyPieceFlattener).map(AbstractMap.SimpleImmutableEntry::getKey).collect(Collectors.toSet());
 
 		var borderPositions = getShips().stream()
 				.flatMap(seaShip -> seaShip.equals(ship) ? Stream.empty() : seaShip.getBorder().stream()) // Every other ship
 				.collect(Collectors.toSet());
 
-		var placementPositions = ship.getBody().stream().map(bodyPieceFlattener).collect(Collectors.toSet());
+		var placementPositions = ship.getBody().stream().map(bodyPieceFlattener).map(AbstractMap.SimpleImmutableEntry::getKey).collect(Collectors.toSet());
 
 		var tps = takenPositions.size();
 		var bps = borderPositions.size();
@@ -205,8 +219,8 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	}
 
 
-	private static final Function<ShipSegment, TerminalPosition> bodyPieceFlattener =
-			bodyPiece -> bodyPiece.getPosition().withRelative(bodyPiece.getParent().getPosition());
+	private static final Function<ShipSegment, AbstractMap.SimpleImmutableEntry<TerminalPosition, ShipSegment>> bodyPieceFlattener =
+			bodyPiece -> new AbstractMap.SimpleImmutableEntry<>(bodyPiece.getRelativePosition(), bodyPiece);
 
 	public static List<TerminalPosition> nthRipple(TerminalPosition anchor, Integer count, Integer iteration,
 			Direction orientaton) {
@@ -326,14 +340,25 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 		return width;
 	}
 
+	public void setLastFocused(Water lastFocused) {
+		this.lastFocused = lastFocused;
+	}
+
+	public Water getLastFocused() {
+		return lastFocused;
+	}
+
 	public Result takeFocus() {
 		return getAdmiral().whenOpponent().map(opponent -> {
 			System.out.println("LETS DO SOME TARGETING!!!");
 			opponent.getLabel();
 
+			if(getLastFocused() == null) {
+				setLastFocused(getWaters().get(getWaters().size() / 2));
+			}
 			if(!getWaters().isEmpty()) {
 				System.out.println("WATEERRRS SIZE" + getWaters().size() + " focus the " + getWaters().size() / 2);
-				getWaters().get(getWaters().size() / 2).takeFocus(); // Target the center first
+				getLastFocused().takeFocus(); // Target the center first
 			}
 			return Result.HANDLED;
 		}).orElse(getAdmiral().whenPlayer().map(player -> {
@@ -390,14 +415,115 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	}
 
 	public void cross(Water water) {
+		cross(water, false);
+	}
+
+	public void error(Water water) {
+		cross(water, true);
+	}
+
+	public void cross(Water water, Boolean isError) {
 		if(previousCross != null) {
 			previousCross.forEach(Water::unCross);
 		}
+		setLastFocused(water);
 		previousCross = getWaters().stream().filter(seaWater ->
 			seaWater.getPosition().getColumn() == water.getPosition().getColumn()
 				|| seaWater.getPosition().getRow() == water.getPosition().getRow())
-			.peek(Water::cross)
+			.peek(w -> w.cross(isError))
 			.collect(Collectors.toList());
 		getSeaContainer().highlight(water.getPosition());
+	}
+
+
+
+	public Optional<Water> getWaterAt(TerminalPosition position) {
+		return getWaters().stream().filter(water -> water.getPosition().equals(position)).findFirst();
+	}
+
+
+	/**
+	 * TODO: HEAVY WORK NEEDED HERE
+	 * @param position
+	 */
+	public void revealNewShipSegment(TerminalPosition position) {
+		// Only reveal if needed, it there is a ship there already don't do it
+		if(!getWaterAt(position).map(Water::getShipSegment).isPresent()) {
+			System.out.println("<<<<NEED TO REVEAL!! ADMIRAL IS PROBABLY AN OPPONENT!!!" + getAdmiral());
+			// TODO: IF TWO SHIPS ARE NEIGHBOURING THIS THEN JOIN THEM!!!!!
+			// If any of the ships are neighbouring this, attach this segment to that
+			var borderingShips = this.getShips().stream().filter(ship -> ship.getBorder().contains(position)).sorted().collect(Collectors.toList());
+
+			if(borderingShips.size() > 1) {
+				// Merge ships on position, since it's sorted, its always the first one who should be the head
+
+				borderingShips.get(0).merge(borderingShips.get(1), position);
+				borderingShips.get(0).reveal(position);
+
+			} else if(borderingShips.size() == 1) {
+
+				borderingShips.get(0).attachBodyOn(position);
+				borderingShips.get(0).reveal(position);
+			} else {
+				var ship = new Ship(ShipType.BOAT);
+				ship.setPosition(position);
+				addComponent(ship);
+				ship.updateWaterRelations();
+				ship.reveal(position);
+			}
+		} else {
+			System.out.println("<<<<NO NEED TO REVEAL!! ADMIRAL IS PROBABLY THE PLAYER!!!" + getAdmiral());
+		}
+	}
+
+
+	/**
+	 * TODO: HEAVY WORK NEEDED HERE
+	 *
+	 * This sea is either the players or the opponents, the shot logic should be ambiguous
+	 * @param shot
+	 */
+	public void recieveShot(Shot shot) {
+		var target = shot.getTarget().convertToTerminalPosition();
+		switch (shot.getResult()) {
+			case HIT:
+				revealNewShipSegment(target);
+				getWaterAt(target).map(Water::getShipSegment).ifPresentOrElse(ShipSegment::destroy, () -> {
+					System.out.println("IT SOHULD BE THERE!!!!!!!!!!!/////");
+				});
+				break;
+
+			case HIT_AND_FINISHED:
+				revealNewShipSegment(target);
+				getWaterAt(target).map(Water::getShipSegment).map(ShipSegment::getShip).ifPresentOrElse(Ship::destroy, () -> {
+					System.out.println("IT SHIP SOHULD BE THERE!!!!!!!!!!!/////");
+				});
+				break;
+			case MISS:
+				getAdmiral().whenPlayer().ifPresent(player -> { // If its our sea, show it precisely
+					sendRipple(target);
+				});
+
+				getAdmiral().whenOpponent().ifPresent(opponent -> { // if its an opponent...
+					if (opponent.getGame().getAdmiral().getName().equals(shot.getSource().getName())) { // And the shot was by me, also show precisely
+						sendRipple(target);
+					} else { // Else its a tremor
+						doTremor();
+					}
+				});
+				break;
+		}
+
+
+	}
+
+	/**
+	 * If the water is already revealed then its not a valid shot position
+	 * if it can't be found then its not valid either
+	 * @param position
+	 * @return
+	 */
+	public Boolean shotValid(TerminalPosition position) {
+		return !getWaterAt(position).map(Water::getRevealed).orElse(true);
 	}
 }

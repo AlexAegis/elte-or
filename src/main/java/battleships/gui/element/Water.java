@@ -2,7 +2,9 @@ package battleships.gui.element;
 
 import battleships.gui.Palette;
 import battleships.gui.container.Sea;
-import com.googlecode.lanterna.SGR;
+import battleships.model.Coord;
+import battleships.model.Shot;
+import battleships.net.action.Turn;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
@@ -12,25 +14,52 @@ import com.googlecode.lanterna.gui2.InteractableRenderer;
 import com.googlecode.lanterna.gui2.TextGUIGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
 import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.PublishSubject;
 
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 public class Water extends AbstractInteractableComponent<Water> {
 	private Sea sea;
 
 	private TextColor currentFore = Palette.WATER;
 	private TextColor currentBack = Palette.WATER;
+	private char symbol = ' ';
 
 	private Boolean isCross = false;
 	private Boolean isExploding = false;
 	private Boolean isRippling = false;
+	private Boolean revealed = false;
+	private PublishSubject<Boolean> endNoise = PublishSubject.create();
+	private ShipSegment shipSegment;
+
+
+	public Boolean getRevealed() {
+		return revealed;
+	}
 
 	/**
 	 * @param sea
 	 */
-	public Water(Sea sea) {
+	public Water(Sea sea, Boolean initiallyRevealed) {
 		this.sea = sea;
+		this.revealed = initiallyRevealed;
 		setSize(new TerminalSize(1, 1));
+		if(!initiallyRevealed) {
+			Observable.interval(100, TimeUnit.MILLISECONDS)
+				.takeUntil(endNoise)
+				.subscribeOn(Schedulers.computation())
+				.doFinally(() -> symbol = ' ').subscribe(next -> {
+				var num = (next * getPosition().getRow() * getPosition().getColumn());
+				if(num % 3 < 2) { // A bit of randomness
+					symbol = '▒';
+				} else {
+					symbol = '░';
+				}
+			});
+		}
+
 	}
 
 	public void startExplosion(Integer wave) {
@@ -42,6 +71,7 @@ public class Water extends AbstractInteractableComponent<Water> {
 			} else {
 				currentFore = Palette.WATER;
 				currentBack = Palette.WATER;
+				symbol = ' ';
 			}
 			invalidate();
 		}).subscribe(next -> {
@@ -49,34 +79,43 @@ public class Water extends AbstractInteractableComponent<Water> {
 				if(next == 0) {
 					currentFore = Palette.EXPLOSION_CENTER;
 					currentBack = Palette.EXPLOSION_CENTER;
+					symbol = '▒';
 				} else if(next == 1) {
 					currentFore = Palette.EXPLOSION_CENTER;
 					currentBack = Palette.EXPLOSION_OUTER;
+					symbol = '░';
 				} else {
 					currentFore = Palette.EXPLOSION_OUTER;
 					currentBack = Palette.SMOKE_DARK;
+					symbol = ' ';
 				}
 			} else if (wave == 1) {
 				if(next == 0) {
 					currentFore = Palette.EXPLOSION_CENTER;
 					currentBack = Palette.EXPLOSION_OUTER;
+					symbol = '░';
 				} else if(next == 1) {
 					currentFore = Palette.EXPLOSION_OUTER;
 					currentBack = Palette.SMOKE_DARK;
+					symbol = '░';
 				} else {
 					currentFore = Palette.SMOKE;
 					currentBack = Palette.SMOKE;
+					symbol = ' ';
 				}
 			} else {
 				if(next == 0) {
 					currentFore = Palette.EXPLOSION_OUTER;
 					currentBack = Palette.SMOKE_DARK;
+					symbol = '░';
 				} else if(next == 1) {
 					currentFore = Palette.SMOKE_DARK;
 					currentBack = Palette.SMOKE;
+					symbol = ' ';
 				} else {
 					currentFore = Palette.SMOKE_DARK;
 					currentBack = Palette.SMOKE;
+					symbol = '░';
 				}
 			}
 			invalidate();
@@ -94,6 +133,7 @@ public class Water extends AbstractInteractableComponent<Water> {
 				} else {
 					currentFore = Palette.WATER;
 					currentBack = Palette.WATER;
+					symbol = ' ';
 				}
 			}
 			invalidate();
@@ -102,20 +142,25 @@ public class Water extends AbstractInteractableComponent<Water> {
 				if(next == 0) {
 					currentFore = Palette.WATER_RIPPLE_1;
 					currentBack = Palette.WATER_RIPPLE_2;
+					symbol = '▒';
 				} else if(next == 1) {
 					currentFore = Palette.WATER_RIPPLE_0;
 					currentBack = Palette.WATER_RIPPLE_1;
+					symbol = '░';
 				} else {
 					currentFore = Palette.WATER_RIPPLE_1;
 					currentBack = Palette.WATER_RIPPLE_0;
+					symbol = ' ';
 				}
 			} else {
 				if(next == 0) {
 					currentFore = Palette.WATER_RIPPLE_0;
 					currentBack = Palette.WATER_RIPPLE_1;
+					symbol = '░';
 				} else if(next == 1) {
 					currentFore = Palette.WATER_RIPPLE_0;
 					currentBack = Palette.WATER_RIPPLE_0;
+					symbol = ' ';
 				}
 			}
 
@@ -127,6 +172,7 @@ public class Water extends AbstractInteractableComponent<Water> {
 	public Water takeFocus() {
 		currentBack = Palette.EXPLOSION_CENTER;
 		getSea().cross(this);
+
 		invalidate();
 		return super.takeFocus();
 	}
@@ -186,8 +232,29 @@ public class Water extends AbstractInteractableComponent<Water> {
 			case Enter:
 				System.out.println("BOOM!");
 
-				sea.sendRipple(this, 400);
-				sea.sendExplosion(this);
+				// If the water already tested that its empty, just do an error cross
+				// If any of the water tiles in 1 border away of this contains a ship, it's surely empty, dont send anything, just an error
+				// Or there is already a damaged ship part on this tile, then too, skip.
+
+				// If not, then send the request. The request will either return empty (mark the water wiuth the normal watercolor)
+
+				if(getSea().shotValid(getPosition())) { // If shot is valid
+					getSea().getAdmiral().whenOpponent().ifPresent(opponent -> {
+						System.out.println("YE ITS OPPONNNEBT");
+						var me = opponent.getGame().getAdmiral();
+						var op = opponent.getAdmiral();
+						var shot = new Shot(me, op, new Coord(getPosition()));
+						opponent.getGame().getClient().sendRequest(
+							new Turn(me.getName(), op.getName(),
+								shot
+							)).subscribe(attackResult -> Logger.getGlobal().info("Shot sent, recieved ack: " + attackResult));
+					}); // The actual marking and client update will come from another Turn request sent back by the server as the server needs to update everybody about the results anyway
+				} else {
+					getSea().error(this);
+				}
+				unCross();
+
+
 				return Result.HANDLED;
 			case Tab:
 				getSea().getAdmiral().whenOpponent().ifPresent(opponent ->
@@ -217,13 +284,44 @@ public class Water extends AbstractInteractableComponent<Water> {
 		invalidate();
 	}
 
-	public void cross() {
+	public void cross() { cross(false); }
+
+	public void cross(Boolean isError) {
 		this.isCross = true;
 		if(!isExploding && !isRippling) {
-			this.currentBack = Palette.WATER_RIPPLE_1;
-			this.currentFore = Palette.WATER_RIPPLE_1;
+			if(isError) {
+				this.currentBack = Palette.EXPLOSION_OUTER;
+				this.currentFore = Palette.EXPLOSION_OUTER;
+			} else {
+				this.currentBack = Palette.WATER_RIPPLE_1;
+				this.currentFore = Palette.WATER_RIPPLE_1;
+			}
 		}
 		invalidate();
+	}
+
+	public void reveal() {
+		revealed = true;
+		endNoise.onNext(true);
+	}
+
+
+	public ShipSegment getShipSegment() {
+		return shipSegment;
+	}
+
+	public void setShipSegment(ShipSegment shipSegment) {
+		setShipSegment(shipSegment, true);
+	}
+
+	public void setShipSegment(ShipSegment shipSegment, Boolean otherSide) {
+		if(this.shipSegment != null) { // Detach the old if there's one
+			this.shipSegment.setWater(null);
+		}
+		if(otherSide && shipSegment != null) { // Attach the new if there's one
+			shipSegment.setWater(this, false);
+		}
+		this.shipSegment = shipSegment;
 	}
 
 	/**
@@ -254,19 +352,23 @@ public class Water extends AbstractInteractableComponent<Water> {
 				graphics.setForegroundColor(water.currentFore);
 			}
 
+
+			graphics.fill(water.symbol);
+
+/*
 			if (water.currentFore.equals(Palette.WATER_RIPPLE_0) || water.currentFore.equals(Palette.SMOKE_DARK)) {
-				graphics.fill('░');
+				//graphics.fill('░');
 			} else if (water.currentFore.equals(Palette.WATER_RIPPLE_1)
 				|| water.currentFore.equals(Palette.SMOKE)
 				|| water.currentFore.equals(Palette.EXPLOSION_CENTER)
 			) {
-				graphics.fill('▒');
+				//graphics.fill('▒');
 			} else if(water.currentFore.equals(Palette.EXPLOSION_CENTER)) {
-				graphics.enableModifiers(SGR.BLINK);
-				graphics.fill('░');
+				// graphics.enableModifiers(SGR.BLINK);
+				//graphics.fill('░');
 			} else {
-				graphics.fill(' ');
-			}
+				//graphics.fill(' ');
+			}*/
 		}
 
 	}
