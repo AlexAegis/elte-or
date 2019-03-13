@@ -459,11 +459,13 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 				// Merge ships on position, since it's sorted, its always the first one who should be the head
 				System.out.println(">>>>>>>>>BORDERING SHIPS 2");
 				borderingShips.get(0).merge(borderingShips.get(1), position);
+				invalidate();
 				newSegment = Optional.of(borderingShips.get(0).reveal(position));
 
 			} else if(borderingShips.size() == 1) {
 				System.out.println(">>>>>>>>>>>BORDERING SHIPS 1");
 				borderingShips.get(0).attachBodyOn(position);
+				invalidate();
 				newSegment = Optional.of(borderingShips.get(0).reveal(position));
 			} else {
 				System.out.println(">>>>>>>>>>>BORDERING SHIPS 0");
@@ -471,6 +473,7 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 				ship.setPosition(position);
 				addComponent(ship);
 				//ship.updateWaterRelations();
+				invalidate();
 				newSegment = Optional.of(ship.reveal(position));
 				ship.invalidate();
 

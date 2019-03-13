@@ -12,6 +12,7 @@ import com.googlecode.lanterna.gui2.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -160,6 +161,9 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 			body.forEach(this::addComponent);
 			setPosition(position);
 		} else {
+			var body = getBody();
+			removeAllComponents();
+			body.forEach(this::addComponent);
 			addComponent(new ShipSegment(this));
 		}
 
@@ -204,8 +208,14 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 
 
 	public void setLayoutTo(Direction direction) {
-		setLayoutManager(Direction.VERTICAL.equals(direction) ? Ship.VERTICAL : Ship.HORIZONTAL);
-		setSize(getLayoutManager().getPreferredSize(new ArrayList<>(getSegments())));
+		Runnable call = () -> {
+			setLayoutManager(Direction.VERTICAL.equals(direction) ? Ship.VERTICAL : Ship.HORIZONTAL);
+			setSize(getLayoutManager().getPreferredSize(new ArrayList<>(getSegments())));
+			orientation = direction;
+		};
+		Optional.ofNullable(getTextGUI())
+			.map(TextGUI::getGUIThread)
+			.ifPresentOrElse(textGUIThread -> textGUIThread.invokeLater(call), call);
 		orientation = direction;
 	}
 

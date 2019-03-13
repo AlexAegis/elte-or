@@ -424,6 +424,8 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 				graphics.setBackgroundColor(Palette.SHIP_BACK);
 			}
 			if (shipSegment.destroyed) {
+				graphics.setBackgroundColor(shipSegment.currentHeld);
+				graphics.setBackgroundColor(shipSegment.currentHighlighted);
 				graphics.fill('▒');
 			} else {
 				graphics.fill(' ');

@@ -34,5 +34,10 @@ public class Disconnect extends Request<Response> implements Serializable {
 		});
 	}
 
+	@Override
+	public Class<Response> getResponseClass() {
+		return Response.class;
+	}
+
 
 }

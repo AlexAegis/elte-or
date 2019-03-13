@@ -42,10 +42,8 @@ public class Server implements Runnable {
 	@Option(names = {"-m", "--mode"}, paramLabel = "<mode>", description = "Game mode selection!", defaultValue = "TURN")
 	private Mode mode;
 
-
 	@Option(names = {"-w", "--width"}, paramLabel = "<width>", description = "Height of the game area", defaultValue = "10")
 	private Integer width;
-
 
 	@Option(names = {"-h", "--height"}, paramLabel = "<height>", description = "Width of the game area", defaultValue = "10")
 	private Integer height;
@@ -136,10 +134,12 @@ public class Server implements Runnable {
 		if (currentAdmiral == null) {
 			turnAdmirals();
 		}
+		Logger.getGlobal().info("Current admiral is: " + currentAdmiral);
 		return getConnectedAdmirals().get(currentAdmiral).getAdmiral();
 	}
 
 	public void turnAdmirals() {
+		Logger.getGlobal().info("Admirals turning!");
 		nextAdmiralInTurn().ifPresent(this::setCurrentAdmiral);
 	}
 
@@ -147,18 +147,22 @@ public class Server implements Runnable {
 		if (currentAdmiral == null) {
 			return Optional.ofNullable(getConnectedAdmirals().get(getConnectedAdmirals().keySet().stream().sorted().collect(Collectors.toList()).get(0)).getAdmiral());
 		} else {
-			var thisOne = false;
+			var nextOne = false;
 			for (var admiral : getConnectedAdmirals().keySet().stream().sorted().collect(Collectors.toList())) {
-				if (thisOne) {
+
+				if (nextOne) {
+					System.out.println("this.is it!" + admiral);
 					return Optional.ofNullable(getConnectedAdmirals().get(admiral).getAdmiral());
 				}
 				if (admiral.equals(currentAdmiral)) {
-					thisOne = true;
+					nextOne = true;
+					System.out.println("Next gonna be, not this: " + currentAdmiral);
 				}
 			}
-			if(!thisOne) {
+			if(!nextOne) {
 				currentAdmiral = null;
-				return nextAdmiralInTurn();
+				System.out.println("No one was it..");
+				return Optional.ofNullable(getCurrentAdmiral());
 			}
 			return Optional.empty();
 		}

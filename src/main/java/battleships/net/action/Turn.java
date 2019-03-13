@@ -6,6 +6,7 @@ import battleships.model.Admiral;
 import battleships.model.Shot;
 import battleships.net.Connection;
 import battleships.net.result.TurnResult;
+import battleships.state.Mode;
 import battleships.state.Phase;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
@@ -53,15 +54,12 @@ public class Turn extends Request<TurnResult> implements Serializable {
 					server.getEveryConnectedAdmirals().forEach(conn -> {
 						Admiral nextTurnAdmiral = server.getCurrentAdmiral();
 
-						/* TODO: BATTLE ROYALE
-						if(Mode.ROYALE.equals(server.getMode())) {
-							nextTurnAdmiral = conn.getAdmiral(); // Free for all, bitches :)
-						}*/
-						Observable.timer(100, TimeUnit.MILLISECONDS).subscribeOn(Schedulers.computation())
-							.switchMap(next -> conn.send(new Turn(conn.getAdmiral().getName(), nextTurnAdmiral.getName(), result)))
-							.subscribe(ack -> {
-								Logger.getGlobal().info("Sent turn data, got ack: " + ack);
-							});
+						// TODO: BATTLE ROYALE
+						//Observable.timer(100, TimeUnit.MILLISECONDS).subscribeOn(Schedulers.computation())
+						conn.send(new Turn(conn.getAdmiral().getName(), Mode.ROYALE.equals(server.getMode()) ? conn.getAdmiral().getName() : nextTurnAdmiral.getName(), result))
+						.subscribe(ack -> {
+							Logger.getGlobal().info("Sent turn data, got ack: " + ack);
+						});
 						// They will process the shot and do accordingly
 					});
 
@@ -76,50 +74,59 @@ public class Turn extends Request<TurnResult> implements Serializable {
 		} else {
 			return answerFromClient.map(client -> {
 				// Client got turn data, set the opponents graphics accordingly, or start turn for yourself
-				var isItMe = client.getGame().getAdmiral().getName().equals(getWho());
-				if (isItMe) {
-					client.getGame().getAdmiral().setPhase(Phase.ACTIVE);
-				} else {
-					client.getGame().getAdmiral().setPhase(Phase.GAME);
-				}
-				client.getGame().getAdmiral().getKnowledge().forEach((k, a) -> {
-					if (k.equals(getWho())) {
-						a.setPhase(Phase.ACTIVE);
+				client.getGui().getGUIThread().invokeLater(() -> {
+					var isItMe = client.getGame().getAdmiral().getName().equals(getWho());
+					if (isItMe) {
+						client.getGame().getAdmiral().setPhase(Phase.ACTIVE);
 					} else {
-						a.setPhase(Phase.GAME);
+						client.getGame().getAdmiral().setPhase(Phase.GAME);
+					}
+					client.getGame().getAdmiral().getKnowledge().forEach((k, a) -> {
+						if (k.equals(getWho())) {
+							a.setPhase(Phase.ACTIVE);
+						} else {
+							a.setPhase(Phase.GAME);
+						}
+					});
+					if (shot != null) {
+						// Client recieved a shot if it missed just show a ripple
+						// If it hit, explode
+
+						if (client.getGame().getAdmiral().getName().equals(shot.getSource().getName())) {
+							// If it was me who shoot that shot
+							System.out.println("<<<<< If it was me who shoot that shot");
+							client.getGame().getAdmiral().getKnowledge().get(shot.getRecipient().getName()).whenOpponent().ifPresentOrElse(opponent -> {
+								System.out.println("<<<<< If it was me who shoot that shot IT IS AN OPPONENT");
+								// And we got an opponent for it (We should!)
+
+								opponent.getAdmiral().getSea().recieveShot(shot);
+
+							}, () -> Logger.getGlobal().severe("Opponent not found for shot!"));
+
+
+						} else if (client.getGame().getAdmiral().getName().equals(shot.getRecipient().getName())) {
+							// If someone else shot that shot and it hit me, process it
+							client.getGame().getAdmiral().getSea().recieveShot(shot);
+						} else if (client.getGame().getAdmiral().getKnowledge().containsKey(shot.getRecipient().getName())) {
+							// If they shot somebody else, show a ripple on all the tiles (flash)
+							System.out.println("<<<<<" +
+								"d THEY SHOT A KNOWLEDGE OF MINE IT SHOULD BE AN OPPONENT");
+							client.getGame().getAdmiral().getKnowledge().get(shot.getRecipient().getName()).whenOpponent().ifPresent(opponent -> {
+								System.out.println("<<<<< IT IS AN OPPONENT");
+								opponent.getAdmiral().getSea().doTremor();
+							});
+						}
 					}
 				});
-				if(shot != null) {
-					// Client recieved a shot if it missed just show a ripple
-					// If it hit, explode
-
-					if(client.getGame().getAdmiral().getName().equals(shot.getSource().getName())) {
-						// If it was me who shoot that shot
-						System.out.println("<<<<< If it was me who shoot that shot");
-						client.getGame().getAdmiral().getKnowledge().get(shot.getRecipient().getName()).whenOpponent().ifPresentOrElse(opponent -> {
-							System.out.println("<<<<< If it was me who shoot that shot IT IS AN OPPONENT");
-							// And we got an opponent for it (We should!)
-
-							opponent.getAdmiral().getSea().recieveShot(shot);
-						}, () -> Logger.getGlobal().severe("Opponent not found for shot!"));
-
-
-					} else if(client.getGame().getAdmiral().getName().equals(shot.getRecipient().getName())) {
-						// If someone else shot that shot and it hit me, process it
-						client.getGame().getAdmiral().getSea().recieveShot(shot);
-					} else if(client.getGame().getAdmiral().getKnowledge().containsKey(shot.getRecipient().getName())) {
-						// If they shot somebody else, show a ripple on all the tiles (flash)
-						System.out.println("<<<<< THEY SHOT A KNOWLEDGE OF MINE IT SHOULD BE AN OPPONENT");
-						client.getGame().getAdmiral().getKnowledge().get(shot.getRecipient().getName()).whenOpponent().ifPresent(opponent -> {
-							System.out.println("<<<<< IT IS AN OPPONENT");
-							opponent.getAdmiral().getSea().doTremor();
-						});
-					}
-				}
 				return new TurnResult(getRequester(), getWho(), shot);
 			});
 		}
 
+	}
+
+	@Override
+	public Class<TurnResult> getResponseClass() {
+		return TurnResult.class;
 	}
 
 }

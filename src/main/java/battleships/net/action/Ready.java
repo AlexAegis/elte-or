@@ -66,18 +66,12 @@ public class Ready extends Request<ReadyResult> implements Serializable {
 					server.getEveryConnectedAdmirals().forEach(conn -> {
 						Admiral firstTurnAdmiral = server.getCurrentAdmiral();
 
-						/* TODO: BATTLE ROYALE
-						if(Mode.ROYALE.equals(server.getMode())) {
-							firstTurnAdmiral = conn.getAdmiral(); // Free for all, bitches :)
-						}*/
-
+						// TODO: BATTLE ROYALE
 						// A little delay before broadcasting
-
-						Observable.timer(0, TimeUnit.MILLISECONDS).subscribeOn(Schedulers.computation())
-							.switchMap(next -> conn.send(new Turn(conn.getAdmiral().getName(), firstTurnAdmiral.getName(), null)))
-							.subscribe(ack -> {
-								Logger.getGlobal().info("Sent turn data, got ack: " + ack);
-							});
+						 conn.send(new Turn(conn.getAdmiral().getName(),Mode.ROYALE.equals(server.getMode()) ? conn.getAdmiral().getName() : firstTurnAdmiral.getName(), null))
+						.subscribe(ack -> {
+							Logger.getGlobal().info("Sent turn data, got ack: " + ack);
+						});
 
 					});
 				} else {
@@ -98,18 +92,18 @@ public class Ready extends Request<ReadyResult> implements Serializable {
 			return answerFromClient.map(client -> {
 				System.out.println("GOT A GUY WHO IS READY OR NOT!!! req: " + getRequester() + " who: " + getWho()
 						+ "isReady " + ready);
-
-				System.out.println("client: " + client);
-				System.out.println("client.getGame(): " + client.getGame());
-				System.out.println("client.getGame().getAdmiral(): " + client.getGame().getAdmiral());
-				System.out.println("client.getGame().getAdmiral().getKnowledge(): " + client.getGame().getAdmiral().getKnowledge());
-				System.out.println("getWho(): " + getWho());
-				System.out.println("client.getGame().getAdmiral().getKnowledge().get(getWho()): " + client.getGame().getAdmiral().getKnowledge().get(getWho()));
-				client.getGame().getAdmiral().getKnowledge().get(getWho()).setReady(isReady());
+				client.getGui().getGUIThread().invokeLater(() -> {
+					client.getGame().getAdmiral().getKnowledge().get(getWho()).setReady(isReady());
+				});
 				return new ReadyResult(getRequester(), isReady());
 			});
 		}
 
+	}
+
+	@Override
+	public Class<ReadyResult> getResponseClass() {
+		return ReadyResult.class;
 	}
 
 

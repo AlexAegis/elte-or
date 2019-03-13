@@ -57,7 +57,7 @@ public class Connection extends Observable<Packet> implements AutoCloseable {
 	protected void subscribeActual(Observer<? super Packet> observer) {
 		Logger.getGlobal().info("Listener started");
 		try {
-			while (true) { // !isClosed() force me baby
+			while (!isClosed()) {
 				System.out.println("STILL GOING BABY isClosed(): " + isClosed());
 				var packet = (Packet) ois.readObject();
 				System.out.println("ACTUALLY READ A PAKK! " + packet);
@@ -78,11 +78,11 @@ public class Connection extends Observable<Packet> implements AutoCloseable {
 				server.getConnectedAdmirals().remove(getAdmiral().getName());
 				server.getEveryConnectedAdmirals().forEach(connection -> connection.send(new Disconnect(getAdmiral().getName(), getAdmiral())).subscribe(Response::ack));
 			});
-			observer.onComplete();
+			//observer.onComplete();
 		} finally {
 			Logger.getGlobal().info("Client disconnected, trying to reconnect..");
 			optionalClient.ifPresent(Client::showConnectWindow);
-			observer.onComplete();
+			//observer.onComplete();
 		}
 
 	}
@@ -127,7 +127,10 @@ public class Connection extends Observable<Packet> implements AutoCloseable {
 			oos.flush();
 			Logger.getGlobal().log(Level.INFO, "Packet sent as request: {0}", request);
 			listenerSource.onNext(handledResponse);
-			return (Observable<T>) listener.take(1);
+			return listener
+				.filter(n -> n.getClass().equals(request.getResponseClass()))
+				.cast(request.getResponseClass())
+				.take(1);
 		} catch (IOException e) {
 			Logger.getGlobal().info("Connection failed.. sending empty");
 			return Observable.empty();

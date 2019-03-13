@@ -36,4 +36,6 @@ public abstract class Request<T extends Response> extends Packet implements Seri
 
 	public abstract Optional<T> response(Connection connection, Optional<Server> answerFromServer,
 			Optional<Client> answerFromClient);
+
+	public abstract Class<T> getResponseClass();
 }

@@ -66,19 +66,25 @@ public class Register extends Request<RegisterResult> implements Serializable {
 			});
 		} else {
 			return answerFromClient.map(client -> {
-				// A new opponent arrived
-				Logger.getGlobal().info("A new opponent registered on the server " + this.toString());
-				if (!client.getGame().getAdmiral().getName().equals(getWho().getName())) {
-					client.getGame().getOpponentBar().addOpponent(getWho());
-					return new RegisterResult(getRequester(), null, null);
-				} else {
-					System.out.println("Spiderman.jpg");
-				}
-				return new RegisterResult(null, null, null);
+				client.getGui().getGUIThread().invokeLater(() -> {
+					// A new opponent arrived
+					Logger.getGlobal().info("A new opponent registered on the server " + this.toString());
+					if (!client.getGame().getAdmiral().getName().equals(getWho().getName())) {
+						client.getGame().getOpponentBar().addOpponent(getWho());
+					} else {
+						System.out.println("Spiderman.jpg");
+					}
+				});
+				return new RegisterResult(getRequester(), null, null);
 
 			});
 		}
 
+	}
+
+	@Override
+	public Class<RegisterResult> getResponseClass() {
+		return RegisterResult.class;
 	}
 
 	/**
