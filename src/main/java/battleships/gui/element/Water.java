@@ -32,7 +32,7 @@ public class Water extends AbstractInteractableComponent<Water> {
 	private Boolean isRippling = false;
 	private Boolean revealed = false;
 	private PublishSubject<Boolean> endNoise = PublishSubject.create();
-	private ShipSegment shipSegment;
+	private char debug = ' ';
 
 	public Boolean getRevealed() {
 		return revealed;
@@ -49,7 +49,6 @@ public class Water extends AbstractInteractableComponent<Water> {
 		}
 		setSize(new TerminalSize(1, 1));
 		if(!initiallyRevealed) {
-			System.out.println("Lets start!!");
 			Observable.interval(100, TimeUnit.MILLISECONDS)
 				.takeUntil(endNoise)
 				.subscribeOn(Schedulers.computation())
@@ -77,7 +76,7 @@ public class Water extends AbstractInteractableComponent<Water> {
 			if (isCross) {
 				cross();
 			} else {
-				resetDefaultColorAndSymbol();
+				resetDefaultColorAndSymbol(true);
 			}
 			invalidate();
 		}).subscribe(next -> {
@@ -152,7 +151,7 @@ public class Water extends AbstractInteractableComponent<Water> {
 				if (isCross) {
 					cross();
 				} else {
-					resetDefaultColorAndSymbol();
+					resetDefaultColorAndSymbol(true);
 				}
 			}
 			invalidate();
@@ -185,12 +184,6 @@ public class Water extends AbstractInteractableComponent<Water> {
 
 			invalidate();
 		});
-	}
-
-	@Override
-	public Water takeFocus() {
-		// currentBack = Palette.EXPLOSION_CENTER;
-		return super.takeFocus();
 	}
 
 	/**
@@ -317,24 +310,20 @@ public class Water extends AbstractInteractableComponent<Water> {
 		invalidate();
 	}
 
-
-	public ShipSegment getShipSegment() {
-		return shipSegment;
+	public void setSymbol(char symbol) {
+		this.symbol = symbol;
 	}
 
-	public void setShipSegment(ShipSegment shipSegment) {
-		setShipSegment(shipSegment, true);
+	public void setCurrentFore(TextColor currentFore) {
+		this.currentFore = currentFore;
 	}
 
-	public void setShipSegment(ShipSegment shipSegment, Boolean otherSide) {
-		if(otherSide && this.shipSegment != null) { // Detach the old if there's one
-			this.shipSegment.setWater(null, false);
-		}
-		if(otherSide && shipSegment != null) { // Attach the new if there's one
-			shipSegment.setWater(this, false);
-		}
-		this.shipSegment = shipSegment;
-		System.out.println("setShipSegment() shipSegment: " + shipSegment + " otherSide: " + otherSide);
+	public void setCurrentBack(TextColor currentBack) {
+		this.currentBack = currentBack;
+	}
+
+	public void setDebug() {
+		this.debug = (char) ((int) this.debug + 1);
 	}
 
 	/**
@@ -365,23 +354,14 @@ public class Water extends AbstractInteractableComponent<Water> {
 				graphics.setForegroundColor(water.currentFore);
 			}
 
-
 			graphics.fill(water.symbol);
 
-/*
-			if (water.currentFore.equals(Palette.WATER_RIPPLE_0) || water.currentFore.equals(Palette.SMOKE_DARK)) {
-				//graphics.fill('░');
-			} else if (water.currentFore.equals(Palette.WATER_RIPPLE_1)
-				|| water.currentFore.equals(Palette.SMOKE)
-				|| water.currentFore.equals(Palette.EXPLOSION_CENTER)
-			) {
-				//graphics.fill('▒');
-			} else if(water.currentFore.equals(Palette.EXPLOSION_CENTER)) {
-				// graphics.enableModifiers(SGR.BLINK);
-				//graphics.fill('░');
-			} else {
-				//graphics.fill(' ');
-			}*/
+			if(water.debug != ' ') {
+				graphics.setBackgroundColor(Palette.READY);
+				graphics.setForegroundColor(Palette.SMOKE_DARK);
+				graphics.fill(water.debug);
+			}
+
 		}
 
 	}

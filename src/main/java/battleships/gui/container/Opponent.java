@@ -62,6 +62,7 @@ public class Opponent extends Panel {
 
 	public Result takeFocus() {
 		highlight();
+		getGame().getInspector().inspect(this);
 		return getAdmiral().getSea().takeFocus();
 	}
 }

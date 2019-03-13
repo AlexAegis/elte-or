@@ -34,7 +34,6 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 	private TextColor currentHeld = held;
 	private TextColor basic = TextColor.Factory.fromString("#555555");
 	private TextColor error = TextColor.Factory.fromString("#AA5555");
-	private Water water;
 
 	public ShipSegment(Ship ship) {
 		this.ship = ship;
@@ -45,6 +44,12 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 	 */
 	public Ship getShip() {
 		return ship;
+	}
+
+
+	public ShipSegment setShip(Ship ship) {
+		this.ship = ship;
+		return this;
 	}
 
 	public void briefError() {
@@ -137,25 +142,26 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 		}
 	}
 
+	/**
+	 * TakeFocus only gets called when its not a "MOVE_FOCUS_<DIR>" but a "HANDLED" or "NEXT"
+	 *
+	 * @param direction
+	 * @param previouslyInFocus
+	 */
 	@Override
 	protected void afterEnterFocus(FocusChangeDirection direction, Interactable previouslyInFocus) {
+		getGame().getInspector().inspect(getShip());
 		if(isTargeting()) {
-			System.out.println("///////////// afterEnterFocus WAS TARGETING" + direction + " NEXT IN FOC " + previouslyInFocus);
-
 			getWater().afterEnterFocus(direction, previouslyInFocus);
 		} else {
 			super.afterEnterFocus(direction, previouslyInFocus);
 		}
-		/*if (ship.isHeld() && ship.getParent() instanceof Drawer) {
-			previouslyInFocus.takeFocus();
-		}*/
 	}
 
 
 	@Override
 	protected void afterLeaveFocus(FocusChangeDirection direction, Interactable nextInFocus) {
 		if(isTargeting()) {
-			System.out.println("///////////// afterLeaveFocus WAS TARGETING" + direction + " NEXT IN FOC " + nextInFocus);
 			getWater().afterLeaveFocus(direction, nextInFocus);
 		} else {
 			super.afterLeaveFocus(direction, nextInFocus);
@@ -167,48 +173,11 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 		if(isTargeting()) {
 			switch (keyStroke.getKeyType()) {
 				case Enter:
-					getGame().getInspector().inspect(getShip());
+					getShip().takeFocus(); // TODO ONLY INSPECT BEFORE? FOCUS MIGHT FUCK UP SOMETHING
 					return Result.HANDLED;
 				default:
 			}
 			return getWater().handleKeyStroke(keyStroke);
-			/*if (keyStroke.getCharacter() != null) {
-				switch (keyStroke.getCharacter()) {
-					case 'W':
-					case 'w':
-					case 'A':
-					case 'a':
-						return inDrawerUpLeft(drawer);
-					case 'S':
-					case 's':
-					case 'D':
-					case 'd':
-						return inDrawerDownRight(drawer);
-					default:
-				}}
-			switch (keyStroke.getKeyType()) {
-				case ArrowRight:
-				case ArrowDown:
-				case ArrowLeft:
-				case ArrowUp:
-					return super.handleKeyStroke(keyStroke);
-				case Tab:
-
-					drawer.getSea().takeFocus();
-					return Result.HANDLED;
-				case ReverseTab:
-					drawer.getGame().getActionBar().takeFocus(true);
-					return Result.HANDLED;
-				case Enter:
-					ship.setHeld(true);
-					ship.savePlacement();
-					ship.saveParent();
-					ship.doSwitch();
-					drawer.getGame().getInspector().inspect(ship);
-					return Result.HANDLED;
-				default:
-			}
-			*/
 		} else {
 			if (isOnSea() && ship.isHeld()) {
 				var sea = ((Sea) ship.getParent());
@@ -256,7 +225,6 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 							ship.resetOriginalPlacement();
 						} else {
 							ship.doSwitch();
-							ship.getBody().forEach(body -> body.setWater(null));
 						}
 
 						ship.setOriginalPosition(null);
@@ -310,14 +278,8 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 						return Result.HANDLED;
 					case Enter:
 						if(Phase.PLACEMENT.equals(getShip().getSea().getAdmiral().getPhase())) {
-							ship.savePlacement();
-							ship.saveParent();
-							ship.setHeld(true);
-						} else {
-							// Do Inspect
-							getShip().getSea().getAdmiral().inspect(getShip());
+							ship.hold();
 						}
-
 						return Result.HANDLED;
 					default:
 				}
@@ -353,11 +315,8 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 						drawer.getGame().getActionBar().takeFocus(true);
 						return Result.HANDLED;
 					case Enter:
-						ship.setHeld(true);
-						ship.savePlacement();
-						ship.saveParent();
+						ship.hold();
 						ship.doSwitch();
-						drawer.getGame().getInspector().inspect(ship);
 						return Result.HANDLED;
 					default:
 				}
@@ -368,26 +327,10 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 	}
 
 	public Water getWater() {
-		return getShip().getSea().getWaterAt(getRelativePosition()).orElse(null);
-		//return water;
+		return getShip().getSea().getWaterAt(getAbsolutePosition()).orElse(null);
 	}
 
-	public void setWater(Water water) {
-		setWater(water, true);
-	}
-
-	public void setWater(Water water, Boolean otherSide) {
-		if(otherSide && this.water != null) { // Detach the old if there's one
-			this.water.setShipSegment(null, false);
-		}
-		if(otherSide && water != null) { // Attach the new if there's one
-			water.setShipSegment(this, false);
-		}
-		this.water = water;
-		System.out.println("setWater() : " + water + " otherSide: " + otherSide);
-	}
-
-	public TerminalPosition getRelativePosition() {
+	public TerminalPosition getAbsolutePosition() {
 		return getPosition().withRelative(getParent().getPosition());
 	}
 
@@ -401,9 +344,6 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 	}
 
 	public void destroy(Boolean explosion) {
-		if(!destroyed) {
-			takeFocus();
-		}
 		this.destroyed = true;
 		if(explosion) {
 			getShip().getSea().sendExplosion(getWater());
@@ -427,6 +367,10 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 				}
 				invalidate();
 			});
+
+		if(!destroyed) {
+			takeFocus();
+		}
 	}
 
 	public void destroy() {
@@ -503,4 +447,8 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 		return new ShipRenderer();
 	}
 
+	@Override
+	public String toString() {
+		return getAbsolutePosition().toString();
+	}
 }

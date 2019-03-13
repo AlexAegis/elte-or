@@ -10,11 +10,11 @@ import battleships.gui.element.ShipSegment;
 import battleships.marker.ShotMarker;
 import battleships.net.action.Ready;
 import battleships.state.Phase;
-import com.googlecode.lanterna.TerminalPosition;
 
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -86,7 +86,7 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 			return;
 		}
 		this.phase = phase;
-		System.out.println("PHASE: " + phase + " game: " + whenPlayer + " oppon: " + whenOpponent + " where: " + this);
+		Logger.getGlobal().log(Level.INFO, "Setting phase to: " + phase + " game?: " + (whenPlayer != null) + " opponent?: " +( whenOpponent != null) + " admiral: " + this);
 		if(whenPlayer != null) {
 			switch (phase) {
 				case READY:
@@ -202,7 +202,6 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 		var shot = new Shot(this, admiral, target, ShotMarker.MISS);
 
 		System.out.println(">>>>>>>>>> HAS KNOWLEDGE?? " + knowledge.containsKey(admiral.getName()));
-		// knowledge.putIfAbsent(admiral, new Admiral(admiral.getName()));
 		if (knowledge.values().stream().flatMap(a -> a.ships.stream()).flatMap(ship -> ship.getBorder().stream())
 				.anyMatch(coord -> coord.equals(target))) {
 			Logger.getGlobal().severe("Might not want to shoot here: BorderShotException!");
@@ -235,7 +234,7 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 		if(whenPlayer != null) {
 			var shipCoords = getSea().getShips().stream()
 				.flatMap(ship -> ship.getBody().stream())
-				.map(ShipSegment::getRelativePosition)
+				.map(ShipSegment::getAbsolutePosition)
 				.map(Coord::new)
 				.collect(Collectors.toList());
 
@@ -366,7 +365,6 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 	}
 
 	public Admiral setOpponent(Opponent opponent) {
-		System.out.println("setOpponent OPTIOOONNNAL");
 		whenOpponent = opponent;
 		refresh();
 		return this;

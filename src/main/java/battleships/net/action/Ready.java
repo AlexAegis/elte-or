@@ -46,12 +46,10 @@ public class Ready extends Request<ReadyResult> implements Serializable {
 	@Override
 	public Optional<ReadyResult> response(Connection connection, Optional<Server> answerFromServer,
 			Optional<Client> answerFromClient) {
-		System.out.println("RESPONDING TO A READY");
 		if (answerFromServer.isPresent()) {
 			return answerFromServer.map(server -> {
 				var reqAdm = server.getTable().getAdmiral(getRequester());
 				var whoAdm = server.getTable().getAdmiral(getWho());
-				System.out.println(" READY REQQ reqAdm: " + reqAdm + " whoAdm: " + whoAdm + " isReady() " + isReady());
 				whoAdm.setReady(isReady());
 
 				whoAdm.removeAllShipModels();
@@ -90,11 +88,9 @@ public class Ready extends Request<ReadyResult> implements Serializable {
 			});
 		} else {
 			return answerFromClient.map(client -> {
-				System.out.println("GOT A GUY WHO IS READY OR NOT!!! req: " + getRequester() + " who: " + getWho()
-						+ "isReady " + ready);
-				client.getGui().getGUIThread().invokeLater(() -> {
-					client.getGame().getAdmiral().getKnowledge().get(getWho()).setReady(isReady());
-				});
+				client.getGui().getGUIThread().invokeLater(() ->
+					client.getGame().getAdmiral().getKnowledge().get(getWho()).setReady(isReady())
+				);
 				return new ReadyResult(getRequester(), isReady());
 			});
 		}

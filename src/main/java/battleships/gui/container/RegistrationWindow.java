@@ -9,12 +9,7 @@ import java.util.regex.Pattern;
 
 public class RegistrationWindow extends BasicModal {
 
-	private Panel registrationForm = new Panel();
-
-	private Label nameLabel = new Label("Name");
 	private TextBox nameBox;
-	private EmptySpace emptySpace = new EmptySpace();
-	private Button registerButton;
 	private Client client;
 
 	public static final String NAME_PATTERN = "[A-Za-z0-9]+";
@@ -24,28 +19,28 @@ public class RegistrationWindow extends BasicModal {
 		setTitle("Register");
 		setHints(Arrays.asList(Window.Hint.MODAL, Window.Hint.CENTERED));
 
+		var registrationForm = new Panel();
 		registrationForm.setLayoutManager(new GridLayout(2));
 		nameBox = new TextBox(
 				client.getGame().getAdmiral() == null || client.getGame().getAdmiral().getName() == null ? ""
 						: client.getGame().getAdmiral().getName())
 								.setValidationPattern(Pattern.compile("[A-Za-z0-9]*"));
 
-		registerButton = new Button("Login", () -> {
-			Boolean valid = true;
+		var registerButton = new Button("Login", () -> {
+			boolean valid = true;
 			if (nameBox.getText().isEmpty() || !nameBox.getText().matches(NAME_PATTERN)) {
 				briefError(nameBox);
-				valid &= false;
+				valid = false;
 			}
 			if (valid) {
-				System.out.println("VALID REGFORM");
 				client.tryRegister(nameBox.getText());
-			} else {
-				System.out.println("INVALID REGFORM");
 			}
 		});
 
+		var nameLabel = new Label("Name");
 		registrationForm.addComponent(nameLabel);
 		registrationForm.addComponent(nameBox);
+		var emptySpace = new EmptySpace();
 		registrationForm.addComponent(emptySpace);
 		registrationForm.addComponent(registerButton);
 		setComponent(registrationForm);

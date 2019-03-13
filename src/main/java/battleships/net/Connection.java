@@ -35,10 +35,9 @@ public class Connection extends Observable<Packet> implements AutoCloseable {
 
 	public Connection(Server server, ServerSocket serverSocket) throws IOException {
 		optionalServer = Optional.of(server);
-		System.out.println("!!!!!!!!!!!!!!!!!!!BEFORE ACCEPT");
+		Logger.getGlobal().info("Waiting for incoming connection");
 		clientSocket = serverSocket.accept();
-
-		System.out.println("!!!!!!!!!!!!!!!!!!AFTER ACCEPT");
+		Logger.getGlobal().info("Accepted incoming connection");
 		oos = new ObjectOutputStream(clientSocket.getOutputStream());
 		ois = new ObjectInputStream(clientSocket.getInputStream());
 		Logger.getGlobal().info("Create Connection from server");
@@ -58,9 +57,8 @@ public class Connection extends Observable<Packet> implements AutoCloseable {
 		Logger.getGlobal().info("Listener started");
 		try {
 			while (!isClosed()) {
-				System.out.println("STILL GOING BABY isClosed(): " + isClosed());
 				var packet = (Packet) ois.readObject();
-				System.out.println("ACTUALLY READ A PAKK! " + packet);
+				Logger.getGlobal().info("Package read!");
 				if (packet instanceof Request) {
 					((Request) packet).respond(this, optionalServer, optionalClient);
 				} else if (packet instanceof Response) {
@@ -72,17 +70,16 @@ public class Connection extends Observable<Packet> implements AutoCloseable {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
-			Logger.getGlobal().throwing(getClass().getName(), "subscribeActual", e);
+			Logger.getGlobal().log(Level.SEVERE, "Exception in listener!", e);
 			optionalServer.ifPresent(server -> {
 				server.getConnectedAdmirals().remove(getAdmiral().getName());
 				server.getEveryConnectedAdmirals().forEach(connection -> connection.send(new Disconnect(getAdmiral().getName(), getAdmiral())).subscribe(Response::ack));
 			});
-			//observer.onComplete();
+			// observer.onComplete();
 		} finally {
 			Logger.getGlobal().info("Client disconnected, trying to reconnect..");
 			optionalClient.ifPresent(Client::showConnectWindow);
-			//observer.onComplete();
+			// observer.onComplete();
 		}
 
 	}
@@ -93,19 +90,22 @@ public class Connection extends Observable<Packet> implements AutoCloseable {
 	}
 
 	@Override
-	public void close() throws IOException {
-		System.out.println("Closing Connection");
+	public void close() {
+		Logger.getGlobal().info("Closing Connection");
 		try {
 			oos.close();
 		} catch (Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, "Exception while closing oos", e);
 		}
 		try {
 			ois.close();
 		} catch (Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, "Exception while closing ois", e);
 		}
 		try {
 			clientSocket.close();
 		} catch (Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, "Exception while closing clientSocket", e);
 		}
 	}
 
@@ -115,8 +115,7 @@ public class Connection extends Observable<Packet> implements AutoCloseable {
 			oos.flush();
 			Logger.getGlobal().log(Level.INFO, "Packet sent as response: {0}", response);
 		} catch (Exception e) {
-			//	e.printStackTrace();
-			System.out.println("NOT SERIALIZABLE AND OR CANT WRITE " + e.getMessage());
+			Logger.getGlobal().log(Level.SEVERE, "Respond error to {0}", response);
 		}
 	}
 
@@ -148,7 +147,6 @@ public class Connection extends Observable<Packet> implements AutoCloseable {
 	 * @param admiral the admiral to set
 	 */
 	public void setAdmiral(Admiral admiral) {
-		System.out.println("Admiral is set in " + this + " to " + admiral);
 		this.admiral = admiral;
 	}
 

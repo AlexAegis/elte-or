@@ -69,18 +69,14 @@ public class OpponentBar extends Panel implements OpponentContainer {
 	}
 
 	public Result focusChange(Boolean forward) {
-		System.out.println("<<<<<<<<<<<<<<<<<<<<<GETTING FOCUSSED");
 		var opponents = getOpponents();
 		if (!isEmpty()) {
-			System.out.println("<<<<<<NOTT EMPTY");
 			if (current == null) {
 				current = opponents.get(0);
 			}
-
 			current.unHighlight();
 			opponents.get((opponents.indexOf(current) + (forward ? 1 : -1) + opponents.size())
 				% opponents.size()).takeFocus();
-
 		}
 		return Result.HANDLED;
 	}

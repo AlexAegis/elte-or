@@ -6,7 +6,6 @@ import battleships.gui.element.Water;
 import battleships.gui.layout.SeaLayout;
 import battleships.gui.layout.ShipContainer;
 import battleships.gui.layout.WaterContainer;
-import battleships.marker.ShotMarker;
 import battleships.misc.Chainable;
 import battleships.model.Admiral;
 import battleships.model.ShipType;
@@ -66,7 +65,7 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 		this.getLayoutManager().doLayout(getPreferredSize(), (List<Component>) getChildren());
 	}
 
-	public Disposable doExplosion(List<List<TerminalPosition>> waves) {
+	public Disposable doExplosion(List<Set<TerminalPosition>> waves) {
 		return Observable.zip(Observable.fromIterable(waves),
 			Observable.interval( 50, TimeUnit.MILLISECONDS),
 			(wave, time) -> wave)
@@ -81,7 +80,7 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 			});
 	}
 
-	public Disposable doRipple(List<List<TerminalPosition>> waves, long delay) {
+	public Disposable doRipple(List<Set<TerminalPosition>> waves, long delay) {
 		return Observable.zip(Observable.fromIterable(waves),
 			Observable.interval( delay,150, TimeUnit.MILLISECONDS),
 			(wave, time) -> wave)
@@ -101,7 +100,7 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	}
 
 	public void sendRipple(Water water, long delay) {
-		doRipple(ripple(water.getPosition(), 1, 6, Direction.HORIZONTAL, false), delay);
+		doRipple(ripple(water.getPosition(), 1, 6, Direction.HORIZONTAL, true), delay);
 	}
 
 	public void sendExplosion(Ship ship) {
@@ -116,7 +115,7 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 		sendRipple(position, 0);
 	}
 	public void sendRipple(TerminalPosition position, long delay) {
-		doRipple(ripple(position, 1, 4, Direction.HORIZONTAL, false), delay);
+		doRipple(ripple(position, 1, 4, Direction.HORIZONTAL, true), delay);
 	}
 
 	public void sendRipple(Ship ship) {
@@ -220,9 +219,9 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 
 
 	private static final Function<ShipSegment, AbstractMap.SimpleImmutableEntry<TerminalPosition, ShipSegment>> bodyPieceFlattener =
-			bodyPiece -> new AbstractMap.SimpleImmutableEntry<>(bodyPiece.getRelativePosition(), bodyPiece);
+			bodyPiece -> new AbstractMap.SimpleImmutableEntry<>(bodyPiece.getAbsolutePosition(), bodyPiece);
 
-	public static List<TerminalPosition> nthRipple(TerminalPosition anchor, Integer count, Integer iteration,
+	public static Set<TerminalPosition> nthRipple(TerminalPosition anchor, Integer count, Integer iteration,
 			Direction orientaton) {
 		if (iteration < 1 || iteration > count) {
 			throw new IllegalArgumentException();
@@ -230,7 +229,7 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 		return ripple(anchor, 1, count, orientaton, true).get(iteration - 1);
 	}
 
-	public static List<TerminalPosition> nthRipple(TerminalPosition anchor, Integer length, Integer count,
+	public static Set<TerminalPosition> nthRipple(TerminalPosition anchor, Integer length, Integer count,
 			Integer iteration, Direction orientaton) {
 		if (iteration < 0 || iteration > count) {
 			throw new IllegalArgumentException();
@@ -238,82 +237,80 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 		return ripple(anchor, length, count, orientaton, true).get(iteration);
 	}
 
-	public static List<List<TerminalPosition>> ripple(TerminalPosition anchor, Integer length, Integer count,
+	public static List<Set<TerminalPosition>> ripple(TerminalPosition anchor, Integer length, Integer count,
 			Direction orientaton, Boolean includeCenter) {
-		var result = new ArrayList<List<TerminalPosition>>();
+		var result = new ArrayList<Set<TerminalPosition>>();
 		length--;
 		if(includeCenter) {
-			result.add(Arrays.asList(anchor));
+			var singleSet = new HashSet<TerminalPosition>();
+			singleSet.add(anchor);
+			result.add(singleSet);
 		}
 		for (int c = 1; c <= count; c++) {
-			var iter = new ArrayList<TerminalPosition>();
+			var pieces = new HashSet<TerminalPosition>();
 			var headpiece = false;
 			var tailpiece = false;
 			for (int i = 0; i <= length; i++) {
 				headpiece = i == 0;
 				tailpiece = i == length;
-
 				var hor = orientaton.equals(Direction.HORIZONTAL);
-
 				if (headpiece) {
 					if (hor) {
-						iter.add(anchor.withRelative(-c, 0));
+						pieces.add(anchor.withRelative(-c, 0));
 					} else {
-						iter.add(anchor.withRelative(0, -c));
+						pieces.add(anchor.withRelative(0, -c));
 					}
 					for (int t = c; t > 0; t--) {
 						if (hor) {
-							iter.add(anchor.withRelative(-c, t));
-							iter.add(anchor.withRelative(-c, -t));
+							pieces.add(anchor.withRelative(-c, t));
+							pieces.add(anchor.withRelative(-c, -t));
 						} else {
-							iter.add(anchor.withRelative(t, -c));
-							iter.add(anchor.withRelative(-t, -c));
+							pieces.add(anchor.withRelative(t, -c));
+							pieces.add(anchor.withRelative(-t, -c));
 						}
 					}
 				}
-
 				if (tailpiece) {
 					if (hor) {
-						iter.add(anchor.withRelative(c + i, 0));
+						pieces.add(anchor.withRelative(c + i, 0));
 					} else {
-						iter.add(anchor.withRelative(0, c + i));
+						pieces.add(anchor.withRelative(0, c + i));
 					}
 					for (int t = c; t > 0; t--) {
 						if (hor) {
-							iter.add(anchor.withRelative(c + i, t));
-							iter.add(anchor.withRelative(c + i, -t));
+							pieces.add(anchor.withRelative(c + i, t));
+							pieces.add(anchor.withRelative(c + i, -t));
 						} else {
-							iter.add(anchor.withRelative(t, c + i));
-							iter.add(anchor.withRelative(-t, c + i));
+							pieces.add(anchor.withRelative(t, c + i));
+							pieces.add(anchor.withRelative(-t, c + i));
 						}
 					}
 				}
 				if (hor) {
-					iter.add(anchor.withRelative(0, -c));
+					pieces.add(anchor.withRelative(0, -c));
 				} else {
-					iter.add(anchor.withRelative(-c, 0));
+					pieces.add(anchor.withRelative(-c, 0));
 				}
 				if (hor) {
-					iter.add(anchor.withRelative(0, c));
+					pieces.add(anchor.withRelative(0, c));
 				} else {
-					iter.add(anchor.withRelative(c, 0));
+					pieces.add(anchor.withRelative(c, 0));
 				}
-				for (int t = c; t >= 0; t--) {
-
+				for (int t = c; t > 0; t--) {
 					if (hor) {
-						iter.add(anchor.withRelative(t + i, -c));
-						iter.add(anchor.withRelative(-t + i, -c));
-						iter.add(anchor.withRelative(t + i, c));
-						iter.add(anchor.withRelative(-t + i, c));
+						pieces.add(anchor.withRelative(t + i, -c));
+						pieces.add(anchor.withRelative(-t + i, -c));
+						pieces.add(anchor.withRelative(t + i, c));
+						pieces.add(anchor.withRelative(-t + i, c));
 					} else {
-						iter.add(anchor.withRelative(-c, t + i));
-						iter.add(anchor.withRelative(-c, -t + i));
-						iter.add(anchor.withRelative(c, t + i));
-						iter.add(anchor.withRelative(c, -t + i));
+						pieces.add(anchor.withRelative(-c, t + i));
+						pieces.add(anchor.withRelative(-c, -t + i));
+						pieces.add(anchor.withRelative(c, t + i));
+						pieces.add(anchor.withRelative(c, -t + i));
 					}
 				}
 			}
-			result.add(iter);
+			result.add(pieces);
 		}
 		return result;
 	}
@@ -350,14 +347,10 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 
 	public Result takeFocus() {
 		return getAdmiral().whenOpponent().map(opponent -> {
-			System.out.println("LETS DO SOME TARGETING!!!");
-			opponent.getLabel();
-
 			if(getLastFocused() == null) {
 				setLastFocused(getWaters().get(getWaters().size() / 2));
 			}
 			if(!getWaters().isEmpty()) {
-				System.out.println("WATEERRRS SIZE" + getWaters().size() + " focus the " + getWaters().size() / 2);
 				getLastFocused().takeFocus(); // Target the center first
 			}
 			return Result.HANDLED;
@@ -442,6 +435,12 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 		return getWaters().stream().filter(water -> water.getPosition().equals(position)).findFirst();
 	}
 
+	public Optional<ShipSegment> getShipSegmentAt(TerminalPosition position) {
+		return getShips().stream()
+			.flatMap(ship -> ship.getBody().stream())
+			.filter(shipSegment -> shipSegment.getAbsolutePosition().equals(position))
+			.findFirst();
+	}
 
 	/**
 	 * @param position
@@ -449,32 +448,27 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	public synchronized Optional<ShipSegment> revealNewShipSegment(TerminalPosition position) {
 		// Only reveal if needed, it there is a ship there already don't do it
 		Optional<ShipSegment> newSegment = Optional.empty();
-		if(!getWaterAt(position).map(Water::getShipSegment).isPresent()) {
-
+		if(!getShipSegmentAt(position).isPresent()) {
 			// If any of the ships are neighbouring this, attach this segment to that
-			var borderingShips = this.getShips().stream().filter(ship -> ship.getBorder().contains(position)).sorted().collect(Collectors.toList());
+			var borderingShips = this.getShips().stream()
+				.filter(ship -> ship.getBorder().contains(position))
+				.sorted()
+				.collect(Collectors.toList());
 
 			if(borderingShips.size() > 1) {
 				// Merge ships on position, since it's sorted, its always the first one who should be the head
-				System.out.println(">>>>>>>>>BORDERING SHIPS 2");
 				borderingShips.get(0).merge(borderingShips.get(1), position);
 				invalidate();
 				newSegment = Optional.ofNullable(borderingShips.get(0).reveal(position));
 
 			} else if(borderingShips.size() == 1) {
-				System.out.println(">>>>>>>>>>>BORDERING SHIPS 1 IS: " + borderingShips.get(0));
-				// removeComponent(borderingShips.get(0));
 				borderingShips.get(0).attachBodyOn(position);
-				System.out.println(">>>>>>>>>>>BORDERING SHIPS 1 IS AFTER: " + borderingShips.get(0));
-				//addComponent(borderingShips.get(0));
 				invalidate();
-				newSegment = Optional.ofNullable(borderingShips.get(0).reveal(position)); // Todo NPE
+				newSegment = Optional.of(borderingShips.get(0).reveal(position));
 			} else {
-				System.out.println(">>>>>>>>>>>BORDERING SHIPS 0");
-				var ship = new Ship(ShipType.BOAT);
+				var ship = new Ship(ShipType.BOAT, false);
 				ship.setPosition(position);
 				addComponent(ship);
-				//ship.updateWaterRelations();
 				invalidate();
 				newSegment = Optional.of(ship.reveal(position));
 				ship.invalidate();
@@ -482,24 +476,17 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 			}
 			invalidate();
 			getParent().invalidate();
-		} else {
-			System.out.println("<<<<NO NEED TO REVEAL!! ADMIRAL IS PROBABLY THE PLAYER!!!" + getAdmiral());
 		}
-		System.out.println("<<<<<<<<&&&&&&&&&& After revealing now there are " + getShips().size() + " ships on this sea: " + getAdmiral());
-		getShips().forEach(ship -> {
-			System.out.println("<<<<<<<<<<< ship bodysize " + ship.getBody().size());
-		});
 		return newSegment;
 	}
 
 
 	/**
-	 * TODO: HEAVY WORK NEEDED HERE
 	 *
 	 * This sea is either the players or the opponents, the shot logic should be ambiguous
 	 * @param shot
 	 */
-	public synchronized void recieveShot(Shot shot) {
+	public synchronized void receiveShot(Shot shot) {
 		var target = shot.getTarget().convertToTerminalPosition();
 		switch (shot.getResult()) {
 			case HIT:
@@ -509,10 +496,7 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 				revealNewShipSegment(target).map(ShipSegment::getShip).ifPresent(Ship::destroy);
 				break;
 			case MISS:
-				getAdmiral().whenPlayer().ifPresent(player -> { // If its our sea, show it precisely
-					sendRipple(target);
-				});
-
+				getAdmiral().whenPlayer().ifPresent(player -> sendRipple(target)); // If its our sea, show it precisely
 				getAdmiral().whenOpponent().ifPresent(opponent -> { // if its an opponent...
 					if (opponent.getGame().getAdmiral().getName().equals(shot.getSource().getName())) { // And the shot was by me, also show precisely
 						getWaterAt(target).ifPresent(Water::reveal);

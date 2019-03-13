@@ -11,9 +11,8 @@ import com.googlecode.lanterna.gui2.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.Callable;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -30,6 +29,8 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 	private TerminalPosition originalPosition;
 	private Direction originalOrientation;
 	private Container originalParent;
+	private Boolean revealed = false;
+
 
 	public void setType(ShipType type) {
 		this.type = type;
@@ -90,6 +91,10 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 		}
 	}
 
+	public void reveal() {
+		revealed = true;
+		// TODO might updateClass();
+	}
 
 	/**
 	 * @param originalOrientation the originalOrientation to set
@@ -141,7 +146,12 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 	}
 
 	public Ship(ShipType type) {
+		this(type, true);
+	}
+
+	public Ship(ShipType type, Boolean revealed) {
 		this.type = type;
+		this.revealed = revealed;
 		IntStream.range(0, type.getLength()).mapToObj(i -> new ShipSegment(this)).forEach(this::addComponent);
 		setLayoutToHorizontal();
 	}
@@ -152,48 +162,52 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 	}
 
 	public void attachBodyOn(TerminalPosition position) {
-		System.out.println("Attach some bodies, OG HEAD " + getHead().getRelativePosition());
-
-		var isVertical = getHead().getRelativePosition().getColumn() == position.getColumn();
+		var isVertical = getHead().getAbsolutePosition().getColumn() == position.getColumn();
 		var vector = new TerminalPosition(isVertical ? 0 : 1, isVertical ? 1 : 0);
-		if (getHead().getRelativePosition().compareTo(position) > 0) { // Head is behind, shift ship
-			System.out.println("NEED TO SET THE POS");
+		if (getHead().getAbsolutePosition().compareTo(position) > 0) { // Head is behind, shift ship
 			var body = getBody();
 			removeAllComponents();
 			addComponent(new ShipSegment(this).setPosition(new TerminalPosition(0, 0)));
-			body.forEach(bodyPiece -> addComponent(bodyPiece.setPosition(bodyPiece.getPosition().withRelative(vector))));
+			for (ShipSegment bodyPiece : body) {
+				addComponent(bodyPiece.setPosition(bodyPiece.getPosition().withRelative(vector)));
+			}
 			setPosition(position);
 		} else {
-
-			/*var body = getBody();
-			removeAllComponents();
-			body.forEach(this::addComponent);*/
 			addComponent(new ShipSegment(this).setPosition(getTail().getPosition().withRelative(vector)));
 		}
 
-		System.out.println("Attach some bodies3 getHead().getRelativePosition() " + getHead().getRelativePosition() + " position.getRow() " + position.getRow());
 		if(isVertical) {
 			setLayoutToVertical();
 		} else {
 			setLayoutToHorizontal();
 		}
-
 		invalidate();
-		System.out.println("New positions for whole body: " + getBody().stream().map(ShipSegment::getRelativePosition).map(Objects::toString).collect(Collectors.joining(",")));
-		//updateWaterRelations();
 		updateClass();
 	}
 
 	/**
 	 * I don't need to order them because they are in order by default
+	 * TODO if the type already gone, skip
+	 *
+	 * min 2 because "boat is ignored" Math.min(getBody().size(), 2) TODO might not need because of the skip mechanic
 	 */
 	private void updateClass() {
-		for (ShipType value : ShipType.values()) {
-			if(value.getLength() >= getBody().size()) {
-				setType(value);
-				break;
-			}
+		var existingTypesExceptThis = getSea().getShips().stream()
+			.filter(ship -> !ship.equals(this))
+			.map(Ship::getType).collect(Collectors.toList());
+		var nonPlacedShipTypes = new ArrayList<>(ShipType.INITIAL_BOARD);
+		nonPlacedShipTypes.removeAll(existingTypesExceptThis);
+		System.out.println("existingTypesExceptThis: " + existingTypesExceptThis);
+		System.out.println("nonPlacedShipTypes: " + nonPlacedShipTypes);
+		if(health() == 0 && !getRevealed()) {
+			setType(ShipType.getWithLengthAtLeastFrom(nonPlacedShipTypes, getBody().size() + 1));
+		} else {
+			setType(ShipType.getWithLengthAtLeastFrom(nonPlacedShipTypes, getBody().size()));
 		}
+	}
+
+	private Boolean getRevealed() {
+		return revealed;
 	}
 
 	public ShipSegment reveal(TerminalPosition position) {
@@ -201,11 +215,11 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 	}
 
 	public Optional<ShipSegment> getBodyAt(TerminalPosition position) {
-		return getBody().stream().filter(body -> body.getRelativePosition().equals(position)).findFirst();
+		return getBody().stream().filter(body -> body.getAbsolutePosition().equals(position)).findFirst();
 	}
 
-	public List<TerminalPosition> getBorder() {
-		return Sea.nthRipple(getPosition(), getType().getLength(), 1, 1, getOrientation());
+	public Set<TerminalPosition> getBorder() {
+		return Sea.nthRipple(getPosition(), getBody().size(), 1, 1, getOrientation());
 	}
 
 	public ShipSegment getHead() {
@@ -310,11 +324,16 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 
 	@Override
 	public String toString() {
-		return type.getName() + "\n" + (type.getLength() - getBody().stream().filter(ShipSegment::isDestroyed).count()) + "/" + type.getLength();
+		return type.getName() + "\n" + (type.getLength() - health()) + "/" + type.getLength();
+	}
+
+	public Long health() {
+		return getBody().stream().filter(ShipSegment::isDestroyed).count();
 	}
 
 	public void destroy() {
 		this.destroyed = true;
+		reveal();
 		getBody().forEach(body -> body.destroy(false));
 		getBorder().stream()
 			.map(position -> getSea().getWaterAt(position))
@@ -331,11 +350,27 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 	 * @param position
 	 */
 	public void merge(Ship ship, TerminalPosition position) {
-		getSea().removeComponent(ship);
+		var isVertical = getHead().getAbsolutePosition().getColumn() == position.getColumn();
+		var vector = new TerminalPosition(isVertical ? 0 : 1, isVertical ? 1 : 0);
+
 		attachBodyOn(position);
-		ship.getBody().forEach(this::addComponent);
-		invalidate();
+		ship.getBody().forEach(body -> {
+			addComponent(body.setShip(this).setPosition(getTail().getPosition().withRelative(vector)));
+			vector.withRelative(vector);
+		});
 		updateClass();
+		getSea().removeComponent(ship);
+		getSea().invalidate();
 	}
 
+	public void hold() {
+		savePlacement();
+		saveParent();
+		setHeld(true);
+		takeFocus();
+	}
+
+	public void drop() {
+
+	}
 }

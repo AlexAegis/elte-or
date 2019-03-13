@@ -8,12 +8,10 @@ import battleships.net.Connection;
 import battleships.net.result.TurnResult;
 import battleships.state.Mode;
 import battleships.state.Phase;
-import io.reactivex.Observable;
-import io.reactivex.schedulers.Schedulers;
 
 import java.io.Serializable;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Turn extends Request<TurnResult> implements Serializable {
@@ -42,8 +40,6 @@ public class Turn extends Request<TurnResult> implements Serializable {
 	@Override
 	public Optional<TurnResult> response(Connection connection, Optional<Server> answerFromServer,
 			Optional<Client> answerFromClient) {
-		//TODO: send action objects like Shot or something and with polymorphism execute them
-		System.out.println("RESPONDING TO A TURN");
 		if (answerFromServer.isPresent()) {
 			return answerFromServer.map(server -> {
 				// When the server gets a Turn request from a client it means that the client shoot
@@ -54,12 +50,9 @@ public class Turn extends Request<TurnResult> implements Serializable {
 					server.getEveryConnectedAdmirals().forEach(conn -> {
 						Admiral nextTurnAdmiral = server.getCurrentAdmiral();
 
-						// TODO: BATTLE ROYALE
-						//Observable.timer(100, TimeUnit.MILLISECONDS).subscribeOn(Schedulers.computation())
-						conn.send(new Turn(conn.getAdmiral().getName(), Mode.ROYALE.equals(server.getMode()) ? conn.getAdmiral().getName() : nextTurnAdmiral.getName(), result))
-						.subscribe(ack -> {
-							Logger.getGlobal().info("Sent turn data, got ack: " + ack);
-						});
+						conn.send(new Turn(conn.getAdmiral().getName(),
+							Mode.ROYALE.equals(server.getMode()) ? conn.getAdmiral().getName() : nextTurnAdmiral.getName(),
+							result)).subscribe(ack -> Logger.getGlobal().log(Level.INFO, "Sent turn data, got ack: {0}", ack));
 						// They will process the shot and do accordingly
 					});
 
@@ -73,8 +66,7 @@ public class Turn extends Request<TurnResult> implements Serializable {
 			});
 		} else {
 			return answerFromClient.map(client -> {
-
-				System.out.println("GOT TURN DATAAAAAAAAAAAAAAAAAA " + this);
+				Logger.getGlobal().info("Client responds to a turn data: " + this);
 				// Client got turn data, set the opponents graphics accordingly, or start turn for yourself
 				client.getGui().getGUIThread().invokeLater(() -> {
 					var isItMe = client.getGame().getAdmiral().getName().equals(getWho());
@@ -93,28 +85,18 @@ public class Turn extends Request<TurnResult> implements Serializable {
 					if (shot != null) {
 						// Client recieved a shot if it missed just show a ripple
 						// If it hit, explode
-
 						if (client.getGame().getAdmiral().getName().equals(shot.getSource().getName())) {
 							// If it was me who shoot that shot
-							System.out.println("<<<<< If it was me who shoot that shot");
 							client.getGame().getAdmiral().getKnowledge().get(shot.getRecipient().getName()).whenOpponent().ifPresentOrElse(opponent -> {
-								System.out.println("<<<<< If it was me who shoot that shot IT IS AN OPPONENT");
 								// And we got an opponent for it (We should!)
-
-								opponent.getAdmiral().getSea().recieveShot(shot);
-
+								opponent.getAdmiral().getSea().receiveShot(shot);
 							}, () -> Logger.getGlobal().severe("Opponent not found for shot!"));
-
-
 						} else if (client.getGame().getAdmiral().getName().equals(shot.getRecipient().getName())) {
 							// If someone else shot that shot and it hit me, process it
-							client.getGame().getAdmiral().getSea().recieveShot(shot);
+							client.getGame().getAdmiral().getSea().receiveShot(shot);
 						} else if (client.getGame().getAdmiral().getKnowledge().containsKey(shot.getRecipient().getName())) {
 							// If they shot somebody else, show a ripple on all the tiles (flash)
-							System.out.println("<<<<<" +
-								"d THEY SHOT A KNOWLEDGE OF MINE IT SHOULD BE AN OPPONENT");
 							client.getGame().getAdmiral().getKnowledge().get(shot.getRecipient().getName()).whenOpponent().ifPresent(opponent -> {
-								System.out.println("<<<<< IT IS AN OPPONENT");
 								opponent.getAdmiral().getSea().doTremor();
 							});
 						}

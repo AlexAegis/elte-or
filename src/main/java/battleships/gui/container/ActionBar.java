@@ -103,7 +103,6 @@ public class ActionBar extends Panel {
 
 	private void refreshButtonsFromList() {
 		removeAllComponents();
-		System.out.println("Buttons refreshed, there are: " + buttons.size() + " buttons in the list");
 		buttons.forEach(this::addComponent);
 		invalidate();
 	}

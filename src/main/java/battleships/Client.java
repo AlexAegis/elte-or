@@ -35,6 +35,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Command(name = "client", sortOptions = false,
@@ -81,7 +82,6 @@ public class Client implements Runnable {
 					var placementsHolder = (Map<String, List<Map<String, String>>>) placementObject;
 					var name = ((Map<String, String>) placementObject).get("name");
 					if (name != null && !name.isEmpty() && name.matches(RegistrationWindow.NAME_PATTERN)) {
-						System.out.println("Registering from file");
 						return name;
 					}
 				}
@@ -137,30 +137,21 @@ public class Client implements Runnable {
 	public void tryConnect(String host, Integer port) {
 		Logger.getGlobal().info("Trying a connect!");
 		Observable.fromCallable(() -> {
-			System.out.println("Callable got called!");
 			connectWindow.showConnecting();
 			return new Connection(this, host, port);
 		}).subscribeOn(Schedulers.newThread()).subscribe(getConnection()::onNext, err -> {
-			System.out.println("ERR HANDL CONN FAIL " + err);
+			Logger.getGlobal().log(Level.SEVERE, "Error on tryConnect", err);
 			getGui().getGUIThread().invokeLater(() -> {
-				System.out.println("Invokeeeed");
 				connectWindow.showConnectionForm();
 			});
-		}, () -> {
-			System.out.println("Completed try connect");
-		});
+		}, () -> Logger.getGlobal().info("Completed try connect"));
 		getConnection().switchMap(conn -> {
 			connectWindow.close();
 			return conn;
-		}).subscribeOn(Schedulers.newThread()).subscribe(next -> {
-			System.out.println("Client got pakk: " + next);
-
-		}, err -> {
-			System.out.println("Client listener errored");
-		}, () -> {
-
-			System.out.println(" CONNECTION COMPLETED!!!!");
-		});
+		}).subscribeOn(Schedulers.newThread()).subscribe(
+			next -> Logger.getGlobal().log(Level.INFO, " Client connection tryConnect subscription onNext: {0}", next),
+			err -> Logger.getGlobal().log(Level.SEVERE, "Client listener error in tryConnect!", err),
+			() -> Logger.getGlobal().info("Connection completed!"));
 
 	}
 
@@ -216,47 +207,12 @@ public class Client implements Runnable {
 			registrationWindow = new RegistrationWindow(this);
 			tryConnect(host, port);
 			showConnectWindow();
-
-			// Testbench start
-			/*var testWin = new BasicWindow("Test");
-			testWin.setHints(Arrays.asList(Window.Hint.MODAL, Window.Hint.CENTERED));
-			game.setTableSize(new TerminalSize(10, 10));
-			var dummyOpponent = new Opponent(game, new Admiral("Dummy"));
-			var testSea = new Sea(game.getTableSize());
-			dummyOpponent.getAdmiral().setSea(testSea);
-			testWin.setComponent(new SeaContainer(testSea));
-
-			gui.addWindow(testWin);
-			testSea.sendRipple(new TerminalPosition(5, 5), 0);
-			Observable.timer(1000, TimeUnit.MILLISECONDS).subscribeOn(Schedulers.computation()).subscribe(next -> {
-
-				gui.getGUIThread().invokeLater(() -> {
-
-					testSea.takeFocus();
-					testWin.waitUntilClosed();
-				});
-
-			});
-
-
-			testWin.waitUntilClosed();
-*/
-			// Testbench end
-
 			gui.waitForWindowToClose(game);
-		} catch (Exception /*IOException | ArrayIndexOutOfBoundsException*/ e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, "! ! ! Exception on Main Thread ! ! !", e);
 		} finally {
-			Logger.getGlobal().info("Client Finally, closing down connection" + getConnection());
-			getConnection().take(1).blockingSubscribe(conn -> {
-				System.out.println("conn on finally: " + conn);
-
-				try {
-					conn.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			});
+			Logger.getGlobal().log(Level.INFO, "Client Finally, closing down connection: {0}", getConnection());
+			getConnection().take(1).blockingSubscribe(Connection::close);
 		}
 	}
 
@@ -266,21 +222,6 @@ public class Client implements Runnable {
 	public ConnectWindow getConnectWindow() {
 		return connectWindow;
 	}
-
-	/**
-	 * @param host the host to set
-	 */
-	public void setHost(String host) {
-		this.host = host;
-	}
-
-	/**
-	 * @param port the port to set
-	 */
-	public void setPort(Integer port) {
-		this.port = port;
-	}
-
 
 	/**
 	 * @return the host

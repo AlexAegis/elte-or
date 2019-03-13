@@ -71,8 +71,6 @@ public class Register extends Request<RegisterResult> implements Serializable {
 					Logger.getGlobal().info("A new opponent registered on the server " + this.toString());
 					if (!client.getGame().getAdmiral().getName().equals(getWho().getName())) {
 						client.getGame().getOpponentBar().addOpponent(getWho());
-					} else {
-						System.out.println("Spiderman.jpg");
 					}
 				});
 				return new RegisterResult(getRequester(), null, null);

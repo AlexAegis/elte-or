@@ -9,6 +9,7 @@ import io.reactivex.subjects.PublishSubject;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 public class ConnectWindow extends BasicModal {
@@ -97,14 +98,13 @@ public class ConnectWindow extends BasicModal {
 
 	public void show() {
 		client.getConnection().subscribeOn(Schedulers.newThread()).subscribe(connection -> {
-			System.out.println("Connectiuon made!, ConnectWindow closes");
+			Logger.getGlobal().info("Connection made!, ConnectWindow closes");
 			close();
 		}, err -> {
-			System.out.println("Connection made an error, time to be a hero!");
+			Logger.getGlobal().severe("Connection error, showing Connection Window");
 			showConnectionForm();
 			client.showConnectWindow();
 		});
-		;
 		client.getGui().addWindow(this);
 		client.getGui().moveToTop(this);
 		this.takeFocus();
