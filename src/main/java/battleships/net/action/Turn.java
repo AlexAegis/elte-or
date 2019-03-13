@@ -47,6 +47,9 @@ public class Turn extends Request<TurnResult> implements Serializable {
 					var result = server.getTable().shoot(shot); // The first turn has no shot, it will be null then
 					// After we shoot the shot (or not) we have to notify every client that a turn has passed
 					server.turnAdmirals();
+
+					// TODO Check if someone died or not
+
 					server.getEveryConnectedAdmirals().forEach(conn -> {
 						Admiral nextTurnAdmiral = server.getCurrentAdmiral();
 

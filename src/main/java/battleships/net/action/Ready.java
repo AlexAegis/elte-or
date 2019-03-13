@@ -23,7 +23,7 @@ public class Ready extends Request<ReadyResult> implements Serializable {
 	private static final long serialVersionUID = -8873647819519180472L;
 	private Boolean ready;
 	private String who;
-	private List<Coord> pieces = new ArrayList<>();
+	private List<Coord> pieces;
 
 	public Ready(String requester, String who, List<Coord> pieces, Boolean ready) {
 		super(requester);
@@ -52,9 +52,14 @@ public class Ready extends Request<ReadyResult> implements Serializable {
 				var whoAdm = server.getTable().getAdmiral(getWho());
 				whoAdm.setReady(isReady());
 
-				whoAdm.removeAllShipModels();
-				pieces.forEach(whoAdm::place);
-				whoAdm.finishBorders();
+
+				if(pieces != null && !pieces.isEmpty()) {
+					whoAdm.removeAllShipModels();
+					System.out.println("On ready place these down: " + pieces);
+					pieces.forEach(whoAdm::place);
+					whoAdm.finishBorders();
+				}
+
 
 
 				// State propagation logic. If there are at least 2 players and everyone is ready then notify them that the match started
@@ -64,7 +69,6 @@ public class Ready extends Request<ReadyResult> implements Serializable {
 					server.getEveryConnectedAdmirals().forEach(conn -> {
 						Admiral firstTurnAdmiral = server.getCurrentAdmiral();
 
-						// TODO: BATTLE ROYALE
 						// A little delay before broadcasting
 						 conn.send(new Turn(conn.getAdmiral().getName(),Mode.ROYALE.equals(server.getMode()) ? conn.getAdmiral().getName() : firstTurnAdmiral.getName(), null))
 						.subscribe(ack -> {

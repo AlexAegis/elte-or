@@ -160,9 +160,13 @@ public class Ship implements Serializable {
 		return border;
 	}
 
+	public Optional<Coord> getHead() {
+		return body.keySet().stream().sorted().findFirst();
+	}
+
 	@Override
 	public String toString() {
-		return "Ship hp: " + this.body.values().stream().filter(Objects::isNull).count() + "/" + body.size()
+		return "Ship head at: " + getHead() + " hp: " + this.body.values().stream().filter(Objects::isNull).count() + "/" + body.size()
 				+ (isDead() ? "" : " Not yet") + " destroyed";
 	}
 

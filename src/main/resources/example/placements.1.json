@@ -1,6 +1,10 @@
 {
 	"name": "PlayerOne",
 	"placements": [
+		{ "position": "5,5", "class": "SUBMARINE", "orientation": "HORIZONTAL" },
+		{ "position": "1,1", "class": "SUBMARINE", "orientation": "VERTICAL" }
+	],
+	"bak": [
 		{ "position": "2,2", "class": "FRIGATE", "orientation": "HORIZONTAL" },
 		{ "position": "7,7", "class": "SUBMARINE", "orientation": "HORIZONTAL" },
 		{ "position": "5,4", "class": "SUBMARINE", "orientation": "VERTICAL" },

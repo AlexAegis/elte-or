@@ -16,12 +16,12 @@ public enum ShipType {
 
 	public static final List<ShipType> INITIAL_BOARD = Arrays.asList(
 		SUBMARINE,
-		SUBMARINE,
-		CORVETTE,
-		CORVETTE,
-		FRIGATE,
-		DESTROYER,
-		CARRIER
+		SUBMARINE//,
+		// CORVETTE,
+		// CORVETTE,
+		// FRIGATE,
+		// DESTROYER,
+		// CARRIER
 	);
 
 	private String name;
@@ -38,6 +38,7 @@ public enum ShipType {
 	}
 
 	public static ShipType getWithLengthAtLeastFrom(List<ShipType> nonPlacedShipTypes, Integer length) {
+		System.out.println("getWithLengthAtLeastFrom (should not contain any boats)" + nonPlacedShipTypes);
 		for (ShipType value : nonPlacedShipTypes) {
 			if(length <= value.getLength()) {
 				return value;

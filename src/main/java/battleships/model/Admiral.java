@@ -50,9 +50,26 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 	 * @param sea the sea to set
 	 */
 	public Admiral setSea(Sea sea) {
-		// TODO Put everything on the sea from ships
+		// TODO Put everything on the sea from ships LASO THE DAMAGE IFD ITS AN OPPONEnT REVEAL!
 		this.sea = sea;
 		sea.setAdmiral(this);
+		if(whenPlayer != null && !getShipModels().isEmpty()) { // Then its a relog from the player the drawer has to be emptied
+			whenPlayer.getDrawer().removeAllComponents();
+		}
+		getShipModels().forEach(ship -> {
+			var restored = new battleships.gui.element.Ship(ShipType.getWithLengthAtLeast(ship.getBody().size()));
+			if (ship.getBody().keySet().stream()
+				.map(Coord::getX)
+				.reduce((acc, next) -> acc = acc - next)
+				.orElse(0) == 0) {
+				restored.setLayoutToHorizontal();
+			} else {
+				restored.setLayoutToVertical();
+			}
+			ship.getHead().map(Coord::convertToTerminalPosition).ifPresent(restored::setPosition);
+			getSea().addComponent(restored);
+		});
+
 		return this;
 	}
 
@@ -237,7 +254,7 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 				.map(ShipSegment::getAbsolutePosition)
 				.map(Coord::new)
 				.collect(Collectors.toList());
-
+			System.out.println("Sending ready with these coords: " + shipCoords);
 			whenPlayer.getClient().sendRequest(new Ready(getName(), getName(), shipCoords, ready)).subscribe(res -> {
 				Logger.getGlobal().info("Notified the server about my ready state! " + res);
 			});
