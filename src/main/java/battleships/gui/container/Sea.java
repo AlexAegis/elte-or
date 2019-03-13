@@ -490,6 +490,7 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 				newSegment = Optional.of(borderingShips.get(0).reveal(position));
 			} else {
 				var ship = new Ship(ShipType.BOAT, false);
+				ship.setType(ShipType.getInitialBoard().get(0));
 				ship.setPosition(position);
 				addComponent(ship);
 				invalidate();

@@ -169,6 +169,8 @@ public class Client implements Runnable {
 			if (res.getRecipient() != null && !res.getRecipient().isEmpty()) {
 				Logger.getGlobal().fine("Successful registration");
 				registrationWindow.close();
+				ShipType.setInitialBoard(res.getDrawerContent());
+				getGame().getDrawer().loadShips();
 				getGame().setTableSize(res.getTableSize().convertToTerminalSize());
 				getGame().setAdmiral(res.getAdmiral());
 			} else {

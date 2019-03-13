@@ -169,8 +169,14 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 		if(isTargeting()) {
 			switch (keyStroke.getKeyType()) {
 				case Enter:
-					getShip().takeFocus(); // TODO ONLY INSPECT BEFORE? FOCUS MIGHT FUCK UP SOMETHING
+					getShip().takeFocus();
 					return Result.HANDLED;
+				case Tab:
+					return getShip().getSea().getAdmiral().whenPlayer()
+						.map(player -> player.getOpponentBar().focusNext()).orElse(Result.UNHANDLED);
+				case ReverseTab:
+					return getShip().getSea().getAdmiral().whenPlayer()
+						.map(player -> player.getOpponentBar().focusPrevious()).orElse(Result.UNHANDLED);
 				default:
 			}
 			return getWater().handleKeyStroke(keyStroke);
@@ -266,6 +272,7 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 					case ArrowLeft:
 						return Result.MOVE_FOCUS_PREVIOUS;
 					case Tab:
+
 						sea.getDrawer().getGame().getActionBar().takeFocus();
 						return Result.HANDLED;
 					case ReverseTab:
@@ -372,9 +379,7 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 			invalidate();
 		}
 
-		if(!destroyed) {
-			takeFocus();
-		}
+		takeFocus();
 	}
 
 	public void destroy() {

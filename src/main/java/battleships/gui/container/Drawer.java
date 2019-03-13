@@ -9,6 +9,7 @@ import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.LinearLayout;
 import com.googlecode.lanterna.gui2.Panel;
 
+import java.util.Comparator;
 import java.util.Optional;
 
 public class Drawer extends Panel implements Chainable, ShipContainer {
@@ -18,8 +19,11 @@ public class Drawer extends Panel implements Chainable, ShipContainer {
 
 	public Drawer(GameWindow game) {
 		this.game = game;
-		setLayoutManager(new LinearLayout(Direction.VERTICAL).setSpacing(1));
-		ShipType.getInitialBoard().stream().map(Ship::new).forEach(this::addComponent);
+		setLayoutManager(new LinearLayout(Direction.VERTICAL).setSpacing(0));
+	}
+
+	public void loadShips() {
+		ShipType.getInitialBoard().stream().sorted(Comparator.reverseOrder()).map(Ship::new).forEach(this::addComponent);
 	}
 
 	@Override

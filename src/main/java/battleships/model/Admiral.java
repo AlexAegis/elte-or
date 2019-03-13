@@ -123,6 +123,7 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 					whenPlayer.getReadyLabel().hide();
 					whenPlayer.getPlayerName().setForegroundColor(Palette.SMOKE.getColor());
 					// Focus on sea, inspect your ships
+					whenPlayer.getAdmiral().getSea().setEnabled(true);
 					whenPlayer.getAdmiral().getSea().takeFocus();
 					break;
 				case ACTIVE:
@@ -131,6 +132,7 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 					whenPlayer.getActionBar().hideReadyButton();
 					whenPlayer.getPlayerName().setForegroundColor(Palette.READY.getColor());
 					whenPlayer.getReadyLabel().hide();
+					whenPlayer.getAdmiral().getSea().setEnabled(false);
 					whenPlayer.getOpponentBar().takeFocus();
 					break;
 				default:

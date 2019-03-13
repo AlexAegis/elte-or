@@ -15,15 +15,7 @@ public enum ShipType {
 	DESTROYER("Destroyer", 6),
 	CARRIER("Carrier", 8);
 
-	private static final List<ShipType> INITIAL_BOARD = Arrays.asList(
-		SUBMARINE,
-		SUBMARINE,
-		CORVETTE,
-		CORVETTE,
-		FRIGATE,
-		DESTROYER,
-		CARRIER
-	);
+	private static List<ShipType> initialBoard;
 
 	private String name;
 	private Integer length;
@@ -48,7 +40,11 @@ public enum ShipType {
 	}
 
 	public static List<ShipType> getInitialBoard() {
-		return new ArrayList<>(INITIAL_BOARD);
+		return new ArrayList<>(initialBoard);
+	}
+
+	public static void setInitialBoard(List<ShipType> initialBoard) {
+		ShipType.initialBoard = initialBoard;
 	}
 
 	/**
@@ -64,4 +60,5 @@ public enum ShipType {
 	public String getName() {
 		return name;
 	}
+
 }

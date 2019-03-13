@@ -2,8 +2,10 @@ package battleships.net.result;
 
 import battleships.model.Admiral;
 import battleships.model.Coord;
+import battleships.model.ShipType;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class RegisterResult extends Response implements Serializable {
 
@@ -11,11 +13,13 @@ public class RegisterResult extends Response implements Serializable {
 
 	private Coord tableSize;
 	private Admiral admiral;
+	private List<ShipType> drawerContent;
 
-	public RegisterResult(String recipient, Coord tableSize, Admiral admiral) {
+	public RegisterResult(String recipient, Coord tableSize, Admiral admiral, List<ShipType> drawerContent) {
 		super(recipient);
 		this.tableSize = tableSize;
 		this.admiral = admiral;
+		this.drawerContent = drawerContent;
 	}
 
 	/**
@@ -32,10 +36,14 @@ public class RegisterResult extends Response implements Serializable {
 		return tableSize;
 	}
 
+	public List<ShipType> getDrawerContent() {
+		return drawerContent;
+	}
+
 	@Override
 	public String toString() {
 		return "RegisterResult: { target: " + this.getRecipient() + " tableSize: " + this.getTableSize() + " admiral: "
-				+ getAdmiral() + " } ";
+				+ getAdmiral() + " drawerContent: " + drawerContent + " } ";
 	}
 
 

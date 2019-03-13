@@ -3,12 +3,14 @@ package battleships.net.action;
 import battleships.Client;
 import battleships.Server;
 import battleships.model.Admiral;
+import battleships.model.ShipType;
 import battleships.net.Connection;
 import battleships.net.result.RegisterResult;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -30,6 +32,28 @@ public class Register extends Request<RegisterResult> implements Serializable {
 			Optional<Client> answerFromClient) {
 		if (answerFromServer.isPresent()) {
 			return answerFromServer.map(server -> {
+
+				var initDrawer = new ArrayList<ShipType>();
+				for (Integer i = 0; i < server.getBoats(); i++) {
+					initDrawer.add(ShipType.BOAT);
+				}
+				for (Integer i = 0; i < server.getSubmarines(); i++) {
+					initDrawer.add(ShipType.SUBMARINE);
+				}
+				for (Integer i = 0; i < server.getCorvettes(); i++) {
+					initDrawer.add(ShipType.CORVETTE);
+				}
+				for (Integer i = 0; i < server.getFrigates(); i++) {
+					initDrawer.add(ShipType.FRIGATE);
+				}
+				for (Integer i = 0; i < server.getDestroyers(); i++) {
+					initDrawer.add(ShipType.DESTROYER);
+				}
+				for (Integer i = 0; i < server.getCarriers(); i++) {
+					initDrawer.add(ShipType.CARRIER);
+				}
+
+
 				var reqAdm = server.getTable().getAdmiral(getRequester());
 				if (reqAdm == null) {
 					Logger.getGlobal().log(Level.INFO, "A new admiral has joined: {0}", getRequester());
@@ -39,15 +63,16 @@ public class Register extends Request<RegisterResult> implements Serializable {
 
 					//server.getTable().addAdmiral()
 				} else if (server.getConnectedAdmirals().get(getRequester()) != null && !server.getConnectedAdmirals().get(getRequester()).isClosed()) {
-					return new RegisterResult(null, null, null); // taken
+					return new RegisterResult(null, null, null, null); // taken
 				} else {
 					connection.setAdmiral(reqAdm);
 				}
 				server.getConnectedAdmirals().put(connection.getAdmiral().getName(), connection);
 
+				connection.getAdmiral().getKnowledge().clear();
+
 				// Notify every other player about the registration
 				server.getEveryOtherConnectedAdmiralsExcept(connection.getAdmiral()).forEach(otherConn -> {
-
 					connection.getAdmiral().getKnowledge().putIfAbsent(otherConn.getAdmiral().getName(),
 							new Admiral(otherConn.getAdmiral().getName()));
 					connection.getAdmiral().getKnowledge().get(otherConn.getAdmiral().getName())
@@ -60,7 +85,7 @@ public class Register extends Request<RegisterResult> implements Serializable {
 						});
 
 				});
-				return new RegisterResult(getRequester(), server.getTable().getSize(), connection.getAdmiral());
+				return new RegisterResult(getRequester(), server.getTable().getSize(), connection.getAdmiral(), initDrawer);
 			});
 		} else {
 			return answerFromClient.map(client -> {
@@ -74,11 +99,9 @@ public class Register extends Request<RegisterResult> implements Serializable {
 						});
 					}
 				});
-				return new RegisterResult(getRequester(), null, null);
-
+				return new RegisterResult(getRequester(), null, null, null);
 			});
 		}
-
 	}
 
 	@Override
