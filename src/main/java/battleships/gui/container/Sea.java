@@ -32,8 +32,8 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 
 	private Drawer drawer;
 
-	private Integer width = 10;
-	private Integer height = 10;
+	private Integer width;
+	private Integer height;
 	private SeaContainer seaContainer;
 	private List<Water> previousCross;
 
@@ -58,11 +58,14 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 
 	public Sea(TerminalSize size, Boolean initiallyRevealed) {
 		setLayoutManager(new SeaLayout(size));
+		width = size.getColumns();
+		height = size.getRows();
 		IntStream.range(0, width * height).forEach(i -> addComponent(new Water(this, initiallyRevealed)));
 		setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER, true, true,
 				1, 1));
 		setPreferredSize(size);
 		setSize(size);
+
 		this.getLayoutManager().doLayout(getPreferredSize(), (List<Component>) getChildren());
 	}
 

@@ -10,6 +10,7 @@ import com.googlecode.lanterna.terminal.Terminal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 public class GameWindow extends BasicWindow {
 	private Client client;
@@ -141,7 +142,7 @@ public class GameWindow extends BasicWindow {
 
 		// Register knowledge as opponents
 		var alreadyKnownAdmirals = new ArrayList<>(getAdmiral().getKnowledge().values());
-		getAdmiral().getKnowledge().clear();
+		// getAdmiral().getKnowledge().clear();
 		alreadyKnownAdmirals.forEach(getOpponentBar()::addOpponent);
 		admiral.refresh();
 		invalidate();
@@ -160,6 +161,7 @@ public class GameWindow extends BasicWindow {
 	}
 
 	public void setTableSize(TerminalSize tableSize) {
+		Logger.getGlobal().info("Table size is " + tableSize.toString());
 		this.tableSize = tableSize;
 		opponentBar.setGame(this);
 

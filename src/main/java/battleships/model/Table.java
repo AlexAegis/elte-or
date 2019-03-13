@@ -42,6 +42,14 @@ public class Table {
 		return admiral;
 	}
 
+	public Boolean removeAdmiral(String admiral) {
+		admirals.remove(admiral);
+		if(current != null && current.getName().equals(admiral)) {
+			current = null;
+		}
+		return admirals.size() == 1;
+	}
+
 	public void finishShipBorders() {
 		admirals.values().stream().flatMap(admiral -> admiral.getShipModels().stream()).forEach(Ship::finishBorder);
 	}

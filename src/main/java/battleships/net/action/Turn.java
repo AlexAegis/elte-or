@@ -54,6 +54,10 @@ public class Turn extends Request<TurnResult> implements Serializable {
 
 					var recentDeath = server.getTable().getAdmiral(shot.getRecipient().getName()).isLost() ? shot.getRecipient().getName() : "";
 
+					if(!recentDeath.isEmpty() && server.getTable().removeAdmiral(recentDeath)) {
+						server.getTable().removeAdmiral(server.getTable().getAdmirals().get(0).getName()); // Remove the guy who won too
+					}
+
 					server.getEveryConnectedAdmirals().forEach(conn -> {
 						Admiral nextTurnAdmiral = server.getCurrentAdmiral();
 

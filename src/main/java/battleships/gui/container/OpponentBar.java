@@ -46,7 +46,7 @@ public class OpponentBar extends Panel implements OpponentContainer {
 	}
 
 	public void addOpponent(Admiral admiral) {
-		admiral.getKnowledge().clear();
+		//admiral.getKnowledge().clear();
 		var copyOrExisting = game.getAdmiral().getKnowledge().getOrDefault(admiral.getName(), new Admiral(admiral.getName()).setReady(admiral.isReady()));
 		game.getAdmiral().getKnowledge().put(admiral.getName(), copyOrExisting);
 		addComponent(new Opponent(game, copyOrExisting));
