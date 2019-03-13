@@ -6,6 +6,9 @@ import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.Interactable.Result;
 
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
 public class OpponentBar extends Panel implements OpponentContainer {
 	private GameWindow game;
 
@@ -78,8 +81,8 @@ public class OpponentBar extends Panel implements OpponentContainer {
 	}
 
 	public Result focusChange(Boolean forward) {
-		var opponents = getOpponents();
-		if (!isEmpty()) {
+		var opponents = getOpponents().stream().filter(opponent -> !opponent.isDead()).collect(Collectors.toList());
+		if (!opponents.isEmpty()) {
 			if (current == null) {
 				current = opponents.get(0);
 			}

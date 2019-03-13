@@ -201,7 +201,7 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 
 		System.out.println("existingTypes: " + existingTypes);
 		System.out.println("nonPlacedShipTypes: " + nonPlacedShipTypes);
-		if(health() == 0 && !getRevealed()) {
+		if(healthLost() == 0 && !getRevealed()) {
 			setType(ShipType.getWithLengthAtLeastFrom(nonPlacedShipTypes, getBody().size() + 1));
 		} else {
 			setType(ShipType.getWithLengthAtLeastFrom(nonPlacedShipTypes, getBody().size()));
@@ -334,11 +334,15 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 
 	@Override
 	public String toString() {
-		return type.getName() + "\n" + (type.getLength() - health()) + "/" + type.getLength();
+		return type.getName() + "\n" + health() + "/" + type.getLength();
+	}
+
+	public Long healthLost() {
+		return getBody().stream().filter(Objects::nonNull).filter(ShipSegment::isDestroyed).count();
 	}
 
 	public Long health() {
-		return getBody().stream().filter(Objects::nonNull).filter(ShipSegment::isDestroyed).count();
+		return type.getLength() - healthLost();
 	}
 
 	public void destroy() {
@@ -391,7 +395,6 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 	}
 
 	public Boolean isDead() {
-		System.out.println(" ship isdead: revealed: " + revealed + " health " + health());
 		return revealed && health() == 0;
 	}
 }

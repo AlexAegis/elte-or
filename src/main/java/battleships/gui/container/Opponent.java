@@ -71,7 +71,10 @@ public class Opponent extends Panel {
 	}
 
 	public void die() {
-		getAdmiral().getSea().doTremor(true);
 		dead = true;
+		getAdmiral().getSea().setEnabled(false);
+		getGame().getOpponentBar().setCurrent(null);
+		getGame().getOpponentBar().focusNext();
+		getAdmiral().getSea().doTremor(true);
 	}
 }

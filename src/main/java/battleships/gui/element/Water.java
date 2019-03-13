@@ -208,72 +208,77 @@ public class Water extends AbstractInteractableComponent<Water> {
 
 	@Override
 	public synchronized Result handleKeyStroke(KeyStroke keyStroke) {
-		if (keyStroke.getCharacter() != null) {
-			switch (keyStroke.getCharacter()) {
-				case 'W':
-				case 'w':
-					return Result.MOVE_FOCUS_UP;
-				case 'A':
-				case 'a':
-					return Result.MOVE_FOCUS_LEFT;
-				case 'S':
-				case 's':
+		//var ignore = getSea().getAdmiral().whenOpponent().map(Opponent::isDead).orElse(false);
+		//if(!ignore) {
+			if (keyStroke.getCharacter() != null) {
+				switch (keyStroke.getCharacter()) {
+					case 'W':
+					case 'w':
+						return Result.MOVE_FOCUS_UP;
+					case 'A':
+					case 'a':
+						return Result.MOVE_FOCUS_LEFT;
+					case 'S':
+					case 's':
+						return Result.MOVE_FOCUS_DOWN;
+					case 'D':
+					case 'd':
+						return Result.MOVE_FOCUS_RIGHT;
+					default:
+				}
+			}
+
+			switch (keyStroke.getKeyType()) {
+				case ArrowDown:
 					return Result.MOVE_FOCUS_DOWN;
-				case 'D':
-				case 'd':
+				case ArrowLeft:
+					return Result.MOVE_FOCUS_LEFT;
+				case ArrowRight:
 					return Result.MOVE_FOCUS_RIGHT;
+				case ArrowUp:
+					return Result.MOVE_FOCUS_UP;
+				case Enter:
+					// If the water already tested that its empty, just do an error cross
+					// If any of the water tiles in 1 border away of this contains a ship, it's surely empty, dont send anything, just an error
+					// Or there is already a damaged ship part on this tile, then too, skip.
+
+					// If not, then send the request. The request will either return empty (mark the water wiuth the normal watercolor)
+
+					if(getSea().shotValid(getPosition())) { // If shot is valid
+						getSea().getAdmiral().whenOpponent().ifPresent(opponent -> {
+							var me = opponent.getGame().getAdmiral();
+							var op = opponent.getAdmiral();
+							var shot = new Shot(me, op, new Coord(getPosition()));
+							opponent.getGame().getClient().sendRequest(
+								new Turn(me.getName(), op.getName(),
+									shot, null)).subscribe(attackResult -> Logger.getGlobal().info("Shot sent, recieved ack: " + attackResult));
+						}); // The actual marking and client update will come from another Turn request sent back by the server as the server needs to update everybody about the results anyway
+					} else {
+						getSea().error(this);
+					}
+					unCross();
+					return Result.HANDLED;
+				case Tab:
+					getSea().getAdmiral().whenOpponent().ifPresent(opponent ->
+						opponent.getGame().getOpponentBar().focusNext()
+					);
+					return Result.HANDLED;
+				case ReverseTab:
+					getSea().getAdmiral().whenOpponent().ifPresent(opponent ->
+						opponent.getGame().getOpponentBar().focusPrevious()
+					);
+					return Result.HANDLED;
+				case Escape:
+					// TODO: What to do.. what to do..
+					sea.getDrawer().takeFocus();
+					return Result.HANDLED;
 				default:
 			}
-		}
 
-		switch (keyStroke.getKeyType()) {
-			case ArrowDown:
-				return Result.MOVE_FOCUS_DOWN;
-			case ArrowLeft:
-				return Result.MOVE_FOCUS_LEFT;
-			case ArrowRight:
-				return Result.MOVE_FOCUS_RIGHT;
-			case ArrowUp:
-				return Result.MOVE_FOCUS_UP;
-			case Enter:
-				// If the water already tested that its empty, just do an error cross
-				// If any of the water tiles in 1 border away of this contains a ship, it's surely empty, dont send anything, just an error
-				// Or there is already a damaged ship part on this tile, then too, skip.
-
-				// If not, then send the request. The request will either return empty (mark the water wiuth the normal watercolor)
-
-				if(getSea().shotValid(getPosition())) { // If shot is valid
-					getSea().getAdmiral().whenOpponent().ifPresent(opponent -> {
-						var me = opponent.getGame().getAdmiral();
-						var op = opponent.getAdmiral();
-						var shot = new Shot(me, op, new Coord(getPosition()));
-						opponent.getGame().getClient().sendRequest(
-							new Turn(me.getName(), op.getName(),
-								shot, null)).subscribe(attackResult -> Logger.getGlobal().info("Shot sent, recieved ack: " + attackResult));
-					}); // The actual marking and client update will come from another Turn request sent back by the server as the server needs to update everybody about the results anyway
-				} else {
-					getSea().error(this);
-				}
-				unCross();
-				return Result.HANDLED;
-			case Tab:
-				getSea().getAdmiral().whenOpponent().ifPresent(opponent ->
-					opponent.getGame().getOpponentBar().focusNext()
-				);
-				return Result.HANDLED;
-			case ReverseTab:
-				getSea().getAdmiral().whenOpponent().ifPresent(opponent ->
-					opponent.getGame().getOpponentBar().focusPrevious()
-				);
-				return Result.HANDLED;
-			case Escape:
-				// TODO: What to do.. what to do..
-				sea.getDrawer().takeFocus();
-				return Result.HANDLED;
-			default:
-		}
-
-		return super.handleKeyStroke(keyStroke);
+			return super.handleKeyStroke(keyStroke);
+		//} else {
+		//	return Result.UNHANDLED;
+		//}
 
 	}
 

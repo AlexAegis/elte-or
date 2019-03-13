@@ -554,4 +554,8 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 		return getShips().stream().allMatch(Ship::isDead) && getShips().size() == ShipType.getInitialBoard().size();
 	}
 
+	public void setEnabled(boolean enabled) {
+		getShips().stream().flatMap(ship -> ship.getBody().stream()).forEach(body -> body.setEnabled(enabled));
+		getWaters().forEach(water -> water.setEnabled(enabled));
+	}
 }
