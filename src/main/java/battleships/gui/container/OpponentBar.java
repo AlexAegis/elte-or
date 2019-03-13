@@ -46,18 +46,14 @@ public class OpponentBar extends Panel implements OpponentContainer {
 		admiral.getKnowledge().clear();
 		var copyOrExisting = game.getAdmiral().getKnowledge().getOrDefault(admiral.getName(), new Admiral(admiral.getName()).setReady(admiral.isReady()));
 		game.getAdmiral().getKnowledge().put(admiral.getName(), copyOrExisting);
-		//if(!game.getAdmiral().getKnowledge().containsKey(admiral.getName())) {
-			addComponent(new Opponent(game, copyOrExisting));
-		//}
-		System.out.println(copyOrExisting);
-		System.out.println(copyOrExisting.getSea());
+		addComponent(new Opponent(game, copyOrExisting));
 		setPreferredSize(game.getTableSize().withRelative(3, 3));
 		game.invalidate();
 	}
 
 	public void removeOpponent(Admiral admiral) {
 		getOpponents().stream().filter(opponent -> opponent.getAdmiral().equals(admiral)).forEach(this::removeComponent);
-		// game.getAdmiral().getKnowledge().remove(admiral.getName());
+		// game.getAdmiral().getKnowledge().remove(admiral.getName()); // TODO Maybe
 	}
 
 	public Result takeFocus() {

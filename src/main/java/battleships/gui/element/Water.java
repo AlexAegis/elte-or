@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 public class Water extends AbstractInteractableComponent<Water> {
 	private Sea sea;
 
-	private TextColor currentFore = Palette.WATER_UNREVEALED;
+	private TextColor currentFore = Palette.SMOKE;
 	private TextColor currentBack = Palette.WATER_UNREVEALED;
 	private char symbol = ' ';
 
@@ -49,13 +49,16 @@ public class Water extends AbstractInteractableComponent<Water> {
 		}
 		setSize(new TerminalSize(1, 1));
 		if(!initiallyRevealed) {
-			endNoise.onNext(true);
+			System.out.println("Lets start!!");
 			Observable.interval(100, TimeUnit.MILLISECONDS)
 				.takeUntil(endNoise)
 				.subscribeOn(Schedulers.computation())
-				.doFinally(() -> symbol = ' ').subscribe(next -> {
-
+				.doOnComplete(() -> symbol = ' ').subscribe(next -> {
 				var num = (next * getPosition().getRow() * getPosition().getColumn());
+				if(!isCross &&!isExploding && !isRippling) {
+					currentFore = Palette.SMOKE;
+					currentBack = Palette.WATER_UNREVEALED;
+				}
 				if(num % 3 < 2) { // A bit of randomness
 					symbol = '▒';
 				} else {
