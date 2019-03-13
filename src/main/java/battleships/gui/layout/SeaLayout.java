@@ -15,7 +15,13 @@ public class SeaLayout extends AbsoluteLayout {
 	private TerminalSize size;
 
 	public SeaLayout(TerminalSize size) {
+		super();
 		this.size = size;
+	}
+
+	@Override
+	public TerminalSize getPreferredSize(List<Component> components) {
+		return size;
 	}
 
 	@Override

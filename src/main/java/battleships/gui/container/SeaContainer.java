@@ -2,6 +2,7 @@ package battleships.gui.container;
 
 import battleships.gui.element.Ruler;
 import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.gui2.AbsoluteLayout;
 import com.googlecode.lanterna.gui2.BorderLayout;
 import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.Panel;

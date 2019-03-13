@@ -24,11 +24,12 @@ import java.util.stream.Stream;
 import static java.lang.System.*;
 
 @Command(name = "server", sortOptions = false,
-	header = {"", "@|cyan  _____     _   _   _     _____ _   _                                     |@",
-		"@|cyan | __  |___| |_| |_| |___|   __| |_|_|___ ___    ___ ___ ___ _ _ ___ ___  |@",
-		"@|cyan | __ -| .'|  _|  _| | -_|__   |   | | . |_ -|  |_ -| -_|  _| | | -_|  _| |@",
-		"@|cyan |_____|__,|_| |_| |_|___|_____|_|_|_|  _|___|  |___|___|_|  \\_/|___|_|   |@",
-		"@|cyan                                     |_|                                 |@"},
+	header = {"",
+		"@|cyan                           |@",
+		"@|cyan  ___ ___ ___ _ _ ___ ___  |@",
+		"@|cyan |_ -| -_|  _| | | -_|  _| |@",
+		"@|cyan |___|___|_|  \\_/|___|_|  |@",
+		"@|cyan                           |@"},
 	descriptionHeading = "@|bold %nDescription|@:%n", description = {"", "Client application for BattleShips",},
 	optionListHeading = "@|bold %nOptions|@:%n", footer = {"", "Author: AlexAegis"})
 public class Server implements Runnable {
@@ -36,16 +37,16 @@ public class Server implements Runnable {
 	@ParentCommand
 	private App app;
 
-	@Option(names = {"-p", "--port"}, paramLabel = "<host>", description = "Port of the server", defaultValue = "6668")
+	@Option(names = {"-p", "--port"}, paramLabel = "<host>", description = "Port of the server (default: ${DEFAULT-VALUE})", defaultValue = "6668")
 	private Integer port;
 
-	@Option(names = {"-m", "--mode"}, paramLabel = "<mode>", description = "Game mode selection!", defaultValue = "TURN")
+	@Option(names = {"-m", "--mode"}, paramLabel = "<mode>", description = "Game mode selection! Valid values: ${COMPLETION-CANDIDATES} (default: ${DEFAULT-VALUE})", defaultValue = "TURN")
 	private Mode mode;
 
-	@Option(names = {"-w", "--width"}, paramLabel = "<width>", description = "Height of the game area", defaultValue = "10")
+	@Option(names = {"-w", "--width"}, paramLabel = "<width>", description = "Height of the game area (default: ${DEFAULT-VALUE})", defaultValue = "10")
 	private Integer width;
 
-	@Option(names = {"-h", "--height"}, paramLabel = "<height>", description = "Width of the game area", defaultValue = "10")
+	@Option(names = {"-h", "--height"}, paramLabel = "<height>", description = "Width of the game area (default: ${DEFAULT-VALUE})", defaultValue = "10")
 	private Integer height;
 
 	public static void main(String[] args) {

@@ -39,11 +39,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Command(name = "client", sortOptions = false,
-	header = {"", "@|cyan  _____     _   _   _     _____ _   _                _ _         _    |@",
-		"@|cyan | __  |___| |_| |_| |___|   __| |_|_|___ ___    ___| |_|___ ___| |_  |@",
-		"@|cyan | __ -| .'|  _|  _| | -_|__   |   | | . |_ -|  |  _| | | -_|   |  _| |@",
-		"@|cyan |_____|__,|_| |_| |_|___|_____|_|_|_|  _|___|  |___|_|_|___|_|_|_|   |@",
-		"@|cyan                                     |_|                              |@"},
+	header = {"",
+		"@|cyan      _ _         _    |@",
+		"@|cyan  ___| |_|___ ___| |_  |@",
+		"@|cyan |  _| | | -_|   |  _| |@",
+		"@|cyan |___|_|_|___|_|_|_|   |@",
+		"@|cyan                       |@"},
 	descriptionHeading = "@|bold %nDescription|@:%n", description = {"", "Client application for BattleShips",},
 	optionListHeading = "@|bold %nOptions|@:%n", footer = {"", "Author: AlexAegis"})
 public class Client implements Runnable {
@@ -179,7 +180,7 @@ public class Client implements Runnable {
 
 	@Override
 	public void run() {
-		Logger.getGlobal().setLevel(app.loglevel.getLevel());
+		Logger.getGlobal().setLevel(app.getLoglevel().getLevel());
 
 		try {
 			var royaleProps = new Properties();
@@ -195,8 +196,6 @@ public class Client implements Runnable {
 										.setInitialTerminalSize(new TerminalSize(41, 30))
 										.createTerminal();
 		     Screen screen = new TerminalScreen(terminal)) {
-
-			terminal.setBackgroundColor(TextColor.Factory.fromString("#000000"));
 			screen.startScreen();
 			game = new GameWindow(this);
 

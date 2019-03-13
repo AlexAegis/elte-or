@@ -60,8 +60,6 @@ public class Register extends Request<RegisterResult> implements Serializable {
 						});
 
 				});
-
-				System.out.println("Should have all the knowledge, right? size of knowledge: " + connection.getAdmiral().getKnowledge().size() + " - " + connection.getAdmiral());
 				return new RegisterResult(getRequester(), server.getTable().getSize(), connection.getAdmiral());
 			});
 		} else {

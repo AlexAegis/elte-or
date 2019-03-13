@@ -69,6 +69,14 @@ public class Water extends AbstractInteractableComponent<Water> {
 
 	}
 
+	public Palette getCurrentBack() {
+		return currentBack;
+	}
+
+	public Palette getCurrentFore() {
+		return currentFore;
+	}
+
 	public void startExplosion(Integer wave) {
 		isExploding = true;
 		Observable.interval(200, TimeUnit.MILLISECONDS).take(4).doFinally(() -> {

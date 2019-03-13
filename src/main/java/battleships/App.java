@@ -16,7 +16,12 @@ import java.util.logging.Logger;
 		"@|cyan | __  |___| |_| |_| |___|   __| |_|_|___ ___ |@",
 		"@|cyan | __ -| .'|  _|  _| | -_|__   |   | | . |_ -| |@",
 		"@|cyan |_____|__,|_| |_| |_|___|_____|_|_|_|  _|___| |@", "@|cyan                                     |_| |@"},
-		descriptionHeading = "@|bold %nDescription|@:%n", description = {"", "BattleShips application",},
+		descriptionHeading = "@|bold %nDescription|@:%n", description = {"", "BattleShips application\n\n " +
+			"Start the application with either the 'client' or the 'server' parameter\n\n" +
+	"Use 'app.jar client -h' or 'app.jar server -h' to list commands for the sub programs"
+
+
+	,},
 		versionProvider = App.ManifestVersionProvider.class, optionListHeading = "@|bold %nOptions|@:%n",
 		subcommands = {Server.class, Client.class}, footer = {"", "Author: AlexAegis"})
 public class App implements Runnable {
@@ -25,14 +30,18 @@ public class App implements Runnable {
 	private boolean help;
 
 	@Option(names = {"-v", "--version"}, versionHelp = true, description = "Prints version")
-	boolean versionRequested;
+	private boolean versionRequested;
 
 	@Option(names = {"-l", "--logLevel"},
 			description = "Sets the level of logging, Valid values: ${COMPLETION-CANDIDATES} (default: ${DEFAULT-VALUE})")
-	Levels loglevel = Levels.OFF;
+	private Levels loglevel = Levels.OFF;
 
 	public static void main(String... args) throws Exception {
 		CommandLine.run(new App(), System.err, args);
+	}
+
+	public Levels getLoglevel() {
+		return loglevel;
 	}
 
 	@Override
