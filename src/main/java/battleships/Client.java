@@ -66,6 +66,7 @@ public class Client implements Runnable {
 	private GameWindow game;
 	private ConnectWindow connectWindow;
 	private RegistrationWindow registrationWindow;
+	private GameOverWindow gameOverWindow;
 
 	private MultiWindowTextGUI gui;
 	private BehaviorSubject<Connection> connection = BehaviorSubject.create();
@@ -205,6 +206,8 @@ public class Client implements Runnable {
 
 			connectWindow = new ConnectWindow(this);
 			registrationWindow = new RegistrationWindow(this);
+			gameOverWindow = new GameOverWindow(this);
+
 			tryConnect(host, port);
 			showConnectWindow();
 			gui.waitForWindowToClose(game);
@@ -247,6 +250,15 @@ public class Client implements Runnable {
 
 	public void showConnectWindow() {
 		getConnectWindow().show();
+	}
+
+	public void showGameOverWindow(Boolean win) {
+		getGameOverWindow().setWin(win);
+		getGameOverWindow().show();
+	}
+
+	public GameOverWindow getGameOverWindow() {
+		return gameOverWindow;
 	}
 
 	/**

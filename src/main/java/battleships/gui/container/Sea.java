@@ -133,11 +133,21 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 		doRipple(ripple(ship.getPosition(), ship.getType().getLength(), size, ship.getOrientation(), false), delay);
 	}
 
-	public void doTremor() {
+	public void doTremor(Boolean explosion) {
 		getWaters().forEach(water -> {
-			water.startRipple(4); // 4 is a small wave
+			if(explosion) {
+				water.startExplosion(4); // 4 is a small wave
+				water.startRipple(8); // 4 is a small wave
+			} else {
+				water.startRipple(4); // 4 is a small wave
+			}
 			water.invalidate();
 		});
+	}
+
+
+	public void doTremor() {
+		doTremor(false);
 	}
 
 	public SeaContainer getSeaContainer() {
@@ -538,4 +548,10 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	public Boolean shotValid(TerminalPosition position) {
 		return !getWaterAt(position).map(Water::getRevealed).orElse(true);
 	}
+
+	public Boolean isDead() {
+		System.out.println(">>> IsDead " + getShips().stream().allMatch(Ship::isDead) +  " getShips().size() " + getShips().size() + "  ShipType.getInitialBoard().size() " +  ShipType.getInitialBoard().size());
+		return getShips().stream().allMatch(Ship::isDead) && getShips().size() == ShipType.getInitialBoard().size();
+	}
+
 }

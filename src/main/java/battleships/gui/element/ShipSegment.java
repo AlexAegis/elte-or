@@ -353,8 +353,8 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 				.subscribeOn(Schedulers.computation())
 				.take(20)
 				.doFinally(() -> {
-					currentFore = Palette.SMOKE;
-					currentBack = Palette.SMOKE.dark();
+					currentFore = Palette.SMOKE.dark();
+					currentBack = Palette.BASE.dark();
 					invalidate();
 				}).subscribe(next -> {
 				if(next % 2 == 0) {
@@ -367,8 +367,8 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 				invalidate();
 			});
 		} else {
-			currentFore = Palette.SMOKE;
-			currentBack = Palette.SMOKE.dark();
+			currentFore = Palette.SMOKE.dark();
+			currentBack = Palette.BASE.dark();
 			invalidate();
 		}
 
@@ -417,7 +417,7 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 
 		@Override
 		public void drawComponent(TextGUIGraphics graphics, ShipSegment shipSegment) {
-			if (shipSegment.ship.getHead().isFocused()) {
+			if (shipSegment.ship.getHead().isFocused() || shipSegment.destroyed) {
 				graphics.setForegroundColor(shipSegment.currentFore.getColor(!shipSegment.ship.isHeld()));
 				graphics.setBackgroundColor(shipSegment.currentBack.getColor(!shipSegment.ship.isHeld()));
 			} else {

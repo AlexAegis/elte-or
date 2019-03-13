@@ -3,7 +3,6 @@ package battleships.gui.container;
 import battleships.gui.Palette;
 import battleships.gui.element.ReadyLabel;
 import battleships.model.Admiral;
-import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.Interactable.Result;
 
@@ -14,6 +13,7 @@ public class Opponent extends Panel {
 	private GameWindow game;
 	private ReadyLabel label;
 	private Admiral admiral;
+	private Boolean dead = false;
 
 	public Opponent(GameWindow game, Admiral admiral) {
 		this.game = game;
@@ -57,8 +57,21 @@ public class Opponent extends Panel {
 	}
 
 	public Result takeFocus() {
-		highlight();
-		getGame().getInspector().inspect(this);
-		return getAdmiral().getSea().takeFocus();
+		if(!dead) {
+			highlight();
+			getGame().getInspector().inspect(this);
+			return getAdmiral().getSea().takeFocus();
+		} else {
+			return Result.UNHANDLED;
+		}
+	}
+
+	public Boolean isDead() {
+		return dead;
+	}
+
+	public void die() {
+		getAdmiral().getSea().doTremor(true);
+		dead = true;
 	}
 }

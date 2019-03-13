@@ -68,7 +68,7 @@ public class Ready extends Request<ReadyResult> implements Serializable {
 						Admiral firstTurnAdmiral = server.getCurrentAdmiral();
 
 						// A little delay before broadcasting
-						 conn.send(new Turn(conn.getAdmiral().getName(),Mode.ROYALE.equals(server.getMode()) ? conn.getAdmiral().getName() : firstTurnAdmiral.getName(), null))
+						 conn.send(new Turn(conn.getAdmiral().getName(),Mode.ROYALE.equals(server.getMode()) ? conn.getAdmiral().getName() : firstTurnAdmiral.getName(), null, null))
 						.subscribe(ack -> {
 							Logger.getGlobal().info("Sent turn data, got ack: " + ack);
 						});

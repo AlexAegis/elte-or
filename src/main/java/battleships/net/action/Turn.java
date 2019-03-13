@@ -2,12 +2,14 @@ package battleships.net.action;
 
 import battleships.Client;
 import battleships.Server;
+import battleships.gui.container.Opponent;
 import battleships.model.Admiral;
 import battleships.model.Shot;
 import battleships.net.Connection;
 import battleships.net.result.TurnResult;
 import battleships.state.Mode;
 import battleships.state.Phase;
+import com.googlecode.lanterna.bundle.LanternaThemes;
 
 import java.io.Serializable;
 import java.util.Optional;
@@ -19,11 +21,13 @@ public class Turn extends Request<TurnResult> implements Serializable {
 	private static final long serialVersionUID = -8624839883482465098L;
 	private String who;
 	private Shot shot;
+	private String death;
 
-	public Turn(String id, String who, Shot shot) {
+	public Turn(String id, String who, Shot shot, String death) {
 		super(id);
 		this.who = who;
 		this.shot = shot;
+		this.death = death;
 	}
 
 	/**
@@ -48,14 +52,14 @@ public class Turn extends Request<TurnResult> implements Serializable {
 					// After we shoot the shot (or not) we have to notify every client that a turn has passed
 					server.turnAdmirals();
 
-					// TODO Check if someone died or not
+					var recentDeath = server.getTable().getAdmiral(shot.getRecipient().getName()).isLost() ? shot.getRecipient().getName() : "";
 
 					server.getEveryConnectedAdmirals().forEach(conn -> {
 						Admiral nextTurnAdmiral = server.getCurrentAdmiral();
 
 						conn.send(new Turn(conn.getAdmiral().getName(),
 							Mode.ROYALE.equals(server.getMode()) ? conn.getAdmiral().getName() : nextTurnAdmiral.getName(),
-							result)).subscribe(ack -> Logger.getGlobal().log(Level.INFO, "Sent turn data, got ack: {0}", ack));
+							result, recentDeath)).subscribe(ack -> Logger.getGlobal().log(Level.INFO, "Sent turn data, got ack: {0}", ack));
 						// They will process the shot and do accordingly
 					});
 
@@ -97,11 +101,31 @@ public class Turn extends Request<TurnResult> implements Serializable {
 						} else if (client.getGame().getAdmiral().getName().equals(shot.getRecipient().getName())) {
 							// If someone else shot that shot and it hit me, process it
 							client.getGame().getAdmiral().getSea().receiveShot(shot);
+							if (client.getGame().getAdmiral().getSea().isDead()) {
+								System.out.println("Death should also be me: " + death);
+								client.getGame().initiateDeathSequence();
+							}
 						} else if (client.getGame().getAdmiral().getKnowledge().containsKey(shot.getRecipient().getName())) {
 							// If they shot somebody else, show a ripple on all the tiles (flash)
 							client.getGame().getAdmiral().getKnowledge().get(shot.getRecipient().getName()).whenOpponent().ifPresent(opponent -> {
 								opponent.getAdmiral().getSea().doTremor();
 							});
+
+						}
+					}
+
+					if(death != null) {
+						var diedOpponent = client.getGame().getAdmiral().getKnowledge().get(death);
+
+						if(diedOpponent != null) {
+							diedOpponent.whenOpponent().ifPresent(opponent -> {
+								opponent.die();
+								opponent.getLabel().setTheme(LanternaThemes.getRegisteredTheme("royale-disabled"));
+							});
+
+							if (client.getGame().getOpponentBar().getOpponents().stream().allMatch(Opponent::isDead)) {
+								client.getGame().initiateWinSequence();
+							}
 						}
 					}
 				});

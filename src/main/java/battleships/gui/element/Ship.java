@@ -389,4 +389,9 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 	public void drop() {
 		// TODO
 	}
+
+	public Boolean isDead() {
+		System.out.println(" ship isdead: revealed: " + revealed + " health " + health());
+		return revealed && health() == 0;
+	}
 }

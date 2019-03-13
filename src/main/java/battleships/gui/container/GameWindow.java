@@ -153,7 +153,7 @@ public class GameWindow extends BasicWindow {
 	}
 
 	/**
-	 * @return the tablSize
+	 * @return the tableSize
 	 */
 	public TerminalSize getTableSize() {
 		return tableSize;
@@ -163,5 +163,15 @@ public class GameWindow extends BasicWindow {
 		this.tableSize = tableSize;
 		opponentBar.setGame(this);
 
+	}
+
+	public void initiateDeathSequence() {
+		getAdmiral().getSea().doTremor(true);
+		getClient().showGameOverWindow(false);
+	}
+
+	public void initiateWinSequence() {
+		getAdmiral().getSea().doTremor();
+		getClient().showGameOverWindow(true);
 	}
 }

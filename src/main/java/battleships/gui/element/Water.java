@@ -249,8 +249,7 @@ public class Water extends AbstractInteractableComponent<Water> {
 						var shot = new Shot(me, op, new Coord(getPosition()));
 						opponent.getGame().getClient().sendRequest(
 							new Turn(me.getName(), op.getName(),
-								shot
-							)).subscribe(attackResult -> Logger.getGlobal().info("Shot sent, recieved ack: " + attackResult));
+								shot, null)).subscribe(attackResult -> Logger.getGlobal().info("Shot sent, recieved ack: " + attackResult));
 					}); // The actual marking and client update will come from another Turn request sent back by the server as the server needs to update everybody about the results anyway
 				} else {
 					getSea().error(this);
