@@ -193,10 +193,12 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 	 */
 	private void updateClass() {
 		var existingTypes = getSea().getShips().stream()
-			//.filter(ship -> !ship.equals(this))
 			.map(Ship::getType).collect(Collectors.toList());
+		existingTypes.remove(getType()); // only one
 		var nonPlacedShipTypes = ShipType.getInitialBoard();
-		nonPlacedShipTypes.removeAll(existingTypes);
+
+		existingTypes.forEach(nonPlacedShipTypes::remove);
+
 		System.out.println("existingTypes: " + existingTypes);
 		System.out.println("nonPlacedShipTypes: " + nonPlacedShipTypes);
 		if(health() == 0 && !getRevealed()) {

@@ -46,13 +46,13 @@ public class Opponent extends Panel {
 	}
 
 	public void highlight() {
-		label.setBackgroundColor(Palette.WATER);
+		label.setBackgroundColor(Palette.WATER.getColor());
 		getGame().getOpponentBar().setCurrent(this);
 		invalidate();
 	}
 
 	public void unHighlight() {
-		label.setBackgroundColor(Palette.BASE);
+		label.setBackgroundColor(Palette.BASE.getColor());
 		invalidate();
 	}
 

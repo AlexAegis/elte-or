@@ -121,7 +121,7 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 					Logger.getGlobal().info("It's not my turn!");
 					whenPlayer.getActionBar().hideReadyButton();
 					whenPlayer.getReadyLabel().hide();
-					whenPlayer.getPlayerName().setForegroundColor(Palette.SMOKE);
+					whenPlayer.getPlayerName().setForegroundColor(Palette.SMOKE.getColor());
 					// Focus on sea, inspect your ships
 					whenPlayer.getAdmiral().getSea().takeFocus();
 					break;
@@ -129,7 +129,7 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 					// What to do when it's my turn?
 					Logger.getGlobal().info("It's my turn!");
 					whenPlayer.getActionBar().hideReadyButton();
-					whenPlayer.getPlayerName().setForegroundColor(Palette.READY);
+					whenPlayer.getPlayerName().setForegroundColor(Palette.READY.getColor());
 					whenPlayer.getReadyLabel().hide();
 					whenPlayer.getOpponentBar().takeFocus();
 					break;

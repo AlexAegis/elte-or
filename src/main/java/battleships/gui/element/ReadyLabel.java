@@ -9,14 +9,12 @@ import com.googlecode.lanterna.gui2.Label;
 public class ReadyLabel extends Label {
 	private GameWindow game;
 
-
 	private Admiral admiral;
 
 	public ReadyLabel(GameWindow game, Admiral admiral) {
 		super("");
 		this.game = game;
 		this.admiral = admiral;
-		//refresh();
 	}
 
 	/**
@@ -27,19 +25,19 @@ public class ReadyLabel extends Label {
 	}
 
 	public void base() {
-		setForegroundColor(Palette.SMOKE);
+		setForegroundColor(Palette.SMOKE.getColor());
 		setText(admiral == null || admiral.equals(game.getAdmiral()) ? "" : admiral.getName());
 		invalidate();
 	}
 
 	public void ready() {
-		setForegroundColor(Palette.READY);
+		setForegroundColor(Palette.READY.getColor());
 		setText(admiral == null || admiral.equals(game.getAdmiral()) ? "Ready" : admiral.getName());
 		invalidate();
 	}
 
 	public void notReady() {
-		setForegroundColor(Palette.NOT_READY);
+		setForegroundColor(Palette.NOT_READY.getColor());
 		setText(admiral == null || admiral.equals(game.getAdmiral()) ? "Not Ready" : admiral.getName());
 		invalidate();
 	}

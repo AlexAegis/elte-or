@@ -8,7 +8,6 @@ import battleships.model.Shot;
 import battleships.net.action.Turn;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
-import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.AbstractInteractableComponent;
 import com.googlecode.lanterna.gui2.Interactable;
 import com.googlecode.lanterna.gui2.InteractableRenderer;
@@ -24,8 +23,8 @@ import java.util.logging.Logger;
 public class Water extends AbstractInteractableComponent<Water> {
 	private Sea sea;
 
-	private TextColor currentFore = Palette.SMOKE;
-	private TextColor currentBack = Palette.WATER_UNREVEALED;
+	private Palette currentFore = Palette.SMOKE;
+	private Palette currentBack = Palette.WATER;
 	private char symbol = ' ';
 
 	private Boolean isCross = false;
@@ -57,7 +56,7 @@ public class Water extends AbstractInteractableComponent<Water> {
 				var num = (next * getPosition().getRow() * getPosition().getColumn());
 				if(!isCross &&!isExploding && !isRippling) {
 					currentFore = Palette.SMOKE;
-					currentBack = Palette.WATER_UNREVEALED;
+					currentBack = Palette.WATER;
 				}
 				if(num % 3 < 2) { // A bit of randomness
 					symbol = '▒';
@@ -133,13 +132,8 @@ public class Water extends AbstractInteractableComponent<Water> {
 	}
 
 	public void resetDefaultColorAndSymbol(Boolean noSymbolReset) {
-		if(revealed) {
-			currentFore = Palette.WATER;
-			currentBack = Palette.WATER;
-		} else {
-			currentFore = Palette.WATER_UNREVEALED;
-			currentBack = Palette.WATER_UNREVEALED;
-		}
+		currentFore = Palette.WATER;
+		currentBack = Palette.WATER;
 		if (!noSymbolReset) {
 			symbol = ' ';
 		}
@@ -317,11 +311,11 @@ public class Water extends AbstractInteractableComponent<Water> {
 		this.symbol = symbol;
 	}
 
-	public void setCurrentFore(TextColor currentFore) {
+	public void setCurrentFore(Palette currentFore) {
 		this.currentFore = currentFore;
 	}
 
-	public void setCurrentBack(TextColor currentBack) {
+	public void setCurrentBack(Palette currentBack) {
 		this.currentBack = currentBack;
 	}
 
@@ -350,18 +344,18 @@ public class Water extends AbstractInteractableComponent<Water> {
 		public void drawComponent(TextGUIGraphics graphics, Water water) {
 
 			if (water.isFocused()) {
-				graphics.setBackgroundColor(water.currentBack);
-				graphics.setForegroundColor(water.currentFore);
+				graphics.setBackgroundColor(water.currentBack.getColor(!water.getRevealed()));
+				graphics.setForegroundColor(water.currentFore.getColor(!water.getRevealed()));
 			} else {
-				graphics.setBackgroundColor(water.currentBack);
-				graphics.setForegroundColor(water.currentFore);
+				graphics.setBackgroundColor(water.currentBack.getColor(!water.getRevealed()));
+				graphics.setForegroundColor(water.currentFore.getColor(!water.getRevealed()));
 			}
 
 			graphics.fill(water.symbol);
 
 			if(water.debug != ' ') {
-				graphics.setBackgroundColor(Palette.READY);
-				graphics.setForegroundColor(Palette.SMOKE_DARK);
+				graphics.setBackgroundColor(Palette.READY.getColor(!water.getRevealed()));
+				graphics.setForegroundColor(Palette.SMOKE_DARK.getColor(!water.getRevealed()));
 				graphics.fill(water.debug);
 			}
 

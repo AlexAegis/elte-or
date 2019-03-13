@@ -28,12 +28,8 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 	private Ship ship;
 	private Boolean destroyed = false;
 
-	private final TextColor highlighted = TextColor.Factory.fromString("#787777");
-	private final TextColor held = TextColor.Factory.fromString("#889999");
-	private TextColor currentHighlighted = highlighted;
-	private TextColor currentHeld = held;
-	private TextColor basic = TextColor.Factory.fromString("#555555");
-	private TextColor error = TextColor.Factory.fromString("#AA5555");
+	private Palette currentFore = Palette.SHIP_HIGHLIGHT;
+	private Palette currentBack = Palette.SHIP_HIGHLIGHT;
 
 	public ShipSegment(Ship ship) {
 		this.ship = ship;
@@ -54,14 +50,14 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 
 	public void briefError() {
 		ship.getChildren().stream().map(c -> (ShipSegment) c).forEach(s -> {
-			s.currentHighlighted = error;
-			s.currentHeld = error;
+			s.currentFore = Palette.ERROR;
+			s.currentBack = Palette.ERROR;
 		});
 		Observable.timer(200, TimeUnit.MILLISECONDS).subscribeOn(Schedulers.computation())
 			.subscribe(next ->
 			ship.getChildren().stream().map(c -> (ShipSegment) c).forEach(s -> {
-				s.currentHighlighted = highlighted;
-				s.currentHeld = held;
+				currentFore = Palette.SHIP_HIGHLIGHT;
+				currentBack = Palette.SHIP_HIGHLIGHT;
 			})
 		);
 	}
@@ -357,22 +353,22 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 				.subscribeOn(Schedulers.computation())
 				.take(20)
 				.doFinally(() -> {
-					currentHeld = Palette.SMOKE_DARK;
-					currentHighlighted = Palette.SMOKE_DARK;
+					currentFore = Palette.SMOKE;
+					currentBack = Palette.SMOKE.dark();
 					invalidate();
 				}).subscribe(next -> {
 				if(next % 2 == 0) {
-					currentHeld = Palette.EXPLOSION_OUTER;
-					currentHighlighted = Palette.EXPLOSION_CENTER;
+					currentFore = Palette.SMOKE;
+					currentBack = Palette.EXPLOSION_CENTER;
 				} else {
-					currentHeld = Palette.EXPLOSION_CENTER;
-					currentHighlighted = Palette.EXPLOSION_OUTER;
+					currentFore = Palette.SMOKE;
+					currentBack = Palette.EXPLOSION_OUTER;
 				}
 				invalidate();
 			});
 		} else {
-			currentHeld = Palette.SMOKE_DARK;
-			currentHighlighted = Palette.SMOKE_DARK;
+			currentFore = Palette.SMOKE;
+			currentBack = Palette.SMOKE.dark();
 			invalidate();
 		}
 
@@ -421,30 +417,18 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 
 		@Override
 		public void drawComponent(TextGUIGraphics graphics, ShipSegment shipSegment) {
-			graphics.setForegroundColor(Palette.SHIP_FORE);
-
-
 			if (shipSegment.ship.getHead().isFocused()) {
-				if (shipSegment.ship.isHeld()) {
-					graphics.setBackgroundColor(shipSegment.currentHeld);
-				} else {
-					graphics.setBackgroundColor(shipSegment.currentHighlighted);
-				}
-
+				graphics.setForegroundColor(shipSegment.currentFore.getColor(!shipSegment.ship.isHeld()));
+				graphics.setBackgroundColor(shipSegment.currentBack.getColor(!shipSegment.ship.isHeld()));
 			} else {
-				graphics.setBackgroundColor(Palette.SHIP_BACK);
+				graphics.setForegroundColor(Palette.SHIP_FORE.getColor(!shipSegment.ship.isHeld()));
+				graphics.setBackgroundColor(Palette.SHIP_BACK.getColor(!shipSegment.ship.isHeld()));
 			}
 			if (shipSegment.destroyed) {
-				graphics.setBackgroundColor(shipSegment.currentHeld);
-				graphics.setBackgroundColor(shipSegment.currentHighlighted);
 				graphics.fill('▒');
 			} else {
 				graphics.fill(' ');
 			}
-
-
-			//}
-
 
 		}
 
