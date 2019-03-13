@@ -132,8 +132,15 @@ public class Client implements Runnable {
 	/**
 	 * @return the connection
 	 */
-	public BehaviorSubject<Connection> getConnection() {
+	public BehaviorSubject<Connection> getConnectionSubject() {
 		return connection;
+	}
+
+	/**
+	 * @return the connection
+	 */
+	public Observable<Connection> getConnection() {
+		return connection.filter(con -> !con.isClosed());
 	}
 
 	public void tryConnect(String host, Integer port) {
@@ -141,7 +148,7 @@ public class Client implements Runnable {
 		Observable.fromCallable(() -> {
 			connectWindow.showConnecting();
 			return new Connection(this, host, port);
-		}).subscribeOn(Schedulers.newThread()).subscribe(getConnection()::onNext, err -> {
+		}).subscribeOn(Schedulers.newThread()).subscribe(getConnectionSubject()::onNext, err -> {
 			Logger.getGlobal().log(Level.SEVERE, "Error on tryConnect", err);
 			getGui().getGUIThread().invokeLater(() -> {
 				connectWindow.showConnectionForm();

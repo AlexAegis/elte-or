@@ -78,7 +78,14 @@ public class Connection extends Observable<Packet> implements AutoCloseable {
 			// observer.onComplete();
 		} finally {
 			Logger.getGlobal().info("Client disconnected, trying to reconnect..");
-			optionalClient.ifPresent(Client::showConnectWindow);
+			close();
+			optionalClient.ifPresent(client -> {
+				client.getGame().getTextGUI().getGUIThread().invokeLater(() -> {
+					client.tryConnect(client.getHost(), client.getPort());
+					client.getConnectWindow().showConnecting();
+					client.showConnectWindow();
+				});
+			});
 			// observer.onComplete();
 		}
 
