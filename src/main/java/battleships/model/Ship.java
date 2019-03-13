@@ -101,19 +101,23 @@ public class Ship implements Serializable {
 	 * @param shot coordinate
 	 * @return true if it kills, false if it hit but didnt kill, null if missed
 	 */
-	public Boolean recieveShot(Shot shot) throws AlreadyShotException {
-		body.computeIfPresent(shot.getTarget(), (body, damage) -> {
-			// Only tell if it's already been shot if the same player shot it
-			if (damage.getSource().equals(shot.getSource())) {
-				throw new AlreadyShotException(damage);
-			} else
-				return damage;
-		});
-		if (body.containsKey(shot.getTarget())) {
+	public Boolean receiveShot(Shot shot) {
+		var bodyShot = body.get(shot.getTarget());
+		if(bodyShot != null) {
+			if(isDead()) {
+				shot.setResult(ShotMarker.ALREADY_HIT_FINISHED);
+			} else {
+				shot.setResult(ShotMarker.ALREADY_HIT);
+			}
+		} else {
 			body.put(shot.getTarget(), shot);
-			return isDead();
-		} else
-			return null;
+			if(isDead()) {
+				shot.setResult(ShotMarker.HIT_AND_FINISHED);
+			} else {
+				shot.setResult(ShotMarker.HIT);
+			}
+		}
+		return isDead();
 	}
 
 	/**

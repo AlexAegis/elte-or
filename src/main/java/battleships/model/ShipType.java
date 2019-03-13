@@ -1,7 +1,9 @@
 package battleships.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * They have to be in order by size
@@ -14,7 +16,7 @@ public enum ShipType {
 	DESTROYER("Destroyer", 6),
 	CARRIER("Carrier", 8);
 
-	public static final List<ShipType> INITIAL_BOARD = Arrays.asList(
+	private static final List<ShipType> INITIAL_BOARD = Arrays.asList(
 		SUBMARINE,
 		SUBMARINE//,
 		// CORVETTE,
@@ -45,6 +47,10 @@ public enum ShipType {
 			}
 		}
 		return null;
+	}
+
+	public static List<ShipType> getInitialBoard() {
+		return new ArrayList<>(INITIAL_BOARD);
 	}
 
 	/**

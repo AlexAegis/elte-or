@@ -219,28 +219,19 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 	 * @param target
 	 *
 	 */
-	public Shot shoot(Admiral admiral, Coord target) throws AlreadyShotException, BorderShotException {
+	public Shot shoot(Admiral admiral, Coord target) {
 		var shot = new Shot(this, admiral, target, ShotMarker.MISS);
 
-		System.out.println(">>>>>>>>>> HAS KNOWLEDGE?? " + knowledge.containsKey(admiral.getName()));
-		if (knowledge.values().stream().flatMap(a -> a.ships.stream()).flatMap(ship -> ship.getBorder().stream())
-				.anyMatch(coord -> coord.equals(target))) {
-			Logger.getGlobal().severe("Might not want to shoot here: BorderShotException!");
-			// throw new BorderShotException();
-		}
-		var shotResults =
-				admiral.ships.stream().map(ship -> ship.recieveShot(shot)).distinct().collect(Collectors.toList());
-		if (shotResults.contains(true)) {
-			shot.setResult(ShotMarker.HIT_AND_FINISHED);
-		} else if (shotResults.contains(false)) {
-			shot.setResult(ShotMarker.HIT);
-		} else {
+		var optionalTarget = admiral.ships.stream().filter(ship -> ship.getBody().keySet().contains(shot.getTarget())).findFirst();
+		optionalTarget.ifPresentOrElse(ship -> {
+			ship.receiveShot(shot);
+			place(knowledge.get(admiral.getName()), shot.getTarget(), shot);
+		}, () -> {
+			shot.setResult(ShotMarker.MISS);
 			admiral.getMiss().add(shot);
 			knowledge.get(admiral.getName()).getMiss().add(shot);
-		}
-		if (shotResults.contains(false) || shotResults.contains(true)) {
-			place(knowledge.get(admiral.getName()), shot.getTarget(), shot);
-		}
+		});
+
 		return shot;
 	}
 

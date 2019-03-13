@@ -19,7 +19,7 @@ public class Drawer extends Panel implements Chainable, ShipContainer {
 	public Drawer(GameWindow game) {
 		this.game = game;
 		setLayoutManager(new LinearLayout(Direction.VERTICAL).setSpacing(1));
-		ShipType.INITIAL_BOARD.stream().map(Ship::new).forEach(this::addComponent);
+		ShipType.getInitialBoard().stream().map(Ship::new).forEach(this::addComponent);
 	}
 
 	@Override

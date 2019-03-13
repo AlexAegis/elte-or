@@ -343,21 +343,24 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 		return destroyed;
 	}
 
-	public void destroy(Boolean explosion) {
+	public void destroy(Boolean explosion, Boolean ripple, Boolean fire) {
 		this.destroyed = true;
 		if(explosion) {
 			getShip().getSea().sendExplosion(getWater());
-			getShip().getSea().sendRipple(getWater(), 400);
 		}
-		// On fire animation
-		Observable.interval(500, TimeUnit.MILLISECONDS)
-			.subscribeOn(Schedulers.computation())
-			.take(20)
-			.doFinally(() -> {
-				currentHeld = Palette.SMOKE_DARK;
-				currentHighlighted = Palette.SMOKE_DARK;
-				invalidate();
-			}).subscribe(next -> {
+		if(ripple) {
+			getShip().getSea().sendRipple(getWater(), explosion ? 6 : 2, explosion ? 400 : 0);
+		}
+		if(fire) {
+			// On fire animation
+			Observable.interval(500, TimeUnit.MILLISECONDS)
+				.subscribeOn(Schedulers.computation())
+				.take(20)
+				.doFinally(() -> {
+					currentHeld = Palette.SMOKE_DARK;
+					currentHighlighted = Palette.SMOKE_DARK;
+					invalidate();
+				}).subscribe(next -> {
 				if(next % 2 == 0) {
 					currentHeld = Palette.EXPLOSION_OUTER;
 					currentHighlighted = Palette.EXPLOSION_CENTER;
@@ -367,6 +370,7 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 				}
 				invalidate();
 			});
+		}
 
 		if(!destroyed) {
 			takeFocus();
@@ -374,7 +378,7 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 	}
 
 	public void destroy() {
-		destroy(true);
+		destroy(true, true, true);
 	}
 
 	public ShipSegment reveal() {

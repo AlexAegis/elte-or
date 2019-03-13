@@ -4,7 +4,7 @@ package battleships.marker;
  * It can either be hit_and_finished, hit or miss, huh?
  */
 public enum ShotMarker {
-	HIT_AND_FINISHED("#"), HIT("#"), MISS("O");
+	HIT_AND_FINISHED("X"), HIT("#"), MISS("O"), ALREADY_HIT("A"), ALREADY_HIT_FINISHED("F");
 
 	private String marker;
 

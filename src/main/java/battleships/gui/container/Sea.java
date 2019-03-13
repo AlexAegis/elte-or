@@ -6,6 +6,7 @@ import battleships.gui.element.Water;
 import battleships.gui.layout.SeaLayout;
 import battleships.gui.layout.ShipContainer;
 import battleships.gui.layout.WaterContainer;
+import battleships.marker.ShotMarker;
 import battleships.misc.Chainable;
 import battleships.model.Admiral;
 import battleships.model.ShipType;
@@ -100,11 +101,16 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	}
 
 	public void sendRipple(Water water, long delay) {
-		doRipple(ripple(water.getPosition(), 1, 6, Direction.HORIZONTAL, true), delay);
+		sendRipple(water, 6, delay);
+	}
+
+	public void sendRipple(Water water, Integer size, long delay) {
+		doRipple(ripple(water.getPosition(), 1, size, Direction.HORIZONTAL, true), delay);
 	}
 
 	public void sendExplosion(Ship ship) {
-		doExplosion(ripple(ship.getPosition(), ship.getType().getLength(), 4, Direction.HORIZONTAL, true));
+		System.out.println("Send explosion ship: " + ship);
+		doExplosion(ripple(ship.getPosition(), ship.getType().getLength(), 4, ship.getOrientation(), true));
 	}
 
 	public void sendExplosion(Water water) {
@@ -114,16 +120,17 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	public void sendRipple(TerminalPosition position) {
 		sendRipple(position, 0);
 	}
+
 	public void sendRipple(TerminalPosition position, long delay) {
 		doRipple(ripple(position, 1, 4, Direction.HORIZONTAL, true), delay);
 	}
 
 	public void sendRipple(Ship ship) {
-		sendRipple(ship, 0);
+		sendRipple(ship, 4,0);
 	}
 
-	public void sendRipple(Ship ship, long delay) {
-		doRipple(ripple(ship.getPosition(), ship.getType().getLength(), 4, ship.getOrientation(), false), delay);
+	public void sendRipple(Ship ship, Integer size, long delay) {
+		doRipple(ripple(ship.getPosition(), ship.getType().getLength(), size, ship.getOrientation(), false), delay);
 	}
 
 	public void doTremor() {
@@ -451,7 +458,6 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	 */
 	public synchronized Optional<ShipSegment> revealNewShipSegment(TerminalPosition position) {
 		// Only reveal if needed, it there is a ship there already don't do it
-		Optional<ShipSegment> newSegment = Optional.empty();
 		if(!getShipSegmentAt(position).isPresent()) {
 			// If any of the ships are neighbouring this, attach this segment to that
 			var borderingShips = this.getShips().stream()
@@ -459,6 +465,7 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 				.sorted()
 				.collect(Collectors.toList());
 
+			Optional<ShipSegment> newSegment;
 			if(borderingShips.size() > 1) {
 				// Merge ships on position, since it's sorted, its always the first one who should be the head
 				borderingShips.get(0).merge(borderingShips.get(1), position);
@@ -480,8 +487,11 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 			}
 			invalidate();
 			getParent().invalidate();
+
+			return newSegment;
+		} else {
+			return getShipSegmentAt(position);
 		}
-		return newSegment;
 	}
 
 
@@ -492,12 +502,17 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	 */
 	public synchronized void receiveShot(Shot shot) {
 		var target = shot.getTarget().convertToTerminalPosition();
+		System.out.println("RECEIVE SHOTT " + shot);
 		switch (shot.getResult()) {
+			case ALREADY_HIT:
 			case HIT:
-				revealNewShipSegment(target).ifPresent(ShipSegment::destroy);
+				var already = ShotMarker.ALREADY_HIT.equals(shot.getResult());
+				revealNewShipSegment(target).ifPresent(segment -> segment.destroy(!already, true, !already));
 				break;
+			case ALREADY_HIT_FINISHED:
 			case HIT_AND_FINISHED:
-				revealNewShipSegment(target).map(ShipSegment::getShip).ifPresent(Ship::destroy);
+				var alreadyFinished = ShotMarker.ALREADY_HIT_FINISHED.equals(shot.getResult());
+				revealNewShipSegment(target).map(ShipSegment::getShip).ifPresent(ship -> ship.destroy(!alreadyFinished, !alreadyFinished));
 				break;
 			case MISS:
 				getAdmiral().whenPlayer().ifPresent(player -> sendRipple(target)); // If its our sea, show it precisely

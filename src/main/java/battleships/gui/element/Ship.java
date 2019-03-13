@@ -9,10 +9,7 @@ import battleships.model.ShipType;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.gui2.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -195,12 +192,12 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 	 * min 2 because "boat is ignored" Math.min(getBody().size(), 2) TODO might not need because of the skip mechanic
 	 */
 	private void updateClass() {
-		var existingTypesExceptThis = getSea().getShips().stream()
-			.filter(ship -> !ship.equals(this))
+		var existingTypes = getSea().getShips().stream()
+			//.filter(ship -> !ship.equals(this))
 			.map(Ship::getType).collect(Collectors.toList());
-		var nonPlacedShipTypes = new ArrayList<>(ShipType.INITIAL_BOARD);
-		nonPlacedShipTypes.removeAll(existingTypesExceptThis);
-		System.out.println("existingTypesExceptThis: " + existingTypesExceptThis);
+		var nonPlacedShipTypes = ShipType.getInitialBoard();
+		nonPlacedShipTypes.removeAll(existingTypes);
+		System.out.println("existingTypes: " + existingTypes);
 		System.out.println("nonPlacedShipTypes: " + nonPlacedShipTypes);
 		if(health() == 0 && !getRevealed()) {
 			setType(ShipType.getWithLengthAtLeastFrom(nonPlacedShipTypes, getBody().size() + 1));
@@ -339,20 +336,26 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 	}
 
 	public Long health() {
-		return getBody().stream().filter(ShipSegment::isDestroyed).count();
+		return getBody().stream().filter(Objects::nonNull).filter(ShipSegment::isDestroyed).count();
 	}
 
 	public void destroy() {
+		destroy(true, true);
+	}
+
+	public void destroy(Boolean explosion, Boolean fire) {
 		this.destroyed = true;
 		reveal();
-		getBody().forEach(body -> body.destroy(false));
+		getBody().forEach(body -> body.destroy(false, false, fire));
 		getBorder().stream()
 			.map(position -> getSea().getWaterAt(position))
 			.filter(Optional::isPresent)
 			.map(Optional::get)
 			.forEach(Water::reveal);
-		getSea().sendExplosion(this);
-		getSea().sendRipple(this, 400);
+		if(explosion) {
+			getSea().sendExplosion(this);
+		}
+		getSea().sendRipple(this, explosion ? 4 : 2, explosion ? 400 : 0);
 	}
 
 	/**
@@ -382,6 +385,6 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 	}
 
 	public void drop() {
-
+		// TODO
 	}
 }
