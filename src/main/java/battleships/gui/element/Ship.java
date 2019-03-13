@@ -32,7 +32,9 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 
 
 	public void setType(ShipType type) {
-		this.type = type;
+		if(type != null) {
+			this.type = type;
+		}
 	}
 
 	/**
@@ -199,10 +201,10 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 
 		existingTypes.forEach(nonPlacedShipTypes::remove);
 
-		if(healthLost() == 0 && !getRevealed()) {
+		setType(ShipType.getWithLengthAtLeastFrom(nonPlacedShipTypes, getBody().size()));
+
+		if(health() <= 1 && !getRevealed()) {
 			setType(ShipType.getWithLengthAtLeastFrom(nonPlacedShipTypes, getBody().size() + 1));
-		} else {
-			setType(ShipType.getWithLengthAtLeastFrom(nonPlacedShipTypes, getBody().size()));
 		}
 	}
 

@@ -44,7 +44,7 @@ public class Opponent extends Panel {
 
 	@Override
 	public String toString() {
-		return getAdmiral().getName() + "\n Ships:\n" + getAdmiral().getShipModels().stream().map(Object::toString).collect(Collectors.joining("\n"));
+		return getAdmiral().getName() + "\n Ships:\n" + getAdmiral().getSea().getShips().stream().map(Object::toString).collect(Collectors.joining("\n"));
 	}
 
 	public void highlight() {
