@@ -4,14 +4,25 @@
 
 ELTE-IK 2018-19/2
 
-TODO:
+# BattleShips!
 
-Button panel below the playfield
+_Now With Exclusive Battle Royale Mode!~_
 
-Dynamic buttons, Finalize placement (match starts when everybody is finalized)
-if initialplacement (from file) places down every ship (drawer gets empty) autofinalize
+```bash
+java -jar battleships-1.0.0.jar
+```
 
-(Drawer 0/8 counter in title border bar)
+## If you want to run it on Windows use `javaw` instead of `java`!
+
+```cmd
+javaw -jar battleships-1.0.0.jar
+```
+
+[Download!](https://github.com/AlexAegis/elte-or/releases)
+
+![BattleShips screenshot](https://i.imgur.com/r3QgjAc.png)
+
+<sub>The screenshot was made with the [cool-retro-term](https://github.com/Swordfish90/cool-retro-term)</sub>
 
 ---
 
