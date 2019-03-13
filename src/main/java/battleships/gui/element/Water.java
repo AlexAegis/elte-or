@@ -1,6 +1,7 @@
 package battleships.gui.element;
 
 import battleships.gui.Palette;
+import battleships.gui.container.Opponent;
 import battleships.gui.container.Sea;
 import battleships.model.Coord;
 import battleships.model.Shot;
@@ -196,6 +197,8 @@ public class Water extends AbstractInteractableComponent<Water> {
 	@Override
 	protected void afterEnterFocus(FocusChangeDirection direction, Interactable previouslyInFocus) {
 		getSea().cross(this);
+		getSea().getAdmiral().whenOpponent().ifPresent(Opponent::highlight);
+		invalidate();
 		super.afterEnterFocus(direction, previouslyInFocus);
 	}
 
@@ -203,6 +206,8 @@ public class Water extends AbstractInteractableComponent<Water> {
 	protected void afterLeaveFocus(FocusChangeDirection direction, Interactable nextInFocus) {
 		resetDefaultColorAndSymbol(true);
 		getSea().getSeaContainer().resetHighlight();
+		getSea().clearCross();
+		getSea().getAdmiral().whenOpponent().ifPresent(Opponent::unHighlight);
 		invalidate();
 		super.afterLeaveFocus(direction, nextInFocus);
 	}

@@ -58,18 +58,22 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 		}
 		getShipModels().forEach(ship -> {
 			var restored = new battleships.gui.element.Ship(ShipType.getWithLengthAtLeast(ship.getBody().size()));
+			ship.getHead().map(Coord::convertToTerminalPosition).ifPresent(restored::setPosition);
 			if (ship.getBody().keySet().stream()
 				.map(Coord::getX)
 				.reduce((acc, next) -> acc = acc - next)
 				.orElse(0) == 0) {
-				restored.setLayoutToHorizontal();
-			} else {
 				restored.setLayoutToVertical();
+			} else {
+				restored.setLayoutToHorizontal();
 			}
-			ship.getHead().map(Coord::convertToTerminalPosition).ifPresent(restored::setPosition);
 			getSea().addComponent(restored);
 		});
 
+		getShipModels().stream()
+			.flatMap(ship -> ship.getBody().values().stream())
+			.filter(Objects::nonNull)
+			.forEach(shot -> getSea().receiveShot(shot));
 		return this;
 	}
 
@@ -372,6 +376,7 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 	}
 
 	public void refresh() {
+		System.out.println(" ----- WHATS YO PROBLEM getName(): " + getName() + " isReady() " + isReady());
 		setName(getName());
 		setReady(isReady());
 	}

@@ -43,7 +43,7 @@ public class Ship implements Serializable {
 	}
 
 	public void merge(Ship other) {
-		other.getBody().forEach((body, shot) -> addBody(body, shot));
+		other.getBody().forEach(this::addBody);
 	}
 
 	public void addBody(Coord piece) {
@@ -87,7 +87,7 @@ public class Ship implements Serializable {
 		// last bit
 		if (horizontal != null && !horizontal) {
 			border.add(Direction.RIGHT.vector.add(last));
-		} else if (horizontal != null && horizontal) {
+		} else if ((horizontal != null) && (horizontal == Boolean.TRUE)) {
 			border.add(Direction.UP.vector.add(last));
 		}
 	}

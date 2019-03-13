@@ -50,8 +50,6 @@ public class Ready extends Request<ReadyResult> implements Serializable {
 			return answerFromServer.map(server -> {
 				var reqAdm = server.getTable().getAdmiral(getRequester());
 				var whoAdm = server.getTable().getAdmiral(getWho());
-				whoAdm.setReady(isReady());
-
 
 				if(pieces != null && !pieces.isEmpty()) {
 					whoAdm.removeAllShipModels();
@@ -59,7 +57,7 @@ public class Ready extends Request<ReadyResult> implements Serializable {
 					pieces.forEach(whoAdm::place);
 					whoAdm.finishBorders();
 				}
-
+				whoAdm.setReady(isReady());
 
 
 				// State propagation logic. If there are at least 2 players and everyone is ready then notify them that the match started

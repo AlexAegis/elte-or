@@ -415,10 +415,14 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 		cross(water, true);
 	}
 
-	public void cross(Water water, Boolean isError) {
+	public void clearCross() {
 		if(previousCross != null) {
 			previousCross.forEach(Water::unCross);
 		}
+	}
+
+	public void cross(Water water, Boolean isError) {
+		clearCross();
 		setLastFocused(water);
 		previousCross = getWaters().stream().filter(seaWater ->
 			seaWater.getPosition().getColumn() == water.getPosition().getColumn()

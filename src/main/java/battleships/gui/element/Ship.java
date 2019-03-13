@@ -31,6 +31,8 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 	private Container originalParent;
 	private Boolean revealed = false;
 
+	public static final TerminalPosition CENTER = new TerminalPosition(0, 0);
+
 
 	public void setType(ShipType type) {
 		this.type = type;
@@ -152,7 +154,8 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 	public Ship(ShipType type, Boolean revealed) {
 		this.type = type;
 		this.revealed = revealed;
-		IntStream.range(0, type.getLength()).mapToObj(i -> new ShipSegment(this)).forEach(this::addComponent);
+		var pos = new TerminalPosition(0, 0);
+		IntStream.range(0, type.getLength()).mapToObj(i -> new ShipSegment(this).setPosition(pos.withColumn(i))).forEach(this::addComponent);
 		setLayoutToHorizontal();
 	}
 
@@ -239,6 +242,14 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 			setLayoutManager(Direction.VERTICAL.equals(direction) ? Ship.VERTICAL : Ship.HORIZONTAL);
 			setSize(getLayoutManager().getPreferredSize(new ArrayList<>(getSegments())));
 			orientation = direction;
+			var segments = getSegments();
+			for (int i = 0; i < segments.size(); i++) {
+				if(Direction.VERTICAL.equals(orientation)) {
+					segments.get(i).setPosition(CENTER.withRow(i));
+				} else {
+					segments.get(i).setPosition(CENTER.withColumn(i));
+				}
+			}
 		};
 		if(callLater) {
 			Optional.ofNullable(getTextGUI())

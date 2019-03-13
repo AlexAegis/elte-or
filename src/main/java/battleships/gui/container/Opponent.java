@@ -15,8 +15,6 @@ public class Opponent extends Panel {
 	private ReadyLabel label;
 	private Admiral admiral;
 
-	private TextColor originalBackgroundColor;
-
 	public Opponent(GameWindow game, Admiral admiral) {
 		this.game = game;
 		this.admiral = admiral;
@@ -48,16 +46,13 @@ public class Opponent extends Panel {
 	}
 
 	public void highlight() {
-		originalBackgroundColor = label.getBackgroundColor();
 		label.setBackgroundColor(Palette.WATER);
 		invalidate();
 	}
 
 	public void unHighlight() {
-		if (originalBackgroundColor != null) {
-			label.setBackgroundColor(originalBackgroundColor);
-			invalidate();
-		}
+		label.setBackgroundColor(getThemeDefinition().getNormal().getForeground());
+		invalidate();
 	}
 
 	public Result takeFocus() {
