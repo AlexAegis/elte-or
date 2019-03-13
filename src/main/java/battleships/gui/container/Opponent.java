@@ -19,7 +19,9 @@ public class Opponent extends Panel {
 		this.game = game;
 		this.admiral = admiral;
 		label = new ReadyLabel(game, admiral);
-		admiral.setSea(new Sea(game.getTableSize()));
+		if (admiral.getSea() == null) {
+			admiral.setSea(new Sea(game.getTableSize()));
+		}
 		admiral.setOpponent(this);
 		addComponent(label);
 		addComponent(new SeaContainer(admiral.getSea()));

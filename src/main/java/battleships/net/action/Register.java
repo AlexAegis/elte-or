@@ -61,7 +61,7 @@ public class Register extends Request<RegisterResult> implements Serializable {
 
 				});
 
-
+				System.out.println("Should have all the knowledge, right? size of knowledge: " + connection.getAdmiral().getKnowledge().size() + " - " + connection.getAdmiral());
 				return new RegisterResult(getRequester(), server.getTable().getSize(), connection.getAdmiral());
 			});
 		} else {
@@ -71,6 +71,9 @@ public class Register extends Request<RegisterResult> implements Serializable {
 					Logger.getGlobal().info("A new opponent registered on the server " + this.toString());
 					if (!client.getGame().getAdmiral().getName().equals(getWho().getName())) {
 						client.getGame().getOpponentBar().addOpponent(getWho());
+						getWho().whenOpponent().ifPresent(opponent -> {
+							// TODO
+						});
 					}
 				});
 				return new RegisterResult(getRequester(), null, null);
