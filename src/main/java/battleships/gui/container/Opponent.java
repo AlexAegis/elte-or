@@ -47,6 +47,7 @@ public class Opponent extends Panel {
 
 	public void highlight() {
 		label.setBackgroundColor(Palette.WATER);
+		((OpponentBar) getParent()).setCurrent(this);
 		invalidate();
 	}
 

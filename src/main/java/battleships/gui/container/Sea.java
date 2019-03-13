@@ -348,10 +348,10 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	public Result takeFocus() {
 		return getAdmiral().whenOpponent().map(opponent -> {
 			if(getLastFocused() == null) {
-				setLastFocused(getWaters().get(getWaters().size() / 2));
+				setLastFocused(getWaters().get(getWaters().size() / 2)); // Target the center first
 			}
 			if(!getWaters().isEmpty()) {
-				getLastFocused().takeFocus(); // Target the center first
+				getLastFocused().takeFocus();
 			}
 			return Result.HANDLED;
 		}).orElse(getAdmiral().whenPlayer().map(player -> {

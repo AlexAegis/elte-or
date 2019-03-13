@@ -262,8 +262,6 @@ public class Water extends AbstractInteractableComponent<Water> {
 					getSea().error(this);
 				}
 				unCross();
-
-
 				return Result.HANDLED;
 			case Tab:
 				getSea().getAdmiral().whenOpponent().ifPresent(opponent ->

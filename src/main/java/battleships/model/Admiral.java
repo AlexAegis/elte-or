@@ -251,7 +251,7 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 	 * @param ready
 	 * @return
 	 */
-	public Admiral setReady(boolean ready) {
+	public Admiral setReady(Boolean ready) {
 		if(whenPlayer != null) {
 			var shipCoords = getSea().getShips().stream()
 				.flatMap(ship -> ship.getBody().stream())
@@ -264,11 +264,13 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 			});
 		}
 
-		if (ready) {
+		if (ready != null && ready == true) {
 			setPhase(Phase.READY);
-		} else {
+		} else if(ready != null && ready == false) {
 			setPhase(Phase.PLACEMENT);
 		}
+
+		System.out.println("Final phase: " + getPhase() + " for " + this);
 
 		return this;
 	}

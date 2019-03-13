@@ -57,7 +57,16 @@ public class OpponentBar extends Panel implements OpponentContainer {
 	}
 
 	public Result takeFocus() {
-		return focusNext();
+		System.out.println("TAKEFOCUS!!  OPPO BAR " + current);
+		if(current != null) {
+			return current.takeFocus();
+		} else {
+			return focusNext();
+		}
+	}
+
+	public void setCurrent(Opponent current) {
+		this.current = current;
 	}
 
 	public Result focusNext() {
