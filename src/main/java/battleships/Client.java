@@ -105,7 +105,7 @@ public class Client implements Runnable {
 								try {
 									Coord coord = new Coord(placement.get("position"));
 									ship.setPosition(new TerminalPosition(coord.getX(), coord.getY()));
-									ship.setLayoutTo(Direction.valueOf(placement.get("orientation")));
+									ship.setLayoutTo(Direction.valueOf(placement.get("orientation")), false);
 								} catch (Exception e) {
 									e.printStackTrace();
 								}

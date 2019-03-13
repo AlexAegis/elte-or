@@ -206,16 +206,23 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 		return (ShipSegment) getChildren().iterator().next();
 	}
 
-
 	public void setLayoutTo(Direction direction) {
+		setLayoutTo(direction, true);
+	}
+
+	public void setLayoutTo(Direction direction, Boolean callLater) {
 		Runnable call = () -> {
 			setLayoutManager(Direction.VERTICAL.equals(direction) ? Ship.VERTICAL : Ship.HORIZONTAL);
 			setSize(getLayoutManager().getPreferredSize(new ArrayList<>(getSegments())));
 			orientation = direction;
 		};
-		Optional.ofNullable(getTextGUI())
-			.map(TextGUI::getGUIThread)
-			.ifPresentOrElse(textGUIThread -> textGUIThread.invokeLater(call), call);
+		if(callLater) {
+			Optional.ofNullable(getTextGUI())
+				.map(TextGUI::getGUIThread)
+				.ifPresentOrElse(textGUIThread -> textGUIThread.invokeLater(call), call);
+		} else {
+			call.run();
+		}
 		orientation = direction;
 	}
 

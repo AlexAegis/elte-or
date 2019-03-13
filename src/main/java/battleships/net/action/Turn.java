@@ -73,6 +73,8 @@ public class Turn extends Request<TurnResult> implements Serializable {
 			});
 		} else {
 			return answerFromClient.map(client -> {
+
+				System.out.println("GOT TURN DATAAAAAAAAAAAAAAAAAA " + this);
 				// Client got turn data, set the opponents graphics accordingly, or start turn for yourself
 				client.getGui().getGUIThread().invokeLater(() -> {
 					var isItMe = client.getGame().getAdmiral().getName().equals(getWho());

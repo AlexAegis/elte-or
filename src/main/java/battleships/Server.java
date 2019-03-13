@@ -149,22 +149,15 @@ public class Server implements Runnable {
 		} else {
 			var nextOne = false;
 			for (var admiral : getConnectedAdmirals().keySet().stream().sorted().collect(Collectors.toList())) {
-
 				if (nextOne) {
-					System.out.println("this.is it!" + admiral);
 					return Optional.ofNullable(getConnectedAdmirals().get(admiral).getAdmiral());
 				}
 				if (admiral.equals(currentAdmiral)) {
 					nextOne = true;
-					System.out.println("Next gonna be, not this: " + currentAdmiral);
 				}
 			}
-			if(!nextOne) {
-				currentAdmiral = null;
-				System.out.println("No one was it..");
-				return Optional.ofNullable(getCurrentAdmiral());
-			}
-			return Optional.empty();
+			currentAdmiral = null;
+			return Optional.ofNullable(getCurrentAdmiral());
 		}
 	}
 
