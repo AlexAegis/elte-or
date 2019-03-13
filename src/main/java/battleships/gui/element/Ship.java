@@ -7,10 +7,7 @@ import battleships.misc.Chainable;
 import battleships.misc.Switchable;
 import battleships.model.ShipType;
 import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.gui2.Container;
-import com.googlecode.lanterna.gui2.Direction;
-import com.googlecode.lanterna.gui2.LinearLayout;
-import com.googlecode.lanterna.gui2.Panel;
+import com.googlecode.lanterna.gui2.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +28,6 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 	private TerminalPosition originalPosition;
 	private Direction originalOrientation;
 	private Container originalParent;
-
 
 	public void setType(ShipType type) {
 		this.type = type;
@@ -287,6 +283,11 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 	public void destroy() {
 		this.destroyed = true;
 		getBody().forEach(body -> body.setDestroyed(true));
+		getBorder().stream()
+			.map(position -> getSea().getWaterAt(position))
+			.filter(Optional::isPresent)
+			.map(Optional::get)
+			.forEach(Water::reveal);
 		getSea().sendExplosion(this);
 		getSea().sendRipple(this, 400);
 	}

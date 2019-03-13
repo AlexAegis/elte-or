@@ -42,17 +42,26 @@ public class Server implements Runnable {
 	@Option(names = {"-m", "--mode"}, paramLabel = "<mode>", description = "Game mode selection!", defaultValue = "TURN")
 	private Mode mode;
 
+
+	@Option(names = {"-w", "--width"}, paramLabel = "<width>", description = "Height of the game area", defaultValue = "10")
+	private Integer width;
+
+
+	@Option(names = {"-h", "--height"}, paramLabel = "<height>", description = "Width of the game area", defaultValue = "10")
+	private Integer height;
+
 	public static void main(String[] args) {
 		CommandLine.run(new Server(), err, args);
 	}
 
-	private Table table = new Table();
+	private Table table;
 	private Map<String, Connection> connectedAdmirals = new HashMap<>();
 	private Phase phase = Phase.PLACEMENT;
 	private String currentAdmiral;
 
 	@Override
 	public void run() {
+		table = new Table(width, height);
 		try(var server = new ServerSocket(port)) {
 			Flowable.fromCallable(() -> new Connection(this, server))
 				.repeat()

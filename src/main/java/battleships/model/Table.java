@@ -12,13 +12,19 @@ import java.util.stream.Collectors;
 public class Table {
 	private Map<String, Admiral> admirals = new HashMap<>();
 
-	public static final int MAP_HEIGHT = 10;
-	public static final int MAP_WIDTH = 10;
+	public static Integer MAP_HEIGHT = 10;
+	public static Integer MAP_WIDTH = 10;
 
 	private Admiral current;
 	private Integer currentIndex = 0;
 
-	public Table() { // TODO Size constructor, get size from server parameters
+	public Table() {
+
+	}
+
+	public Table(Integer width, Integer height) {
+		MAP_WIDTH = width;
+		MAP_HEIGHT = height;
 	}
 
 	public Admiral addAdmiral(String id) {

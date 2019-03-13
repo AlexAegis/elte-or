@@ -131,7 +131,7 @@ public class GameWindow extends BasicWindow {
 		this.admiral = admiral;
 		admiral.setGame(this);
 
-		admiral.setSea(new Sea(getTableSize(), drawer));
+		admiral.setSea(new Sea(getTableSize(), drawer, true));
 		admiral.refresh();
 		opponentBar.setGame(this);
 		seaContainer.addComponent(new SeaContainer(admiral.getSea()));

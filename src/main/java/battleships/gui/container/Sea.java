@@ -466,11 +466,15 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 				borderingShips.get(0).reveal(position);
 			} else {
 				var ship = new Ship(ShipType.BOAT);
+
 				ship.setPosition(position);
 				addComponent(ship);
 				ship.updateWaterRelations();
 				ship.reveal(position);
+				ship.invalidate();
 			}
+			invalidate();
+			getParent().invalidate();
 		} else {
 			System.out.println("<<<<NO NEED TO REVEAL!! ADMIRAL IS PROBABLY THE PLAYER!!!" + getAdmiral());
 		}

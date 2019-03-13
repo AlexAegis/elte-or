@@ -23,8 +23,8 @@ import java.util.logging.Logger;
 public class Water extends AbstractInteractableComponent<Water> {
 	private Sea sea;
 
-	private TextColor currentFore = Palette.WATER;
-	private TextColor currentBack = Palette.WATER;
+	private TextColor currentFore = Palette.WATER_UNREVEALED;
+	private TextColor currentBack = Palette.WATER_UNREVEALED;
 	private char symbol = ' ';
 
 	private Boolean isCross = false;
@@ -33,7 +33,6 @@ public class Water extends AbstractInteractableComponent<Water> {
 	private Boolean revealed = false;
 	private PublishSubject<Boolean> endNoise = PublishSubject.create();
 	private ShipSegment shipSegment;
-
 
 	public Boolean getRevealed() {
 		return revealed;
@@ -45,18 +44,23 @@ public class Water extends AbstractInteractableComponent<Water> {
 	public Water(Sea sea, Boolean initiallyRevealed) {
 		this.sea = sea;
 		this.revealed = initiallyRevealed;
+		if(revealed) {
+			resetDefaultColorAndSymbol();
+		}
 		setSize(new TerminalSize(1, 1));
 		if(!initiallyRevealed) {
 			Observable.interval(100, TimeUnit.MILLISECONDS)
 				.takeUntil(endNoise)
 				.subscribeOn(Schedulers.computation())
 				.doFinally(() -> symbol = ' ').subscribe(next -> {
+
 				var num = (next * getPosition().getRow() * getPosition().getColumn());
 				if(num % 3 < 2) { // A bit of randomness
 					symbol = '▒';
 				} else {
 					symbol = '░';
 				}
+				invalidate();
 			});
 		}
 
@@ -69,9 +73,7 @@ public class Water extends AbstractInteractableComponent<Water> {
 			if (isCross) {
 				cross();
 			} else {
-				currentFore = Palette.WATER;
-				currentBack = Palette.WATER;
-				symbol = ' ';
+				resetDefaultColorAndSymbol();
 			}
 			invalidate();
 		}).subscribe(next -> {
@@ -122,7 +124,22 @@ public class Water extends AbstractInteractableComponent<Water> {
 		});
 	}
 
+	public void resetDefaultColorAndSymbol() {
+		resetDefaultColorAndSymbol(false);
+	}
 
+	public void resetDefaultColorAndSymbol(Boolean noSymbolReset) {
+		if(revealed) {
+			currentFore = Palette.WATER;
+			currentBack = Palette.WATER;
+		} else {
+			currentFore = Palette.WATER_UNREVEALED;
+			currentBack = Palette.WATER_UNREVEALED;
+		}
+		if (!noSymbolReset) {
+			symbol = ' ';
+		}
+	}
 	public void startRipple(Integer wave) {
 		isRippling = true;
 		Observable.interval(100, TimeUnit.MILLISECONDS).take(4).doFinally(() -> {
@@ -131,9 +148,7 @@ public class Water extends AbstractInteractableComponent<Water> {
 				if (isCross) {
 					cross();
 				} else {
-					currentFore = Palette.WATER;
-					currentBack = Palette.WATER;
-					symbol = ' ';
+					resetDefaultColorAndSymbol();
 				}
 			}
 			invalidate();
@@ -279,8 +294,7 @@ public class Water extends AbstractInteractableComponent<Water> {
 
 	public void unCross() {
 		this.isCross = false;
-		this.currentBack = Palette.WATER;
-		this.currentFore = Palette.WATER;
+		resetDefaultColorAndSymbol(true);
 		invalidate();
 	}
 

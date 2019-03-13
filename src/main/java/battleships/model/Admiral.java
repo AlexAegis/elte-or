@@ -205,7 +205,8 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 		// knowledge.putIfAbsent(admiral, new Admiral(admiral.getName()));
 		if (knowledge.values().stream().flatMap(a -> a.ships.stream()).flatMap(ship -> ship.getBorder().stream())
 				.anyMatch(coord -> coord.equals(target))) {
-			throw new BorderShotException();
+			Logger.getGlobal().severe("Might not want to shoot here: BorderShotException!");
+			// throw new BorderShotException();
 		}
 		var shotResults =
 				admiral.ships.stream().map(ship -> ship.recieveShot(shot)).distinct().collect(Collectors.toList());

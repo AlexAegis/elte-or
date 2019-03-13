@@ -40,12 +40,6 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 		this.ship = ship;
 	}
 
-	public void damage() {
-		this.destroyed = true;
-	}
-
-
-
 	/**
 	 * @return the ship
 	 */
@@ -398,7 +392,7 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 			if (shipSegment.destroyed) {
 				graphics.fill('▒');
 			} else {
-				graphics.fill(' ');
+				graphics.fill('O');
 			}
 
 
