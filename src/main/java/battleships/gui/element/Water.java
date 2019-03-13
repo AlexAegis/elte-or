@@ -189,10 +189,7 @@ public class Water extends AbstractInteractableComponent<Water> {
 
 	@Override
 	public Water takeFocus() {
-		currentBack = Palette.EXPLOSION_CENTER;
-		getSea().cross(this);
-
-		invalidate();
+		// currentBack = Palette.EXPLOSION_CENTER;
 		return super.takeFocus();
 	}
 
@@ -205,14 +202,13 @@ public class Water extends AbstractInteractableComponent<Water> {
 
 	@Override
 	protected void afterEnterFocus(FocusChangeDirection direction, Interactable previouslyInFocus) {
-		takeFocus();
-
+		getSea().cross(this);
 		super.afterEnterFocus(direction, previouslyInFocus);
 	}
 
 	@Override
 	protected void afterLeaveFocus(FocusChangeDirection direction, Interactable nextInFocus) {
-		currentBack = Palette.WATER;
+		resetDefaultColorAndSymbol(true);
 		getSea().getSeaContainer().resetHighlight();
 		invalidate();
 		super.afterLeaveFocus(direction, nextInFocus);
@@ -220,7 +216,6 @@ public class Water extends AbstractInteractableComponent<Water> {
 
 	@Override
 	public synchronized Result handleKeyStroke(KeyStroke keyStroke) {
-		System.out.println("HANDLE KEEEY");
 		if (keyStroke.getCharacter() != null) {
 			switch (keyStroke.getCharacter()) {
 				case 'W':
@@ -249,8 +244,6 @@ public class Water extends AbstractInteractableComponent<Water> {
 			case ArrowUp:
 				return Result.MOVE_FOCUS_UP;
 			case Enter:
-				System.out.println("BOOM!");
-
 				// If the water already tested that its empty, just do an error cross
 				// If any of the water tiles in 1 border away of this contains a ship, it's surely empty, dont send anything, just an error
 				// Or there is already a damaged ship part on this tile, then too, skip.
@@ -259,7 +252,6 @@ public class Water extends AbstractInteractableComponent<Water> {
 
 				if(getSea().shotValid(getPosition())) { // If shot is valid
 					getSea().getAdmiral().whenOpponent().ifPresent(opponent -> {
-						System.out.println("YE ITS OPPONNNEBT");
 						var me = opponent.getGame().getAdmiral();
 						var op = opponent.getAdmiral();
 						var shot = new Shot(me, op, new Coord(getPosition()));

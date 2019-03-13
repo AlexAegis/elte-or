@@ -25,7 +25,6 @@ public class Opponent extends Panel {
 		admiral.setOpponent(this);
 		addComponent(label);
 		addComponent(new SeaContainer(admiral.getSea()));
-		System.out.println("new opponent created, admi:" + admiral);
 	}
 
 	public GameWindow getGame() {
@@ -62,7 +61,6 @@ public class Opponent extends Panel {
 	}
 
 	public Result takeFocus() {
-		System.out.println("HIGHLIGHTING OPPPPPPONENT!!!!!!!!! " + getAdmiral());
 		highlight();
 		return getAdmiral().getSea().takeFocus();
 	}

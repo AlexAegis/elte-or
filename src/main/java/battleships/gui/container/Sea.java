@@ -446,7 +446,7 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	 * TODO: HEAVY WORK NEEDED HERE
 	 * @param position
 	 */
-	public Optional<ShipSegment> revealNewShipSegment(TerminalPosition position) {
+	public synchronized Optional<ShipSegment> revealNewShipSegment(TerminalPosition position) {
 		// Only reveal if needed, it there is a ship there already don't do it
 		Optional<ShipSegment> newSegment = Optional.empty();
 		if(!getWaterAt(position).map(Water::getShipSegment).isPresent()) {
@@ -499,7 +499,7 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	 * This sea is either the players or the opponents, the shot logic should be ambiguous
 	 * @param shot
 	 */
-	public void recieveShot(Shot shot) {
+	public synchronized void recieveShot(Shot shot) {
 		var target = shot.getTarget().convertToTerminalPosition();
 		switch (shot.getResult()) {
 			case HIT:

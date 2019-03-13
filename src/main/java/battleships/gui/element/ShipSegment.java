@@ -139,11 +139,77 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 	}
 
 	@Override
+	protected void afterEnterFocus(FocusChangeDirection direction, Interactable previouslyInFocus) {
+		if(isTargeting()) {
+			System.out.println("///////////// afterEnterFocus WAS TARGETING" + direction + " NEXT IN FOC " + previouslyInFocus);
+
+			getWater().afterEnterFocus(direction, previouslyInFocus);
+		} else {
+			super.afterEnterFocus(direction, previouslyInFocus);
+		}
+		/*if (ship.isHeld() && ship.getParent() instanceof Drawer) {
+			previouslyInFocus.takeFocus();
+		}*/
+	}
+
+
+	@Override
+	protected void afterLeaveFocus(FocusChangeDirection direction, Interactable nextInFocus) {
+		if(isTargeting()) {
+			System.out.println("///////////// afterLeaveFocus WAS TARGETING" + direction + " NEXT IN FOC " + nextInFocus);
+			getWater().afterLeaveFocus(direction, nextInFocus);
+		} else {
+			super.afterLeaveFocus(direction, nextInFocus);
+		}
+	}
+
+	@Override
 	public synchronized Result handleKeyStroke(KeyStroke keyStroke) {
 		if(isTargeting()) {
-			System.out.println("-----HHHHHHHHH You shouldnt be here");
-			getGame().getOpponentBar().focusNext();
+			switch (keyStroke.getKeyType()) {
+				case Enter:
+					getGame().getInspector().inspect(getShip());
+					return Result.HANDLED;
+				default:
+			}
+			return getWater().handleKeyStroke(keyStroke);
+			/*if (keyStroke.getCharacter() != null) {
+				switch (keyStroke.getCharacter()) {
+					case 'W':
+					case 'w':
+					case 'A':
+					case 'a':
+						return inDrawerUpLeft(drawer);
+					case 'S':
+					case 's':
+					case 'D':
+					case 'd':
+						return inDrawerDownRight(drawer);
+					default:
+				}}
+			switch (keyStroke.getKeyType()) {
+				case ArrowRight:
+				case ArrowDown:
+				case ArrowLeft:
+				case ArrowUp:
+					return super.handleKeyStroke(keyStroke);
+				case Tab:
 
+					drawer.getSea().takeFocus();
+					return Result.HANDLED;
+				case ReverseTab:
+					drawer.getGame().getActionBar().takeFocus(true);
+					return Result.HANDLED;
+				case Enter:
+					ship.setHeld(true);
+					ship.savePlacement();
+					ship.saveParent();
+					ship.doSwitch();
+					drawer.getGame().getInspector().inspect(ship);
+					return Result.HANDLED;
+				default:
+			}
+			*/
 		} else {
 			if (isOnSea() && ship.isHeld()) {
 				var sea = ((Sea) ship.getParent());
@@ -333,14 +399,6 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 				ship.getPosition().getRow() - direction.vector.getY()));
 	}
 
-	@Override
-	protected void afterEnterFocus(FocusChangeDirection direction, Interactable previouslyInFocus) {
-		/*if (ship.isHeld() && ship.getParent() instanceof Drawer) {
-			previouslyInFocus.takeFocus();
-		}*/
-		super.afterEnterFocus(direction, previouslyInFocus);
-	}
-
 	public Boolean isDestroyed() {
 		return destroyed;
 	}
@@ -412,6 +470,7 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 		@Override
 		public void drawComponent(TextGUIGraphics graphics, ShipSegment shipSegment) {
 			graphics.setForegroundColor(Palette.SHIP_FORE);
+
 
 			if (shipSegment.ship.getHead().isFocused()) {
 				if (shipSegment.ship.isHeld()) {
