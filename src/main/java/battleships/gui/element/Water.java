@@ -301,10 +301,10 @@ public class Water extends AbstractInteractableComponent<Water> {
 		if(!isExploding && !isRippling) {
 			if(isError) {
 				this.currentBack = Palette.EXPLOSION_OUTER;
-				this.currentFore = Palette.EXPLOSION_OUTER;
+				//this.currentFore = Palette.EXPLOSION_OUTER;
 			} else {
 				this.currentBack = Palette.WATER_RIPPLE_1;
-				this.currentFore = Palette.WATER_RIPPLE_1;
+				//this.currentFore = Palette.WATER_RIPPLE_1;
 			}
 		}
 		invalidate();
@@ -312,7 +312,9 @@ public class Water extends AbstractInteractableComponent<Water> {
 
 	public void reveal() {
 		revealed = true;
+		resetDefaultColorAndSymbol();
 		endNoise.onNext(true);
+		invalidate();
 	}
 
 

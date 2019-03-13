@@ -11,6 +11,7 @@ import com.googlecode.lanterna.gui2.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
@@ -153,26 +154,32 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 	public void attachBodyOn(TerminalPosition position) {
 		System.out.println("Attach some bodies, OG HEAD " + getHead().getRelativePosition());
 
+		var isVertical = getHead().getRelativePosition().getColumn() == position.getColumn();
+		var vector = new TerminalPosition(isVertical ? 0 : 1, isVertical ? 1 : 0);
 		if (getHead().getRelativePosition().compareTo(position) > 0) { // Head is behind, shift ship
 			System.out.println("NEED TO SET THE POS");
 			var body = getBody();
 			removeAllComponents();
-			addComponent(new ShipSegment(this));
-			body.forEach(this::addComponent);
+			addComponent(new ShipSegment(this).setPosition(new TerminalPosition(0, 0)));
+			body.forEach(bodyPiece -> addComponent(bodyPiece.setPosition(bodyPiece.getPosition().withRelative(vector))));
 			setPosition(position);
 		} else {
-			var body = getBody();
+
+			/*var body = getBody();
 			removeAllComponents();
-			body.forEach(this::addComponent);
-			addComponent(new ShipSegment(this));
+			body.forEach(this::addComponent);*/
+			addComponent(new ShipSegment(this).setPosition(getTail().getPosition().withRelative(vector)));
 		}
 
 		System.out.println("Attach some bodies3 getHead().getRelativePosition() " + getHead().getRelativePosition() + " position.getRow() " + position.getRow());
-		if(getHead().getRelativePosition().getRow() == position.getRow()) {
-			setLayoutTo(Direction.HORIZONTAL);
+		if(isVertical) {
+			setLayoutToVertical();
 		} else {
-			setLayoutTo(Direction.VERTICAL);
+			setLayoutToHorizontal();
 		}
+
+		invalidate();
+		System.out.println("New positions for whole body: " + getBody().stream().map(ShipSegment::getRelativePosition).map(Objects::toString).collect(Collectors.joining(",")));
 		//updateWaterRelations();
 		updateClass();
 	}
@@ -201,9 +208,12 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 		return Sea.nthRipple(getPosition(), getType().getLength(), 1, 1, getOrientation());
 	}
 
-
 	public ShipSegment getHead() {
 		return (ShipSegment) getChildren().iterator().next();
+	}
+
+	public ShipSegment getTail() {
+		return (ShipSegment) getChildren().stream().reduce((acc, next) -> next).orElse(null);
 	}
 
 	public void setLayoutTo(Direction direction) {
@@ -315,22 +325,6 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 		getSea().sendRipple(this, 400);
 	}
 
-
-	public void updateWaterRelations() {
-		/*getBody().forEach(body -> {
-			System.out.println("-----------BOD PIECE!!!!");
-			getSea().getWaterAt(body.getRelativePosition()).ifPresentOrElse(water -> {
-				System.out.println("-------------WATER RELATION UPDATED!!");
-				body.setWater(null); // This will also empty the old water
-				System.out.println("-------------WATER RELATION 2 UPDATED!!");
-				water.setShipSegment(body); // This will also update the new body
-			}, () -> {
-				System.out.println("-------------WATER RELATION IS NOT!!!! UPDATED!!");
-			});
-
-		});*/
-	}
-
 	/**
 	 *
 	 * @param ship
@@ -340,7 +334,6 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 		getSea().removeComponent(ship);
 		attachBodyOn(position);
 		ship.getBody().forEach(this::addComponent);
-		// updateWaterRelations();
 		invalidate();
 		updateClass();
 	}

@@ -430,6 +430,7 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 		previousCross = getWaters().stream().filter(seaWater ->
 			seaWater.getPosition().getColumn() == water.getPosition().getColumn()
 				|| seaWater.getPosition().getRow() == water.getPosition().getRow())
+			.filter(seaWater -> !seaWater.getPosition().equals(water.getPosition())) // But not the center
 			.peek(w -> w.cross(isError))
 			.collect(Collectors.toList());
 		getSeaContainer().highlight(water.getPosition());
@@ -443,15 +444,13 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 
 
 	/**
-	 * TODO: HEAVY WORK NEEDED HERE
 	 * @param position
 	 */
 	public synchronized Optional<ShipSegment> revealNewShipSegment(TerminalPosition position) {
 		// Only reveal if needed, it there is a ship there already don't do it
 		Optional<ShipSegment> newSegment = Optional.empty();
 		if(!getWaterAt(position).map(Water::getShipSegment).isPresent()) {
-			System.out.println("<<<<NEED TO REVEAL!! ADMIRAL IS PROBABLY AN OPPONENT!!!" + getAdmiral());
-			// TODO: IF TWO SHIPS ARE NEIGHBOURING THIS THEN JOIN THEM!!!!!
+
 			// If any of the ships are neighbouring this, attach this segment to that
 			var borderingShips = this.getShips().stream().filter(ship -> ship.getBorder().contains(position)).sorted().collect(Collectors.toList());
 
@@ -463,10 +462,11 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 				newSegment = Optional.ofNullable(borderingShips.get(0).reveal(position));
 
 			} else if(borderingShips.size() == 1) {
-				System.out.println(">>>>>>>>>>>BORDERING SHIPS 1");
-				removeComponent(borderingShips.get(0));
+				System.out.println(">>>>>>>>>>>BORDERING SHIPS 1 IS: " + borderingShips.get(0));
+				// removeComponent(borderingShips.get(0));
 				borderingShips.get(0).attachBodyOn(position);
-				addComponent(borderingShips.get(0));
+				System.out.println(">>>>>>>>>>>BORDERING SHIPS 1 IS AFTER: " + borderingShips.get(0));
+				//addComponent(borderingShips.get(0));
 				invalidate();
 				newSegment = Optional.ofNullable(borderingShips.get(0).reveal(position)); // Todo NPE
 			} else {
@@ -505,7 +505,6 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 			case HIT:
 				revealNewShipSegment(target).ifPresent(ShipSegment::destroy);
 				break;
-
 			case HIT_AND_FINISHED:
 				revealNewShipSegment(target).map(ShipSegment::getShip).ifPresent(Ship::destroy);
 				break;
@@ -516,6 +515,7 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 
 				getAdmiral().whenOpponent().ifPresent(opponent -> { // if its an opponent...
 					if (opponent.getGame().getAdmiral().getName().equals(shot.getSource().getName())) { // And the shot was by me, also show precisely
+						getWaterAt(target).ifPresent(Water::reveal);
 						sendRipple(target);
 					} else { // Else its a tremor
 						doTremor();
@@ -523,7 +523,6 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 				});
 				break;
 		}
-
 
 	}
 

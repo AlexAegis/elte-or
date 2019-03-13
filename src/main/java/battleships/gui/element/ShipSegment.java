@@ -37,7 +37,6 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 	private Water water;
 
 	public ShipSegment(Ship ship) {
-
 		this.ship = ship;
 	}
 
@@ -248,8 +247,6 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 							} else {
 								ship.setHeld(false);
 								sea.sendRipple(ship);
-								// Update all segments, set water/segment relationship
-								ship.updateWaterRelations();
 								sea.getDrawer().takeFocus();
 							}
 						}
@@ -404,6 +401,9 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 	}
 
 	public void destroy(Boolean explosion) {
+		if(!destroyed) {
+			takeFocus();
+		}
 		this.destroyed = true;
 		if(explosion) {
 			getShip().getSea().sendExplosion(getWater());
