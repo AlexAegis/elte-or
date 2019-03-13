@@ -249,7 +249,6 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 				.map(ShipSegment::getAbsolutePosition)
 				.map(Coord::new)
 				.collect(Collectors.toList());
-			System.out.println("Sending ready with these coords: " + shipCoords);
 			whenPlayer.getClient().sendRequest(new Ready(getName(), getName(), shipCoords, ready)).subscribe(res -> {
 				Logger.getGlobal().info("Notified the server about my ready state! " + res);
 			});
@@ -260,8 +259,6 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 		} else if(ready != null && ready == false) {
 			setPhase(Phase.PLACEMENT);
 		}
-
-		System.out.println("Final phase: " + getPhase() + " for " + this);
 
 		return this;
 	}
@@ -369,7 +366,6 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 	}
 
 	public void refresh() {
-		System.out.println(" ----- WHATS YO PROBLEM getName(): " + getName() + " isReady() " + isReady());
 		setName(getName());
 		setReady(isReady());
 	}

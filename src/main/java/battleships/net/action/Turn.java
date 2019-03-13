@@ -102,7 +102,6 @@ public class Turn extends Request<TurnResult> implements Serializable {
 							// If someone else shot that shot and it hit me, process it
 							client.getGame().getAdmiral().getSea().receiveShot(shot);
 							if (client.getGame().getAdmiral().getSea().isDead()) {
-								System.out.println("Death should also be me: " + death);
 								client.getGame().initiateDeathSequence();
 							}
 						} else if (client.getGame().getAdmiral().getKnowledge().containsKey(shot.getRecipient().getName())) {

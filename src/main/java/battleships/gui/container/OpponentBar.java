@@ -56,11 +56,9 @@ public class OpponentBar extends Panel implements OpponentContainer {
 
 	public void removeOpponent(Admiral admiral) {
 		getOpponents().stream().filter(opponent -> opponent.getAdmiral().equals(admiral)).forEach(this::removeComponent);
-		// game.getAdmiral().getKnowledge().remove(admiral.getName()); // TODO Maybe
 	}
 
 	public Result takeFocus() {
-		System.out.println("TAKEFOCUS!!  OPPO BAR " + current);
 		if(current != null) {
 			return current.takeFocus();
 		} else {

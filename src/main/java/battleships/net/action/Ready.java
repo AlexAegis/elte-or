@@ -53,7 +53,6 @@ public class Ready extends Request<ReadyResult> implements Serializable {
 
 				if(pieces != null && !pieces.isEmpty()) {
 					whoAdm.removeAllShipModels();
-					System.out.println("On ready place these down: " + pieces);
 					pieces.forEach(whoAdm::place);
 					whoAdm.finishBorders();
 				}

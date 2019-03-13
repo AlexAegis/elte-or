@@ -109,7 +109,6 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	}
 
 	public void sendExplosion(Ship ship) {
-		System.out.println("Send explosion ship: " + ship);
 		doExplosion(ripple(ship.getPosition(), ship.getType().getLength(), 4, ship.getOrientation(), true));
 	}
 
@@ -512,7 +511,6 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	 */
 	public synchronized void receiveShot(Shot shot) {
 		var target = shot.getTarget().convertToTerminalPosition();
-		System.out.println("RECEIVE SHOTT " + shot);
 		switch (shot.getResult()) {
 			case ALREADY_HIT:
 			case HIT:
@@ -550,7 +548,6 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	}
 
 	public Boolean isDead() {
-		System.out.println(">>> IsDead " + getShips().stream().allMatch(Ship::isDead) +  " getShips().size() " + getShips().size() + "  ShipType.getInitialBoard().size() " +  ShipType.getInitialBoard().size());
 		return getShips().stream().allMatch(Ship::isDead) && getShips().size() == ShipType.getInitialBoard().size();
 	}
 

@@ -199,8 +199,6 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 
 		existingTypes.forEach(nonPlacedShipTypes::remove);
 
-		System.out.println("existingTypes: " + existingTypes);
-		System.out.println("nonPlacedShipTypes: " + nonPlacedShipTypes);
 		if(healthLost() == 0 && !getRevealed()) {
 			setType(ShipType.getWithLengthAtLeastFrom(nonPlacedShipTypes, getBody().size() + 1));
 		} else {

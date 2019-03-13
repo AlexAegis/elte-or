@@ -41,9 +41,6 @@ public class Register extends Request<RegisterResult> implements Serializable {
 				} else if (server.getConnectedAdmirals().get(getRequester()) != null && !server.getConnectedAdmirals().get(getRequester()).isClosed()) {
 					return new RegisterResult(null, null, null); // taken
 				} else {
-					System.out.println("+EXISTING ADMIRAL" +reqAdm);
-					System.out.println("+EXISTING ADMIRAL " +reqAdm.getShipModels());
-					System.out.println("+EXISTING ADMIRAL" +reqAdm);
 					connection.setAdmiral(reqAdm);
 				}
 				server.getConnectedAdmirals().put(connection.getAdmiral().getName(), connection);
