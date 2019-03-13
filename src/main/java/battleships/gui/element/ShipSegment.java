@@ -370,6 +370,10 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 				}
 				invalidate();
 			});
+		} else {
+			currentHeld = Palette.SMOKE_DARK;
+			currentHighlighted = Palette.SMOKE_DARK;
+			invalidate();
 		}
 
 		if(!destroyed) {
