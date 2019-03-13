@@ -1,0 +1,35 @@
+
+xsquid:S3008"URename this field "MAP_HEIGHT" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ñ¸Ñüÿÿÿÿ8õùØ¤—-
+Ysquid:S1133¥"5Do not forget to remove this deprecated code someday.(„ßÚåùÿÿÿÿ8íËØ›—-
+Tsquid:S1133µ"5Do not forget to remove this deprecated code someday.(Á»›ê8íËØ›—-
+Jsquid:S3010"'Remove this assignment of "MAP_HEIGHT".(£Óš–øÿÿÿÿ8õùØ¤—-
+Tsquid:S1133"5Do not forget to remove this deprecated code someday.(¯×ˆô8¼ŠÙ›—-
+Ssquid:S1133h"5Do not forget to remove this deprecated code someday.(ğïÙº8ØºØ›—-
+Dsquid:S3010"&Remove this assignment of "MAP_WIDTH".(éé“»8õùØ¤—-
+Xsquid:S1133}"5Do not forget to remove this deprecated code someday.(‹äœ™ıÿÿÿÿ8ÇôØ›—-
+]squid:MissingDeprecatedCheck…"(Add the missing @deprecated Javadoc tag.(÷ªÀşÿÿÿÿ8ÇôØ›—-
+\squid:MissingDeprecatedCheck`"(Add the missing @deprecated Javadoc tag.(¸Òäùÿÿÿÿ8ØºØ›—-
+Xsquid:MissingDeprecatedCheck"(Add the missing @deprecated Javadoc tag.(¯×ˆô8¼ŠÙ›—-
+{squid:S1192<"_Define a constant instead of duplicating this literal "Can't shoot from or to nothing" 3 times.(ßØ‘üÿÿÿÿ
+Usquid:MissingDeprecatedCheckB"(Add the missing @deprecated Javadoc tag.(±î©øüÿÿÿÿ
+\squid:CallToDeprecatedMethodË",Remove this use of "turn"; it is deprecated.(ÃåêÌ8íËØ›—-
+Tsquid:S1133º"5Do not forget to remove this deprecated code someday.(˜«’Ÿ8íËØ›—-
+]squid:MissingDeprecatedCheck¥"(Add the missing @deprecated Javadoc tag.(„ßÚåùÿÿÿÿ8íËØ›—-
+Xsquid:MissingDeprecatedCheckº"(Add the missing @deprecated Javadoc tag.(˜«’Ÿ8íËØ›—-
+Ssquid:S1444"0Make this "public static MAP_HEIGHT" field final(ñ¸Ñüÿÿÿÿ8õùØ¤—-
+Xsquid:S1133W"5Do not forget to remove this deprecated code someday.(¼ã—ÿşÿÿÿÿ8ïí×›—-
+Xsquid:S1133`"5Do not forget to remove this deprecated code someday.(¸Òäùÿÿÿÿ8ØºØ›—-
+\squid:MissingDeprecatedCheckW"(Add the missing @deprecated Javadoc tag.(¼ã—ÿşÿÿÿÿ8ïí×›—-
+Wsquid:MissingDeprecatedCheckh"(Add the missing @deprecated Javadoc tag.(ğïÙº8ØºØ›—-
+\squid:MissingDeprecatedCheckt"(Add the missing @deprecated Javadoc tag.(«Ö¥öûÿÿÿÿ8íËØ›—-
+\squid:MissingDeprecatedCheck}"(Add the missing @deprecated Javadoc tag.(‹äœ™ıÿÿÿÿ8ÇôØ›—-
+Msquid:S1444"/Make this "public static MAP_WIDTH" field final(ËÎ–8õùØ¤—-
+Xsquid:S1133t"5Do not forget to remove this deprecated code someday.(«Ö¥öûÿÿÿÿ8íËØ›—-
+"squid:ClassVariableVisibilityCheck"VMake MAP_HEIGHT a static final constant or non-public and provide accessors if needed.(ñ¸Ñüÿÿÿÿ8º²Ö¤—-
+jsquid:CommentedOutCodeLine‰"<This block of commented-out lines of code should be removed.(ó¾¿Ï8íËØ›—-
+Š"squid:ClassVariableVisibilityCheck"UMake MAP_WIDTH a static final constant or non-public and provide accessors if needed.(ËÎ–8º²Ö¤—-
+¯%squid:RedundantThrowsDeclarationCheckK"yRemove the declaration of thrown exception 'java.lang.IllegalAccessException', as it cannot be thrown from method's body.(€Ú®˜şÿÿÿÿ
+rsquid:S3008"TRename this field "MAP_WIDTH" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ËÎ–8õùØ¤—-
+Ysquid:S1133…"5Do not forget to remove this deprecated code someday.(÷ªÀşÿÿÿÿ8ÇôØ›—-
+Xsquid:MissingDeprecatedCheckµ"(Add the missing @deprecated Javadoc tag.(Á»›ê8íËØ›—-
+Qsquid:S1133B"5Do not forget to remove this deprecated code someday.(±î©øüÿÿÿÿ

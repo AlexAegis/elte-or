@@ -92,6 +92,10 @@ If the application looks blurry and you're using different scaling settings on w
 
 > **Oracle** JDK
 
+### [RXJava](https://github.com/ReactiveX/RxJava)
+
+> **Reactive** components for concurrent solutions
+
 ### [Lanterna](https://github.com/mabe02/lanterna)
 
 > **Text GUI** library
