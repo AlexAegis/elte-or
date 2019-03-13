@@ -446,8 +446,9 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 	 * TODO: HEAVY WORK NEEDED HERE
 	 * @param position
 	 */
-	public void revealNewShipSegment(TerminalPosition position) {
+	public Optional<ShipSegment> revealNewShipSegment(TerminalPosition position) {
 		// Only reveal if needed, it there is a ship there already don't do it
+		Optional<ShipSegment> newSegment = Optional.empty();
 		if(!getWaterAt(position).map(Water::getShipSegment).isPresent()) {
 			System.out.println("<<<<NEED TO REVEAL!! ADMIRAL IS PROBABLY AN OPPONENT!!!" + getAdmiral());
 			// TODO: IF TWO SHIPS ARE NEIGHBOURING THIS THEN JOIN THEM!!!!!
@@ -456,28 +457,34 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 
 			if(borderingShips.size() > 1) {
 				// Merge ships on position, since it's sorted, its always the first one who should be the head
-
+				System.out.println(">>>>>>>>>BORDERING SHIPS 2");
 				borderingShips.get(0).merge(borderingShips.get(1), position);
-				borderingShips.get(0).reveal(position);
+				newSegment = Optional.of(borderingShips.get(0).reveal(position));
 
 			} else if(borderingShips.size() == 1) {
-
+				System.out.println(">>>>>>>>>>>BORDERING SHIPS 1");
 				borderingShips.get(0).attachBodyOn(position);
-				borderingShips.get(0).reveal(position);
+				newSegment = Optional.of(borderingShips.get(0).reveal(position));
 			} else {
+				System.out.println(">>>>>>>>>>>BORDERING SHIPS 0");
 				var ship = new Ship(ShipType.BOAT);
-
 				ship.setPosition(position);
 				addComponent(ship);
-				ship.updateWaterRelations();
-				ship.reveal(position);
+				//ship.updateWaterRelations();
+				newSegment = Optional.of(ship.reveal(position));
 				ship.invalidate();
+
 			}
 			invalidate();
 			getParent().invalidate();
 		} else {
 			System.out.println("<<<<NO NEED TO REVEAL!! ADMIRAL IS PROBABLY THE PLAYER!!!" + getAdmiral());
 		}
+		System.out.println("<<<<<<<<&&&&&&&&&& After revealing now there are " + getShips().size() + " ships on this sea: " + getAdmiral());
+		getShips().forEach(ship -> {
+			System.out.println("<<<<<<<<<<< ship bodysize " + ship.getBody().size());
+		});
+		return newSegment;
 	}
 
 
@@ -491,17 +498,11 @@ public class Sea extends Panel implements Chainable, ShipContainer, WaterContain
 		var target = shot.getTarget().convertToTerminalPosition();
 		switch (shot.getResult()) {
 			case HIT:
-				revealNewShipSegment(target);
-				getWaterAt(target).map(Water::getShipSegment).ifPresentOrElse(ShipSegment::destroy, () -> {
-					System.out.println("IT SOHULD BE THERE!!!!!!!!!!!/////");
-				});
+				revealNewShipSegment(target).ifPresent(ShipSegment::destroy);
 				break;
 
 			case HIT_AND_FINISHED:
-				revealNewShipSegment(target);
-				getWaterAt(target).map(Water::getShipSegment).map(ShipSegment::getShip).ifPresentOrElse(Ship::destroy, () -> {
-					System.out.println("IT SHIP SOHULD BE THERE!!!!!!!!!!!/////");
-				});
+				revealNewShipSegment(target).map(ShipSegment::getShip).ifPresent(Ship::destroy);
 				break;
 			case MISS:
 				getAdmiral().whenPlayer().ifPresent(player -> { // If its our sea, show it precisely

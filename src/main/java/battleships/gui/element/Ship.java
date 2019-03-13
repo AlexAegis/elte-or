@@ -140,8 +140,8 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 
 	public Ship(ShipType type) {
 		this.type = type;
-		setLayoutToHorizontal();
 		IntStream.range(0, type.getLength()).mapToObj(i -> new ShipSegment(this)).forEach(this::addComponent);
+		setLayoutToHorizontal();
 	}
 
 	public List<ShipSegment> getBody() {
@@ -150,20 +150,26 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 	}
 
 	public void attachBodyOn(TerminalPosition position) {
-		if(getHead().getPosition().getRow() == position.getRow()) {
+		System.out.println("Attach some bodies, OG HEAD " + getHead().getRelativePosition());
+
+		if (getHead().getRelativePosition().compareTo(position) > 0) { // Head is behind, shift ship
+			System.out.println("NEED TO SET THE POS");
+			var body = getBody();
+			removeAllComponents();
+			addComponent(new ShipSegment(this));
+			body.forEach(this::addComponent);
+			setPosition(position);
+		} else {
+			addComponent(new ShipSegment(this));
+		}
+
+		System.out.println("Attach some bodies3 getHead().getRelativePosition() " + getHead().getRelativePosition() + " position.getRow() " + position.getRow());
+		if(getHead().getRelativePosition().getRow() == position.getRow()) {
 			setLayoutTo(Direction.HORIZONTAL);
 		} else {
 			setLayoutTo(Direction.VERTICAL);
 		}
-
-		if (getHead().getPosition().compareTo(position) < 0) { // Head is behind, shift ship
-			setPosition(position);
-		}
-
-		addComponent(new ShipSegment(this));
-		updateWaterRelations();
-		// if its higher than the head, then this has to be the new head and translated
-
+		//updateWaterRelations();
 		updateClass();
 	}
 
@@ -179,8 +185,8 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 		}
 	}
 
-	public void reveal(TerminalPosition position) {
-		getBodyAt(position).ifPresent(ShipSegment::reveal);
+	public ShipSegment reveal(TerminalPosition position) {
+		return getBodyAt(position).map(ShipSegment::reveal).orElse(null);
 	}
 
 	public Optional<ShipSegment> getBodyAt(TerminalPosition position) {
@@ -282,7 +288,7 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 
 	public void destroy() {
 		this.destroyed = true;
-		getBody().forEach(body -> body.setDestroyed(true));
+		getBody().forEach(body -> body.destroy(false));
 		getBorder().stream()
 			.map(position -> getSea().getWaterAt(position))
 			.filter(Optional::isPresent)
@@ -294,17 +300,18 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 
 
 	public void updateWaterRelations() {
-		getBody().forEach(body -> {
+		/*getBody().forEach(body -> {
 			System.out.println("-----------BOD PIECE!!!!");
 			getSea().getWaterAt(body.getRelativePosition()).ifPresentOrElse(water -> {
 				System.out.println("-------------WATER RELATION UPDATED!!");
 				body.setWater(null); // This will also empty the old water
+				System.out.println("-------------WATER RELATION 2 UPDATED!!");
 				water.setShipSegment(body); // This will also update the new body
 			}, () -> {
 				System.out.println("-------------WATER RELATION IS NOT!!!! UPDATED!!");
 			});
 
-		});
+		});*/
 	}
 
 	/**
@@ -316,7 +323,8 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 		getSea().removeComponent(ship);
 		attachBodyOn(position);
 		ship.getBody().forEach(this::addComponent);
-		updateWaterRelations();
+		// updateWaterRelations();
+		invalidate();
 		updateClass();
 	}
 

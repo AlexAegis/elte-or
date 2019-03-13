@@ -51,8 +51,8 @@ public class OpponentBar extends Panel implements OpponentContainer {
 		//}
 		System.out.println(copyOrExisting);
 		System.out.println(copyOrExisting.getSea());
-		setPreferredSize(copyOrExisting.getSea().getSeaContainer().getPreferredSize().withRelative(1, 1));
-		invalidate();
+		setPreferredSize(game.getTableSize().withRelative(3, 3));
+		game.invalidate();
 	}
 
 	public void removeOpponent(Admiral admiral) {

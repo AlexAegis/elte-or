@@ -57,7 +57,7 @@ public class Connection extends Observable<Packet> implements AutoCloseable {
 	protected void subscribeActual(Observer<? super Packet> observer) {
 		Logger.getGlobal().info("Listener started");
 		try {
-			while (!isClosed()) {
+			while (true) { // !isClosed() force me baby
 				System.out.println("STILL GOING BABY isClosed(): " + isClosed());
 				var packet = (Packet) ois.readObject();
 				System.out.println("ACTUALLY READ A PAKK! " + packet);
@@ -70,6 +70,7 @@ public class Connection extends Observable<Packet> implements AutoCloseable {
 					observer.onNext(packet); // The queue inside is null for some reason if called in the client
 				});
 			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			Logger.getGlobal().throwing(getClass().getName(), "subscribeActual", e);

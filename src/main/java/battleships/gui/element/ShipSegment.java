@@ -2,6 +2,8 @@ package battleships.gui.element;
 
 import battleships.gui.Palette;
 import battleships.gui.container.Drawer;
+import battleships.gui.container.GameWindow;
+import battleships.gui.container.Opponent;
 import battleships.gui.container.Sea;
 import battleships.model.Coord;
 import battleships.model.Direction;
@@ -17,7 +19,6 @@ import com.googlecode.lanterna.input.KeyStroke;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
@@ -52,7 +53,8 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 			s.currentHighlighted = error;
 			s.currentHeld = error;
 		});
-		Observable.timer(200, TimeUnit.MILLISECONDS).subscribeOn(Schedulers.computation()).subscribe(next ->
+		Observable.timer(200, TimeUnit.MILLISECONDS).subscribeOn(Schedulers.computation())
+			.subscribe(next ->
 			ship.getChildren().stream().map(c -> (ShipSegment) c).forEach(s -> {
 				s.currentHighlighted = highlighted;
 				s.currentHeld = held;
@@ -68,8 +70,18 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 		return ship.getParent() instanceof Sea;
 	}
 
+	public GameWindow getGame() {
+		return getShip().getSea().getAdmiral()
+			.whenOpponent()
+			.map(Opponent::getGame)
+			.orElse(getShip().getSea().getAdmiral()
+				.whenPlayer()
+				.orElse(null));
+	}
+
 	public Boolean isTargeting() {
-		return false;
+		var game = getGame();
+		return game != null && game.getAdmiral().getPhase().equals(Phase.ACTIVE);
 	}
 
 	public Result onSeaLeft(Sea sea) {
@@ -128,165 +140,173 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 
 	@Override
 	public synchronized Result handleKeyStroke(KeyStroke keyStroke) {
-		if (isOnSea() && ship.isHeld()) {
-			var sea = ((Sea) ship.getParent());
+		if(isTargeting()) {
+			System.out.println("-----HHHHHHHHH You shouldnt be here");
+			getGame().getOpponentBar().focusNext();
 
-			if (keyStroke.getCharacter() != null) {
-				switch (keyStroke.getCharacter()) {
-					case 'W':
-					case 'w':
-						return onSeaUp(sea);
-					case 'A':
-					case 'a':
-						return onSeaLeft(sea);
-					case 'S':
-					case 's':
+		} else {
+			if (isOnSea() && ship.isHeld()) {
+				var sea = ((Sea) ship.getParent());
+
+				if (keyStroke.getCharacter() != null) {
+					switch (keyStroke.getCharacter()) {
+						case 'W':
+						case 'w':
+							return onSeaUp(sea);
+						case 'A':
+						case 'a':
+							return onSeaLeft(sea);
+						case 'S':
+						case 's':
+							return onSeaDown(sea);
+						case 'D':
+						case 'd':
+							return onSeaRight(sea);
+						default:
+					}
+				}
+
+				switch (keyStroke.getKeyType()) {
+					case ArrowDown:
 						return onSeaDown(sea);
-					case 'D':
-					case 'd':
+					case ArrowLeft:
+						return onSeaLeft(sea);
+					case ArrowRight:
 						return onSeaRight(sea);
-					default:
-				}
-			}
-
-			switch (keyStroke.getKeyType()) {
-				case ArrowDown:
-					return onSeaDown(sea);
-				case ArrowLeft:
-					return onSeaLeft(sea);
-				case ArrowRight:
-					return onSeaRight(sea);
-				case ArrowUp:
-					return onSeaUp(sea);
-				case Enter:
-					if(Phase.PLACEMENT.equals(getShip().getSea().getAdmiral().getPhase())) {
-						if (!sea.placementValid(ship)) {
-							briefError();
-						} else {
-							ship.setHeld(false);
-							sea.sendRipple(ship);
-							// Update all segments, set water/segment relationship
-							ship.updateWaterRelations();
-							sea.getDrawer().takeFocus();
+					case ArrowUp:
+						return onSeaUp(sea);
+					case Enter:
+						if(Phase.PLACEMENT.equals(getShip().getSea().getAdmiral().getPhase())) {
+							if (!sea.placementValid(ship)) {
+								briefError();
+							} else {
+								ship.setHeld(false);
+								sea.sendRipple(ship);
+								// Update all segments, set water/segment relationship
+								ship.updateWaterRelations();
+								sea.getDrawer().takeFocus();
+							}
 						}
-					}
-					return Result.HANDLED;
-				case Escape:
-					if (sea.equals(ship.getOriginalParent())) {
-						ship.resetOriginalPlacement();
-					} else {
-						ship.doSwitch();
-						ship.getBody().forEach(body -> body.setWater(null));
-					}
+						return Result.HANDLED;
+					case Escape:
+						if (sea.equals(ship.getOriginalParent())) {
+							ship.resetOriginalPlacement();
+						} else {
+							ship.doSwitch();
+							ship.getBody().forEach(body -> body.setWater(null));
+						}
 
-					ship.setOriginalPosition(null);
-					ship.setOriginalParent(null);
-					ship.setHeld(false);
-					sea.getDrawer().takeFocus();
-					return Result.HANDLED;
-				default:
-			}
-			switch (keyStroke.getCharacter()) {
-				case ' ':
-					ship.changeOrientation();
-					return Result.HANDLED;
-				default:
-			}
-		}
-
-		// When the cursor is on the sea and not holding any items and when in placement mode
-		if (isOnSea() && !ship.isHeld()) {
-			var sea = ((Sea) ship.getParent());
-
-			if (keyStroke.getCharacter() != null) {
+						ship.setOriginalPosition(null);
+						ship.setOriginalParent(null);
+						ship.setHeld(false);
+						sea.getDrawer().takeFocus();
+						return Result.HANDLED;
+					default:
+				}
 				switch (keyStroke.getCharacter()) {
-					case 'W':
-					case 'w':
-					case 'A':
-					case 'a':
-						return Result.MOVE_FOCUS_PREVIOUS;
-					case 'S':
-					case 's':
-					case 'D':
-					case 'd':
-						return Result.MOVE_FOCUS_NEXT;
+					case ' ':
+						ship.changeOrientation();
+						return Result.HANDLED;
 					default:
 				}
 			}
 
-			switch (keyStroke.getKeyType()) {
-				case ArrowDown:
-				case ArrowRight:
-					return Result.MOVE_FOCUS_NEXT;
-				case ArrowUp:
-				case ArrowLeft:
-					return Result.MOVE_FOCUS_PREVIOUS;
-				case Tab:
-					sea.getDrawer().getGame().getActionBar().takeFocus();
-					return Result.HANDLED;
-				case ReverseTab:
-				case Escape:
-					sea.getDrawer().takeFocus(true);
-					return Result.HANDLED;
-				case Enter:
-					if(Phase.PLACEMENT.equals(getShip().getSea().getAdmiral().getPhase())) {
+			// When the cursor is on the sea and not holding any items and when in placement mode
+			if (isOnSea() && !ship.isHeld()) {
+				var sea = ((Sea) ship.getParent());
+
+				if (keyStroke.getCharacter() != null) {
+					switch (keyStroke.getCharacter()) {
+						case 'W':
+						case 'w':
+						case 'A':
+						case 'a':
+							return Result.MOVE_FOCUS_PREVIOUS;
+						case 'S':
+						case 's':
+						case 'D':
+						case 'd':
+							return Result.MOVE_FOCUS_NEXT;
+						default:
+					}
+				}
+
+				switch (keyStroke.getKeyType()) {
+					case ArrowDown:
+					case ArrowRight:
+						return Result.MOVE_FOCUS_NEXT;
+					case ArrowUp:
+					case ArrowLeft:
+						return Result.MOVE_FOCUS_PREVIOUS;
+					case Tab:
+						sea.getDrawer().getGame().getActionBar().takeFocus();
+						return Result.HANDLED;
+					case ReverseTab:
+					case Escape:
+						sea.getDrawer().takeFocus(true);
+						return Result.HANDLED;
+					case Enter:
+						if(Phase.PLACEMENT.equals(getShip().getSea().getAdmiral().getPhase())) {
+							ship.savePlacement();
+							ship.saveParent();
+							ship.setHeld(true);
+						} else {
+							// Do Inspect
+							getShip().getSea().getAdmiral().inspect(getShip());
+						}
+
+						return Result.HANDLED;
+					default:
+				}
+			}
+
+			if (isInDrawer()) {
+				var drawer = ((Drawer) ship.getParent());
+				if (keyStroke.getCharacter() != null) {
+					switch (keyStroke.getCharacter()) {
+						case 'W':
+						case 'w':
+						case 'A':
+						case 'a':
+							return inDrawerUpLeft(drawer);
+						case 'S':
+						case 's':
+						case 'D':
+						case 'd':
+							return inDrawerDownRight(drawer);
+						default:
+					}}
+				switch (keyStroke.getKeyType()) {
+					case ArrowRight:
+					case ArrowDown:
+						return inDrawerDownRight(drawer);
+					case ArrowLeft:
+					case ArrowUp:
+						return inDrawerUpLeft(drawer);
+					case Tab:
+						drawer.getSea().takeFocus();
+						return Result.HANDLED;
+					case ReverseTab:
+						drawer.getGame().getActionBar().takeFocus(true);
+						return Result.HANDLED;
+					case Enter:
+						ship.setHeld(true);
 						ship.savePlacement();
 						ship.saveParent();
-						ship.setHeld(true);
-					} else {
-						// Do Inspect
-						getShip().getSea().getAdmiral().inspect(getShip());
-					}
-
-					return Result.HANDLED;
-				default:
+						ship.doSwitch();
+						drawer.getGame().getInspector().inspect(ship);
+						return Result.HANDLED;
+					default:
+				}
 			}
-		}
 
-		if (isInDrawer()) {
-			var drawer = ((Drawer) ship.getParent());
-			if (keyStroke.getCharacter() != null) {
-			switch (keyStroke.getCharacter()) {
-				case 'W':
-				case 'w':
-				case 'A':
-				case 'a':
-					return inDrawerUpLeft(drawer);
-				case 'S':
-				case 's':
-				case 'D':
-				case 'd':
-					return inDrawerDownRight(drawer);
-				default:
-			}}
-			switch (keyStroke.getKeyType()) {
-				case ArrowRight:
-				case ArrowDown:
-					return inDrawerDownRight(drawer);
-				case ArrowLeft:
-				case ArrowUp:
-					return inDrawerUpLeft(drawer);
-				case Tab:
-					drawer.getSea().takeFocus();
-					return Result.HANDLED;
-				case ReverseTab:
-					drawer.getGame().getActionBar().takeFocus(true);
-					return Result.HANDLED;
-				case Enter:
-					ship.setHeld(true);
-					ship.savePlacement();
-					ship.saveParent();
-					ship.doSwitch();
-					drawer.getGame().getInspector().inspect(ship);
-					return Result.HANDLED;
-				default:
-			}
 		}
 		return Result.UNHANDLED;
 	}
 
 	public Water getWater() {
-		return water;
+		return getShip().getSea().getWaterAt(getRelativePosition()).orElse(null);
+		//return water;
 	}
 
 	public void setWater(Water water) {
@@ -294,13 +314,14 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 	}
 
 	public void setWater(Water water, Boolean otherSide) {
-		if(this.water != null) { // Detach the old if there's one
-			this.water.setShipSegment(null);
+		if(otherSide && this.water != null) { // Detach the old if there's one
+			this.water.setShipSegment(null, false);
 		}
 		if(otherSide && water != null) { // Attach the new if there's one
 			water.setShipSegment(this, false);
 		}
 		this.water = water;
+		System.out.println("setWater() : " + water + " otherSide: " + otherSide);
 	}
 
 	public TerminalPosition getRelativePosition() {
@@ -324,13 +345,37 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 		return destroyed;
 	}
 
-	public void destroy() {
+	public void destroy(Boolean explosion) {
 		this.destroyed = true;
-		getShip().getSea().sendExplosion(getWater());
-		getShip().getSea().sendRipple(getWater(), 400);
+		if(explosion) {
+			getShip().getSea().sendExplosion(getWater());
+			getShip().getSea().sendRipple(getWater(), 400);
+		}
+		// On fire animation
+		Observable.interval(500, TimeUnit.MILLISECONDS)
+			.subscribeOn(Schedulers.computation())
+			.take(20)
+			.doFinally(() -> {
+				currentHeld = Palette.SMOKE_DARK;
+				currentHighlighted = Palette.SMOKE_DARK;
+				invalidate();
+			}).subscribe(next -> {
+				if(next % 2 == 0) {
+					currentHeld = Palette.EXPLOSION_OUTER;
+					currentHighlighted = Palette.EXPLOSION_CENTER;
+				} else {
+					currentHeld = Palette.EXPLOSION_CENTER;
+					currentHighlighted = Palette.EXPLOSION_OUTER;
+				}
+				invalidate();
+			});
 	}
 
-	public void reveal() {
+	public void destroy() {
+		destroy(true);
+	}
+
+	public ShipSegment reveal() {
 		getWater().reveal();
 
 		var reveals = Direction.cornersAndAxis(getShip().getOrientation().equals(com.googlecode.lanterna.gui2.Direction.VERTICAL)); // Reveal these too
@@ -344,14 +389,7 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 			.map(Coord::convertToTerminalPosition)
 			.forEach(pos -> getWater().getSea().getWaterAt(getWater().getPosition().withRelative(pos)).ifPresent(Water::reveal));
 
-	}
-
-	/**
-	 * This is the effectless version, should only used by the ship
-	 * @param destroyed
-	 */
-	void setDestroyed(boolean destroyed) {
-		this.destroyed = destroyed;
+		return this;
 	}
 
 	/**
@@ -373,10 +411,6 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 
 		@Override
 		public void drawComponent(TextGUIGraphics graphics, ShipSegment shipSegment) {
-			//if (!ship.isTargeting()) {
-
-			//} else {
-
 			graphics.setForegroundColor(Palette.SHIP_FORE);
 
 			if (shipSegment.ship.getHead().isFocused()) {
@@ -392,7 +426,7 @@ public class ShipSegment extends AbstractInteractableComponent<ShipSegment> {
 			if (shipSegment.destroyed) {
 				graphics.fill('▒');
 			} else {
-				graphics.fill('O');
+				graphics.fill(' ');
 			}
 
 

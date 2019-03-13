@@ -146,8 +146,6 @@ public class GameWindow extends BasicWindow {
 		admiral.refresh();
 		invalidate();
 		getDrawer().takeFocus();
-
-		// MAKE THE FIELD AND KNOWLEDGE AND DRAWERR FROM THIS
 	}
 
 	public Inspector getInspector() {

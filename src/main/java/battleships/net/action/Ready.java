@@ -58,13 +58,6 @@ public class Ready extends Request<ReadyResult> implements Serializable {
 				pieces.forEach(whoAdm::place);
 				whoAdm.finishBorders();
 
-				// This guy is now ready, lets tell everyone else
-				server.getEveryOtherConnectedAdmiralsExcept(reqAdm).forEach(conn -> {
-					conn.send(new Ready(conn.getAdmiral().getName(), whoAdm.getName(), null, whoAdm.isReady()))
-							.subscribe(ack -> {
-								Logger.getGlobal().info("Nofified about readyness, here's the acknowledgement: " + ack);
-							});
-				});
 
 				// State propagation logic. If there are at least 2 players and everyone is ready then notify them that the match started
 				if (server.isAtLeastNPlayers(2) && server.isEveryOneOnTheSamePhase(Phase.READY)) {
@@ -80,13 +73,22 @@ public class Ready extends Request<ReadyResult> implements Serializable {
 
 						// A little delay before broadcasting
 
-						Observable.timer(500, TimeUnit.MILLISECONDS).subscribeOn(Schedulers.computation())
+						Observable.timer(0, TimeUnit.MILLISECONDS).subscribeOn(Schedulers.computation())
 							.switchMap(next -> conn.send(new Turn(conn.getAdmiral().getName(), firstTurnAdmiral.getName(), null)))
 							.subscribe(ack -> {
 								Logger.getGlobal().info("Sent turn data, got ack: " + ack);
 							});
 
 					});
+				} else {
+					// This guy is now ready, lets tell everyone else
+					server.getEveryOtherConnectedAdmiralsExcept(reqAdm).forEach(conn -> {
+						conn.send(new Ready(conn.getAdmiral().getName(), whoAdm.getName(), null, whoAdm.isReady()))
+							.subscribe(ack -> {
+								Logger.getGlobal().info("Nofified about readyness, here's the acknowledgement: " + ack);
+							});
+					});
+
 				}
 
 

@@ -49,6 +49,7 @@ public class Water extends AbstractInteractableComponent<Water> {
 		}
 		setSize(new TerminalSize(1, 1));
 		if(!initiallyRevealed) {
+			endNoise.onNext(true);
 			Observable.interval(100, TimeUnit.MILLISECONDS)
 				.takeUntil(endNoise)
 				.subscribeOn(Schedulers.computation())
@@ -329,13 +330,14 @@ public class Water extends AbstractInteractableComponent<Water> {
 	}
 
 	public void setShipSegment(ShipSegment shipSegment, Boolean otherSide) {
-		if(this.shipSegment != null) { // Detach the old if there's one
-			this.shipSegment.setWater(null);
+		if(otherSide && this.shipSegment != null) { // Detach the old if there's one
+			this.shipSegment.setWater(null, false);
 		}
 		if(otherSide && shipSegment != null) { // Attach the new if there's one
 			shipSegment.setWater(this, false);
 		}
 		this.shipSegment = shipSegment;
+		System.out.println("setShipSegment() shipSegment: " + shipSegment + " otherSide: " + otherSide);
 	}
 
 	/**

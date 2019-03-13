@@ -156,6 +156,10 @@ public class Server implements Runnable {
 					thisOne = true;
 				}
 			}
+			if(!thisOne) {
+				currentAdmiral = null;
+				return nextAdmiralInTurn();
+			}
 			return Optional.empty();
 		}
 	}
