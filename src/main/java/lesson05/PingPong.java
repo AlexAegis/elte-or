@@ -1,15 +1,19 @@
 package lesson05;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class PingPong implements Runnable {
+public class PingPong extends Thread {
 
-	private Object lock;
-	private Object otherLock;
+	private final AtomicBoolean lock;
+	private final AtomicBoolean otherLock;
+
 	private String msg;
+	private final AtomicInteger count = new AtomicInteger(0);
 
-	private PingPong(Object lock, Object otherLock, String msg) {
+	private PingPong(AtomicBoolean lock, AtomicBoolean otherLock, String msg) {
 		this.lock = lock;
 		this.otherLock = otherLock;
 		this.msg = msg;
@@ -17,33 +21,47 @@ public class PingPong implements Runnable {
 
 	@Override
 	public void run() {
-		while(true) {
-			System.out.println(msg);
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				Logger.getGlobal().log(Level.INFO, "Interrupted", e);
-			}
-			synchronized (otherLock) {
-				otherLock.notify();
-			}
-			try {
-				synchronized (lock) {
-					lock.wait(1000);
+		try {
+			while(!interrupted()) {
+
+				synchronized(count) {
+					if(count.incrementAndGet() >= 4) {
+						interrupt();
+					}
+
+					while(!lock.get()) {
+						synchronized (lock) {
+							lock.wait();
+						}
+					}
+					synchronized (lock) {
+						lock.set(false);
+					}
+					System.out.println(msg);
+					Thread.sleep(1000);
+					synchronized (otherLock) {
+						otherLock.set(true);
+						otherLock.notify();
+					}
 				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
 			}
+		} catch (InterruptedException e) {
+			Logger.getGlobal().log(Level.INFO, "Interrupted", e);
 		}
+
 	}
 
 
 	public static void main(String[] args) {
-		Object lock1 = new Object();
-		Object lock2 = new Object();
-
-		new Thread(new PingPong(lock1, lock2, "ping")).start();
-		new Thread(new PingPong(lock2, lock1, "pong")).start();
+		var lock1 = new AtomicBoolean(false);
+		var lock2 = new AtomicBoolean(false);
+		var p1 = new PingPong(lock1, lock2, "ping");
+		var p2 = new PingPong(lock2, lock1, "pong");
+		p1.start();
+		p2.start();
+		synchronized (p1) {
+			p1.notify();
+		}
 	}
 
 }
