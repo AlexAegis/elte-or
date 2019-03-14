@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import battleships.model.Coord;
-import battleships.Table;
+import battleships.model.Table;
 
 public class Ships {
 	public static void main(String... args) {
-		new Ships().simulate("player.defend.txt", "player.attack.txt").map(table -> table.getAdmiral(0))
+		new Ships().simulate("player.defend.txt", "player.attack.txt").map(table -> table.getAdmiral("0"))
 				.ifPresent(System.out::println);
 	}
 
@@ -29,11 +29,13 @@ public class Ships {
 				if (nl.contains(","))
 					attacks.add(new Coord(nl));
 			}
-			var table = new Table(ships);
+			var table = new Table();
+			table.addAdmiral("0").placeAll(ships);
+			table.addAdmiral("1");
 			try {
 				for (var attack : attacks) {
-					table.shoot(1, 0, attack);
-					System.out.println(table.getAdmiral(1).toString(table.getAdmiral(0)));
+					table.shoot("1", "0", attack);
+					System.out.println(table.getAdmiral("1").toString(/*table.getAdmiral("0")*/));
 				}
 			} catch (IllegalAccessException | IllegalArgumentException e) {
 				e.printStackTrace();

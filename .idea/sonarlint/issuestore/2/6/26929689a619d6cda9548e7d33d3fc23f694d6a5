@@ -1,0 +1,11 @@
+
+N
+squid:S106"9Replace this use of System.out or System.err by a logger.(Ü²÷#
+N
+squid:S106"9Replace this use of System.out or System.err by a logger.(Ü²÷#
+N
+squid:S106"9Replace this use of System.out or System.err by a logger.(Ü²÷#
+[squid:S2147 "DCombine this catch with the one at line 30, which has the same body.(ï­£Ä
+rsquid:S00120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(±Ûˆ˜
+?squid:S1148"#Use a logger to log this exception.(€ÉÔ…ýÿÿÿÿ
+?squid:S1148!"#Use a logger to log this exception.(€ÉÔ…ýÿÿÿÿ

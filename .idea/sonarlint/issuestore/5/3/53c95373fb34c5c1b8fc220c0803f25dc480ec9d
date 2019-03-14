@@ -1,0 +1,9 @@
+
+Psquid:S1611"4Remove the parentheses around the "button" parameter(Ú•çôüÿÿÿÿ
+†"squid:ClassVariableVisibilityCheck"SMake buttons a static final constant or non-public and provide accessors if needed.(Âó˜úÿÿÿÿ
+†"squid:ClassVariableVisibilityCheck"SMake current a static final constant or non-public and provide accessors if needed.(Ø×„Äıÿÿÿÿ
+h
+squid:S128­"LEnd this switch case with an unconditional break, return or throw statement.(¾¹éˆşÿÿÿÿ
+nsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Äç™şÿÿÿÿ8ÍùÀú–-
+Y
+squid:S106"9Replace this use of System.out or System.err by a logger.(â®¬Ëùÿÿÿÿ8Çéÿ‘—-

@@ -1,0 +1,12 @@
+{
+	"name": "PlayerTwo",
+	"placements": [
+		{ "position": "1,1", "class": "FRIGATE", "orientation": "HORIZONTAL" },
+		{ "position": "5,7", "class": "SUBMARINE", "orientation": "HORIZONTAL" },
+		{ "position": "5,4", "class": "SUBMARINE", "orientation": "VERTICAL" },
+		{ "position": "1,0", "class": "CORVETTE", "orientation": "HORIZONTAL" },
+		{ "position": "6,5", "class": "CORVETTE", "orientation": "VERTICAL" },
+		{ "position": "2,7", "class": "CARRIER", "orientation": "VERTICAL" },
+		{ "position": "0,9", "class": "DESTROYER", "orientation": "VERTICAL" }
+	]
+}

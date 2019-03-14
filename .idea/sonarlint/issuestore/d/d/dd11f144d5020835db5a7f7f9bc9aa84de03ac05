@@ -1,0 +1,10 @@
+
+Osquid:S1602N",Remove useless curly braces around statement(¨¢ œùÿÿÿÿ8ÏğÂ§—-
+Osquid:S1602P",Remove useless curly braces around statement(ÂÕ’Ïüÿÿÿÿ8ÏğÂ§—-
+esquid:UselessImportCheck":Remove this unused import 'java.util.concurrent.TimeUnit'.(Æ™ş8ˆ¢ï¨—-
+Osquid:S1602G",Remove useless curly braces around statement(ÂÕ’Ïüÿÿÿÿ8‚Á¢—-
+osquid:UselessImportCheck"?Remove this unused import 'io.reactivex.schedulers.Schedulers'.(š‰¢úÿÿÿÿ8ˆ¢ï¨—-
+0squid:S1700"Rename field "ready"(°å±Íÿÿÿÿÿ
+[squid:UselessImportCheck"0Remove this unused import 'java.util.ArrayList'.(÷‰îƒ8Şï ¼—-
+_squid:UselessImportCheck"4Remove this unused import 'io.reactivex.Observable'.(–˜¼8ˆ¢ï¨—-
+psquid:S3776/"RRefactor this method to reduce its Cognitive Complexity from 16 to the 15 allowed.(¡Õ§Ì8çç§¼—-

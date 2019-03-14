@@ -19,6 +19,7 @@
 		"source.fixAll": true
 	},
 	"workbench.colorTheme": "Darcula",
+	"java.debug.settings.enableHotCodeReplace": false,
 	"java.import.maven.enabled": true,
 	"java.import.gradle.enabled": true,
 	"java.autobuild.enabled": true,

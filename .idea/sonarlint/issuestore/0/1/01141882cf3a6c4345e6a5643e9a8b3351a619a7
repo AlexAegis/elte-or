@@ -1,0 +1,8 @@
+
+csquid:UselessImportCheck"8Remove this unused import 'battleships.net.action.Turn'.(‚Àæ8¡±ú¢—-
+Gsquid:S1481")Remove this unused "disp" local variable.(ö˜­³8Ïµì¶—-
+Vsquid:S1854"8Remove this useless assignment to local variable "disp".(ö˜­³8Ïµì¶—-
+V
+squid:S106"9Replace this use of System.out or System.err by a logger.(ö˜­³8­Šâ¶—-
+`squid:UselessImportCheck	"5Remove this unused import 'java.util.logging.Logger'.(ƒ¥óš8¡±ú¢—-
+isquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ÜÎ¯•8Êàâ¶—-
