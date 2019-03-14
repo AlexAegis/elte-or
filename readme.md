@@ -14,7 +14,7 @@ java -jar battleships-1.0.0.jar
 
 ## If you want to run the client on Windows use `javaw` instead of `java`! (Or use [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10))
 
-(Lanterna cant use CMD or PS to display)
+(Lanterna can't use CMD or PS to display)
 
 ```cmd
 javaw -jar battleships-1.0.0.jar client
