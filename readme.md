@@ -12,10 +12,18 @@ _Now With Exclusive Battle Royale Mode!~_
 java -jar battleships-1.0.0.jar
 ```
 
-## If you want to run it on Windows use `javaw` instead of `java`!
+## If you want to run the client on Windows use `javaw` instead of `java`!
+
+(Lanterna cant use CMD or PS to display)
 
 ```cmd
-javaw -jar battleships-1.0.0.jar
+javaw -jar battleships-1.0.0.jar client
+```
+
+For everything else like reading the help prompts or running the server using `java` is fine
+
+```cmd
+java -jar battleships-1.0.0.jar client -h
 ```
 
 [Download!](https://github.com/AlexAegis/elte-or/releases)
