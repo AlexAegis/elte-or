@@ -2,7 +2,6 @@ package lesson07;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class Node<T extends Comparable<T>> implements Serializable {
@@ -28,38 +27,9 @@ public class Node<T extends Comparable<T>> implements Serializable {
 		}
 	}
 
-	public Node getL() {
-		return l;
-	}
-
-	public void setL(Node l) {
-		this.l = l;
-	}
-
-	public Node getR() {
-		return r;
-	}
-
-	public void setR(Node r) {
-		this.r = r;
-	}
-
-	public T getV() {
-		return v;
-	}
-
-	public void setV(T v) {
-		this.v = v;
-	}
-
 	@Override
 	public String toString() {
 		return this.toList().toString();
-		/*return "Node{" +
-			"l=" + l +
-			", r=" + r +
-			", v=" + v +
-			'}';*/
 	}
 
 	public ArrayList<T> toList() {
