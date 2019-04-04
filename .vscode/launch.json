@@ -6,6 +6,34 @@
 	"configurations": [
 		{
 			"type": "java",
+			"name": "TreeClient",
+			"request": "launch",
+			"mainClass": "lesson07.TreeClient",
+			"projectName": "battleships"
+		},
+		{
+			"type": "java",
+			"name": "TreeServer",
+			"request": "launch",
+			"mainClass": "lesson07.TreeServer",
+			"projectName": "battleships"
+		},
+		{
+			"type": "java",
+			"name": "CodeLens (Launch) - TreeWrite",
+			"request": "launch",
+			"mainClass": "lesson07.TreeWrite",
+			"projectName": "battleships"
+		},
+		{
+			"type": "java",
+			"name": "CodeLens (Launch) - Sum",
+			"request": "launch",
+			"mainClass": "lesson07.Sum",
+			"projectName": "battleships"
+		},
+		{
+			"type": "java",
 			"name": "CodeLens (Launch) - LanternaExample",
 			"request": "launch",
 			"mainClass": "battleships.LanternaExample",
@@ -233,6 +261,10 @@
 		{
 			"name": "App Server/Client Double Client",
 			"configurations": ["App Server", "App Client", "App Client 2"]
+		},
+		{
+			"name": "Tree over network",
+			"configurations": ["TreeServer", "TreeClient"]
 		}
 	]
 }

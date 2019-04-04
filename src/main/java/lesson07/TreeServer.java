@@ -12,12 +12,12 @@ public class TreeServer {
 
 	public void run(Integer port) {
 		try (ServerSocket serverSocket = new ServerSocket(port);
-		     Socket clientSocket = serverSocket.accept();
-		     ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
-		     ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())) {
+				Socket clientSocket = serverSocket.accept();
+				ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
+				ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())) {
 			var ino = in.readObject();
 			System.out.println("Received tree: " + ino.toString());
-			out.writeObject(((Node<?>)ino).invert());
+			out.writeObject(((Node<?>) ino).invert());
 			System.out.println("Sent inverted: " + ino.toString());
 		} catch (Exception e) {
 			e.printStackTrace();

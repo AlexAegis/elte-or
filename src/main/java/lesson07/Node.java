@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Node<T extends Comparable<T>> implements Serializable {
+
+	private static final long serialVersionUID = -984788573703571201L;
+
 	private Node<T> l;
 	private Node<T> r;
 	private T v;
@@ -14,14 +17,16 @@ public class Node<T extends Comparable<T>> implements Serializable {
 	}
 
 	public void insert(T v) {
-		if(this.v.compareTo(v) < 0) {
-			if(this.l != null) {
+		if (this.v.compareTo(v) > 0) {
+			if (this.l != null) {
 				l.insert(v);
-			} else l = new Node<>(v);
-		} else if(this.v.compareTo(v) > 0) {
-			if(this.r != null) {
+			} else
+				l = new Node<>(v);
+		} else if (this.v.compareTo(v) < 0) {
+			if (this.r != null) {
 				r.insert(v);
-			} else r  = new Node<>(v);
+			} else
+				r = new Node<>(v);
 		} else {
 			this.v = v;
 		}
@@ -34,11 +39,11 @@ public class Node<T extends Comparable<T>> implements Serializable {
 
 	public ArrayList<T> toList() {
 		var list = new ArrayList<T>();
-		if(this.l != null) {
+		if (this.l != null) {
 			list = this.l.toList();
 		}
 		list.add(v);
-		if(this.r != null) {
+		if (this.r != null) {
 			list.addAll(this.r.toList());
 		}
 		return list;
@@ -46,12 +51,12 @@ public class Node<T extends Comparable<T>> implements Serializable {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
 		Node<?> node = (Node<?>) o;
-		return Objects.equals(l, node.l) &&
-			Objects.equals(r, node.r) &&
-			Objects.equals(v, node.v);
+		return Objects.equals(l, node.l) && Objects.equals(r, node.r) && Objects.equals(v, node.v);
 	}
 
 	@Override
@@ -60,8 +65,10 @@ public class Node<T extends Comparable<T>> implements Serializable {
 	}
 
 	public Node<T> invert() {
-		if (this.l != null) this.l.invert();
-		if (this.r != null) this.r.invert();
+		if (this.l != null)
+			this.l.invert();
+		if (this.r != null)
+			this.r.invert();
 		var temp = this.r;
 		this.r = this.l;
 		this.l = temp;

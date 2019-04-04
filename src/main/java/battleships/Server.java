@@ -12,7 +12,6 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParentCommand;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.*;
@@ -20,51 +19,58 @@ import java.util.Map.Entry;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import static java.lang.System.*;
 
 @Command(name = "server", sortOptions = false,
-	header = {"",
-		"@|cyan                           |@",
-		"@|cyan  ___ ___ ___ _ _ ___ ___  |@",
-		"@|cyan |_ -| -_|  _| | | -_|  _| |@",
-		"@|cyan |___|___|_|  \\_/|___|_|  |@",
-		"@|cyan                           |@"},
-	descriptionHeading = "@|bold %nDescription|@:%n", description = {"", "Client application for BattleShips",},
-	optionListHeading = "@|bold %nOptions|@:%n", footer = {"", "Author: AlexAegis"})
+		header = {"", "@|cyan                           |@", "@|cyan  ___ ___ ___ _ _ ___ ___  |@",
+				"@|cyan |_ -| -_|  _| | | -_|  _| |@", "@|cyan |___|___|_|  \\_/|___|_|  |@",
+				"@|cyan                           |@"},
+		descriptionHeading = "@|bold %nDescription|@:%n", description = {"", "Client application for BattleShips",},
+		optionListHeading = "@|bold %nOptions|@:%n", footer = {"", "Author: AlexAegis"})
 public class Server implements Runnable {
 
 	@ParentCommand
 	private App app;
 
-	@Option(names = {"-p", "--port"}, paramLabel = "<port>", description = "Port of the server (default: ${DEFAULT-VALUE})", defaultValue = "6668")
+	@Option(names = {"-p", "--port"}, paramLabel = "<port>",
+			description = "Port of the server (default: ${DEFAULT-VALUE})", defaultValue = "6668")
 	private Integer port;
 
-	@Option(names = {"-m", "--mode"}, paramLabel = "<mode>", description = "Game mode selection! Valid values: ${COMPLETION-CANDIDATES} (default: ${DEFAULT-VALUE})", defaultValue = "TURN")
+	@Option(names = {"-m", "--mode"}, paramLabel = "<mode>",
+			description = "Game mode selection! Valid values: ${COMPLETION-CANDIDATES} (default: ${DEFAULT-VALUE})",
+			defaultValue = "TURN")
 	private Mode mode;
 
-	@Option(names = {"-w", "--width"}, paramLabel = "<int>", description = "Height of the game area (default: ${DEFAULT-VALUE})", defaultValue = "10")
+	@Option(names = {"-w", "--width"}, paramLabel = "<int>",
+			description = "Height of the game area (default: ${DEFAULT-VALUE})", defaultValue = "10")
 	private Integer width;
 
-	@Option(names = {"-h", "--height"}, paramLabel = "<int>", description = "Width of the game area (default: ${DEFAULT-VALUE})", defaultValue = "10")
+	@Option(names = {"-h", "--height"}, paramLabel = "<int>",
+			description = "Width of the game area (default: ${DEFAULT-VALUE})", defaultValue = "10")
 	private Integer height;
 
-	@Option(names = {"-b", "--boat"}, paramLabel = "<int>", description = "Available amount of boats (Size 1) (default: ${DEFAULT-VALUE})", defaultValue = "0")
+	@Option(names = {"-b", "--boat"}, paramLabel = "<int>",
+			description = "Available amount of boats (Size 1) (default: ${DEFAULT-VALUE})", defaultValue = "0")
 	private Integer boats;
 
-	@Option(names = {"-s", "--submarine"}, paramLabel = "<int>", description = "Available amount of submarines (Size 2) (default: ${DEFAULT-VALUE})", defaultValue = "2")
+	@Option(names = {"-s", "--submarine"}, paramLabel = "<int>",
+			description = "Available amount of submarines (Size 2) (default: ${DEFAULT-VALUE})", defaultValue = "2")
 	private Integer submarines;
 
-	@Option(names = {"-co", "--corvette"}, paramLabel = "<int>", description = "Available amount of corvettes (Size 3) (default: ${DEFAULT-VALUE})", defaultValue = "2")
+	@Option(names = {"-co", "--corvette"}, paramLabel = "<int>",
+			description = "Available amount of corvettes (Size 3) (default: ${DEFAULT-VALUE})", defaultValue = "2")
 	private Integer corvettes;
 
-	@Option(names = {"-f", "--frigate"}, paramLabel = "<int>", description = "Available amount of frigates (Size 5) (default: ${DEFAULT-VALUE})", defaultValue = "1")
+	@Option(names = {"-f", "--frigate"}, paramLabel = "<int>",
+			description = "Available amount of frigates (Size 5) (default: ${DEFAULT-VALUE})", defaultValue = "1")
 	private Integer frigates;
 
-	@Option(names = {"-d", "--destroyer"}, paramLabel = "<int>", description = "Available amount of destroyers (Size 6) (default: ${DEFAULT-VALUE})", defaultValue = "1")
+	@Option(names = {"-d", "--destroyer"}, paramLabel = "<int>",
+			description = "Available amount of destroyers (Size 6) (default: ${DEFAULT-VALUE})", defaultValue = "1")
 	private Integer destroyers;
 
-	@Option(names = {"-ca", "--carrier"}, paramLabel = "<int>", description = "Available amount of carriers (Size 8) (default: ${DEFAULT-VALUE})", defaultValue = "1")
+	@Option(names = {"-ca", "--carrier"}, paramLabel = "<int>",
+			description = "Available amount of carriers (Size 8) (default: ${DEFAULT-VALUE})", defaultValue = "1")
 	private Integer carriers;
 
 	public static void main(String[] args) {
@@ -79,14 +85,10 @@ public class Server implements Runnable {
 	@Override
 	public void run() {
 		table = new Table(width, height);
-		try(var server = new ServerSocket(port)) {
-			Flowable.fromCallable(() -> new Connection(this, server))
-				.repeat()
-				.parallel()
-				.runOn(Schedulers.newThread())
-				.flatMap(connection -> connection.onTerminateDetach().toFlowable(BackpressureStrategy.BUFFER))
-				.sequential()
-				.blockingSubscribe();
+		try (var server = new ServerSocket(port)) {
+			Flowable.fromCallable(() -> new Connection(this, server)).repeat().parallel().runOn(Schedulers.newThread())
+					.flatMap(connection -> connection.onTerminateDetach().toFlowable(BackpressureStrategy.BUFFER))
+					.sequential().blockingSubscribe();
 		} catch (IOException e) {
 			Logger.getGlobal().throwing(getClass().getName(), "run", e);
 		}
@@ -148,13 +150,16 @@ public class Server implements Runnable {
 	}
 
 	public Stream<Connection> getEveryOtherConnectedAdmiralsExcept(Admiral... admirals) {
-		return getEveryOtherConnectedAdmiralsExcept(Arrays.stream(admirals).map(Admiral::getName).toArray(String[]::new));
+		return getEveryOtherConnectedAdmiralsExcept(
+				Arrays.stream(admirals).map(Admiral::getName).toArray(String[]::new));
 	}
+
 	/**
 	 * @return the connectedAdmirals
 	 */
 	public Stream<Connection> getEveryOtherConnectedAdmiralsExcept(String... admirals) {
-		return getConnectedAdmirals().entrySet().stream().filter(e -> !Arrays.asList(admirals).contains(e.getKey())).map(Entry::getValue).filter(Objects::nonNull);
+		return getConnectedAdmirals().entrySet().stream().filter(e -> !Arrays.asList(admirals).contains(e.getKey()))
+				.map(Entry::getValue).filter(Objects::nonNull);
 	}
 
 
@@ -163,12 +168,8 @@ public class Server implements Runnable {
 	}
 
 	public Boolean isEveryOneOnTheSamePhase(Phase stage) {
-		return getConnectedAdmirals().entrySet().stream()
-			.map(Entry::getValue)
-			.map(Connection::getAdmiral)
-			.filter(Objects::nonNull)
-			.map(Admiral::getPhase)
-			.allMatch(stage::equals);
+		return getConnectedAdmirals().entrySet().stream().map(Entry::getValue).map(Connection::getAdmiral)
+				.filter(Objects::nonNull).map(Admiral::getPhase).allMatch(stage::equals);
 	}
 
 	public Boolean isAtLeastNPlayers(int i) {
@@ -208,7 +209,9 @@ public class Server implements Runnable {
 
 	private Optional<Admiral> nextAdmiralInTurn() {
 		if (currentAdmiral == null) {
-			return Optional.ofNullable(getConnectedAdmirals().get(getConnectedAdmirals().keySet().stream().sorted().collect(Collectors.toList()).get(0)).getAdmiral());
+			return Optional.ofNullable(getConnectedAdmirals()
+					.get(getConnectedAdmirals().keySet().stream().sorted().collect(Collectors.toList()).get(0))
+					.getAdmiral());
 		} else {
 			var nextOne = false;
 			for (var admiral : getConnectedAdmirals().keySet().stream().sorted().collect(Collectors.toList())) {
@@ -226,6 +229,7 @@ public class Server implements Runnable {
 
 
 	public List<String> getDisconnectedAdmirals() {
-		return getConnectedAdmirals().entrySet().stream().filter((e) -> e.getValue() == null).map(Entry::getKey).collect(Collectors.toList());
+		return getConnectedAdmirals().entrySet().stream().filter((e) -> e.getValue() == null).map(Entry::getKey)
+				.collect(Collectors.toList());
 	}
 }

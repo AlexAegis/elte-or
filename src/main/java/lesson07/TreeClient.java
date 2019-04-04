@@ -15,8 +15,8 @@ public class TreeClient {
 		root.insert(6);
 
 		try (Socket socket = new Socket(host, serverPort);
-		     ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-		     ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
+				ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+				ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
 			System.out.println("Sent: " + root.toString());
 			out.writeObject(root);
 			out.flush();
