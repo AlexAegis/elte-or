@@ -14,13 +14,14 @@ public class TreeClient {
 		root.insert(4);
 		root.insert(6);
 
-		System.out.println(root);
-
-		try (Socket echoSocket = new Socket(host, serverPort);
-		     ObjectOutputStream out = new ObjectOutputStream(echoSocket.getOutputStream())) {
+		try (Socket socket = new Socket(host, serverPort);
+		     ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+		     ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
+			System.out.println("Sent: " + root.toString());
 			out.writeObject(root);
 			out.flush();
-		} catch (IOException e) {
+			System.out.println("Received: " + in.readObject().toString());
+		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 	}

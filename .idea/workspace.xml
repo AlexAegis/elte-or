@@ -5,15 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e9fc54b6-7ad8-4c50-9c86-12c7d09a261d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/lesson06/readme.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/lesson07/Node.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/lesson07/Sum.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/lesson07/TreeClient.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/lesson07/TreeServer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/lesson07/TreeWrite.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/lesson07/readme.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lesson07/Node.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lesson07/Node.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lesson07/Sum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lesson07/Sum.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lesson07/TreeClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lesson07/TreeClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lesson07/TreeServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lesson07/TreeServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lesson07/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lesson07/readme.md" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/.gradle/" />
@@ -186,7 +183,7 @@
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="class" value="1" />
-          <entry key="java" value="18" />
+          <entry key="java" value="19" />
           <entry key="md" value="6" />
           <entry key="out" value="1" />
           <entry key="txt" value="4" />
@@ -195,21 +192,21 @@
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="CLASS" value="1" />
-          <entry key="JAVA" value="18" />
+          <entry key="JAVA" value="19" />
           <entry key="PLAIN_TEXT" value="11" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="java" value="3015" />
-          <entry key="md" value="216" />
-          <entry key="txt" value="19" />
+          <entry key="java" value="3511" />
+          <entry key="md" value="896" />
+          <entry key="txt" value="40" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="3015" />
-          <entry key="PLAIN_TEXT" value="235" />
+          <entry key="JAVA" value="3511" />
+          <entry key="PLAIN_TEXT" value="936" />
         </counts>
       </usages-collector>
     </session>
@@ -219,8 +216,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/lesson07/readme.md">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="51">
-              <caret line="3" column="18" selection-start-line="3" selection-start-column="18" selection-end-line="3" selection-end-column="18" />
+            <state relative-caret-position="187">
+              <caret line="11" column="68" lean-forward="true" selection-start-line="11" selection-start-column="68" selection-end-line="11" selection-end-column="68" />
             </state>
           </provider>
         </entry>
@@ -234,39 +231,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/lesson07/Sum.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
-              <caret line="25" column="42" selection-start-line="25" selection-start-column="42" selection-end-line="25" selection-end-column="42" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/lesson07/Node.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="11" column="19" lean-forward="true" selection-start-line="11" selection-start-column="19" selection-end-line="11" selection-end-column="19" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#163#164#0" expanded="true" />
-                <element signature="e#180#181#0" expanded="true" />
-                <element signature="e#549#550#0" expanded="true" />
-                <element signature="e#564#565#0" expanded="true" />
-                <element signature="e#593#594#0" expanded="true" />
-                <element signature="e#610#611#0" expanded="true" />
-                <element signature="e#633#634#0" expanded="true" />
-                <element signature="e#648#649#0" expanded="true" />
-                <element signature="e#677#678#0" expanded="true" />
-                <element signature="e#694#695#0" expanded="true" />
-                <element signature="e#714#715#0" expanded="true" />
-                <element signature="e#729#730#0" expanded="true" />
-                <element signature="e#755#756#0" expanded="true" />
-                <element signature="e#772#773#0" expanded="true" />
-                <element signature="e#1196#1197#0" expanded="true" />
-                <element signature="e#1231#1232#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="340">
+              <caret line="32" column="31" lean-forward="true" selection-start-line="32" selection-start-column="31" selection-end-line="32" selection-end-column="31" />
             </state>
           </provider>
         </entry>
@@ -274,17 +243,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/lesson07/TreeWrite.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="353">
-              <caret line="24" column="8" lean-forward="true" selection-start-line="24" selection-start-column="8" selection-end-line="24" selection-end-column="8" />
+            <state relative-caret-position="64">
+              <caret line="7" column="33" lean-forward="true" selection-start-line="7" selection-start-column="33" selection-end-line="7" selection-end-column="33" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/lesson07/TreeClient.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="10" column="11" selection-start-line="10" selection-start-column="11" selection-end-line="10" selection-end-column="11" />
+            <state relative-caret-position="221">
+              <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -304,10 +273,26 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/lesson07/TreeServer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
+            <state relative-caret-position="170">
+              <caret line="12" column="35" lean-forward="true" selection-start-line="12" selection-start-column="35" selection-end-line="12" selection-end-column="35" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#456#457#0" expanded="true" />
+                <element signature="e#523#524#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/lesson07/Node.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="117">
+              <caret line="64" column="34" lean-forward="true" selection-start-line="64" selection-start-column="34" selection-end-line="64" selection-end-column="34" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#1443#1444#0" expanded="true" />
+                <element signature="e#1478#1479#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -832,12 +817,12 @@
         <option value="$PROJECT_DIR$/src/main/java/lesson05/BasicThread.java" />
         <option value="$PROJECT_DIR$/src/main/java/lesson05/readme.md" />
         <option value="$PROJECT_DIR$/src/main/java/lesson05/PingPong.java" />
-        <option value="$PROJECT_DIR$/src/main/java/lesson07/Node.java" />
         <option value="$PROJECT_DIR$/src/main/java/lesson07/TreeWrite.java" />
+        <option value="$PROJECT_DIR$/src/main/java/lesson07/Sum.java" />
         <option value="$PROJECT_DIR$/src/main/java/lesson07/readme.md" />
         <option value="$PROJECT_DIR$/src/main/java/lesson07/TreeServer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/lesson07/Node.java" />
         <option value="$PROJECT_DIR$/src/main/java/lesson07/TreeClient.java" />
-        <option value="$PROJECT_DIR$/src/main/java/lesson07/Sum.java" />
       </list>
     </option>
   </component>
@@ -978,7 +963,7 @@
     <property name="SearchEverywhereHistoryKey" value="Clien&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/Client.java&#10;Pale&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/gui/Palette.java&#10;ShotM&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/marker/ShotMarker.java&#10;sea&#9;PSI&#9;JAVA://battleships.gui.container.Sea&#10;Water&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/gui/element/Water.java&#10;Ship&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/model/Ship.java&#10;Dra&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/gui/container/Drawer.java&#10;Ad&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/model/Admiral.java&#10;ship&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/gui/element/Ship.java&#10;Opp&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/gui/container/Opponent.java&#10;fromFile&#9;PSI&#9;JAVA://battleships.Client#fieldInitFromFile&#10;ser&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/Server.java&#10;Sea&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/gui/container/Sea.java&#10;Dr&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/gui/container/Drawer.java&#10;segm&#9;PSI&#9;JAVA://battleships.gui.element.ShipSegment&#10;segme&#9;PSI&#9;JAVA://battleships.gui.element.ShipSegment&#10;Segme&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/gui/element/ShipSegment.java&#10;focusNext&#9;PSI&#9;JAVA://battleships.gui.container.ActionBar#focusNextButton&#10;Admir&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/model/Admiral.java&#10;SGR&#9;PSI&#9;JAVA://com.googlecode.lanterna.SGR&#10;dSwitc&#9;PSI&#9;JAVA://battleships.misc.Switchable#doSwitch&#10;Server&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/Server.java" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1554368281620" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1554369541337" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="project.structure.last.edited" value="Modules" />
@@ -1007,7 +992,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.Sum">
+  <component name="RunManager" selected="Application.TreeClient">
     <configuration name="AppClient 1" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="battleships.App" />
       <module name="battleships_main" />
@@ -1147,10 +1132,10 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Sum" />
         <item itemvalue="Application.TreeClient" />
         <item itemvalue="Application.TreeServer" />
         <item itemvalue="Application.TreeWrite" />
+        <item itemvalue="Application.Sum" />
         <item itemvalue="Application.PingPong" />
       </list>
     </recent_temporary>
@@ -1460,7 +1445,14 @@
       <option name="project" value="LOCAL" />
       <updated>1552560155682</updated>
     </task>
-    <option name="localTasksCounter" value="42" />
+    <task id="LOCAL-00042" summary="lesson 7 tasks done">
+      <created>1554368304588</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1554368304588</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1481,7 +1473,7 @@
     <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17994858" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.17994858" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -1490,18 +1482,18 @@
       <window_info id="Capture Tool" order="6" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.4990086" weight="0.32932237" />
-      <window_info anchor="bottom" id="Debug" order="2" sideWeight="0.4929306" weight="0.393531" />
+      <window_info anchor="bottom" id="Debug" order="2" sideWeight="0.4922879" weight="0.17250673" />
       <window_info anchor="bottom" id="Cvs" order="3" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="4" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="5" />
       <window_info anchor="bottom" id="Build" order="6" weight="0.32995567" />
       <window_info anchor="bottom" id="Terminal" order="7" sideWeight="0.49966952" weight="0.32868904" />
-      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.33290488" side_tool="true" visible="true" weight="0.20754717" />
+      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.33354756" side_tool="true" weight="0.25336927" />
       <window_info anchor="bottom" id="SonarLint" order="9" weight="0.32972628" />
       <window_info anchor="bottom" id="Database Changes" order="10" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="11" />
       <window_info anchor="bottom" id="Messages" order="12" sideWeight="0.49100256" weight="0.32614556" />
-      <window_info anchor="bottom" x="243" y="1010" width="1525" height="521" id="Run" order="13" sideWeight="0.6670951" visible="true" weight="0.20754717" />
+      <window_info active="true" anchor="bottom" x="243" y="1010" width="1525" height="521" id="Run" order="13" sideWeight="0.66645247" visible="true" weight="0.25336927" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.33938953" />
@@ -1514,6 +1506,40 @@
       <window_info anchor="right" id="Theme Preview" order="9" />
       <window_info anchor="right" id="Coverage" order="10" side_tool="true" weight="0.32951483" />
     </layout>
+    <layout-to-restore>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17994858" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Designer" order="2" />
+      <window_info id="Image Layers" order="3" />
+      <window_info id="UI Designer" order="4" />
+      <window_info id="Favorites" order="5" side_tool="true" />
+      <window_info id="Capture Tool" order="6" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" sideWeight="0.4990086" weight="0.32932237" />
+      <window_info anchor="bottom" id="Debug" order="2" sideWeight="0.4922879" weight="0.17250673" />
+      <window_info anchor="bottom" id="Cvs" order="3" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="4" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="5" />
+      <window_info anchor="bottom" id="Build" order="6" weight="0.32995567" />
+      <window_info anchor="bottom" id="Terminal" order="7" sideWeight="0.49966952" weight="0.32868904" />
+      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.33354756" side_tool="true" visible="true" weight="0.25336927" />
+      <window_info anchor="bottom" id="SonarLint" order="9" weight="0.32972628" />
+      <window_info anchor="bottom" id="Database Changes" order="10" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="11" />
+      <window_info anchor="bottom" id="Messages" order="12" sideWeight="0.49100256" weight="0.32614556" />
+      <window_info anchor="bottom" x="243" y="1010" width="1525" height="521" id="Run" order="13" sideWeight="0.66645247" visible="true" weight="0.25336927" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.33938953" />
+      <window_info anchor="right" id="Palette" order="3" />
+      <window_info anchor="right" id="Capture Analysis" order="4" />
+      <window_info anchor="right" id="Maven Projects" order="5" weight="0.32980832" />
+      <window_info anchor="right" id="Gradle" order="6" sideWeight="0.49968335" weight="0.16902314" />
+      <window_info anchor="right" id="Database" order="7" />
+      <window_info anchor="right" id="Palette&#9;" order="8" />
+      <window_info anchor="right" id="Theme Preview" order="9" />
+      <window_info anchor="right" id="Coverage" order="10" side_tool="true" weight="0.32951483" />
+    </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
@@ -1524,7 +1550,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="turning progress" />
     <MESSAGE value="final reveal on ship destroy" />
     <MESSAGE value="asd" />
     <MESSAGE value="moiring" />
@@ -1549,7 +1574,8 @@
     <MESSAGE value="text change" />
     <MESSAGE value="better ship class recognition" />
     <MESSAGE value="lesson 5" />
-    <option name="LAST_COMMIT_MESSAGE" value="lesson 5" />
+    <MESSAGE value="lesson 7 tasks done" />
+    <option name="LAST_COMMIT_MESSAGE" value="lesson 7 tasks done" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/build.gradle">
@@ -1837,43 +1863,10 @@
     <entry file="file://$PROJECT_DIR$/test.out">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/lesson07/Node.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="11" column="19" lean-forward="true" selection-start-line="11" selection-start-column="19" selection-end-line="11" selection-end-column="19" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#163#164#0" expanded="true" />
-            <element signature="e#180#181#0" expanded="true" />
-            <element signature="e#549#550#0" expanded="true" />
-            <element signature="e#564#565#0" expanded="true" />
-            <element signature="e#593#594#0" expanded="true" />
-            <element signature="e#610#611#0" expanded="true" />
-            <element signature="e#633#634#0" expanded="true" />
-            <element signature="e#648#649#0" expanded="true" />
-            <element signature="e#677#678#0" expanded="true" />
-            <element signature="e#694#695#0" expanded="true" />
-            <element signature="e#714#715#0" expanded="true" />
-            <element signature="e#729#730#0" expanded="true" />
-            <element signature="e#755#756#0" expanded="true" />
-            <element signature="e#772#773#0" expanded="true" />
-            <element signature="e#1196#1197#0" expanded="true" />
-            <element signature="e#1231#1232#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/lesson05/readme.md">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
           <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/lesson07/readme.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" column="18" selection-start-line="3" selection-start-column="18" selection-end-line="3" selection-end-column="18" />
         </state>
       </provider>
     </entry>
@@ -1901,6 +1894,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lesson07/Sum.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="32" column="31" lean-forward="true" selection-start-line="32" selection-start-column="31" selection-end-line="32" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lesson07/readme.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="68" lean-forward="true" selection-start-line="11" selection-start-column="68" selection-end-line="11" selection-end-column="68" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/lesson07/TreeWrite.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="64">
+          <caret line="7" column="33" lean-forward="true" selection-start-line="7" selection-start-column="33" selection-end-line="7" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/lesson03/BasicBattleShipsServer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="404">
@@ -1908,37 +1922,37 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/lesson07/TreeClient.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/lesson07/Node.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="10" column="11" selection-start-line="10" selection-start-column="11" selection-end-line="10" selection-end-column="11" />
+        <state relative-caret-position="117">
+          <caret line="64" column="34" lean-forward="true" selection-start-line="64" selection-start-column="34" selection-end-line="64" selection-end-column="34" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#1443#1444#0" expanded="true" />
+            <element signature="e#1478#1479#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/lesson07/TreeServer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
+        <state relative-caret-position="170">
+          <caret line="12" column="35" lean-forward="true" selection-start-line="12" selection-start-column="35" selection-end-line="12" selection-end-column="35" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#456#457#0" expanded="true" />
+            <element signature="e#523#524#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/lesson07/TreeWrite.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/lesson07/TreeClient.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="353">
-          <caret line="24" column="8" lean-forward="true" selection-start-line="24" selection-start-column="8" selection-end-line="24" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/lesson07/Sum.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="25" column="42" selection-start-line="25" selection-start-column="42" selection-end-line="25" selection-end-column="42" />
+        <state relative-caret-position="221">
+          <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

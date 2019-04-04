@@ -25,7 +25,7 @@ public class Sum {
 					var ino = in.readObject();
 					System.out.println(ino);
 					if(ino instanceof Double) {
-						sum += (Double)ino;
+						sum += (Double) ino;
 					} else if(ino instanceof Integer) {
 						sum += (Integer) ino;
 					}

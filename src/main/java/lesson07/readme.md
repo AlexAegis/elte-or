@@ -3,26 +3,16 @@
 
 # 1) [Sum](./Sum.java)
 
-* Irj ki egy fajlba 100 objektumot - veletlenszeruen, egyenlo esellyel Integer vagy Double tipusuakat, veletlenszeru ertekkel
-* Olvasd be az objektumokat, es ird ki az osszeguket
+- Write 100 objects into a file. They should be randomly distributed Integers or Doubles, with random values.
+- Read these from the file and calculate a sum
 
 # 2) [Binary Tree](./TreeWrite.java)
 
-* Keszits egy tipust, ami egy egesz erteku binaris fat reprezental, a leheto legegyszerubb modon:
-  * Harom adattag (ertek, bal, jobb)
-  * Getterek/setterek
-  * toString
-  * Harom konstruktor (csak ertek ; ertek es bal gyerek ; ertek es mindket gyerek)
-    (ezekkel a konstuktorokkal a fat jol strukturaltan letre tudod majd hozni a forraskodban)
-* Keszits egy foprogramot, ami letrehoz egy kicsi binaris fat, es kiirja egy fajlba, majd beolvassa a fajlbol
+- Create a simple Binary Tree class that is serializable and printable
+- Create a program that writes the binary tree into a file, then reads it
 
-# 3: Binaris fa halozaton
+# 3) [Binary Tree over network](./TreeClient.java)
 
-* Az elozo programot alakitsd at egy kliensse:
-   * Keszit egy fat
-   * Megjeleniti a fat
-   * Csatlakozik a szerverhez
-   * Elkuldi a szervernek a binaris fat objektumkent
-   * Var egy objektum valaszra
-   * Megjeleniti a valaszul kapott objektumot
-* Keszits egy szervert, ami fogad egy fat, vegez vele valami muveletet (pl. tukrozi), majd visszakuldi azt
+- Create a Server program what waits for a connection, recieves a tree and then prints it
+- Create a Client program that connects to the server and sends the tree to it
+- The server should invert the tree, then send it back

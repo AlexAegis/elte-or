@@ -1,6 +1,8 @@
 package lesson07;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Node<T extends Comparable<T>> implements Serializable {
@@ -52,11 +54,24 @@ public class Node<T extends Comparable<T>> implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Node{" +
+		return this.toList().toString();
+		/*return "Node{" +
 			"l=" + l +
 			", r=" + r +
 			", v=" + v +
-			'}';
+			'}';*/
+	}
+
+	public ArrayList<T> toList() {
+		var list = new ArrayList<T>();
+		if(this.l != null) {
+			list = this.l.toList();
+		}
+		list.add(v);
+		if(this.r != null) {
+			list.addAll(this.r.toList());
+		}
+		return list;
 	}
 
 	@Override
@@ -72,5 +87,14 @@ public class Node<T extends Comparable<T>> implements Serializable {
 	@Override
 	public int hashCode() {
 		return Objects.hash(l, r, v);
+	}
+
+	public Node<T> invert() {
+		if (this.l != null) this.l.invert();
+		if (this.r != null) this.r.invert();
+		var temp = this.r;
+		this.r = this.l;
+		this.l = temp;
+		return this;
 	}
 }
