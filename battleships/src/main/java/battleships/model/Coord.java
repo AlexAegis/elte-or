@@ -1,9 +1,7 @@
 package battleships.model;
 
-import battleships.gui.element.Ship;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
-
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -39,7 +37,7 @@ public class Coord implements Comparable<Coord>, Serializable {
 	}
 
 	public Coord(TerminalPosition position) {
-		this(position.getColumn(),position.getRow());
+		this(position.getColumn(), position.getRow());
 	}
 
 	public TerminalSize convertToTerminalSize() {

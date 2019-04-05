@@ -153,7 +153,6 @@ public class Table {
 	 * Returns a width × height matrix filled with dots.
 	 * @return empty plane
 	 */
-	@Deprecated
 	public static String[][] empty() {
 		var field = new String[MAP_HEIGHT][MAP_WIDTH];
 		for (int x = 0; x < MAP_WIDTH; x++) {
@@ -169,12 +168,10 @@ public class Table {
 	/**
 	 * Returns the Table with all the ships on it as a string
 	 */
-	@Deprecated
 	public String toString() {
 		return admirals.values().stream().map(Admiral::toString).collect(Collectors.joining("\n"));
 	}
 
-	@Deprecated
 	public String printState(Integer player) {
 		return toString();
 	}

@@ -8,14 +8,10 @@ import battleships.net.Connection;
 import battleships.net.result.ReadyResult;
 import battleships.state.Mode;
 import battleships.state.Phase;
-import io.reactivex.Observable;
-import io.reactivex.schedulers.Schedulers;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class Ready extends Request<ReadyResult> implements Serializable {

@@ -3,10 +3,8 @@ package battleships.gui.container;
 import battleships.Client;
 import com.googlecode.lanterna.gui2.*;
 import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
-
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -66,21 +64,22 @@ public class ConnectWindow extends BasicModal {
 	public void showConnecting() {
 		connectForm.removeAllComponents();
 		connectForm.addComponent(connectingLabel);
-		Observable.interval(200, TimeUnit.MILLISECONDS).takeUntil(animationTerminator).takeUntil(client.getConnection()).subscribeOn(Schedulers.computation()).subscribe(next -> {
-			if(next % 4 == 0) {
-				connectingLabel.setText("Connecting   ");
-			}
-			if(next % 4 == 1) {
-				connectingLabel.setText("Connecting.  ");
-			}
-			if(next % 4 == 2) {
-				connectingLabel.setText("Connecting.. ");
-			}
-			if(next % 4 == 3) {
-				connectingLabel.setText("Connecting...");
-			}
-			connectingLabel.invalidate();
-		});
+		Observable.interval(200, TimeUnit.MILLISECONDS).takeUntil(animationTerminator).takeUntil(client.getConnection())
+				.subscribeOn(Schedulers.computation()).subscribe(next -> {
+					if (next % 4 == 0) {
+						connectingLabel.setText("Connecting   ");
+					}
+					if (next % 4 == 1) {
+						connectingLabel.setText("Connecting.  ");
+					}
+					if (next % 4 == 2) {
+						connectingLabel.setText("Connecting.. ");
+					}
+					if (next % 4 == 3) {
+						connectingLabel.setText("Connecting...");
+					}
+					connectingLabel.invalidate();
+				});
 	}
 
 	public void showConnectionForm() {

@@ -47,7 +47,6 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 	 * @param sea the sea to set
 	 */
 	public Admiral setSea(Sea sea) {
-		// TODO Put everything on the sea from ships LASO THE DAMAGE IFD ITS AN OPPONEnT REVEAL!
 		this.sea = sea;
 		sea.setAdmiral(this);
 		if (whenPlayer != null && !getShipModels().isEmpty()) { // Then its a relog from the player the drawer has to be emptied
@@ -296,7 +295,7 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 
 	public String state(Admiral admiral) {
 		if (admiral != null) {
-			admiral = knowledge.get(admiral);
+			admiral = knowledge.get(admiral.getName());
 		} else {
 			admiral = this;
 		}

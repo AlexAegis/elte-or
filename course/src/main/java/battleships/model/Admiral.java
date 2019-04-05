@@ -1,13 +1,9 @@
 package battleships.model;
 
-import battleships.exception.AlreadyShotException;
-import battleships.exception.BorderShotException;
 import battleships.marker.ShotMarker;
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -114,7 +110,6 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 	 * Prints out the knowledge about the opponent if admiral is given
 	 * @return
 	 */
-	@Deprecated
 	public String field(Admiral admiral) {
 		var field = Table.empty();
 		if (admiral != null) {
@@ -138,7 +133,7 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 
 	public String state(Admiral admiral) {
 		if (admiral != null) {
-			admiral = knowledge.get(admiral);
+			admiral = knowledge.get(admiral.getName());
 		} else {
 			admiral = this;
 		}

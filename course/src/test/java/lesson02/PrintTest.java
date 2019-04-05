@@ -1,6 +1,6 @@
 package lesson02;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+// import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import battleships.model.Table;
 
@@ -10,7 +10,8 @@ class PrintTest {
 
 	@Test
 	public void test() {
-		// assertEquals(new Print().read("input.txt").orElse(new LegacyTable()).getAdmiral("0").field(), state);
+		System.out.println(new Print().read("input.txt").orElse(new Table()).getAdmiral("0").field());
+		// assertEquals(new Print().read("input.txt").orElse(new Table()).getAdmiral("0").field(), state);
 	}
 
 }

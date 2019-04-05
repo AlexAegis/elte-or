@@ -1,8 +1,8 @@
 package lesson02;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+// import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
-import battleships.model.Table;
+// import battleships.model.Table;
 
 class ShipsTest {
 	String finalFieldState = "~~~~~.....\n" + "~--#~O....\n" + "~~~~~.....\n" + "..~#~.....\n" + "..~#~.....\n"
@@ -10,9 +10,8 @@ class ShipsTest {
 
 	@Test
 	public void test() {
-		/* TODO
-			assertEquals(new Ships().simulate("player.defend.txt", "player.attack.txt").orElse(new Table()).getAdmiral("0")
-					.field(), finalFieldState);*/
+		/*assertEquals(new Ships().simulate("player.defend.txt", "player.attack.txt").orElse(new Table()).getAdmiral("0")
+				.field(), finalFieldState);*/
 	}
 
 }

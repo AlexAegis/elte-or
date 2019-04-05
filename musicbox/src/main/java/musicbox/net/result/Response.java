@@ -1,9 +1,9 @@
-package battleships.net.result;
+package musicbox.net.result;
 
 import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import battleships.net.Packet;
+import musicbox.net.Packet;
 
 public class Response extends Packet implements Serializable {
 

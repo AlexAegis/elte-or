@@ -5,8 +5,6 @@ import battleships.model.Admiral;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.Interactable.Result;
-
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class OpponentBar extends Panel implements OpponentContainer {
@@ -15,18 +13,10 @@ public class OpponentBar extends Panel implements OpponentContainer {
 	private Opponent current;
 
 	public OpponentBar() {
-		this.game = game;
 		setLayoutData(BorderLayout.Location.TOP);
 		setLayoutManager(new LinearLayout(Direction.HORIZONTAL));
-
 		setPreferredSize(new TerminalSize(1, 13));
-
-
-
-		//new ScrollBar(Direction.HORIZONTAL).addTo(this);
-
 		invalidate();
-		// TODO: Make it scrollable
 	}
 
 	/**
@@ -39,15 +29,16 @@ public class OpponentBar extends Panel implements OpponentContainer {
 
 	@Override
 	public Panel addComponent(Component component) {
-		getOpponents().stream().filter(opponent -> opponent.getAdmiral().getName().equals(((Opponent) component).getAdmiral().getName()))
-			.map(Opponent::getAdmiral)
-			.forEach(this::removeOpponent);
+		getOpponents().stream().filter(
+				opponent -> opponent.getAdmiral().getName().equals(((Opponent) component).getAdmiral().getName()))
+				.map(Opponent::getAdmiral).forEach(this::removeOpponent);
 		return super.addComponent(component);
 	}
 
 	public void addOpponent(Admiral admiral) {
 		//admiral.getKnowledge().clear();
-		var copyOrExisting = game.getAdmiral().getKnowledge().getOrDefault(admiral.getName(), new Admiral(admiral.getName()).setReady(admiral.isReady()));
+		var copyOrExisting = game.getAdmiral().getKnowledge().getOrDefault(admiral.getName(),
+				new Admiral(admiral.getName()).setReady(admiral.isReady()));
 		game.getAdmiral().getKnowledge().put(admiral.getName(), copyOrExisting);
 		addComponent(new Opponent(game, copyOrExisting));
 		setPreferredSize(game.getTableSize().withRelative(3, 3));
@@ -55,11 +46,12 @@ public class OpponentBar extends Panel implements OpponentContainer {
 	}
 
 	public void removeOpponent(Admiral admiral) {
-		getOpponents().stream().filter(opponent -> opponent.getAdmiral().equals(admiral)).forEach(this::removeComponent);
+		getOpponents().stream().filter(opponent -> opponent.getAdmiral().equals(admiral))
+				.forEach(this::removeComponent);
 	}
 
 	public Result takeFocus() {
-		if(current != null) {
+		if (current != null) {
 			return current.takeFocus();
 		} else {
 			return focusNext();
@@ -85,8 +77,8 @@ public class OpponentBar extends Panel implements OpponentContainer {
 				current = opponents.get(0);
 			}
 			current.unHighlight();
-			opponents.get((opponents.indexOf(current) + (forward ? 1 : -1) + opponents.size())
-				% opponents.size()).takeFocus();
+			opponents.get((opponents.indexOf(current) + (forward ? 1 : -1) + opponents.size()) % opponents.size())
+					.takeFocus();
 		}
 		return Result.HANDLED;
 	}

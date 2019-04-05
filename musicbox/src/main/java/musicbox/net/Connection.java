@@ -1,12 +1,9 @@
-package battleships.net;
+package musicbox.net;
 
-import battleships.Client;
-import battleships.Server;
-import battleships.model.Admiral;
-import battleships.net.action.Disconnect;
-import battleships.net.action.Request;
-import battleships.net.result.HandledResponse;
-import battleships.net.result.Response;
+import musicbox.Client;
+import musicbox.Server;
+import musicbox.net.action.Request;
+import musicbox.net.result.Response;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.subjects.BehaviorSubject;
@@ -59,7 +56,7 @@ public class Connection extends Observable<Packet> implements AutoCloseable {
 				var packet = (Packet) ois.readObject();
 				Logger.getGlobal().info("Package read!");
 				if (packet instanceof Request) {
-					((Request<?>) packet).respond(this, optionalServer, optionalClient);
+					((Request) packet).respond(this, optionalServer, optionalClient);
 				} else if (packet instanceof Response) {
 					listenerSource.onNext((Response) packet);
 				}

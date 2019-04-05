@@ -2,16 +2,7 @@ package battleships.gui.container;
 
 import battleships.Client;
 import com.googlecode.lanterna.gui2.*;
-import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.PublishSubject;
-
-import javax.sound.sampled.Line;
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 public class GameOverWindow extends BasicModal {
 

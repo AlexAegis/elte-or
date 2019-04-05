@@ -1,8 +1,6 @@
 package battleships;
 
 import battleships.gui.container.*;
-import battleships.gui.container.SeaContainer;
-import battleships.model.Admiral;
 import battleships.model.Coord;
 import battleships.model.ShipType;
 import battleships.net.Connection;
@@ -28,40 +26,35 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParentCommand;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Command(name = "client", sortOptions = false,
-	header = {"",
-		"@|cyan      _ _         _    |@",
-		"@|cyan  ___| |_|___ ___| |_  |@",
-		"@|cyan |  _| | | -_|   |  _| |@",
-		"@|cyan |___|_|_|___|_|_|_|   |@",
-		"@|cyan                       |@"},
-	descriptionHeading = "@|bold %nDescription|@:%n", description = {"", "Client application for BattleShips",},
-	optionListHeading = "@|bold %nOptions|@:%n", footer = {"", "Author: AlexAegis"})
+		header = {"", "@|cyan      _ _         _    |@", "@|cyan  ___| |_|___ ___| |_  |@",
+				"@|cyan |  _| | | -_|   |  _| |@", "@|cyan |___|_|_|___|_|_|_|   |@",
+				"@|cyan                       |@"},
+		descriptionHeading = "@|bold %nDescription|@:%n", description = {"", "Client application for BattleShips",},
+		optionListHeading = "@|bold %nOptions|@:%n", footer = {"", "Author: AlexAegis"})
 public class Client implements Runnable {
 
 	@ParentCommand
 	private App app;
 
 	@Option(names = {"-i", "--init", "--initialFiles"}, paramLabel = "<files>", arity = "1..*",
-		description = "Initial placements")
+			description = "Initial placements")
 	private List<File> initialFiles = new ArrayList<>();
 
 	@Option(names = {"-h", "--host"}, paramLabel = "<host>",
-		description = "IP Address of the server (default: ${DEFAULT-VALUE})")
+			description = "IP Address of the server (default: ${DEFAULT-VALUE})")
 	private String host = "127.0.0.1";
 
 	@Option(names = {"-p", "--port"}, paramLabel = "<host>",
-		description = "Port of the server  (default: ${DEFAULT-VALUE})")
+			description = "Port of the server  (default: ${DEFAULT-VALUE})")
 	private Integer port = 6668;
 
 	private GameWindow game;
@@ -81,7 +74,6 @@ public class Client implements Runnable {
 			try (BufferedReader fin = new BufferedReader(new FileReader(file))) {
 				var placementObject = new JSONParser().parse(fin);
 				if (placementObject instanceof Map) {
-					var placementsHolder = (Map<String, List<Map<String, String>>>) placementObject;
 					var name = ((Map<String, String>) placementObject).get("name");
 					if (name != null && !name.isEmpty() && name.matches(RegistrationWindow.NAME_PATTERN)) {
 						return name;
@@ -158,9 +150,10 @@ public class Client implements Runnable {
 			connectWindow.close();
 			return conn;
 		}).subscribeOn(Schedulers.newThread()).subscribe(
-			next -> Logger.getGlobal().log(Level.INFO, " Client connection tryConnect subscription onNext: {0}", next),
-			err -> Logger.getGlobal().log(Level.SEVERE, "Client listener error in tryConnect!", err),
-			() -> Logger.getGlobal().info("Connection completed!"));
+				next -> Logger.getGlobal().log(Level.INFO, " Client connection tryConnect subscription onNext: {0}",
+						next),
+				err -> Logger.getGlobal().log(Level.SEVERE, "Client listener error in tryConnect!", err),
+				() -> Logger.getGlobal().info("Connection completed!"));
 
 	}
 
@@ -201,10 +194,9 @@ public class Client implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		try (Terminal terminal = new DefaultTerminalFactory()
-										.setInitialTerminalSize(new TerminalSize(41, 30))
-										.createTerminal();
-		     Screen screen = new TerminalScreen(terminal)) {
+		try (Terminal terminal =
+				new DefaultTerminalFactory().setInitialTerminalSize(new TerminalSize(41, 30)).createTerminal();
+				Screen screen = new TerminalScreen(terminal)) {
 			screen.startScreen();
 			game = new GameWindow(this);
 

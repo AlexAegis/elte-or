@@ -8,7 +8,6 @@ import battleships.misc.Switchable;
 import battleships.model.ShipType;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.gui2.*;
-
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -21,7 +20,6 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 	private static final LinearLayout VERTICAL = new LinearLayout(Direction.VERTICAL).setSpacing(0);
 	private Direction orientation = Direction.HORIZONTAL;
 	private Boolean held = false;
-	private Boolean destroyed = false;
 
 	private TerminalPosition originalPosition;
 	private Direction originalOrientation;
@@ -32,7 +30,7 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 
 
 	public void setType(ShipType type) {
-		if(type != null) {
+		if (type != null) {
 			this.type = type;
 		}
 	}
@@ -154,7 +152,8 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 		this.type = type;
 		this.revealed = revealed;
 		var pos = new TerminalPosition(0, 0);
-		IntStream.range(0, type.getLength()).mapToObj(i -> new ShipSegment(this).setPosition(pos.withColumn(i))).forEach(this::addComponent);
+		IntStream.range(0, type.getLength()).mapToObj(i -> new ShipSegment(this).setPosition(pos.withColumn(i)))
+				.forEach(this::addComponent);
 		setLayoutToHorizontal();
 	}
 
@@ -178,7 +177,7 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 			addComponent(new ShipSegment(this).setPosition(getTail().getPosition().withRelative(vector)));
 		}
 
-		if(isVertical) {
+		if (isVertical) {
 			setLayoutToVertical();
 		} else {
 			setLayoutToHorizontal();
@@ -194,8 +193,7 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 	 * min 2 because "boat is ignored" Math.min(getBody().size(), 2) TODO might not need because of the skip mechanic
 	 */
 	private void updateClass() {
-		var existingTypes = getSea().getShips().stream()
-			.map(Ship::getType).collect(Collectors.toList());
+		var existingTypes = getSea().getShips().stream().map(Ship::getType).collect(Collectors.toList());
 		existingTypes.remove(getType()); // only one
 		var nonPlacedShipTypes = ShipType.getInitialBoard();
 
@@ -203,7 +201,7 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 
 		setType(ShipType.getWithLengthAtLeastFrom(nonPlacedShipTypes, getBody().size()));
 
-		if(health() <= 1 && !getRevealed()) {
+		if (health() <= 1 && !getRevealed()) {
 			setType(ShipType.getWithLengthAtLeastFrom(nonPlacedShipTypes, getBody().size() + 1));
 		}
 	}
@@ -243,17 +241,16 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 			orientation = direction;
 			var segments = getSegments();
 			for (int i = 0; i < segments.size(); i++) {
-				if(Direction.VERTICAL.equals(orientation)) {
+				if (Direction.VERTICAL.equals(orientation)) {
 					segments.get(i).setPosition(CENTER.withRow(i));
 				} else {
 					segments.get(i).setPosition(CENTER.withColumn(i));
 				}
 			}
 		};
-		if(callLater) {
-			Optional.ofNullable(getTextGUI())
-				.map(TextGUI::getGUIThread)
-				.ifPresentOrElse(textGUIThread -> textGUIThread.invokeLater(call), call);
+		if (callLater) {
+			Optional.ofNullable(getTextGUI()).map(TextGUI::getGUIThread)
+					.ifPresentOrElse(textGUIThread -> textGUIThread.invokeLater(call), call);
 		} else {
 			call.run();
 		}
@@ -350,15 +347,11 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 	}
 
 	public void destroy(Boolean explosion, Boolean fire) {
-		this.destroyed = true;
 		reveal();
 		getBody().forEach(body -> body.destroy(false, false, fire));
-		getBorder().stream()
-			.map(position -> getSea().getWaterAt(position))
-			.filter(Optional::isPresent)
-			.map(Optional::get)
-			.forEach(Water::reveal);
-		if(explosion) {
+		getBorder().stream().map(position -> getSea().getWaterAt(position)).filter(Optional::isPresent)
+				.map(Optional::get).forEach(Water::reveal);
+		if (explosion) {
 			getSea().sendExplosion(this);
 		}
 		getSea().sendRipple(this, explosion ? 4 : 2, explosion ? 400 : 0);
@@ -388,10 +381,6 @@ public class Ship extends Panel implements Switchable, SegmentContainer, Compara
 		saveParent();
 		setHeld(true);
 		takeFocus();
-	}
-
-	public void drop() {
-		// TODO
 	}
 
 	public Boolean isDead() {

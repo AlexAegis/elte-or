@@ -1,4 +1,5 @@
 rootProject.name = 'elte-or'
 
 include 'battleships'
+include 'musicbox'
 include 'course'

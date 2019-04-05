@@ -5,9 +5,6 @@ import battleships.gui.element.ReadyLabel;
 import battleships.model.Admiral;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.gui2.*;
-import com.googlecode.lanterna.screen.Screen;
-import com.googlecode.lanterna.terminal.Terminal;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Logger;
@@ -34,7 +31,8 @@ public class GameWindow extends BasicWindow {
 		setHints(Arrays.asList(Window.Hint.FULL_SCREEN, Window.Hint.CENTERED, Window.Hint.NO_DECORATIONS));
 		drawer = new Drawer(this);
 
-		seaContainer = new Panel(new GridLayout(1)).setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER));
+		seaContainer = new Panel(new GridLayout(1))
+				.setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER));
 		opponentBar = new OpponentBar(); // Empty dummy
 		gameForm.addComponent(opponentBar.withBorder(Borders.singleLine("Opponents")));
 		drawerAndName = new Panel(new BorderLayout());
@@ -137,7 +135,8 @@ public class GameWindow extends BasicWindow {
 		opponentBar.setGame(this);
 		seaContainer.addComponent(new SeaContainer(admiral.getSea()));
 		inspector = new Inspector();
-		gameForm.addComponent(inspector.setLayoutData(BorderLayout.Location.RIGHT).withBorder(Borders.singleLine("Inspect")));
+		gameForm.addComponent(
+				inspector.setLayoutData(BorderLayout.Location.RIGHT).withBorder(Borders.singleLine("Inspect")));
 		client.fieldInitFromFile(admiral.getSea());
 
 		// Register knowledge as opponents

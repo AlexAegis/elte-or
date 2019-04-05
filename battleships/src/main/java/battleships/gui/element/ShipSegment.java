@@ -10,7 +10,6 @@ import battleships.model.Direction;
 import battleships.state.Phase;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
-import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.AbstractInteractableComponent;
 import com.googlecode.lanterna.gui2.Interactable;
 import com.googlecode.lanterna.gui2.InteractableRenderer;

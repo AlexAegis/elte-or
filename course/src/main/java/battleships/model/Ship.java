@@ -1,9 +1,7 @@
 package battleships.model;
 
-import battleships.exception.AlreadyShotException;
 import battleships.marker.ShipMarker;
 import battleships.marker.ShotMarker;
-
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -103,15 +101,15 @@ public class Ship implements Serializable {
 	 */
 	public Boolean receiveShot(Shot shot) {
 		var bodyShot = body.get(shot.getTarget());
-		if(bodyShot != null) {
-			if(isDead()) {
+		if (bodyShot != null) {
+			if (isDead()) {
 				shot.setResult(ShotMarker.ALREADY_HIT_FINISHED);
 			} else {
 				shot.setResult(ShotMarker.ALREADY_HIT);
 			}
 		} else {
 			body.put(shot.getTarget(), shot);
-			if(isDead()) {
+			if (isDead()) {
 				shot.setResult(ShotMarker.HIT_AND_FINISHED);
 			} else {
 				shot.setResult(ShotMarker.HIT);
@@ -170,8 +168,8 @@ public class Ship implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Ship head at: " + getHead() + " hp: " + this.body.values().stream().filter(Objects::isNull).count() + "/" + body.size()
-				+ (isDead() ? "" : " Not yet") + " destroyed";
+		return "Ship head at: " + getHead() + " hp: " + this.body.values().stream().filter(Objects::isNull).count()
+				+ "/" + body.size() + (isDead() ? "" : " Not yet") + " destroyed";
 	}
 
 	@Override
