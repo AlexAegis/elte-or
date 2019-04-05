@@ -3,6 +3,7 @@ package musicbox.net;
 import musicbox.Client;
 import musicbox.Server;
 import musicbox.net.action.Request;
+import musicbox.net.result.HandledResponse;
 import musicbox.net.result.Response;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -18,7 +19,6 @@ import java.util.logging.Logger;
 
 public class Connection extends Observable<Packet> implements AutoCloseable {
 
-	private Admiral admiral;
 	private Socket clientSocket;
 	private ObjectOutputStream oos;
 	private ObjectInputStream ois;
@@ -67,27 +67,15 @@ public class Connection extends Observable<Packet> implements AutoCloseable {
 
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, "Exception in listener!", e);
-			optionalServer.ifPresent(server -> {
-				server.getConnectedAdmirals().remove(getAdmiral().getName());
-				server.getEveryConnectedAdmirals().forEach(connection -> connection
-						.send(new Disconnect(getAdmiral().getName(), getAdmiral())).subscribe(Response::ack));
-			});
+
 			// observer.onComplete();
 		} finally {
 			Logger.getGlobal().info("Client disconnected, trying to reconnect..");
 			close();
-			optionalClient.ifPresent(client -> {
-				client.getGame().getTextGUI().getGUIThread().invokeLater(() -> {
-					client.tryConnect(client.getHost(), client.getPort());
-					client.getConnectWindow().showConnecting();
-					client.showConnectWindow();
-				});
-			});
 			// observer.onComplete();
 		}
 
 	}
-
 
 	public Boolean isClosed() {
 		return clientSocket.isClosed();
@@ -123,7 +111,6 @@ public class Connection extends Observable<Packet> implements AutoCloseable {
 		}
 	}
 
-
 	public <T extends Response> Observable<T> send(Request<T> request) {
 		try {
 			oos.writeObject(request);
@@ -136,20 +123,6 @@ public class Connection extends Observable<Packet> implements AutoCloseable {
 			Logger.getGlobal().info("Connection failed.. sending empty");
 			return Observable.empty();
 		}
-	}
-
-	/**
-	 * @return the admiral
-	 */
-	public Admiral getAdmiral() {
-		return admiral;
-	}
-
-	/**
-	 * @param admiral the admiral to set
-	 */
-	public void setAdmiral(Admiral admiral) {
-		this.admiral = admiral;
 	}
 
 }
