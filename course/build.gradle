@@ -1,0 +1,58 @@
+plugins {
+	id 'java'
+	id 'jacoco'
+}
+
+group 'course'
+version '1.0.0'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+	compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+	compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.8'
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.4.1'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+        resources {
+            srcDirs= ['src/main/resources']
+        }
+    }
+    test {
+        java {
+            srcDirs = ['src/test/java']
+        }
+    }
+}
+
+test {
+	finalizedBy jacocoTestReport
+    useJUnitPlatform()
+	jacoco {
+        destinationFile = file("$buildDir/reports/jacoco/jacocoTest.exec")
+	}
+}
+
+jacoco {
+    toolVersion = "0.8.3"
+    reportsDir = file("$buildDir/reports/jacoco/")
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.enabled false
+    }
+}

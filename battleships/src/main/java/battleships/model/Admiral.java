@@ -1,7 +1,5 @@
 package battleships.model;
 
-import battleships.exception.AlreadyShotException;
-import battleships.exception.BorderShotException;
 import battleships.gui.Palette;
 import battleships.gui.container.GameWindow;
 import battleships.gui.container.Opponent;
@@ -10,7 +8,6 @@ import battleships.gui.element.ShipSegment;
 import battleships.marker.ShotMarker;
 import battleships.net.action.Ready;
 import battleships.state.Phase;
-
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.util.*;
@@ -53,16 +50,14 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 		// TODO Put everything on the sea from ships LASO THE DAMAGE IFD ITS AN OPPONEnT REVEAL!
 		this.sea = sea;
 		sea.setAdmiral(this);
-		if(whenPlayer != null && !getShipModels().isEmpty()) { // Then its a relog from the player the drawer has to be emptied
+		if (whenPlayer != null && !getShipModels().isEmpty()) { // Then its a relog from the player the drawer has to be emptied
 			whenPlayer.getDrawer().removeAllComponents();
 		}
 		getShipModels().forEach(ship -> {
 			var restored = new battleships.gui.element.Ship(ShipType.getWithLengthAtLeast(ship.getBody().size()));
 			ship.getHead().map(Coord::convertToTerminalPosition).ifPresent(restored::setPosition);
-			if (ship.getBody().keySet().stream()
-				.map(Coord::getX)
-				.reduce((acc, next) -> acc = acc - next)
-				.orElse(0) == 0) {
+			if (ship.getBody().keySet().stream().map(Coord::getX).reduce((acc, next) -> acc = acc - next)
+					.orElse(0) == 0) {
 				restored.setLayoutToVertical();
 			} else {
 				restored.setLayoutToHorizontal();
@@ -70,10 +65,8 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 			getSea().addComponent(restored);
 		});
 
-		getShipModels().stream()
-			.flatMap(ship -> ship.getBody().values().stream())
-			.filter(Objects::nonNull)
-			.forEach(shot -> getSea().receiveShot(shot));
+		getShipModels().stream().flatMap(ship -> ship.getBody().values().stream()).filter(Objects::nonNull)
+				.forEach(shot -> getSea().receiveShot(shot));
 		return this;
 	}
 
@@ -102,13 +95,14 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 	 * @param phase the phase to set
 	 */
 	public void setPhase(Phase phase) {
-		if(this.phase.ordinal() >= 2 && phase.ordinal() < 2) {
+		if (this.phase.ordinal() >= 2 && phase.ordinal() < 2) {
 			Logger.getGlobal().severe("!!! Tried to mess up a running game!");
 			return;
 		}
 		this.phase = phase;
-		Logger.getGlobal().log(Level.INFO, "Setting phase to: " + phase + " game?: " + (whenPlayer != null) + " opponent?: " +( whenOpponent != null) + " admiral: " + this);
-		if(whenPlayer != null) {
+		Logger.getGlobal().log(Level.INFO, "Setting phase to: " + phase + " game?: " + (whenPlayer != null)
+				+ " opponent?: " + (whenOpponent != null) + " admiral: " + this);
+		if (whenPlayer != null) {
 			switch (phase) {
 				case READY:
 					whenPlayer.getReadyLabel().ready();
@@ -139,7 +133,7 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 					whenPlayer.getReadyLabel().base();
 			}
 		}
-		if(whenOpponent != null) {
+		if (whenOpponent != null) {
 			switch (phase) {
 				case READY:
 					whenOpponent.getLabel().ready();
@@ -224,7 +218,8 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 	public Shot shoot(Admiral admiral, Coord target) {
 		var shot = new Shot(this, admiral, target, ShotMarker.MISS);
 
-		var optionalTarget = admiral.ships.stream().filter(ship -> ship.getBody().keySet().contains(shot.getTarget())).findFirst();
+		var optionalTarget =
+				admiral.ships.stream().filter(ship -> ship.getBody().keySet().contains(shot.getTarget())).findFirst();
 		optionalTarget.ifPresentOrElse(ship -> {
 			ship.receiveShot(shot);
 			place(knowledge.get(admiral.getName()), shot.getTarget(), shot);
@@ -245,12 +240,9 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 	 * @return
 	 */
 	public Admiral setReady(Boolean ready) {
-		if(whenPlayer != null) {
-			var shipCoords = getSea().getShips().stream()
-				.flatMap(ship -> ship.getBody().stream())
-				.map(ShipSegment::getAbsolutePosition)
-				.map(Coord::new)
-				.collect(Collectors.toList());
+		if (whenPlayer != null) {
+			var shipCoords = getSea().getShips().stream().flatMap(ship -> ship.getBody().stream())
+					.map(ShipSegment::getAbsolutePosition).map(Coord::new).collect(Collectors.toList());
 			whenPlayer.getClient().sendRequest(new Ready(getName(), getName(), shipCoords, ready)).subscribe(res -> {
 				Logger.getGlobal().info("Notified the server about my ready state! " + res);
 			});
@@ -258,7 +250,7 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 
 		if (ready != null && ready == true) {
 			setPhase(Phase.READY);
-		} else if(ready != null && ready == false) {
+		} else if (ready != null && ready == false) {
 			setPhase(Phase.PLACEMENT);
 		}
 
@@ -343,7 +335,14 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 
 	@Override
 	public String toString() {
-		return "A("+hashCode()+"):{name: " + getName() + " phase: " + getPhase() + " isPlayer?: " + (whenPlayer != null) + " isOpponent?: " + (whenOpponent != null) + " knowledge: " + getKnowledge().entrySet().stream().map(e -> "k: " + e.getKey() + " Adm name: " + e.getValue().getName() + " hash: "+ e.getValue().hashCode() + " isPlayer? " + (e.getValue().whenPlayer != null) + " isOpponent? " + (e.getValue().whenOpponent != null)).collect(Collectors.joining(",")) + " }";
+		return "A(" + hashCode() + "):{name: " + getName() + " phase: " + getPhase() + " isPlayer?: "
+				+ (whenPlayer != null) + " isOpponent?: " + (whenOpponent != null) + " knowledge: "
+				+ getKnowledge().entrySet().stream()
+						.map(e -> "k: " + e.getKey() + " Adm name: " + e.getValue().getName() + " hash: "
+								+ e.getValue().hashCode() + " isPlayer? " + (e.getValue().whenPlayer != null)
+								+ " isOpponent? " + (e.getValue().whenOpponent != null))
+						.collect(Collectors.joining(","))
+				+ " }";
 	}
 
 	public void finishBorders() {
@@ -361,7 +360,7 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 	}
 
 	public void setName(String name) {
-		if(whenPlayer != null) {
+		if (whenPlayer != null) {
 			whenPlayer.getPlayerName().setText(name);
 		}
 		this.name = name;
@@ -384,11 +383,11 @@ public class Admiral implements Comparable<Admiral>, Serializable {
 	}
 
 	public void inspect(battleships.gui.element.Ship ship) {
-		if(whenPlayer != null) {
+		if (whenPlayer != null) {
 			Logger.getGlobal().info("Inspecting own ship: " + ship);
 			whenPlayer.getInspector().inspect(ship);
 		}
-		if(whenOpponent != null) {
+		if (whenOpponent != null) {
 			Logger.getGlobal().info("Inspecting opponents ship: " + ship);
 			whenOpponent.getGame().getInspector().inspect(ship);
 		}

@@ -13,7 +13,6 @@ import java.util.Scanner;
 import battleships.exception.AlreadyShotException;
 import battleships.exception.BorderShotException;
 import battleships.model.Coord;
-import battleships.model.LegacyTable;
 import battleships.model.Table;
 
 /**
@@ -24,7 +23,7 @@ public class BasicBattleShipsServer {
 		new BasicBattleShipsServer().run(6788, "player.1.ships.txt");
 	}
 
-	public Optional<LegacyTable> run(Integer port, String defenderFileName) {
+	public Optional<Table> run(Integer port, String defenderFileName) {
 		System.out.println("Server run");
 
 		try (ServerSocket serverSocket = new ServerSocket(port);
@@ -39,7 +38,7 @@ public class BasicBattleShipsServer {
 			while (shipScanner.hasNextLine()) {
 				ships.add(new Coord(shipScanner.nextLine()));
 			}
-			var table = new LegacyTable(ships);
+			var table = new Table(ships);
 			table.finishShipBorders();
 			while (!table.isFinished()) {
 				String input = "";

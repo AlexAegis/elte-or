@@ -1,80 +1,17 @@
 plugins {
-    id 'application'
 	id 'jacoco'
+	id 'idea'
 }
 
 group 'hu.elte'
 version '1.0.0'
 
-sourceCompatibility = 11
-targetCompatibility = 11
-
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-	compile group: 'info.picocli', name: 'picocli', version: '3.9.5'
-	compile group: 'com.googlecode.lanterna', name: 'lanterna', version: '3.0.1'
-	compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
-	compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.8'
-    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.4.1'
-}
-
-application {
-    mainClassName = 'battleships.App'
-}
-
-jar {
-	manifest {
-		attributes(
-			'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
-			'Main-Class': 'battleships.App',
-			'Build-Version': version
-		)
+allprojects {
+	repositories {
+		mavenCentral()
 	}
-	from {
-		configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-	}
-}
-
-sourceSets {
-    main {
-        java {
-            srcDirs = ['src/main/java']
-        }
-        resources {
-            srcDirs= ['src/main/resources']
-        }
-    }
-    test {
-        java {
-            srcDirs = ['src/test/java']
-        }
-    }
-}
-
-test {
-	finalizedBy jacocoTestReport
-    useJUnitPlatform()
-	jacoco {
-        destinationFile = file("$buildDir/reports/jacoco/jacocoTest.exec")
-	}
-}
-
-jacoco {
-    toolVersion = "0.8.3"
-    reportsDir = file("$buildDir/reports/jacoco/")
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled true
-        csv.enabled false
-        html.enabled false
-    }
 }

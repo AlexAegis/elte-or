@@ -1,8 +1,6 @@
 package battleships.model;
 
 import battleships.marker.TableMarker;
-import com.googlecode.lanterna.TerminalSize;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +10,7 @@ import java.util.stream.Collectors;
 /**
  * This is for the original basic console solution
  */
-public class LegacyTable {
+public class Table {
 	private Map<String, Admiral> admirals = new HashMap<>();
 
 	public static final int MAP_HEIGHT = 10;
@@ -23,16 +21,14 @@ public class LegacyTable {
 
 	private static int autoId = 0;
 
-	public LegacyTable() {
+	public Table() {
 	}
 
-	@Deprecated
-	public LegacyTable(List<Coord> shipPieces) {
+	public Table(List<Coord> shipPieces) {
 		this(shipPieces, null);
 	}
 
-	@Deprecated
-	public LegacyTable(List<Coord> shipAPieces, List<Coord> shipBPieces) {
+	public Table(List<Coord> shipAPieces, List<Coord> shipBPieces) {
 		addAdmiral(shipAPieces);
 		addAdmiral(shipBPieces);
 		finishShipBorders();
@@ -44,14 +40,12 @@ public class LegacyTable {
 		return admiral;
 	}
 
-	@Deprecated
 	public Admiral addAdmiral() {
 		Admiral admiral = new Admiral(Integer.toString(autoId++));
 		admirals.put(admiral.getName(), admiral);
 		return admiral;
 	}
 
-	@Deprecated
 	public Admiral addAdmiral(List<Coord> shipPieces) {
 		Admiral admiral = new Admiral(Integer.toString(autoId++), shipPieces);
 		admirals.put(Integer.toString(autoId++), admiral);
@@ -60,7 +54,8 @@ public class LegacyTable {
 
 
 	public void finishShipBorders() {
-		admirals.values().stream().flatMap(admiral -> admiral.getShipModels().stream()).forEach(ship -> ship.finishBorder());
+		admirals.values().stream().flatMap(admiral -> admiral.getShipModels().stream())
+				.forEach(ship -> ship.finishBorder());
 	}
 
 	public void shoot(String fromIndex, String toIndex, Coord target)
@@ -71,7 +66,6 @@ public class LegacyTable {
 		shoot(admirals.get(fromIndex), admirals.get(toIndex), target);
 	}
 
-	@Deprecated
 	public void shoot(Integer fromIndex, Integer toIndex, Coord target)
 			throws IllegalAccessException, IllegalArgumentException {
 		if (fromIndex == null || toIndex == null) {
@@ -203,7 +197,4 @@ public class LegacyTable {
 		return getAdmiral(id).equals(getCurrent());
 	}
 
-	public TerminalSize getSize() {
-		return new TerminalSize(MAP_WIDTH, MAP_HEIGHT);
-	}
 }

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import battleships.model.Coord;
-import battleships.model.LegacyTable;
 import battleships.model.Table;
 
 /**
@@ -17,7 +16,7 @@ public class BattleShipsFromStdIn {
 		new BattleShipsFromStdIn().simulate("player.1.ships.txt").ifPresent(System.out::println);
 	}
 
-	public Optional<LegacyTable> simulate(String defenderFileName) {
+	public Optional<Table> simulate(String defenderFileName) {
 		try (Scanner shipScanner =
 				new Scanner(new File(BattleShipsFromStdIn.class.getResource(defenderFileName).toURI()));
 				Scanner attackScanner = new Scanner(System.in)) {
@@ -27,7 +26,7 @@ public class BattleShipsFromStdIn {
 				if (nl.contains(","))
 					ships.add(new Coord(nl));
 			}
-			var table = new LegacyTable(ships);
+			var table = new Table(ships);
 			System.out.println(table.toString() + "is fin: " + table.isFinished());
 			table.turn();
 			table.turn();

@@ -6,6 +6,27 @@
 	"configurations": [
 		{
 			"type": "java",
+			"name": "CodeLens (Launch) - ReversePolishNotation",
+			"request": "launch",
+			"mainClass": "lesson01.ReversePolishNotation",
+			"projectName": "course"
+		},
+		{
+			"type": "java",
+			"name": "CodeLens (Launch) - Fibonacci",
+			"request": "launch",
+			"mainClass": "lesson01.Fibonacci",
+			"projectName": "course"
+		},
+		{
+			"type": "java",
+			"name": "CodeLens (Launch) - Fibonacci",
+			"request": "launch",
+			"mainClass": "Fibonacci",
+			"projectName": "elte-or"
+		},
+		{
+			"type": "java",
 			"name": "TreeClient",
 			"request": "launch",
 			"mainClass": "lesson07.TreeClient",
@@ -130,7 +151,12 @@
 			"request": "launch",
 			"mainClass": "lesson01.Arguments",
 			"projectName": "elte-or",
-			"args": ["alma", "4", "körte", "11"]
+			"args": [
+				"alma",
+				"4",
+				"körte",
+				"11"
+			]
 		},
 		{
 			"type": "java",
@@ -189,7 +215,9 @@
 			"request": "launch",
 			"mainClass": "lesson04.BattleShipsClient",
 			"console": "externalTerminal",
-			"args": ["player.1.ships.txt"],
+			"args": [
+				"player.1.ships.txt"
+			],
 			"projectName": "elte-or"
 		},
 		{
@@ -198,7 +226,9 @@
 			"request": "launch",
 			"mainClass": "lesson04.BattleShipsClient",
 			"console": "externalTerminal",
-			"args": ["player.2.ships.txt"],
+			"args": [
+				"player.2.ships.txt"
+			],
 			"projectName": "elte-or"
 		},
 		{
@@ -207,7 +237,13 @@
 			"request": "launch",
 			"mainClass": "battleships.App",
 			"console": "internalConsole",
-			"args": ["-l", "INFO", "client", "-i", "./src/main/resources/example/placements.1.json"],
+			"args": [
+				"-l",
+				"INFO",
+				"client",
+				"-i",
+				"./src/main/resources/example/placements.1.json"
+			],
 			"projectName": "battleships"
 		},
 		{
@@ -216,7 +252,13 @@
 			"request": "launch",
 			"mainClass": "battleships.App",
 			"console": "internalConsole",
-			"args": ["-l", "INFO", "client", "-i", "./src/main/resources/example/placements.2.json"],
+			"args": [
+				"-l",
+				"INFO",
+				"client",
+				"-i",
+				"./src/main/resources/example/placements.2.json"
+			],
 			"projectName": "battleships"
 		},
 		{
@@ -225,7 +267,11 @@
 			"request": "launch",
 			"mainClass": "battleships.App",
 			"console": "integratedTerminal",
-			"args": ["-l", "INFO", "server"],
+			"args": [
+				"-l",
+				"INFO",
+				"server"
+			],
 			"projectName": "battleships"
 		},
 		{
