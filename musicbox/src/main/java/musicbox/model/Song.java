@@ -2,9 +2,12 @@ package musicbox.model;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
+import musicbox.net.result.Hold;
 import musicbox.net.result.Note;
+import musicbox.net.result.Rest;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,20 +16,23 @@ public class Song extends Observable<Note> implements Serializable {
 	private static final long serialVersionUID = -4592367101254279598L;
 
 	private String title;
-	private List<String> notes;
+	private List<String> instructions;
 	private List<String> lyrics;
 
-	public Song(String title, List<String> notes) {
+	private static final Rest REST = new Rest();
+	private static final Hold HOLD = new Hold();
+
+	public Song(String title, List<String> instructions) {
 		this.title = title;
-		this.notes = notes;
+		this.instructions = instructions;
 	}
 
 	public String getTitle() {
 		return title;
 	}
 
-	public List<String> getNotes() {
-		return notes;
+	public List<String> getInstructions() {
+		return instructions;
 	}
 
 	public List<String> getLyrics() {
@@ -50,11 +56,44 @@ public class Song extends Observable<Note> implements Serializable {
 		return Objects.hash(title);
 	}
 
+	/**
+	 *
+	 * @param observer will receive all the notes this song has generated based on it's instructions
+	 */
 	@Override
 	protected void subscribeActual(Observer<? super Note> observer) {
-		for (int i = 0; i < notes.size(); i++) {
-
+		try {
+			var localInstructions = new ArrayList<>(instructions); // I create a local copy because I'll modify it mid play
+			var i = 0;
+			while (i < localInstructions.size()) {
+				var next = localInstructions.get(i);
+				Note note;
+				if(next.equals(REST.toString())) { // if its a rest
+					note = REST;
+				} else if(next.equals("REP")) { // if it's a repeat
+					var rep = localInstructions.get(i + 1).split(";"); // Repeat instruction
+					var distance = Integer.parseInt(rep[0]); // How far back it has to be rewound
+					var count = Integer.parseInt(rep[1]); // How many time this repeat still has to be executed
+					if(count > 0) { // When the repeat instruction still wants to rewind
+						i -= distance; // Roll back the instructions rep[0] times.
+						localInstructions.set(i + 1, distance + ";" + (count - 1)); // And set the rep instruction to one less. This is the reason why we copied the instruction list in the first place
+					} else i = i + 2; // Else skip to the next
+					continue; // Skip this iteration from emitting notes as its a meta instruction
+				} else { // if its an actual note
+					note = new Note(localInstructions.get(i), getLyrics().get(i));
+				}
+				// Actually sending a note, or rest
+				// Then when a note is longer than one unit, then send as many hold notes
+				// (These will be ignored on the client side, resulting in keeping the last note sent)
+				observer.onNext(note);
+				for (int j = 0; j < Integer.parseInt(localInstructions.get(i + 1)) - 1; j++) {
+					observer.onNext(HOLD);
+				}
+				i = i + 2; // Step two at a time as the instructions are in pairs
+			}
+			observer.onComplete();
+		} catch (Exception e) {
+			observer.onError(e); // If any conversion error happens during playback, an error will be thrown downstream
 		}
-		observer.onComplete();
 	}
 }

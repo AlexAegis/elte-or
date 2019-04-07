@@ -1,6 +1,5 @@
 package musicbox.net.action;
 
-import io.reactivex.Observable;
 import io.reactivex.Observer;
 import musicbox.net.Connection;
 import musicbox.net.result.Response;

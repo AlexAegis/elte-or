@@ -19,7 +19,7 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Connection extends Observable<Request<Response>> implements AutoCloseable {
+public class Connection extends Observable<Request<? extends Response>> implements AutoCloseable {
 
 	private Socket clientSocket;
 	private PrintWriter out;
@@ -60,7 +60,7 @@ public class Connection extends Observable<Request<Response>> implements AutoClo
 	}
 
 	@Override
-	protected void subscribeActual(Observer<? super Request<Response>> observer) {
+	protected void subscribeActual(Observer<? super Request<? extends Response>> observer) {
 		Logger.getGlobal().info("Listener started");
 
 		try {

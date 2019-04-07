@@ -2,6 +2,7 @@ package musicbox.net.action;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
+import io.reactivex.subjects.BehaviorSubject;
 import musicbox.net.result.Note;
 import musicbox.net.Connection;
 import musicbox.net.result.Response;
@@ -13,18 +14,20 @@ public class Play extends Request<Note> implements Serializable {
 
 	private static final long serialVersionUID = 8722933668160441290L;
 
-	private Integer tempo;
+	private Long tempo;
 	private Integer transpose;
 	private String title;
 
-	public Play(Connection connection, Integer tempo, Integer transpose, String title) {
+	private transient BehaviorSubject<Long> tempoSubject = BehaviorSubject.create();
+
+	public Play(Connection connection, Long tempo, Integer transpose, String title) {
 		super(connection);
-		this.tempo = tempo;
+		this.setTempo(tempo);
 		this.transpose = transpose;
 		this.title = title;
 	}
 
-	public Integer getTempo() {
+	public Long getTempo() {
 		return tempo;
 	}
 
@@ -34,6 +37,11 @@ public class Play extends Request<Note> implements Serializable {
 
 	public String getTitle() {
 		return title;
+	}
+
+	public void setTempo(Long tempo) {
+		this.tempo = tempo;
+		tempoSubject.onNext(tempo);
 	}
 
 	@Override
@@ -46,14 +54,36 @@ public class Play extends Request<Note> implements Serializable {
 		return Note.class;
 	}
 
+	/**
+	 * TODO: Send a playing notification to the client!
+	 *
+	 * Upon subscription to the Play Request/Action, this will first try to access the server.
+	 * If the connection was made from the server then this will be successful, otherwise an error will be thrown downstream
+	 *
+	 * After accessing the server the play action then tries to access the song defined in the `title` field.
+	 * If not found, then again the downstream receives an error, if found then a zip subscribes to the song and the timing
+	 *
+	 * The timing delays every emit of the song by the amount specified in the tempoSubject. (When the tempoSubject recieves
+	 * a new value, then a different interval will be subscribed, changing the speed of the playback)
+	 *
+	 * The zip only sends the notes coming from the song downstream.
+	 *
+	 * Each note gets transposed here if necessary
+	 *
+	 * each note generated from the song will be forwarded to the Play actions subscriber.
+	 *
+	 * TODO: On stop dispose both the Play action and the Song.
+	 *
+	 * @param observer which will receive the notes and will handle the network forwarding to the client.
+	 */
 	@Override
 	protected void subscribeActual(Observer<? super Response> observer) {
 		connection.getOptionalServer().ifPresentOrElse(server -> {
 			var song = server.getSongs().get(title);
 			if(song != null) {
-				Observable.zip(song, interval(tempo.longValue(), TimeUnit.MILLISECONDS), (note, timer) -> note)
+				Observable.zip(song, tempoSubject.switchMap(t -> interval(t, TimeUnit.MILLISECONDS)), (note, timer) -> note)
 					.map(note -> note.transpose(transpose))
-					//.takeUntil() // TODO: Take until a stop signal says so, or when the song finishes
+					//.takeUntil() // TODO: Take until a stop signal says so
 					.blockingSubscribe(observer::onNext); // send note, the receiver end will make the network related things
 			} else {
 				observer.onError(new Exception("No song found"));

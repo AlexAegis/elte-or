@@ -10,8 +10,7 @@ public class HandledResponse extends Response implements Serializable {
 	private static final long serialVersionUID = -4585364190409805340L;
 
 	public HandledResponse() {
-		super(null);
-
+		super();
 	}
 
 	@Override

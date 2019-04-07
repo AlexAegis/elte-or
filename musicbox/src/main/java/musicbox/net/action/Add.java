@@ -41,8 +41,12 @@ public class Add extends Request<Response> implements Serializable {
 	}
 
 	/**
-	 * The Add request is executed upon subscription, the song will be added to the
-	 * servers song registry
+	 * Upon subscription to the Add Request/Action, this will first try to access the server.
+	 * If the connection was made from the server then this will be successful, otherwise an error will be thrown downstream
+	 *
+	 * After accessing the server the Add action then set's the song as a new Song in the Servers song registry
+	 *
+	 * @param observer which will be notified about completion or error
 	 */
 	@Override
 	protected void subscribeActual(Observer<? super Response> observer) {

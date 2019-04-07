@@ -30,7 +30,7 @@ public enum Action {
 	 * @param lines
 	 * @return
 	 */
-	public static Request<Response> construct(Connection connection, List<String> lines) {
+	public static Request<? extends Response> construct(Connection connection, List<String> lines) {
 		var split = lines.stream().map(line -> Arrays.asList(line.split(" "))).collect(Collectors.toList());
 		switch(Action.ifStartingWithAction(lines.get(0)).orElse(Action.NULL)) {
 			case ADD:
@@ -38,7 +38,7 @@ public enum Action {
 			case ADDLYRICS:
 				return new AddLyrics(connection, split.get(0).get(1), split.get(1));
 			case PLAY:
-				return new Play(connection, Integer.parseInt(split.get(0).get(0)), Integer.parseInt(split.get(0).get(1)), split.get(0).get(2));
+				return new Play(connection, Long.parseLong(split.get(0).get(0)), Integer.parseInt(split.get(0).get(1)), split.get(0).get(2));
 			case CHANGE:
 				return new Change(connection, Integer.parseInt(split.get(0).get(0)), Integer.parseInt(split.get(0).get(1)), Integer.parseInt(split.get(0).get(2)));
 			case STOP:
