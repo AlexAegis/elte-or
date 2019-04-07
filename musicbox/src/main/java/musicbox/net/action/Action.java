@@ -9,13 +9,13 @@ import musicbox.net.result.Response;
 import java.io.Serializable;
 import java.util.Optional;
 
-public abstract class Request<T extends Response> extends Observable<Response> implements Serializable {
+public abstract class Action<T extends Response> extends Observable<Response> implements Serializable {
 
 	private static final long serialVersionUID = -1396265613021084526L;
 
 	protected Connection connection;
 
-	public Request(Connection connection) {
+	public Action(Connection connection) {
 		this.connection = connection;
 	}
 

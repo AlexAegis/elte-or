@@ -30,9 +30,9 @@ public enum Action {
 	 * @param lines
 	 * @return
 	 */
-	public static Request<? extends Response> construct(Connection connection, List<String> lines) {
+	public static musicbox.net.action.Action<? extends Response> construct(Connection connection, List<String> lines) {
 		var split = lines.stream().map(line -> Arrays.asList(line.split(" "))).collect(Collectors.toList());
-		switch(Action.ifStartingWithAction(lines.get(0)).orElse(Action.NULL)) {
+		switch(musicbox.net.Action.ifStartingWithAction(lines.get(0)).orElse(musicbox.net.Action.NULL)) {
 			case ADD:
 				return new Add(connection, split.get(0).get(1), split.get(1));
 			case ADDLYRICS:
@@ -53,14 +53,14 @@ public enum Action {
 	}
 
 	public static Optional<Action> ifStartingWithAction(String line) {
-		return Arrays.stream(Action.values())
+		return Arrays.stream(musicbox.net.Action.values())
 			.filter(a -> line.toLowerCase().startsWith(a.name().toLowerCase()))
 			.findFirst();
 	}
 
 	public static List<String> getActions() {
 		if(actions == null) {
-			actions = Arrays.stream(Action.values()).map(Enum::name).collect(Collectors.toList());
+			actions = Arrays.stream(musicbox.net.Action.values()).map(Enum::name).collect(Collectors.toList());
 		}
 		return actions;
 	}

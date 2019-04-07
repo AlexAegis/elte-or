@@ -5,9 +5,8 @@ import musicbox.net.Connection;
 import musicbox.net.result.Response;
 
 import java.io.Serializable;
-import java.util.Optional;
 
-public class Stop extends Request<Response> implements Serializable {
+public class Stop extends Action<Response> implements Serializable {
 
 	private Integer no;
 
@@ -20,13 +19,9 @@ public class Stop extends Request<Response> implements Serializable {
 		return no;
 	}
 
-	public Optional<Response> response(Connection connection) {
-		return Optional.empty();
-	}
-
 	@Override
 	public String toString() {
-		return " ";
+		return "stop " + no;
 	}
 
 	@Override
@@ -36,7 +31,12 @@ public class Stop extends Request<Response> implements Serializable {
 
 	@Override
 	protected void subscribeActual(Observer<? super Response> observer) {
-		// TODO
-		observer.onComplete();
+		connection.getOptionalServer().ifPresent(client -> {
+			// TODO: perform the song stop
+			observer.onComplete();
+		});
+		connection.getOptionalClient().ifPresent(client -> {
+			connection.send(this).subscribe(observer); // send everything downstream
+		});
 	}
 }

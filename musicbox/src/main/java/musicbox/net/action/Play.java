@@ -10,7 +10,7 @@ import musicbox.net.result.Response;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
-public class Play extends Request<Note> implements Serializable {
+public class Play extends Action<Note> implements Serializable {
 
 	private static final long serialVersionUID = 8722933668160441290L;
 
@@ -46,7 +46,7 @@ public class Play extends Request<Note> implements Serializable {
 
 	@Override
 	public String toString() {
-		return " ";
+		return "play " + tempo + " " + transpose + " " + title;
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class Play extends Request<Note> implements Serializable {
 	/**
 	 * TODO: Send a playing notification to the client!
 	 *
-	 * Upon subscription to the Play Request/Action, this will first try to access the server.
+	 * Upon subscription to the Play Action/Action, this will first try to access the server.
 	 * If the connection was made from the server then this will be successful, otherwise an error will be thrown downstream
 	 *
 	 * After accessing the server the play action then tries to access the song defined in the `title` field.
@@ -78,7 +78,7 @@ public class Play extends Request<Note> implements Serializable {
 	 */
 	@Override
 	protected void subscribeActual(Observer<? super Response> observer) {
-		connection.getOptionalServer().ifPresentOrElse(server -> {
+		connection.getOptionalServer().ifPresent(server -> {
 			var song = server.getSongs().get(title);
 			if(song != null) {
 				Observable.zip(song, tempoSubject.switchMap(t -> interval(t, TimeUnit.MILLISECONDS)), (note, timer) -> note)
@@ -88,6 +88,10 @@ public class Play extends Request<Note> implements Serializable {
 			} else {
 				observer.onError(new Exception("No song found"));
 			}
-		}, () -> observer.onError(new Exception("Not server")));
+			observer.onComplete();
+		});
+		connection.getOptionalClient().ifPresent(client -> {
+			connection.send(this).subscribe(observer); // send everything downstream
+		});
 	}
 }

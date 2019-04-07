@@ -1,16 +1,13 @@
 package musicbox.net.action;
 
-import io.reactivex.Observable;
 import io.reactivex.Observer;
-import musicbox.model.Song;
 import musicbox.net.Connection;
 import musicbox.net.result.Response;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Optional;
 
-public class AddLyrics extends Request<Response> implements Serializable {
+public class AddLyrics extends Action<Response> implements Serializable {
 
 	private String title;
 	private List<String> lyrics;
@@ -31,7 +28,7 @@ public class AddLyrics extends Request<Response> implements Serializable {
 
 	@Override
 	public String toString() {
-		return " ";
+		return "addlyrics " + title + "\n" +String.join(" ", lyrics);
 	}
 
 	@Override
@@ -40,7 +37,7 @@ public class AddLyrics extends Request<Response> implements Serializable {
 	}
 
 	/**
-	 * Upon subscription to the AddLyrics Request/Action, this will first try to access the server.
+	 * Upon subscription to the AddLyrics Action/Action, this will first try to access the server.
 	 * If the connection was made from the server then this will be successful, otherwise an error will be thrown downstream
 	 *
 	 * After accessing the server the AddLyrics action then tries to access the song defined in the `title` field.
@@ -50,7 +47,7 @@ public class AddLyrics extends Request<Response> implements Serializable {
 	 */
 	@Override
 	protected void subscribeActual(Observer<? super Response> observer) {
-		connection.getOptionalServer().ifPresentOrElse(server -> {
+		connection.getOptionalServer().ifPresent(server -> {
 			var song = server.getSongs().get(title);
 			if(song != null) {
 				song.setLyrics(lyrics);
@@ -58,6 +55,9 @@ public class AddLyrics extends Request<Response> implements Serializable {
 			} else {
 				observer.onError(new Exception("Song not found"));
 			}
-		}, () -> observer.onError(new Exception("Not the server")));
+		});
+		connection.getOptionalClient().ifPresent(client -> {
+			connection.send(this).subscribe(observer); // send everything downstream
+		});
 	}
 }

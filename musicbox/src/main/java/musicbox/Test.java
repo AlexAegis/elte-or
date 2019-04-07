@@ -27,61 +27,15 @@ public class Test {
 		})).blockingSubscribe(System.out::println);
 	}*/
 
-	public static void main(String[] args) throws MidiUnavailableException {/*
-		var items = Observable.fromArray(parseNote('C', 0, 0),
-			parseNote('C', 1, 0),
-			parseNote('B', -1, -1),
-			parseNote('D', -1, 1), 10);
+	public static void main(String[] args) throws MidiUnavailableException {
+/*
+		var stopper = BehaviorSubject.create();
+		var stopper$ = stopper.doOnDispose(() -> System.out.println("I'm disposed"));
+		Observable.just(1).delay(1000, TimeUnit.MILLISECONDS).subscribe(stopper::onNext);
+		Observable.interval(100, TimeUnit.MILLISECONDS)
+			.takeUntil(stopper$)
+			.blockingSubscribe(System.out::println);
 */
-
-		/*
-		var items = Observable.fromArray(60,
-			61,
-			59,
-			73, 10);*/
-
-
-		var interval = Observable.interval(240, TimeUnit.MILLISECONDS);
-		var synth = MidiSystem.getSynthesizer();
-		synth.open();
-		var piano = synth.getChannels()[1];
-
-/*
-		Observable.zip(items, interval, (item, timer) -> item)
-			.blockingSubscribe(next -> {
-				System.out.println("next note");
-				piano.noteOn(next, 100);
-			});*/
-
-		var allNotes = Arrays.asList('C', 'D', 'E', 'F', 'G', 'A', 'B');
-/*
-		for (var note : allNotes) {
-
-				var parsedNote = parseNote(note, 0, 0);
-				var parsedPitch = parsePitch(parsedNote);
-				System.out.println("note: " + (int) note + " parsedNote: " + parsedNote + " parsedPitch: " + parsedPitch);
-			}
-		}*/
-
-/*
-		System.out.println(parseNote('C', 0, 0) + " should be 60");
-		System.out.println(parseNote('C', 1, 0) + " should be 61");
-		System.out.println(parseNote('B', -1, -1) + " should be 59");
-		System.out.println(parseNote('D', -1, 1) + " should be 73");
-*/
-/*
-		System.out.println(Character.valueOf((char) 60).toString());
-		System.out.println(Character.valueOf((char) 12).toString());
-
-		for (int i = 0; i < 200; i++) {
-			System.out.println(i + " " + Character.valueOf((char) i).toString());
-		}*/
-
-		// valid pitches 67-71 then 65-66
-		for (int i  = 0; i < 16; i++) {
-			System.out.println(applyTranspose(67, i));
-
-		}
 	}
 
 	public static int parseNote(char baseNote, int half, int octave) {

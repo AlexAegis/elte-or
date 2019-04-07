@@ -25,10 +25,16 @@ public class NoteTest {
 			} else if (i >= 12) {
 				supposedOctaveChange = 1;
 			}
-			System.out.println("I: " + i + "supposedOctaveChange: " + supposedOctaveChange + " transposition.getY(): " + transposition.getY());
+			// System.out.println("I: " + i + "supposedOctaveChange: " + supposedOctaveChange + " transposition.getY(): " + transposition.getY());
 			Assert.assertEquals((long) supposedOctaveChange, (long) transposition.getY());
 			Assert.assertTrue(transposition.getX() >= 60 && transposition.getX() < 72);
 		}
+	}
 
+	@Test
+	void pitchParseTest() {
+		for (char i = 60; i <= 67; i++) {
+			Assert.assertEquals(Note.parsePitch(Note.parseNote(i)), i);
+		}
 	}
 }

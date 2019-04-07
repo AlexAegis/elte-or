@@ -1,9 +1,12 @@
 package musicbox;
 
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.subjects.Subject;
+import io.reactivex.disposables.Disposable;
+import jline.console.ConsoleReader;
+import jline.console.completer.ArgumentCompleter;
+import musicbox.command.ClientCommands;
 import musicbox.net.Connection;
-import musicbox.net.action.Request;
+import musicbox.net.action.Action;
 import musicbox.net.result.Response;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
@@ -16,6 +19,7 @@ import java.io.File;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import picocli.shell.jline2.PicocliJLineCompleter;
 
 @Command(name = "client", sortOptions = false,
 		header = {"", "@|cyan      _ _         _    |@", "@|cyan  ___| |_|___ ___| |_  |@",
@@ -43,6 +47,7 @@ public class MusicBoxClient implements Runnable {
 
 	private BehaviorSubject<Connection> connection = BehaviorSubject.create();
 	private CompositeDisposable subscriptions = new CompositeDisposable();
+
 
 	public static void main(String[] args) {
 		CommandLine.run(new MusicBoxClient(), System.err, args);
@@ -73,7 +78,7 @@ public class MusicBoxClient implements Runnable {
 
 	}
 
-	public <T extends Response> Observable<T> sendRequest(Request<T> req) {
+	public <T extends Response> Observable<T> sendRequest(Action<T> req) {
 		return getConnection().switchMap(conn -> conn.send(req)).onErrorResumeNext(e -> {
 			Logger.getGlobal().info("SendRequest errored out!");
 		});
@@ -85,12 +90,36 @@ public class MusicBoxClient implements Runnable {
 			Logger.getGlobal().setLevel(app.getLoglevel().getLevel());
 		}
 		tryConnect(host, port);
-		var bufferBoundary = BehaviorSubject.create();
-		getConnection().switchMap(conn -> conn).subscribeOn(Schedulers.newThread()).buffer(bufferBoundary).blockingSubscribe(
-			next -> Logger.getGlobal().log(Level.INFO, " MusicBoxClient connection subscription onNext: {0}",
-				next),
-			e -> Logger.getGlobal().log(Level.SEVERE, "MusicBoxClient listener error in tryConnect!", e),
-			() -> Logger.getGlobal().info("Connection finished!"));
+		Disposable subscription = null;
+		try(var reader = new ConsoleReader()) {
+			reader.setPrompt("musicbox> ");
+
+			subscription = getConnection().switchMap(conn -> conn).subscribeOn(Schedulers.newThread()).subscribe(
+				next -> {
+					// reader.getOutput().append(next)
+					Logger.getGlobal().log(Level.INFO, " MusicBoxClient connection subscription onNext: {0}",
+					next);},
+				e -> Logger.getGlobal().log(Level.SEVERE, "MusicBoxClient listener error in tryConnect!", e),
+				() -> Logger.getGlobal().info("Connection finished!"));
+			// set up the completion
+			var commands = new ClientCommands(reader, this);
+			var cmd = new CommandLine(commands);
+			reader.addCompleter(new PicocliJLineCompleter(cmd.getCommandSpec()));
+
+			// start the shell and process input until the user quits with Ctl-D
+			String line;
+			while ((line = reader.readLine()) != null) {
+				var list =
+					new ArgumentCompleter.WhitespaceArgumentDelimiter().delimit(line, line.length());
+				CommandLine.run(commands, list.getArguments());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(subscription != null) {
+				subscription.dispose();
+			}
+		}
 
 	}
 

@@ -8,30 +8,30 @@ import musicbox.net.result.Response;
 import java.io.Serializable;
 import java.util.List;
 
-public class Add extends Request<Response> implements Serializable {
+public class Add extends Action<Response> implements Serializable {
 
 	private static final long serialVersionUID = -3970140793679151888L;
 
 	private String title;
-	private List<String> song;
+	private List<String> songInstructions;
 
-	public Add(Connection connection, String title, List<String> song) {
+	public Add(Connection connection, String title, List<String> songInstructions) {
 		super(connection);
 		this.title = title;
-		this.song = song;
+		this.songInstructions = songInstructions;
 	}
 
 	public String getTitle() {
 		return title;
 	}
 
-	public List<String> getSong() {
-		return song;
+	public List<String> getSongInstructions() {
+		return songInstructions;
 	}
 
 	@Override
 	public String toString() {
-		return " ";
+		return "add " + title + "\n" + String.join(" ", songInstructions);
 	}
 
 
@@ -41,18 +41,21 @@ public class Add extends Request<Response> implements Serializable {
 	}
 
 	/**
-	 * Upon subscription to the Add Request/Action, this will first try to access the server.
+	 * Upon subscription to the Add Action/Action, this will first try to access the server.
 	 * If the connection was made from the server then this will be successful, otherwise an error will be thrown downstream
 	 *
-	 * After accessing the server the Add action then set's the song as a new Song in the Servers song registry
+	 * After accessing the server the Add action then set's the songInstructions as a new Song in the Servers songInstructions registry
 	 *
 	 * @param observer which will be notified about completion or error
 	 */
 	@Override
 	protected void subscribeActual(Observer<? super Response> observer) {
-		connection.getOptionalServer().ifPresentOrElse(server -> {
-			server.getSongs().put(title, new Song(title, song));
+		connection.getOptionalServer().ifPresent(server -> {
+			server.getSongs().put(title, new Song(title, songInstructions));
 			observer.onComplete();
-		}, () -> observer.onError(new Exception("Not the server")));
+		});
+		connection.getOptionalClient().ifPresent(client -> {
+			connection.send(this).subscribe(observer); // send everything downstream
+		});
 	}
 }

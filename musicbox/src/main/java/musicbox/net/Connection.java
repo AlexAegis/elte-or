@@ -2,7 +2,7 @@ package musicbox.net;
 
 import musicbox.MusicBoxClient;
 import musicbox.MusicBox;
-import musicbox.net.action.Request;
+import musicbox.net.action.Action;
 import musicbox.net.result.HandledResponse;
 import musicbox.net.result.Response;
 import io.reactivex.Observable;
@@ -19,7 +19,7 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Connection extends Observable<Request<? extends Response>> implements AutoCloseable {
+public class Connection extends Observable<Action<? extends Response>> implements AutoCloseable {
 
 	private Socket clientSocket;
 	private PrintWriter out;
@@ -60,16 +60,16 @@ public class Connection extends Observable<Request<? extends Response>> implemen
 	}
 
 	@Override
-	protected void subscribeActual(Observer<? super Request<? extends Response>> observer) {
+	protected void subscribeActual(Observer<? super musicbox.net.action.Action<? extends Response>> observer) {
 		Logger.getGlobal().info("Listener started");
 
 		try {
 			while (!isClosed() && in.hasNextLine()) {
 				var next = in.nextLine();
 				buffer.add(next);
-				Action.ifStartingWithAction(next).ifPresent(action -> remaining = action.getAdditionalLines());
+				musicbox.net.Action.ifStartingWithAction(next).ifPresent(action -> remaining = action.getAdditionalLines());
 				if(--remaining < 0) {
-					observer.onNext(Action.construct(this, buffer));
+					observer.onNext(musicbox.net.Action.construct(this, buffer));
 					buffer.clear();
 				}
 			}
@@ -116,13 +116,13 @@ public class Connection extends Observable<Request<? extends Response>> implemen
 		}
 	}
 
-	public <T extends Response> Observable<T> send(Request<T> request) {
-		out.write(request.toString());
-		out.flush();
-		Logger.getGlobal().log(Level.INFO, "Packet sent as request: {0}", request);
+	public <T extends Response> Observable<T> send(musicbox.net.action.Action<T> action) {
+		out.write(action.toString());
 		listenerSource.onNext(handledResponse);
-		return listener.filter(n -> n.getClass().equals(request.getResponseClass()))
-				.cast(request.getResponseClass()).take(1);
+		out.flush();
+		Logger.getGlobal().log(Level.INFO, "Packet sent as action: {0}", action);
+		return listener.filter(n -> n.getClass().equals(action.getResponseClass()))
+				.cast(action.getResponseClass()).take(1);
 	}
 
 }

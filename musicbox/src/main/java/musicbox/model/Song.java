@@ -43,6 +43,10 @@ public class Song extends Observable<Note> implements Serializable {
 		this.lyrics = lyrics;
 	}
 
+	public String getSyllable(int i) {
+		return getLyrics() != null && getLyrics().size() > i - 1 ? getLyrics().get(i) : null;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -72,15 +76,15 @@ public class Song extends Observable<Note> implements Serializable {
 					note = REST;
 				} else if(next.equals("REP")) { // if it's a repeat
 					var rep = localInstructions.get(i + 1).split(";"); // Repeat instruction
-					var distance = Integer.parseInt(rep[0]); // How far back it has to be rewound
+					var distance = Integer.parseInt(rep[0]); // How far back it has to be rewound.
 					var count = Integer.parseInt(rep[1]); // How many time this repeat still has to be executed
 					if(count > 0) { // When the repeat instruction still wants to rewind
-						i -= distance; // Roll back the instructions rep[0] times.
 						localInstructions.set(i + 1, distance + ";" + (count - 1)); // And set the rep instruction to one less. This is the reason why we copied the instruction list in the first place
+						i -= distance * 2; // Roll back the instructions rep[0] times.
 					} else i = i + 2; // Else skip to the next
 					continue; // Skip this iteration from emitting notes as its a meta instruction
 				} else { // if its an actual note
-					note = new Note(localInstructions.get(i), getLyrics().get(i));
+					note = new Note(localInstructions.get(i), getSyllable(i));
 				}
 				// Actually sending a note, or rest
 				// Then when a note is longer than one unit, then send as many hold notes

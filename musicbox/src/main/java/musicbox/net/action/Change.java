@@ -1,15 +1,12 @@
 package musicbox.net.action;
 
-import io.reactivex.Observable;
 import io.reactivex.Observer;
 import musicbox.net.Connection;
 import musicbox.net.result.Response;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Optional;
 
-public class Change extends Request<Response> implements Serializable {
+public class Change extends Action<Response> implements Serializable {
 
 	private Integer no;
 	private Integer tempo;
@@ -36,7 +33,7 @@ public class Change extends Request<Response> implements Serializable {
 
 	@Override
 	public String toString() {
-		return " ";
+		return "change " + no + " " + tempo + " " + transpose;
 	}
 
 
@@ -45,9 +42,20 @@ public class Change extends Request<Response> implements Serializable {
 		return Response.class;
 	}
 
+	/**
+	 * Every action has a dedicated source and destination, in this case the client is the source so the client
+	 * performs a forwarding, and the server is the destination so that will perform the action
+	 *
+	 * @param observer
+	 */
 	@Override
 	protected void subscribeActual(Observer<? super Response> observer) {
-		// TODO
-		observer.onComplete();
+		connection.getOptionalServer().ifPresent(server -> {
+
+			observer.onComplete();
+		});
+		connection.getOptionalClient().ifPresent(client -> {
+			connection.send(this).subscribe(observer); // send everything downstream
+		});
 	}
 }

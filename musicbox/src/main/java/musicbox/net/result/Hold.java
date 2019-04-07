@@ -7,7 +7,7 @@ public class Hold extends Note implements Serializable {
 	private static final long serialVersionUID = 1259375697504726628L;
 
 	public Hold() {
-		super(null, null);
+		super();
 	}
 
 	@Override

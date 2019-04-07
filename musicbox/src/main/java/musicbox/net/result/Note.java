@@ -3,7 +3,6 @@ package musicbox.net.result;
 import musicbox.misc.Pair;
 
 import java.io.Serializable;
-import java.util.AbstractMap;
 
 /**
  * This class represents a note that can be played by the midi synthesiser
@@ -19,6 +18,8 @@ public class Note extends Response implements Serializable {
 	private int octave;
 	private int transpose;
 	private String syllable;
+
+	public Note() {}
 
 	/**
 	 * To be used by the client for quick parsing of the incoming note.
@@ -89,7 +90,6 @@ public class Note extends Response implements Serializable {
 	}
 
 	public Note transpose(Integer transpose) {
-
 		this.transpose = transpose;
 		return this;
 	}
