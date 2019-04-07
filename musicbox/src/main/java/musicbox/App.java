@@ -22,7 +22,7 @@ import musicbox.misc.Levels;
 
 
 		,}, versionProvider = App.ManifestVersionProvider.class, optionListHeading = "@|bold %nOptions|@:%n",
-		subcommands = {Server.class, Client.class}, footer = {"", "Author: AlexAegis"})
+		subcommands = {MusicBox.class, MusicBoxClient.class}, footer = {"", "Author: AlexAegis"})
 public class App implements Runnable {
 
 	@Option(names = {"-?", "-h", "--help"}, paramLabel = "<help>", description = "Displays help", help = true)

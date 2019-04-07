@@ -1,4 +1,0 @@
-
-vsquid:S3776¨"RRefactor this method to reduce its Cognitive Complexity from 64 to the 15 allowed.(γο®‘ÿÿÿÿÿ8’ÿ—Δ—-
-osquid:S1301ο"KReplace this "switch" statement by "if" statements to increase readability.(°Δ―ωÿÿÿÿ8πλΕΙ—-
-isquid:UselessImportCheck">Remove this unused import 'com.googlecode.lanterna.TextColor'.( ήÿ8’ÿ—Δ—-

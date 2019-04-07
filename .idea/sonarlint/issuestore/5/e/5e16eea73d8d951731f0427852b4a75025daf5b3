@@ -1,8 +1,0 @@
-
-Jsquid:S1602S",Remove useless curly braces around statement(ÇÀÛ˜8ë±É¢—-
-osquid:UselessImportCheck
-"?Remove this unused import 'io.reactivex.schedulers.Schedulers'.(š‰¢úÿÿÿÿ8²ìó¢—-
-_squid:UselessImportCheck	"4Remove this unused import 'io.reactivex.Observable'.(–˜¼8²ìó¢—-
-Psquid:S1135b"2Complete the task associated to this TODO comment.(…ïœ†8¤ÎêÆ—-
-psquid:S3776"RRefactor this method to reduce its Cognitive Complexity from 30 to the 15 allowed.(Á²µÍ8ŠÃúÉ—-
-esquid:UselessImportCheck":Remove this unused import 'java.util.concurrent.TimeUnit'.(Æ™ş8²ìó¢—-

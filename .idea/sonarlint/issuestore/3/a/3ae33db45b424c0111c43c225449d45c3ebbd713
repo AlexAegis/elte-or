@@ -1,19 +1,0 @@
-
-Ysquid:S1133œ"5Do not forget to remove this deprecated code someday.(¶Òğ§ÿÿÿÿÿ8âÒ¼»—-
-]squid:CallToDeprecatedMethod“"-Remove this use of "field"; it is deprecated.(¹–Ë­8âÒ¼»—-
-Zsquid:S2629n"7Use the built-in formatting to construct this argument.(ş²ê„ÿÿÿÿÿ8âÒ¼»—-
-]squid:MissingDeprecatedCheckœ"(Add the missing @deprecated Javadoc tag.(¶Òğ§ÿÿÿÿÿ8âÒ¼»—-
-Psquid:S11355"2Complete the task associated to this TODO comment.(‚ÀìÖ8±Ã§å–-
-Gsquid:S1125ƒ"(Remove the literal "true" boolean value.(ìå¦£8–é¿—-
-}squid:S1210ø"YOverride "equals(Object obj)" to comply with the contract of the "compareTo(T o)" method.(¨¥¼¨üÿÿÿÿ8âÒ¼»—-
-jsquid:CommentedOutCodeLineŸ"<This block of commented-out lines of code should be removed.(Ã–°ñ8âÒ¼»—-
-rsquid:UselessImportCheck"GRemove this unused import 'battleships.exception.AlreadyShotException'.(ğ¯„µ8¢ó÷Á—-
-[squid:S2629„"7Use the built-in formatting to construct this argument.(©¯ï•ûÿÿÿÿ8¹–ÍÉ—-
-[squid:S2589…"7Remove this expression which always evaluates to "true"(½ÅÑÅúÿÿÿÿ8…ùé¿—-
-Msquid:S1125…")Remove the literal "false" boolean value.(½ÅÑÅúÿÿÿÿ8…ùé¿—-
-Lsquid:S2447ç"-Null is returned but a "Boolean" is expected.(¥¹ï8âÒ¼»—-
-Psquid:S1602ş",Remove useless curly braces around statement(µŒâäşÿÿÿÿ8âÒ¼»—-
-bsquid:HiddenFieldCheckª"8Rename "miss" which hides the field declared at line 29.(Ñ—€™8âÒ¼»—-
-Œsquid:S1319Ô"mThe return type of this method should be an interface such as "Map" rather than the implementation "HashMap".(Œ¤›8âÒ¼»—-
-[squid:S2629ˆ"7Use the built-in formatting to construct this argument.(ÿ»™ûÿÿÿÿ8âÒ¼»—-
-vsquid:UselessImportCheck"FRemove this unused import 'battleships.exception.BorderShotException'.(ÕÂøŠûÿÿÿÿ8ŠÀøÁ—-

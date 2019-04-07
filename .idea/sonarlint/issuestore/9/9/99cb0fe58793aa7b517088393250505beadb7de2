@@ -1,4 +1,0 @@
-
-Dsquid:S1602”",Remove useless curly braces around statement(¯Æô®
-Usquid:S2589Z"7Remove this expression which always evaluates to "true"(ºì¸Ý8£ïœ½—-
-rsquid:UselessImportCheck"GRemove this unused import 'battleships.exception.AlreadyShotException'.(ð¯„µ8‚ÂöÁ—-

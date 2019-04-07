@@ -1,28 +1,0 @@
-
-Psquid:MissingDeprecatedCheck#"(Add the missing @deprecated Javadoc tag.(É¾¿â
-Usquid:MissingDeprecatedCheck"(Add the missing @deprecated Javadoc tag.(©Ôüÿÿÿÿ
-£%squid:RedundantThrowsDeclarationCheckL"mRemove the declaration of thrown exception 'java.lang.IllegalArgumentException' which is a runtime exception.(Î¿´œûÿÿÿÿ
-Usquid:MissingDeprecatedCheck0"(Add the missing @deprecated Javadoc tag.(¤³ùÿÿÿÿ
-Qsquid:S1133"5Do not forget to remove this deprecated code someday.(©Ôüÿÿÿÿ
-Qsquid:S11337"5Do not forget to remove this deprecated code someday.(û¾ÃÍşÿÿÿÿ
-Msquid:S1133³"5Do not forget to remove this deprecated code someday.(Á»›ê
-csquid:CommentedOutCodeLineˆ"<This block of commented-out lines of code should be removed.(ó¾¿Ï
-Rsquid:S1133£"5Do not forget to remove this deprecated code someday.(„ßÚåùÿÿÿÿ
-Lsquid:S1133#"5Do not forget to remove this deprecated code someday.(É¾¿â
-Msquid:S1133¸"5Do not forget to remove this deprecated code someday.(˜«’Ÿ
-Vsquid:MissingDeprecatedCheck£"(Add the missing @deprecated Javadoc tag.(„ßÚåùÿÿÿÿ
-Hsquid:S1612?",Replace this lambda with a method reference.(´Êåøÿÿÿÿ
-ª%squid:RedundantThrowsDeclarationCheckT"yRemove the declaration of thrown exception 'java.lang.IllegalAccessException', as it cannot be thrown from method's body.(øşê£
-£%squid:RedundantThrowsDeclarationCheckC"mRemove the declaration of thrown exception 'java.lang.IllegalArgumentException' which is a runtime exception.(Î¿´œûÿÿÿÿ
-Rsquid:S26961"6Make the enclosing method "static" or remove this set.(¯ÆÅûÿÿÿÿ
-Qsquid:MissingDeprecatedCheck³"(Add the missing @deprecated Javadoc tag.(Á»›ê
-Msquid:S26969"6Make the enclosing method "static" or remove this set.(Çûò½
-Qsquid:MissingDeprecatedCheck¸"(Add the missing @deprecated Javadoc tag.(˜«’Ÿ
-Vsquid:CallToDeprecatedMethod"-Remove this use of "field"; it is deprecated.(û²Œö
-Usquid:MissingDeprecatedCheckK"(Add the missing @deprecated Javadoc tag.(Ù–ˆäúÿÿÿÿ
-{squid:S1192E"_Define a constant instead of duplicating this literal "Can't shoot from or to nothing" 3 times.(ßØ‘üÿÿÿÿ
-Rsquid:S26968"6Make the enclosing method "static" or remove this set.(‡±ñ şÿÿÿÿ
-Qsquid:S11330"5Do not forget to remove this deprecated code someday.(¤³ùÿÿÿÿ
-Qsquid:S1133K"5Do not forget to remove this deprecated code someday.(Ù–ˆäúÿÿÿÿ
-%squid:RedundantThrowsDeclarationCheckT"mRemove the declaration of thrown exception 'java.lang.IllegalArgumentException' which is a runtime exception.(øşê£
-Usquid:MissingDeprecatedCheck7"(Add the missing @deprecated Javadoc tag.(û¾ÃÍşÿÿÿÿ

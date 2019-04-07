@@ -1,7 +1,7 @@
 package musicbox.net;
 
-import musicbox.Client;
-import musicbox.Server;
+import musicbox.MusicBoxClient;
+import musicbox.MusicBox;
 import musicbox.net.action.Request;
 import musicbox.net.result.HandledResponse;
 import musicbox.net.result.Response;
@@ -9,72 +9,77 @@ import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.subjects.BehaviorSubject;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Connection extends Observable<Packet> implements AutoCloseable {
+public class Connection extends Observable<Request<Response>> implements AutoCloseable {
 
 	private Socket clientSocket;
-	private ObjectOutputStream oos;
-	private ObjectInputStream ois;
+	private PrintWriter out;
+	private Scanner in;
 
 	private final HandledResponse handledResponse = new HandledResponse();
 	private BehaviorSubject<Response> listenerSource = BehaviorSubject.create();
 	private Observable<Response> listener = listenerSource.filter(r -> !handledResponse.equals(r));
-	private Optional<Server> optionalServer = Optional.empty();
-	private Optional<Client> optionalClient = Optional.empty();
+	private MusicBox optionalServer;
+	private MusicBoxClient optionalClient;
+	private int remaining = 0;
+	private List<String> buffer = new ArrayList<>();
 
-	public Connection(Server server, ServerSocket serverSocket) throws IOException {
-		optionalServer = Optional.of(server);
+	public Connection(MusicBox server, ServerSocket serverSocket) throws IOException {
+		optionalServer = server;
 		Logger.getGlobal().info("Waiting for incoming connection");
 		clientSocket = serverSocket.accept();
 		Logger.getGlobal().info("Accepted incoming connection");
-		oos = new ObjectOutputStream(clientSocket.getOutputStream());
-		ois = new ObjectInputStream(clientSocket.getInputStream());
+		out = new PrintWriter(clientSocket.getOutputStream());
+		in = new Scanner(clientSocket.getInputStream());
 		Logger.getGlobal().info("Create Connection from server");
 	}
 
-	public Connection(Client client, String host, Integer port) throws IOException {
-		optionalClient = Optional.of(client);
+	public Connection(MusicBoxClient client, String host, Integer port) throws IOException {
+		optionalClient = client;
 		clientSocket = new Socket(host, port);
-		oos = new ObjectOutputStream(clientSocket.getOutputStream());
-		ois = new ObjectInputStream(clientSocket.getInputStream());
+		out = new PrintWriter(clientSocket.getOutputStream());
+		in = new Scanner(clientSocket.getInputStream());
 		Logger.getGlobal().info("Create Connection from client");
 	}
 
-	@SuppressWarnings("ResultOfMethodCallIgnored")
-	@Override
-	protected void subscribeActual(Observer<? super Packet> observer) {
-		Logger.getGlobal().info("Listener started");
-		try {
-			while (!isClosed()) {
-				var packet = (Packet) ois.readObject();
-				Logger.getGlobal().info("Package read!");
-				if (packet instanceof Request) {
-					((Request) packet).respond(this, optionalServer, optionalClient);
-				} else if (packet instanceof Response) {
-					listenerSource.onNext((Response) packet);
-				}
-				optionalServer.ifPresent(server -> {
-					observer.onNext(packet); // The queue inside is null for some reason if called in the client
-				});
-			}
+	public Optional<MusicBox> getOptionalServer() {
+		return Optional.ofNullable(optionalServer);
+	}
 
+	public Optional<MusicBoxClient> getOptionalClient() {
+		return Optional.ofNullable(optionalClient);
+	}
+
+	@Override
+	protected void subscribeActual(Observer<? super Request<Response>> observer) {
+		Logger.getGlobal().info("Listener started");
+
+		try {
+			while (!isClosed() && in.hasNextLine()) {
+				var next = in.nextLine();
+				buffer.add(next);
+				Action.ifStartingWithAction(next).ifPresent(action -> remaining = action.getAdditionalLines());
+				if(--remaining < 0) {
+					observer.onNext(Action.construct(this, buffer));
+					buffer.clear();
+				}
+			}
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, "Exception in listener!", e);
-
-			// observer.onComplete();
 		} finally {
-			Logger.getGlobal().info("Client disconnected, trying to reconnect..");
+			Logger.getGlobal().info("MusicBoxClient disconnected, trying to reconnect..");
 			close();
-			// observer.onComplete();
+			observer.onComplete();
 		}
-
 	}
 
 	public Boolean isClosed() {
@@ -85,14 +90,14 @@ public class Connection extends Observable<Packet> implements AutoCloseable {
 	public void close() {
 		Logger.getGlobal().info("Closing Connection");
 		try {
-			oos.close();
+			out.close();
 		} catch (Exception e) {
-			Logger.getGlobal().log(Level.SEVERE, "Exception while closing oos", e);
+			Logger.getGlobal().log(Level.SEVERE, "Exception while closing out", e);
 		}
 		try {
-			ois.close();
+			in.close();
 		} catch (Exception e) {
-			Logger.getGlobal().log(Level.SEVERE, "Exception while closing ois", e);
+			Logger.getGlobal().log(Level.SEVERE, "Exception while closing in", e);
 		}
 		try {
 			clientSocket.close();
@@ -103,8 +108,8 @@ public class Connection extends Observable<Packet> implements AutoCloseable {
 
 	public void respond(Response response) {
 		try {
-			oos.writeObject(response);
-			oos.flush();
+			out.write(response.toString());
+			out.flush();
 			Logger.getGlobal().log(Level.INFO, "Packet sent as response: {0}", response);
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, "Respond error to {0}", response);
@@ -112,17 +117,12 @@ public class Connection extends Observable<Packet> implements AutoCloseable {
 	}
 
 	public <T extends Response> Observable<T> send(Request<T> request) {
-		try {
-			oos.writeObject(request);
-			oos.flush();
-			Logger.getGlobal().log(Level.INFO, "Packet sent as request: {0}", request);
-			listenerSource.onNext(handledResponse);
-			return listener.filter(n -> n.getClass().equals(request.getResponseClass()))
-					.cast(request.getResponseClass()).take(1);
-		} catch (IOException e) {
-			Logger.getGlobal().info("Connection failed.. sending empty");
-			return Observable.empty();
-		}
+		out.write(request.toString());
+		out.flush();
+		Logger.getGlobal().log(Level.INFO, "Packet sent as request: {0}", request);
+		listenerSource.onNext(handledResponse);
+		return listener.filter(n -> n.getClass().equals(request.getResponseClass()))
+				.cast(request.getResponseClass()).take(1);
 	}
 
 }

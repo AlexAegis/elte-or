@@ -1,5 +1,7 @@
 package musicbox.net;
 
+import io.reactivex.Observable;
+
 import java.io.Serializable;
 
 public abstract class Packet implements Serializable {
