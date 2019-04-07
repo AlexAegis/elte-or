@@ -57,7 +57,7 @@ public class Note extends Response implements Serializable {
 			}
 		}
 		if(noteAndOctave.length > 1) {
-			octave = Integer.parseInt(noteAndOctave[0]);
+			octave = Integer.parseInt(noteAndOctave[1]);
 		}
 		this.syllable = syllable;
 	}
@@ -95,16 +95,20 @@ public class Note extends Response implements Serializable {
 	}
 
 	/**
-	 * Applies a transposition on a base pitch (must be between 67 and 73 inclusive)
+	 * Applies a transposition on a base pitch (must be between 60 and 72 inclusive)
 	 *
-	 * @param pitch to be transposed [67, 73]
+	 * @param pitch to be transposed [60, 72]
 	 * @param transpose by this amount any
-	 * @return the transposed pitch [67, 73]
+	 * @return the transposed pitch [60, 72] and the amount of the octave change
 	 */
 	public static Pair<Integer, Integer> applyTranspose(int pitch, int transpose) {
-		var t = ((pitch - 67) + transpose);
-		var octaveChange = t / 7;
-		var transposedBase = (t % 7) + 67;
+		var t = ((pitch - 60) + transpose); // [60, 72] -> [0, 12] then add the transpose
+		var negativeOffset = t < 0 ? 1 : 0;
+		t += negativeOffset; // Shift the negatives by one
+		var octaveChange = (t / 12) - negativeOffset; // by dividing it with the range we get how many octaves me moved.
+		// We have to adjust this by one if the value is negative
+		// because even though [-13, -1] is a different segment than [0, 12]
+		var transposedBase = (pitch % 12) + 60; // modulo it bact to [0, 12] then translate it to [60, 72]
 		return new Pair<>(transposedBase, octaveChange);
 	}
 
