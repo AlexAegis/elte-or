@@ -2,20 +2,13 @@ package musicbox.net;
 
 import io.reactivex.Observable;
 import musicbox.net.action.*;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public enum ActionType {
-	ADD(1),
-	ADDLYRICS(1),
-	PLAY(0),
-	CHANGE(0),
-	STOP(0),
-	ACK(0),
-	NULL(0);
+	ADD(1), ADDLYRICS(1), PLAY(0), CHANGE(0), STOP(0), ACK(0), NULL(0);
 
 	private Integer additionalLines;
 
@@ -32,7 +25,7 @@ public enum ActionType {
 	public static musicbox.net.action.Action<?> construct(Observable<Connection> connection, List<String> lines) {
 		System.out.println("CONSTRUCT of " + lines.toString());
 		var split = lines.stream().map(line -> Arrays.asList(line.split(" "))).collect(Collectors.toList());
-		switch(ActionType.getActionByName(split.get(0).get(0)).orElse(ActionType.NULL)) {
+		switch (ActionType.getActionByName(split.get(0).get(0)).orElse(ActionType.NULL)) {
 			case ADD:
 				return new Add(connection, split.get(0).get(1), split.get(1));
 			case ADDLYRICS:
@@ -55,9 +48,7 @@ public enum ActionType {
 	}
 
 	public static Optional<ActionType> getActionByName(String line) {
-		return Arrays.stream(ActionType.values())
-			.filter(a -> line.equalsIgnoreCase(a.name()))
-			.findFirst();
+		return Arrays.stream(ActionType.values()).filter(a -> line.equalsIgnoreCase(a.name())).findFirst();
 	}
 
 }

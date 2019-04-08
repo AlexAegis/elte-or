@@ -3,12 +3,11 @@ package musicbox.command;
 import jline.console.ConsoleReader;
 import musicbox.MusicBoxClient;
 import picocli.CommandLine;
-
 import java.io.PrintWriter;
 
 @CommandLine.Command(name = "MusicBox Shell", description = "Interactive shell for the MusicBoxClient",
-	footer = {"", "Press Ctrl-D to exit."},
-	subcommands = {PlayCommand.class, AddCommand.class, AddLyricsCommand.class, ChangeCommand.class, StopCommand.class})
+		footer = {"", "Press Ctrl-D to exit."}, subcommands = {PlayCommand.class, AddCommand.class,
+				AddLyricsCommand.class, ChangeCommand.class, StopCommand.class})
 public class ClientCommands implements Runnable {
 	private MusicBoxClient client;
 	private final ConsoleReader reader;

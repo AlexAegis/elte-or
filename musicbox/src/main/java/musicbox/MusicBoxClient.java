@@ -18,7 +18,6 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParentCommand;
 import picocli.shell.jline2.PicocliJLineCompleter;
-
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Synthesizer;
@@ -81,41 +80,36 @@ public class MusicBoxClient implements Runnable {
 	public void tryConnect(String host, Integer port) {
 		Logger.getGlobal().info("Trying a connect!");
 		Observable.fromCallable(() -> new Connection(this, host, port))
-			.doOnError(e -> Logger.getGlobal().log(Level.SEVERE, "Connection error, retrying..."))
-			.retry(4)
-			//.subscribeOn(Schedulers.newThread())
-			.blockingSubscribe(getConnectionSubject()::onNext,
-				e -> Logger.getGlobal().log(Level.SEVERE, "Error on tryConnect", e), () -> Logger.getGlobal().info("Completed try connect"));
+				.doOnError(e -> Logger.getGlobal().log(Level.SEVERE, "Connection error, retrying...")).retry(4)
+				.blockingSubscribe(getConnectionSubject()::onNext,
+						e -> Logger.getGlobal().log(Level.SEVERE, "Error on tryConnect", e),
+						() -> Logger.getGlobal().info("Completed try connect"));
 
 	}
 
 	@Override
 	public void run() {
-		if(app != null) {
+		if (app != null) {
 			Logger.getGlobal().setLevel(app.getLoglevel().getLevel());
 		}
 		tryConnect(host, port);
 
 		Disposable synthPlayer = null;
-		try(var reader = new ConsoleReader()) {
+		try (var reader = new ConsoleReader()) {
 			reader.setPrompt("musicbox> ");
-			synthPlayer = getConnection()
-				.flatMap(Connection::getListener)
-				.subscribeOn(Schedulers.computation())
-				.filter(s -> Arrays.stream(ActionType.values()).map(Enum::name).noneMatch(name -> name.equalsIgnoreCase(s.split(" ")[0])))
-				.map(Note::construct)
-				.subscribe(
-					next -> {
-						if(!next.getClass().equals(Hold.class)) {
-							if(next.getClass().equals(Rest.class) || next.getClass().equals(Fin.class)) {
+			synthPlayer = getConnection().flatMap(Connection::getListener).subscribeOn(Schedulers.computation())
+					.filter(s -> Arrays.stream(ActionType.values()).map(Enum::name)
+							.noneMatch(name -> name.equalsIgnoreCase(s.split(" ")[0])))
+					.map(Note::construct).subscribe(next -> {
+						if (!next.getClass().equals(Hold.class)) {
+							if (next.getClass().equals(Rest.class) || next.getClass().equals(Fin.class)) {
 								synthesizer.getChannels()[0].allNotesOff();
 							} else {
 								synthesizer.getChannels()[0].noteOn(next.getNote(), 100);
 							}
 						}
-					},
-					e -> Logger.getGlobal().log(Level.SEVERE, "MusicBoxClient listener error in tryConnect!", e),
-					() -> Logger.getGlobal().info("Connection finished!"));
+					}, e -> Logger.getGlobal().log(Level.SEVERE, "MusicBoxClient listener error in tryConnect!", e),
+							() -> Logger.getGlobal().info("Connection finished!"));
 			// set up the completion
 			var commands = new ClientCommands(reader, this);
 			var cmd = new CommandLine(commands);
@@ -124,14 +118,13 @@ public class MusicBoxClient implements Runnable {
 			// start the shell and process input until the user quits with Ctl-D
 			String line;
 			while ((line = reader.readLine()) != null) {
-				var list =
-					new ArgumentCompleter.WhitespaceArgumentDelimiter().delimit(line, line.length());
+				var list = new ArgumentCompleter.WhitespaceArgumentDelimiter().delimit(line, line.length());
 				CommandLine.run(commands, list.getArguments());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			if(synthPlayer != null) {
+			if (synthPlayer != null) {
 				synthPlayer.dispose();
 			}
 		}

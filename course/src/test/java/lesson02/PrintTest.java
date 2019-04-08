@@ -10,7 +10,7 @@ class PrintTest {
 
 	@Test
 	public void test() {
-		System.out.println(new Print().read("input.txt").orElse(new Table()).getAdmiral("0").field());
+		// System.out.println(new Print().read("input.txt").orElse(new Table()).getAdmiral("0").field());
 		// assertEquals(new Print().read("input.txt").orElse(new Table()).getAdmiral("0").field(), state);
 	}
 

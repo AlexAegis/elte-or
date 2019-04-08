@@ -2,13 +2,12 @@ package musicbox.net.result;
 
 import io.reactivex.Observer;
 import musicbox.net.action.Action;
-
 import java.io.Serializable;
 
 /**
  * Use when last Reponse was handled, this will be ignored
  */
-public class HandledResponse extends Action implements Serializable {
+public class HandledResponse extends Action<String> implements Serializable {
 
 	private static final long serialVersionUID = -4585364190409805340L;
 
@@ -17,7 +16,7 @@ public class HandledResponse extends Action implements Serializable {
 	}
 
 	@Override
-	protected void subscribeActual(Observer observer) {
+	protected void subscribeActual(Observer<? super String> observer) {
 		observer.onComplete();
 	}
 
@@ -28,7 +27,7 @@ public class HandledResponse extends Action implements Serializable {
 
 
 	@Override
-	public Class getResponseClass() {
-		return null;
+	public Class<String> getResponseClass() {
+		return String.class;
 	}
 }

@@ -3,7 +3,6 @@ package musicbox.net.action;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import musicbox.net.Connection;
-
 import java.io.Serializable;
 
 public class Ack extends Action<String> implements Serializable {

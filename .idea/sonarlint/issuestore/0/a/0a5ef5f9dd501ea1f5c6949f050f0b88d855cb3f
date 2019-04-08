@@ -1,0 +1,16 @@
+
+dsquid:UselessImportCheck"4Remove this unused import 'musicbox.net.Connection'.(½Ú¸×şÿÿÿÿ8ßä÷ÌŸ-
+»%squid:RedundantThrowsDeclarationCheck&"‚Remove the declaration of thrown exception 'javax.sound.midi.MidiUnavailableException', as it cannot be thrown from method's body.(–Œ®˜8šÔÃÍŸ-
+psquid:UselessImportCheck
+"@Remove this unused import 'io.reactivex.subjects.SingleSubject'.(âÒ­†ùÿÿÿÿ8¬Ñ‹ÈŸ-
+]squid:UselessImportCheck"-Remove this unused import 'java.util.Arrays'.(î–˜Éüÿÿÿÿ8ÑöûÇŸ-
+hsquid:UselessImportCheck"=Remove this unused import 'io.reactivex.functions.Predicate'.(‡¥à8¬êÌŸ-
+esquid:UselessImportCheck":Remove this unused import 'java.util.concurrent.TimeUnit'.(Æ™ş8›´øËŸ-
+hsquid:UselessImportCheck"8Remove this unused import 'javax.sound.midi.MidiSystem'.(¯¡Ìúÿÿÿÿ8ÑöûÇŸ-
+‹squid:UselessImportCheck"[Remove this unused import 'io.reactivex.internal.operators.flowable.FlowableCombineLatest'.(‚¡Œ›şÿÿÿÿ8µÔúËŸ-
+psquid:UselessImportCheck	"@Remove this unused import 'io.reactivex.subjects.ReplaySubject'.(šÖ€¬ûÿÿÿÿ8ù³ü¾Ÿ-
+esquid:UselessImportCheck";Remove this unused import 'org.reactivestreams.Subscriber'.(Ğ§âE8òäÍŸ-
+rsquid:UselessImportCheck"BRemove this unused import 'io.reactivex.subjects.BehaviorSubject'.(‹”‡Úúÿÿÿÿ8›´øËŸ-
+zsquid:UselessImportCheck"ORemove this unused import 'hu.akarnokd.rxjava2.operators.FlowableTransformers'.(ñÎšª8¬êÌŸ-
+isquid:CommentedOutCodeLine:"<This block of commented-out lines of code should be removed.(ıó8‡©ÆÌŸ-
+isquid:CommentedOutCodeLine)"<This block of commented-out lines of code should be removed.(×É›Î8 ¥ÍŸ-

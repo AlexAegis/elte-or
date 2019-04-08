@@ -3,13 +3,14 @@ package musicbox.net.action;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import musicbox.net.Connection;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class Stop extends Action<String> implements Serializable {
 
+	private static final long serialVersionUID = -6090679322129097464L;
+	
 	private Integer no = -1;
 
 	public Stop(Observable<Connection> connection, String no) {
@@ -44,7 +45,7 @@ public class Stop extends Action<String> implements Serializable {
 		conn.getOptionalServer().ifPresent(server -> {
 			server.cleanPlaying();
 			var targets = new ArrayList<Integer>();
-			if(no <= 0) {
+			if (no <= 0) {
 				targets.addAll(server.allPlayingByConnection(conn));
 			} else {
 				targets.add(no);
@@ -52,14 +53,15 @@ public class Stop extends Action<String> implements Serializable {
 			var hits = 0;
 			for (var target : targets) {
 				var play = server.getPlaying().get(target);
-				if(play != null) {
+				if (play != null) {
 					play.getY().getDisposable().dispose();
 					hits++;
 				}
 				server.getPlaying().remove(target);
 			}
-			if(hits > 0) {
-				conn.send(new Ack(null, "Song stopped: " + targets.stream().map(Object::toString).collect(Collectors.joining(" "))));
+			if (hits > 0) {
+				conn.send(new Ack(null,
+						"Song stopped: " + targets.stream().map(Object::toString).collect(Collectors.joining(" "))));
 			} else {
 				conn.send(new Ack(null, "Nothing is playing on " + no));
 			}

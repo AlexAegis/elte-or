@@ -17,6 +17,7 @@ public class NoteTest {
 	void transposeTest() {
 		for (int i = 0; i < 10; i++) {
 			var transposition = Note.applyTranspose(60, i);
+			System.out.println(transposition);
 			Assert.assertEquals((long) 60 + i, (long) transposition.getX());
 		}
 	}
@@ -25,10 +26,13 @@ public class NoteTest {
 	void transposeOctaveTest() {
 		for (int i = -20; i < 20; i++) {
 			var transposition = Note.applyTranspose(60, i);
+
+			System.out.println(transposition);
 			int supposedOctaveChange = -2;
-			if(i >= -12 && i < 0) {
+			if (i >= -12 && i < 0) {
 				supposedOctaveChange = -1;
-			} if(i >= 0 && i < 12) {
+			}
+			if (i >= 0 && i < 12) {
 				supposedOctaveChange = 0;
 			} else if (i >= 12) {
 				supposedOctaveChange = 1;

@@ -3,12 +3,13 @@ package musicbox.net.action;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import musicbox.net.Connection;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class Change extends Action<String> implements Serializable {
+
+	private static final long serialVersionUID = 2239626568007208984L;
 
 	private Integer no = -1;
 	private Long tempo;
@@ -68,7 +69,7 @@ public class Change extends Action<String> implements Serializable {
 		var conn = connection.blockingFirst();
 		conn.getOptionalServer().ifPresent(server -> {
 			var targets = new ArrayList<Integer>();
-			if(no <= 0) {
+			if (no <= 0) {
 				targets.addAll(server.allPlayingByConnection(conn));
 			} else {
 				targets.add(no);
@@ -77,14 +78,17 @@ public class Change extends Action<String> implements Serializable {
 			var hits = 0;
 			for (var target : targets) {
 				var play = server.getPlaying().get(target);
-				if(play != null) {
-					if(transpose != null) play.getY().setTranspose(transpose);
-					if(tempo != null) play.getY().setTempo(tempo);
+				if (play != null) {
+					if (transpose != null)
+						play.getY().setTranspose(transpose);
+					if (tempo != null)
+						play.getY().setTempo(tempo);
 					hits++;
 				}
 			}
-			if(hits > 0) {
-				conn.send(new Ack(null, "Song changed: " + targets.stream().map(Object::toString).collect(Collectors.joining(" "))));
+			if (hits > 0) {
+				conn.send(new Ack(null,
+						"Song changed: " + targets.stream().map(Object::toString).collect(Collectors.joining(" "))));
 			} else {
 				conn.send(new Ack(null, "Nothing is playing on " + no));
 			}

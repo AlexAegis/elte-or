@@ -3,7 +3,6 @@ package musicbox.net.result;
 import io.reactivex.Observer;
 import musicbox.misc.Pair;
 import musicbox.net.action.Action;
-
 import java.io.Serializable;
 
 /**
@@ -20,18 +19,17 @@ public class Note extends Action<String> implements Serializable {
 	private int octave;
 	private int transpose = 0;
 	private String syllable;
-	private int channel;
 
 	public Note() {
 		super(null);
 	}
 
 	public static Note construct(String from) {
-		if(from.startsWith("-")) {
+		if (from.startsWith("-")) {
 			return new Hold();
-		} else if(from.startsWith("R")) {
+		} else if (from.startsWith("R")) {
 			return new Rest();
-		} else if(from.startsWith("FIN")) {
+		} else if (from.startsWith("FIN")) {
 			return new Fin();
 		} else {
 			var split = from.split(" ");
@@ -42,7 +40,7 @@ public class Note extends Action<String> implements Serializable {
 	public static boolean isValid(String s) {
 		var valid = true;
 		var note = s;
-		if(s.contains("/")) {
+		if (s.contains("/")) {
 			var octaveSplit = s.split("/");
 			note = octaveSplit[0];
 			var octave = octaveSplit[1];
@@ -54,15 +52,10 @@ public class Note extends Action<String> implements Serializable {
 
 		var letters = note.toCharArray();
 
-		valid &= letters[0] == 'C'
-			|| letters[0] == 'D'
-			|| letters[0] == 'E'
-			|| letters[0] == 'F'
-			|| letters[0] == 'G'
-			|| letters[0] == 'A'
-			|| letters[0] == 'B';
+		valid &= letters[0] == 'C' || letters[0] == 'D' || letters[0] == 'E' || letters[0] == 'F' || letters[0] == 'G'
+				|| letters[0] == 'A' || letters[0] == 'B';
 
-		if(letters.length > 1) {
+		if (letters.length > 1) {
 			valid &= letters[1] == 'b' || letters[1] == '#';
 		}
 
@@ -90,7 +83,7 @@ public class Note extends Action<String> implements Serializable {
 		var noteAndOctave = note.split("/");
 		var noteAndHalf = noteAndOctave[0].toCharArray();
 		base = parseNote(noteAndHalf[0]);
-		if(noteAndHalf.length > 1) {
+		if (noteAndHalf.length > 1) {
 			switch (noteAndHalf[1]) {
 				case '#':
 					half = 1;
@@ -102,7 +95,7 @@ public class Note extends Action<String> implements Serializable {
 					half = 0;
 			}
 		}
-		if(noteAndOctave.length > 1) {
+		if (noteAndOctave.length > 1) {
 			octave = Integer.parseInt(noteAndOctave[1]);
 		}
 		this.syllable = syllable;
@@ -116,9 +109,9 @@ public class Note extends Action<String> implements Serializable {
 	 */
 	public static int parseNote(char baseNote) {
 		var baseNoteForCalc = baseNote;
-		if(baseNote == 'A') {
+		if (baseNote == 'A') {
 			baseNoteForCalc = 'H';
-		} else if(baseNote == 'B') {
+		} else if (baseNote == 'B') {
 			baseNoteForCalc = 'I';
 		}
 		return (((baseNoteForCalc - 7) - 60) * 2) + 60;
@@ -131,11 +124,11 @@ public class Note extends Action<String> implements Serializable {
 	 * @return the character of that pitch
 	 */
 	public static char parsePitch(int pitch) {
-		return (char)(((((pitch - 60) / 2) + 2) % 7) + 60 + 7 - 2);
+		return (char) (((((pitch - 60) / 2) + 2) % 7) + 60 + 7 - 2);
 	}
 
 	public Note transpose(Integer transpose) {
-		if(transpose != null) {
+		if (transpose != null) {
 			this.transpose = transpose;
 		}
 		return this;
@@ -192,14 +185,13 @@ public class Note extends Action<String> implements Serializable {
 	public String toString(Boolean withSyllable) {
 		var result = new StringBuilder();
 		var t = applyTranspose(base, transpose);
-		System.out.println("To Note String transpose: " + transpose + " base before: " + base + " after: " + t.getX() + " octave before: " + octave + " octave after: " + (octave + t.getY()));
 		result.append(parsePitch(t.getX()));
-		if(half == 1) {
+		if (half == 1) {
 			result.append('#');
-		} else if(half == -1) {
+		} else if (half == -1) {
 			result.append('b');
 		}
-		if(octave != 0) {
+		if (octave != 0) {
 			result.append('/');
 			result.append(octave + t.getY());
 		}

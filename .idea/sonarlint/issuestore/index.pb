@@ -95,3 +95,7 @@ c
 3musicbox/src/main/java/musicbox/net/ActionType.java,2\5\252a658f3a727451d67cddc16e4a0dd5d1c68e13
 d
 4musicbox/src/main/java/musicbox/net/action/Play.java,3\2\32fc971f3fe9010342113af0a00a101514d57e58
+c
+3musicbox/src/main/java/musicbox/net/action/Ack.java,c\3\c382ff7a6500d3a01f2dd4d154fea84ac6c03a9d
+c
+3musicbox/src/main/java/musicbox/net/result/Fin.java,0\e\0e526a8bf405d9d0bc66d8a5450c7033ff40e632

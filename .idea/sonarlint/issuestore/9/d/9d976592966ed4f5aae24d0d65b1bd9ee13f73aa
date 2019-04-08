@@ -1,0 +1,8 @@
+
+`squid:S21478"DCombine this catch with the one at line 53, which has the same body.(…çŠáøÿÿÿÿ
+Qsquid:S1141-"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ
+?squid:S1148G"#Use a logger to log this exception.(€ÉÔ…ýÿÿÿÿ
+t
+squid:S135+"YReduce the total number of break and continue statements in this loop to use at most one.(¡íÉŽûÿÿÿÿ
+`squid:S2147;"DCombine this catch with the one at line 53, which has the same body.(çÒ³Ðúÿÿÿÿ
+rsquid:S00120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(±Ûˆ˜

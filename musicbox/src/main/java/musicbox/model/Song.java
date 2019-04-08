@@ -6,7 +6,6 @@ import musicbox.net.result.Fin;
 import musicbox.net.result.Hold;
 import musicbox.net.result.Note;
 import musicbox.net.result.Rest;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +50,10 @@ public class Song extends Observable<Note> implements Serializable {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
 		Song song = (Song) o;
 		return Objects.equals(title, song.title);
 	}
@@ -74,16 +75,17 @@ public class Song extends Observable<Note> implements Serializable {
 			while (i < localInstructions.size()) {
 				var next = localInstructions.get(i);
 				Note note;
-				if(next.equals(REST.toString())) { // if its a rest
+				if (next.equals(REST.toString())) { // if its a rest
 					note = REST;
-				} else if(next.equals("REP")) { // if it's a repeat
+				} else if (next.equals("REP")) { // if it's a repeat
 					var rep = localInstructions.get(i + 1).split(";"); // Repeat instruction
 					var distance = Integer.parseInt(rep[0]); // How far back it has to be rewound.
 					var count = Integer.parseInt(rep[1]); // How many time this repeat still has to be executed
-					if(count > 0) { // When the repeat instruction still wants to rewind
+					if (count > 0) { // When the repeat instruction still wants to rewind
 						localInstructions.set(i + 1, distance + ";" + (count - 1)); // And set the rep instruction to one less. This is the reason why we copied the instruction list in the first place
 						i -= distance * 2; // Roll back the instructions rep[0] times.
-					} else i = i + 2; // Else skip to the next
+					} else
+						i = i + 2; // Else skip to the next
 					continue; // Skip this iteration from emitting notes as its a meta instruction
 				} else { // if its an actual note
 					note = new Note(localInstructions.get(i), getSyllable(i));

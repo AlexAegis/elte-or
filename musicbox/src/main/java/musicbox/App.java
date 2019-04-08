@@ -5,7 +5,6 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.IVersionProvider;
 import picocli.CommandLine.Option;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;

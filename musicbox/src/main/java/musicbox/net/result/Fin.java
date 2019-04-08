@@ -12,6 +12,11 @@ public class Fin extends Note implements Serializable {
 
 	@Override
 	public String toString() {
+		return toString(true);
+	}
+
+	@Override
+	public String toString(Boolean withSyllable) {
 		return "FIN";
 	}
 }

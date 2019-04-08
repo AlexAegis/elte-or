@@ -12,6 +12,11 @@ public class Rest extends Note implements Serializable {
 
 	@Override
 	public String toString() {
-		return "R ???";
+		return toString(true);
+	}
+
+	@Override
+	public String toString(Boolean withSyllable) {
+		return "R" + (withSyllable ? " ???" : "");
 	}
 }

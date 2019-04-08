@@ -3,11 +3,12 @@ package musicbox.net.action;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import musicbox.net.Connection;
-
 import java.io.Serializable;
 import java.util.List;
 
 public class AddLyrics extends Action<String> implements Serializable {
+
+	private static final long serialVersionUID = 6326111761760984417L;
 
 	private String title;
 	private List<String> lyrics;
@@ -50,7 +51,7 @@ public class AddLyrics extends Action<String> implements Serializable {
 		var conn = connection.blockingFirst();
 		conn.getOptionalServer().ifPresent(server -> {
 			var song = server.getSongs().get(title);
-			if(song != null) {
+			if (song != null) {
 				song.setLyrics(lyrics);
 				observer.onComplete();
 				conn.send(new Ack(connection, "Song lyrics updated: " + title));

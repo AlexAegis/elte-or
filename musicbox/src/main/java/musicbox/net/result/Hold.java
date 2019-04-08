@@ -12,6 +12,11 @@ public class Hold extends Note implements Serializable {
 
 	@Override
 	public String toString() {
-		return "- ???";
+		return toString(true);
+	}
+
+	@Override
+	public String toString(Boolean withSyllable) {
+		return "-" + (withSyllable ? " ???" : "");
 	}
 }

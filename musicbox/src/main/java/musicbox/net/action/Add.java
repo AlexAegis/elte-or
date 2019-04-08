@@ -5,7 +5,6 @@ import io.reactivex.Observer;
 import musicbox.model.Song;
 import musicbox.net.Connection;
 import musicbox.net.result.Note;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -64,17 +63,16 @@ public class Add extends Action<String> implements Serializable {
 			for (int i = 0; i < songInstructions.size(); i = i + 2) {
 				if (songInstructions.get(i).equalsIgnoreCase("REP")) {
 					valid &= songInstructions.get(i + 1).contains(";")
-						&& Arrays.stream(songInstructions.get(i + 1).split(";"))
-						.flatMapToInt(String::chars)
-						.allMatch(Character::isDigit)
-						&& (Integer.parseInt(songInstructions.get(i + 1).split(";")[0])) * 2 <= i - reps * 2;
+							&& Arrays.stream(songInstructions.get(i + 1).split(";")).flatMapToInt(String::chars)
+									.allMatch(Character::isDigit)
+							&& (Integer.parseInt(songInstructions.get(i + 1).split(";")[0])) * 2 <= i - reps * 2;
 					reps++;
 				} else {
 					valid &= Note.isValid(songInstructions.get(i))
-						&& songInstructions.get(i + 1).chars().allMatch(Character::isDigit);
+							&& songInstructions.get(i + 1).chars().allMatch(Character::isDigit);
 				}
 			}
-			if(songInstructions.size() % 2 != 0 || !valid) {
+			if (songInstructions.size() % 2 != 0 || !valid) {
 				observer.onError(new Exception("Instructions are bad"));
 			} else {
 				conn.send(this);

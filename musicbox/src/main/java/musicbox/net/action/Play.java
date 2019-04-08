@@ -7,7 +7,6 @@ import io.reactivex.subjects.BehaviorSubject;
 import musicbox.misc.Pair;
 import musicbox.model.Song;
 import musicbox.net.Connection;
-
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
@@ -97,15 +96,19 @@ public class Play extends Action<String> implements Serializable {
 		var conn = connection.blockingFirst();
 		conn.getOptionalServer().ifPresent(server -> {
 			var song = server.getSongs().get(title);
-			if(song != null) {
+			if (song != null) {
 				// Remove `60000 /` if you want to specify the tempo in ms instead of bpm
-				disposable = Observable.zip(song, tempoSubject.switchMap(t -> interval(60000 / (t == 0 ? 128 : t), TimeUnit.MILLISECONDS)), (note, timer) -> note)
-					.withLatestFrom(transposeSubject, Pair::new)
-					.map(noteTransposePair -> noteTransposePair.getX().transpose(noteTransposePair.getY()))
-					.doOnDispose(() -> conn.send(Song.FIN))
-					.subscribe(conn::send);
-				server.registerPlay(conn, this)
-					.ifPresentOrElse(i -> conn.send(new Ack(connection, "play started on channel " + i)),
+				disposable =
+						Observable
+								.zip(song,
+										tempoSubject.switchMap(
+												t -> interval(60000 / (t == 0 ? 128 : t), TimeUnit.MILLISECONDS)),
+										(note, timer) -> note)
+								.withLatestFrom(transposeSubject, Pair::new)
+								.map(noteTransposePair -> noteTransposePair.getX().transpose(noteTransposePair.getY()))
+								.doOnDispose(() -> conn.send(Song.FIN)).subscribe(conn::send);
+				server.registerPlay(conn, this).ifPresentOrElse(
+						i -> conn.send(new Ack(connection, "play started on channel " + i)),
 						() -> conn.send(new Ack(connection, "play failed to start")));
 				observer.onComplete();
 			} else {

@@ -27,7 +27,7 @@ dependencies {
 }
 
 application {
-    mainClassName = 'battleships.App'
+    mainClassName = 'musicbox.App'
 }
 
 jar {

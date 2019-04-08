@@ -1,0 +1,4 @@
+
+hsquid:S4275M"JRefactor this getter so that it actually refers to the field "connection".(‘ĞæÂ8íÚùäŸ-
+Gsquid:S1148„"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8åƒ¨ÓŸ-
+usquid:S001169"VRename this field "connection$" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÜÏŠ¦8»åšÑŸ-
