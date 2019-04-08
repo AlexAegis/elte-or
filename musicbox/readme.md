@@ -1,5 +1,16 @@
 # MusicBox
 
+Build
+
+```cmd
+./.gradlew :musicbox:build
+```
+
+Then start the jar in either `client` or `server` mode.
+Default port `40000`. Configurable with options.
+
+Use the `-?` help flag for more info.
+
 ## Szerver
 
 Készítsd el a `MusicBox` osztályt, amelynek főprogramja egy szervert indít el a `40000` porton. A szerver dalokat tárol el és játszik vissza; egyszerre tetszőlegesen sok klienst tud kiszolgálni. A szerver a következő fajta szöveges üzeneteket várja:

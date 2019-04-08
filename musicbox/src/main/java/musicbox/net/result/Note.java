@@ -15,7 +15,7 @@ public class Note extends Action<String> implements Serializable {
 	private static final long serialVersionUID = 8947857780242641675L;
 
 	private int base;
-	private int half;
+	public int half;
 	private int octave;
 	private int transpose = 0;
 	private String syllable;
@@ -114,7 +114,11 @@ public class Note extends Action<String> implements Serializable {
 		} else if (baseNote == 'B') {
 			baseNoteForCalc = 'I';
 		}
-		return (((baseNoteForCalc - 7) - 60) * 2) + 60;
+		var offset = 0;
+		if(baseNoteForCalc >= 'F') {
+			offset = -1;
+		}
+		return (((baseNoteForCalc - 7) - 60) * 2) + 60 + offset;
 	}
 
 	/**
@@ -124,7 +128,11 @@ public class Note extends Action<String> implements Serializable {
 	 * @return the character of that pitch
 	 */
 	public static char parsePitch(int pitch) {
-		return (char) (((((pitch - 60) / 2) + 2) % 7) + 60 + 7 - 2);
+		var offset = 0;
+		if(pitch >= 'A') {
+			offset = -1;
+		}
+		return (char) (((((pitch - 60) / 2 - offset) +  2) % 7) + 67 - 2);
 	}
 
 	public Note transpose(Integer transpose) {
@@ -157,7 +165,7 @@ public class Note extends Action<String> implements Serializable {
 	 * @return the final pitch of the note
 	 */
 	public int getNote() {
-		return base + half + octave * 12;
+		return  base + half + octave * 12;
 	}
 
 	/**

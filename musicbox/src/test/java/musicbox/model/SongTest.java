@@ -22,7 +22,6 @@ public class SongTest {
 		Assert.assertArrayEquals(shouldList.toArray(), resultList.toArray());
 	}
 
-
 	@Test
 	void songTest2() {
 		var song = new Song("test2", Arrays.asList(
