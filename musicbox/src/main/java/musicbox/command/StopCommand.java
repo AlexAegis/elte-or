@@ -17,14 +17,15 @@ public class StopCommand implements Runnable {
 	@ParentCommand
 	private ClientCommands parent;
 
-	@CommandLine.Parameters(index = "0", paramLabel = "<no>", description = "The songs number you wish to stop. If not supplied the command stops every song played towards the client")
+	@CommandLine.Parameters(index = "0", arity = "0", paramLabel = "<no>", defaultValue = "-1", description = "The songs number you wish to stop. If not supplied the command stops every song played towards the client")
 	private Integer no;
 
 	@Override
 	public void run() {
-		new Stop(parent.getClient().getConnection(), no).blockingSubscribe();
-		parent.getOut().println("Stopping...");
-		parent.getOut().flush();
+		new Stop(parent.getClient().getConnection(), no)
+			.doOnError(err -> parent.getOut().println("Error while stopping: " + err.getMessage()))
+			.doFinally(parent.getOut()::flush)
+			.blockingSubscribe(next -> parent.getOut().println("Stop result: " + next));
 	}
 
 }

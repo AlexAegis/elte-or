@@ -19,7 +19,7 @@ public class PlayCommand implements Runnable {
 	@ParentCommand
 	private ClientCommands parent;
 
-	@CommandLine.Parameters(index = "0", arity = "1", paramLabel = "<title>", defaultValue = "test1", description = "Title of the song you want to play.")
+	@CommandLine.Parameters(index = "0", arity = "1", paramLabel = "<title>", defaultValue = "c4", description = "Title of the song you want to play.")
 	private String title;
 	@CommandLine.Parameters(index = "1", paramLabel = "<tempo>", defaultValue = "120" , description = "The tempo of you want to set the playback (default: ${DEFAULT-VALUE})")
 	private Long tempo;
@@ -29,7 +29,8 @@ public class PlayCommand implements Runnable {
 	@Override
 	public void run() {
 		new Play(parent.getClient().getConnection(), tempo, transpone, title)
-			.doOnComplete(parent.getOut()::flush)
+			.doOnError(err -> parent.getOut().println("Error while playing: " + err.getMessage()))
+			.doFinally(parent.getOut()::flush)
 			.blockingSubscribe(next -> parent.getOut().println("Playing on channel: " + next));
 	}
 

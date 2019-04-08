@@ -32,6 +32,8 @@ public class Note extends Action<String> implements Serializable {
 			return new Hold();
 		} else if(from.startsWith("R")) {
 			return new Rest();
+		} else if(from.startsWith("FIN")) {
+			return new Fin();
 		} else {
 			var split = from.split(" ");
 			return new Note(split[0], split[1]);

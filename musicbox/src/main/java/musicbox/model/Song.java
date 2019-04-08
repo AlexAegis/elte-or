@@ -4,6 +4,7 @@ import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import musicbox.misc.Pair;
+import musicbox.net.result.Fin;
 import musicbox.net.result.Hold;
 import musicbox.net.result.Note;
 import musicbox.net.result.Rest;
@@ -19,8 +20,9 @@ public class Song extends Observable<Note> implements Serializable {
 	private List<String> instructions;
 	private List<String> lyrics;
 
-	private static final Rest REST = new Rest();
-	private static final Hold HOLD = new Hold();
+	public static final Rest REST = new Rest();
+	public static final Hold HOLD = new Hold();
+	public static final Fin FIN = new Fin();
 
 	public Song(String title, List<String> instructions) {
 		this.title = title;
@@ -95,6 +97,7 @@ public class Song extends Observable<Note> implements Serializable {
 				}
 				i = i + 2; // Step two at a time as the instructions are in pairs
 			}
+			observer.onNext(FIN);
 			observer.onComplete();
 		} catch (Exception e) {
 			observer.onError(e); // If any conversion error happens during playback, an error will be thrown downstream

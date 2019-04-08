@@ -50,13 +50,19 @@ public class Add extends Action<String> implements Serializable {
 	 */
 	@Override
 	protected void subscribeActual(Observer<? super String> observer) {
-		var conn = connection.blockingLast();
+		var conn = connection.blockingFirst();
 		conn.getOptionalServer().ifPresent(server -> {
 			server.getSongs().put(title, new Song(title, songInstructions));
+			conn.send(new Ack(connection, "Song added"));
 			observer.onComplete();
 		});
 		conn.getOptionalClient().ifPresent(client -> {
-			conn.send(this); // send everything downstream
+			// TODO: Verify the instructions rules: REP cant got further back than notes are behind it. Also, should be one note and one number.
+			if(songInstructions.size() % 2 != 0) {
+				observer.onError(new Exception("Instructions are bad"));
+			}
+			conn.send(this);
+			conn.forwardAck(observer);
 		});
 	}
 }

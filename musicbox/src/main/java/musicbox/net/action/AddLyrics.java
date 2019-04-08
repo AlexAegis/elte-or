@@ -47,7 +47,7 @@ public class AddLyrics extends Action<String> implements Serializable {
 	 */
 	@Override
 	protected void subscribeActual(Observer<? super String> observer) {
-		var conn = connection.blockingLast();
+		var conn = connection.blockingFirst();
 		conn.getOptionalServer().ifPresent(server -> {
 			var song = server.getSongs().get(title);
 			if(song != null) {
@@ -58,7 +58,8 @@ public class AddLyrics extends Action<String> implements Serializable {
 			}
 		});
 		conn.getOptionalClient().ifPresent(client -> {
-			conn.send(this); // send everything downstream
+			conn.send(this);
+			conn.forwardAck(observer);
 		});
 	}
 }

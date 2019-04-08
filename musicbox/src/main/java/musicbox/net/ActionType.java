@@ -45,7 +45,7 @@ public enum ActionType {
 			case STOP:
 				return new Stop(connection, Integer.parseInt(split.get(0).get(1)));
 			case ACK:
-				return new Ack(connection, split.get(0).get(1));
+				return new Ack(connection, String.join(" ", split.get(0).subList(1, split.get(0).size() - 1)));
 			default:
 				return new NullAction(connection);
 		}

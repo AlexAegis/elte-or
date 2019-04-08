@@ -4,6 +4,7 @@ import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.subjects.BehaviorSubject;
 import musicbox.misc.Pair;
+import musicbox.model.Song;
 import musicbox.net.ActionType;
 import musicbox.net.result.Hold;
 import musicbox.net.result.Note;
@@ -85,21 +86,21 @@ public class Play extends Action<String> implements Serializable {
 		conn.getOptionalServer().ifPresent(server -> {
 			var song = server.getSongs().get(title);
 			if(song != null) {
-				var sub = Observable.zip(song, tempoSubject.switchMap(t -> interval(t, TimeUnit.MILLISECONDS)), (note, timer) -> note)
+				server.registerPlay(conn, Observable.zip(song, tempoSubject.switchMap(t -> interval(t, TimeUnit.MILLISECONDS)), (note, timer) -> note)
 					.map(note -> note.transpose(transpose))
-					//.takeUntil() // TODO: Take until a stop signal says so
-					.subscribe(conn::send);
-				conn.send(new Ack(connection, "PLAYSTART"));
+					.doOnDispose(() -> conn.send(Song.FIN))
+					.subscribe(conn::send))
+					.ifPresentOrElse(i -> conn.send(new Ack(connection, "play started on channel " + i)),
+						() -> conn.send(new Ack(connection, "play failed to start")));
 				observer.onComplete();
 			} else {
-				observer.onError(new Exception("No song"));
+				conn.send(new Ack(connection, "No such song"));
+				observer.onComplete();
 			}
 		});
 		conn.getOptionalClient().ifPresent(client -> {
 			conn.send(this);
-			conn.getListener().filter(s -> s.startsWith(ActionType.ACK.name().toLowerCase())).take(1).blockingSubscribe(observer);
+			conn.forwardAck(observer);
 		});
-
-
 	}
 }

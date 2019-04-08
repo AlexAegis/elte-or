@@ -24,10 +24,10 @@ public class AddCommand implements Runnable {
 
 	@Override
 	public void run() {
-		// TODO: Verify the instructions rules: REP cant got further back than notes are behind it. Also, should be one note and one number.
-		new Add(parent.getClient().getConnection(), title, instructions).blockingSubscribe();
-		parent.getOut().println("Adding...");
-		parent.getOut().flush();
+		new Add(parent.getClient().getConnection(), title, instructions)
+			.doOnError(err -> parent.getOut().println("Error while adding: " + err.getMessage()))
+			.doFinally(parent.getOut()::flush)
+			.blockingSubscribe(next -> parent.getOut().println("Song adding result: " + next));
 	}
 
 }

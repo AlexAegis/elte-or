@@ -103,4 +103,8 @@ public class Connection extends Observable<String> implements AutoCloseable {
 		out.flush();
 		Logger.getGlobal().log(Level.INFO, "Packet sent as action: {0}", action);
 	}
+
+	public void forwardAck(Observer<? super String> observer) {
+		getListener().filter(s -> s.startsWith(ActionType.ACK.name().toLowerCase())).take(1).blockingSubscribe(observer);
+	}
 }

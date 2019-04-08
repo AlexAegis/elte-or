@@ -1,5 +1,6 @@
 package musicbox.command;
 
+import musicbox.net.action.AddLyrics;
 import musicbox.net.action.Change;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -24,10 +25,10 @@ public class ChangeCommand implements Runnable {
 
 	@Override
 	public void run() {
-		// Verify the instructions rules: REP cant got further back than notes are behind it. Also, should be one note and one number.
-		new Change(parent.getClient().getConnection(), no, tempo, transpose).blockingSubscribe();
-		parent.getOut().println("Changing...");
-		parent.getOut().flush();
+		new Change(parent.getClient().getConnection(), no, tempo, transpose)
+			.doOnError(err -> parent.getOut().println("Error while changing: " + err.getMessage()))
+			.doFinally(parent.getOut()::flush)
+			.blockingSubscribe(next -> parent.getOut().println("Change result: " + next));
 	}
 
 }

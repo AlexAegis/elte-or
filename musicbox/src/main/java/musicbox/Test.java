@@ -15,8 +15,13 @@ import org.reactivestreams.Subscriber;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Set;
 import java.util.concurrent.Flow;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Test {
 	static class Hello extends Observable<String> {
@@ -36,33 +41,21 @@ public class Test {
 	}
 
 	public static void main(String[] args) throws MidiUnavailableException {
-		/*Flowable.just(new Hello())
-			.flatMap(next -> next, Pair::new)
-			.blockingSubscribe((next) -> {
-			System.out.println(next.getY()); // Hello1!, Hello2!, Hello3!, Hello4!
-			next.getX().say(); // I'm still here!, I'm still here!, I'm still here!, I'm still here!
-		});*/
-
-		// , Pair::new
-		Flowable.just(new Hello().concatWith(Observable.never()))
-			.parallel()
-			.runOn(Schedulers.io())
-			.flatMap(r -> r.onTerminateDetach().toFlowable(BackpressureStrategy.BUFFER).withLatestFrom(Flowable.just(r), Pair::new))
-			.sequential()
-			.blockingSubscribe(System.out::println);
-
-
-		/*
-
-
-				Observable.just(new Hello()).flatMap(next -> {
-			return Observable.combineLatest(next, Observable.just(next), Pair::new);
-		}).blockingSubscribe((next) -> {
-			System.out.println(next.getX()); // Hello1!, Hello1!, Hello1!, Hello1!
-			next.getY().say(); // I'm still here!, I'm still here!, I'm still here!, I'm still here!
-		});
-
-		 */
+		var map = new HashMap<Integer, String>();
+		map.put(2, "a");
+		map.put(1, "a");
+		//map.put(4, "a");
+		var keys = map.keySet();
+		var min = 0;
+		var max = 0;
+		try {
+			min = Collections.min(keys);
+			max = Collections.max(keys);
+		} finally {
+			Set<Integer> k = IntStream.rangeClosed(++min , ++max).boxed().collect(Collectors.toSet());
+			k.removeAll(keys);
+			k.stream().findFirst().ifPresentOrElse(System.out::println, () -> System.out.println("Err"));
+		}
 
 	}
 }

@@ -50,12 +50,13 @@ public class Change extends Action<String> implements Serializable {
 	 */
 	@Override
 	protected void subscribeActual(Observer<? super String> observer) {
-		var conn = connection.blockingLast();
+		var conn = connection.blockingFirst();
 		conn.getOptionalServer().ifPresent(server -> {
 			observer.onComplete();
 		});
 		conn.getOptionalClient().ifPresent(client -> {
-			conn.send(this); // send everything downstream
+			conn.send(this);
+			conn.forwardAck(observer);
 		});
 	}
 }

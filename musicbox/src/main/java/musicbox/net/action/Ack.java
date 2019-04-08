@@ -42,7 +42,7 @@ public class Ack extends Action<String> implements Serializable {
 	 */
 	@Override
 	protected void subscribeActual(Observer<? super String> observer) {
-		var conn = connection.blockingLast();
+		var conn = connection.blockingFirst();
 		conn.getOptionalServer().ifPresent(server -> {
 			conn.send(this);
 			observer.onComplete();

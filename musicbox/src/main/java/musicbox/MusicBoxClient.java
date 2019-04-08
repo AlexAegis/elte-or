@@ -13,6 +13,8 @@ import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
 import musicbox.net.action.Play;
+import musicbox.net.action.Stop;
+import musicbox.net.result.Fin;
 import musicbox.net.result.Hold;
 import musicbox.net.result.Note;
 import musicbox.net.result.Rest;
@@ -108,19 +110,24 @@ public class MusicBoxClient implements Runnable {
 			var res = getConnection()
 				.doOnEach(e -> System.out.println("HEY LETS SEND PLAY! " + e))
 				.flatMap(c -> new Play(getConnection(), tempo, transpone, title))
+				.blockingFirst();*/
+/*
+
+			var res = getConnection()
+				.doOnEach(e -> System.out.println("HEY LETS SEND STOP! " + e))
+				.flatMap(c -> new Stop(getConnection(), -1))
 				.blockingFirst();
 */
-
 			synthPlayer = getConnection()
 				.flatMap(Connection::getListener)
-				.subscribeOn(Schedulers.newThread())
-				.observeOn(Schedulers.newThread())
+				.subscribeOn(Schedulers.computation())
+				//.observeOn(Schedulers.newThread())
 				.filter(s -> Arrays.stream(ActionType.values()).map(Enum::name).noneMatch(name -> name.equalsIgnoreCase(s.split(" ")[0])))
 				.map(Note::construct)
 				.subscribe(
 					next -> {
 						if(!next.getClass().equals(Hold.class)) {
-							if(next.getClass().equals(Rest.class)) {
+							if(next.getClass().equals(Rest.class) || next.getClass().equals(Fin.class)) {
 								synthesizer.getChannels()[0].allNotesOff();
 							} else {
 								synthesizer.getChannels()[0].noteOn(next.getNote(), 100);
