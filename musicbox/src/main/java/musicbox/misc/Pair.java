@@ -10,6 +10,9 @@ public class Pair<T, U> implements Serializable {
 	private T x;
 	private U y;
 
+	public Pair() {
+	}
+
 	public Pair(T x, U y) {
 		this.x = x;
 		this.y = y;
@@ -21,6 +24,14 @@ public class Pair<T, U> implements Serializable {
 
 	public U getY() {
 		return y;
+	}
+
+	public void setX(T x) {
+		this.x = x;
+	}
+
+	public void setY(U y) {
+		this.y = y;
 	}
 
 	@Override
@@ -40,8 +51,8 @@ public class Pair<T, U> implements Serializable {
 	@Override
 	public String toString() {
 		return "Pair{" +
-			"x=" + x +
-			", y=" + y +
+			"x=" + x.toString() +
+			", y=" + y.toString() +
 			'}';
 	}
 }

@@ -3,9 +3,9 @@ package musicbox.net.action;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.subjects.BehaviorSubject;
+import musicbox.net.result.Hold;
 import musicbox.net.result.Note;
 import musicbox.net.Connection;
-import musicbox.net.result.Response;
 
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
@@ -57,7 +57,7 @@ public class Play extends Action<Note> implements Serializable {
 	/**
 	 * TODO: Send a playing notification to the client!
 	 *
-	 * Upon subscription to the Play Action/Action, this will first try to access the server.
+	 * Upon subscription to the Play ActionType/ActionType, this will first try to access the server.
 	 * If the connection was made from the server then this will be successful, otherwise an error will be thrown downstream
 	 *
 	 * After accessing the server the play action then tries to access the song defined in the `title` field.
@@ -77,21 +77,26 @@ public class Play extends Action<Note> implements Serializable {
 	 * @param observer which will receive the notes and will handle the network forwarding to the client.
 	 */
 	@Override
-	protected void subscribeActual(Observer<? super Response> observer) {
+	protected void subscribeActual(Observer<? super Note> observer) {
 		connection.getOptionalServer().ifPresent(server -> {
 			var song = server.getSongs().get(title);
 			if(song != null) {
 				Observable.zip(song, tempoSubject.switchMap(t -> interval(t, TimeUnit.MILLISECONDS)), (note, timer) -> note)
 					.map(note -> note.transpose(transpose))
 					//.takeUntil() // TODO: Take until a stop signal says so
-					.blockingSubscribe(observer::onNext); // send note, the receiver end will make the network related things
+					.doOnEach(e -> System.out.println("SEND BEFIRE EACH " + e))
+					.subscribe(next -> connection.send(next));
 			} else {
 				observer.onError(new Exception("No song found"));
 			}
 			observer.onComplete();
 		});
 		connection.getOptionalClient().ifPresent(client -> {
-			connection.send(this).subscribe(observer); // send everything downstream
+			System.out.println("SEEENDINNNG");
+			connection.send(this);
+			System.out.println("SEEENT");
+			observer.onNext(new Hold());
+			observer.onComplete();
 		});
 	}
 }

@@ -2,12 +2,11 @@ package musicbox.net.action;
 
 import io.reactivex.Observer;
 import musicbox.net.Connection;
-import musicbox.net.result.Response;
 
 import java.io.Serializable;
 import java.util.List;
 
-public class AddLyrics extends Action<Response> implements Serializable {
+public class AddLyrics extends Action<String> implements Serializable {
 
 	private String title;
 	private List<String> lyrics;
@@ -32,12 +31,12 @@ public class AddLyrics extends Action<Response> implements Serializable {
 	}
 
 	@Override
-	public Class<Response> getResponseClass() {
-		return Response.class;
+	public Class<String> getResponseClass() {
+		return String.class;
 	}
 
 	/**
-	 * Upon subscription to the AddLyrics Action/Action, this will first try to access the server.
+	 * Upon subscription to the AddLyrics ActionType/ActionType, this will first try to access the server.
 	 * If the connection was made from the server then this will be successful, otherwise an error will be thrown downstream
 	 *
 	 * After accessing the server the AddLyrics action then tries to access the song defined in the `title` field.
@@ -46,7 +45,7 @@ public class AddLyrics extends Action<Response> implements Serializable {
 	 * @param observer which will be notified about completion or error
 	 */
 	@Override
-	protected void subscribeActual(Observer<? super Response> observer) {
+	protected void subscribeActual(Observer<? super String> observer) {
 		connection.getOptionalServer().ifPresent(server -> {
 			var song = server.getSongs().get(title);
 			if(song != null) {
@@ -57,7 +56,7 @@ public class AddLyrics extends Action<Response> implements Serializable {
 			}
 		});
 		connection.getOptionalClient().ifPresent(client -> {
-			connection.send(this).subscribe(observer); // send everything downstream
+			connection.send(this); // send everything downstream
 		});
 	}
 }

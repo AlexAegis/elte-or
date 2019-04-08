@@ -1,14 +1,17 @@
 package musicbox.net;
 
+import hu.akarnokd.rxjava2.operators.Observables;
 import musicbox.MusicBoxClient;
 import musicbox.MusicBox;
 import musicbox.net.action.Action;
 import musicbox.net.result.HandledResponse;
-import musicbox.net.result.Response;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.subjects.BehaviorSubject;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -19,15 +22,15 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Connection extends Observable<Action<? extends Response>> implements AutoCloseable {
+public class Connection extends Observable<String> implements AutoCloseable {
 
 	private Socket clientSocket;
 	private PrintWriter out;
 	private Scanner in;
 
 	private final HandledResponse handledResponse = new HandledResponse();
-	private BehaviorSubject<Response> listenerSource = BehaviorSubject.create();
-	private Observable<Response> listener = listenerSource.filter(r -> !handledResponse.equals(r));
+	private BehaviorSubject<String> listenerSource = BehaviorSubject.create();
+	private Observable<String> listener = listenerSource.filter(r -> !handledResponse.toString().equals(r));
 	private MusicBox optionalServer;
 	private MusicBoxClient optionalClient;
 	private int remaining = 0;
@@ -60,21 +63,19 @@ public class Connection extends Observable<Action<? extends Response>> implement
 	}
 
 	@Override
-	protected void subscribeActual(Observer<? super musicbox.net.action.Action<? extends Response>> observer) {
+	protected void subscribeActual(Observer<? super String> observer) {
 		Logger.getGlobal().info("Listener started");
-
-		try {
+		try {/*
+			if(optionalServer != null) {
+				observer.onNext("play 100 0 test1");
+			}*/
 			while (!isClosed() && in.hasNextLine()) {
-				var next = in.nextLine();
-				buffer.add(next);
-				musicbox.net.Action.ifStartingWithAction(next).ifPresent(action -> remaining = action.getAdditionalLines());
-				if(--remaining < 0) {
-					observer.onNext(musicbox.net.Action.construct(this, buffer));
-					buffer.clear();
-				}
+				observer.onNext(in.nextLine());
+				System.out.println("GOT STUFF");
 			}
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, "Exception in listener!", e);
+			// observer.onError(e);
 		} finally {
 			Logger.getGlobal().info("MusicBoxClient disconnected, trying to reconnect..");
 			close();
@@ -106,23 +107,12 @@ public class Connection extends Observable<Action<? extends Response>> implement
 		}
 	}
 
-	public void respond(Response response) {
-		try {
-			out.write(response.toString());
-			out.flush();
-			Logger.getGlobal().log(Level.INFO, "Packet sent as response: {0}", response);
-		} catch (Exception e) {
-			Logger.getGlobal().log(Level.SEVERE, "Respond error to {0}", response);
-		}
-	}
-
-	public <T extends Response> Observable<T> send(musicbox.net.action.Action<T> action) {
-		out.write(action.toString());
-		listenerSource.onNext(handledResponse);
+	public void send(musicbox.net.action.Action<?> action) {
+		System.out.println("Sending actiong");
+		out.println(action.toString());
 		out.flush();
+		listenerSource.onNext(handledResponse.toString());
 		Logger.getGlobal().log(Level.INFO, "Packet sent as action: {0}", action);
-		return listener.filter(n -> n.getClass().equals(action.getResponseClass()))
-				.cast(action.getResponseClass()).take(1);
+	//	return listener.take(1);
 	}
-
 }

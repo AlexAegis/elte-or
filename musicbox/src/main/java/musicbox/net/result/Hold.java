@@ -12,6 +12,6 @@ public class Hold extends Note implements Serializable {
 
 	@Override
 	public String toString() {
-		return "-";
+		return "- ???";
 	}
 }

@@ -22,10 +22,9 @@ public class StopCommand implements Runnable {
 
 	@Override
 	public void run() {
-		parent.getClient().getConnection()
-			.switchMap(connection -> new Stop(connection, no))
-			.blockingSubscribe(next -> parent.getOut().println("Stopping... " + no),
-				err -> parent.getOut().println("Stopping failed. " + no));
+		new Stop(parent.getClient().getConnectionSubject().getValue(), no).blockingSubscribe();
+		parent.getOut().println("Stopping...");
+		parent.getOut().flush();
 	}
 
 }

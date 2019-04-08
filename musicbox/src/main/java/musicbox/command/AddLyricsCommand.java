@@ -25,10 +25,9 @@ public class AddLyricsCommand implements Runnable {
 
 	@Override
 	public void run() {
-		parent.getClient().getConnection()
-			.switchMap(connection -> new AddLyrics(connection, title, syllables))
-			.blockingSubscribe(next -> parent.getOut().println("Adding lyrics... " + title + " syllables: " + syllables.toString()),
-				err -> parent.getOut().println("Adding lyrics failed. " + title + " syllables: " + syllables.toString()));
+		new AddLyrics(parent.getClient().getConnectionSubject().getValue(), title, syllables).blockingSubscribe();
+		parent.getOut().println("Adding lyrics...");
+		parent.getOut().flush();
 	}
 
 }

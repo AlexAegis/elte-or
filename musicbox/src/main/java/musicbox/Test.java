@@ -3,65 +3,66 @@ package musicbox;
 import hu.akarnokd.rxjava2.operators.FlowableTransformers;
 import io.reactivex.*;
 import io.reactivex.functions.Predicate;
+import io.reactivex.internal.operators.flowable.FlowableCombineLatest;
+import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.ReplaySubject;
 import io.reactivex.subjects.SingleSubject;
+import musicbox.misc.Pair;
+import musicbox.net.Connection;
+import org.reactivestreams.Subscriber;
 
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import java.util.Arrays;
+import java.util.concurrent.Flow;
 import java.util.concurrent.TimeUnit;
 
 public class Test {
-	/*public static void main(String[] args) {
-		var flowable = Flowable.concat(Flowable.fromArray("h", "3", "a", "b", "c", "1", "a", "2", "a", "b"), Flowable.never());
-		flowable.compose(FlowableTransformers.bufferUntil(new Predicate<>() {
-			private int remaining = 0;
-			@Override
-			public boolean test(String next) {
-				if(next.chars().allMatch(Character::isDigit)) {
-					remaining = Integer.parseInt(next);
-				}
-				return --remaining < 0;
-			}
-		})).blockingSubscribe(System.out::println);
-	}*/
-
-	public static void main(String[] args) throws MidiUnavailableException {
-/*
-		var stopper = BehaviorSubject.create();
-		var stopper$ = stopper.doOnDispose(() -> System.out.println("I'm disposed"));
-		Observable.just(1).delay(1000, TimeUnit.MILLISECONDS).subscribe(stopper::onNext);
-		Observable.interval(100, TimeUnit.MILLISECONDS)
-			.takeUntil(stopper$)
-			.blockingSubscribe(System.out::println);
-*/
-	}
-
-	public static int parseNote(char baseNote, int half, int octave) {
-		var baseNoteForCalc = baseNote;
-		if(baseNote == 'A') {
-			baseNoteForCalc = 'H';
-		} else if(baseNote == 'B') {
-			baseNoteForCalc = 'I';
+	static class Hello extends Observable<String> {
+		public void say() {
+			System.out.println("I'm still here!");
 		}
 
-		int pitch = (((baseNoteForCalc - 7) - 60) * 2) + 60;
-		//System.out.println("Pitch should be " + (int )baseNote + " when converting back from " + pitch + " but it's: " + parsePitch(pitch) );
-		int result = pitch + half + octave * 12;
 
-
-	//	System.out.println("note: "  + baseNote + " half: " + half + " octave: " + octave +" : " + result);
-
-		return result;
+		@Override
+		protected void subscribeActual(Observer<? super String> s) {
+			s.onNext("Hello1!");
+			s.onNext("Hello2!");
+			s.onNext("Hello3!");
+			s.onNext("Hello4!");
+			s.onComplete();
+		}
 	}
 
-	public static int parsePitch(int pitch) {
-		return ((((((pitch - 60) ) / 2) + 2) % 7) + 60 + 7 - 2);
-	}
+	public static void main(String[] args) throws MidiUnavailableException {
+		/*Flowable.just(new Hello())
+			.flatMap(next -> next, Pair::new)
+			.blockingSubscribe((next) -> {
+			System.out.println(next.getY()); // Hello1!, Hello2!, Hello3!, Hello4!
+			next.getX().say(); // I'm still here!, I'm still here!, I'm still here!, I'm still here!
+		});*/
 
-	public static int applyTranspose(int pitch, int transpose) {
-		return (((pitch - 67) + transpose) % 7) + 67;
-	}
+		// , Pair::new
+		Flowable.just(new Hello().concatWith(Observable.never()))
+			.parallel()
+			.runOn(Schedulers.io())
+			.flatMap(r -> r.onTerminateDetach().toFlowable(BackpressureStrategy.BUFFER).withLatestFrom(Flowable.just(r), Pair::new))
+			.sequential()
+			.blockingSubscribe(System.out::println);
 
+
+		/*
+
+
+				Observable.just(new Hello()).flatMap(next -> {
+			return Observable.combineLatest(next, Observable.just(next), Pair::new);
+		}).blockingSubscribe((next) -> {
+			System.out.println(next.getX()); // Hello1!, Hello1!, Hello1!, Hello1!
+			next.getY().say(); // I'm still here!, I'm still here!, I'm still here!, I'm still here!
+		});
+
+		 */
+
+	}
 }

@@ -2,11 +2,10 @@ package musicbox.net.action;
 
 import io.reactivex.Observer;
 import musicbox.net.Connection;
-import musicbox.net.result.Response;
 
 import java.io.Serializable;
 
-public class Change extends Action<Response> implements Serializable {
+public class Change extends Action<String> implements Serializable {
 
 	private Integer no;
 	private Integer tempo;
@@ -38,8 +37,8 @@ public class Change extends Action<Response> implements Serializable {
 
 
 	@Override
-	public Class<Response> getResponseClass() {
-		return Response.class;
+	public Class<String> getResponseClass() {
+		return String.class;
 	}
 
 	/**
@@ -49,13 +48,13 @@ public class Change extends Action<Response> implements Serializable {
 	 * @param observer
 	 */
 	@Override
-	protected void subscribeActual(Observer<? super Response> observer) {
+	protected void subscribeActual(Observer<? super String> observer) {
 		connection.getOptionalServer().ifPresent(server -> {
 
 			observer.onComplete();
 		});
 		connection.getOptionalClient().ifPresent(client -> {
-			connection.send(this).subscribe(observer); // send everything downstream
+			connection.send(this); // send everything downstream
 		});
 	}
 }

@@ -12,6 +12,6 @@ public class Rest extends Note implements Serializable {
 
 	@Override
 	public String toString() {
-		return "R";
+		return "R ???";
 	}
 }

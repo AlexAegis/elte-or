@@ -1,5 +1,6 @@
 package musicbox;
 
+import io.reactivex.BackpressureStrategy;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import jline.console.ConsoleReader;
@@ -7,10 +8,13 @@ import jline.console.completer.ArgumentCompleter;
 import musicbox.command.ClientCommands;
 import musicbox.net.Connection;
 import musicbox.net.action.Action;
-import musicbox.net.result.Response;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
+import musicbox.net.action.Play;
+import musicbox.net.result.Hold;
+import musicbox.net.result.Note;
+import musicbox.net.result.Rest;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -20,6 +24,10 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import picocli.shell.jline2.PicocliJLineCompleter;
+
+import javax.sound.midi.MidiSystem;
+import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.Synthesizer;
 
 @Command(name = "client", sortOptions = false,
 		header = {"", "@|cyan      _ _         _    |@", "@|cyan  ___| |_|___ ___| |_  |@",
@@ -46,10 +54,17 @@ public class MusicBoxClient implements Runnable {
 
 
 	private BehaviorSubject<Connection> connection = BehaviorSubject.create();
+	private Observable<Connection> connection$ = connection.filter(con -> con != null && !con.isClosed()).doOnEach(System.out::println);
 	private CompositeDisposable subscriptions = new CompositeDisposable();
 
+	private Synthesizer synthesizer = MidiSystem.getSynthesizer();
 
-	public static void main(String[] args) {
+	public MusicBoxClient() throws MidiUnavailableException {
+		synthesizer.open();
+	}
+
+
+	public static void main(String[] args) throws MidiUnavailableException {
 		CommandLine.run(new MusicBoxClient(), System.err, args);
 	}
 
@@ -60,28 +75,19 @@ public class MusicBoxClient implements Runnable {
 		return connection;
 	}
 
-	/**
-	 * @return the connection
-	 */
 	public Observable<Connection> getConnection() {
-		return connection.filter(con -> !con.isClosed());
+		return connection$;
 	}
 
 	public void tryConnect(String host, Integer port) {
 		Logger.getGlobal().info("Trying a connect!");
-		subscriptions.add(Observable.fromCallable(() -> new Connection(this, host, port))
+		Observable.fromCallable(() -> new Connection(this, host, port))
 			.doOnError(e -> Logger.getGlobal().log(Level.SEVERE, "Connection error, retrying..."))
 			.retry(4)
-			.subscribeOn(Schedulers.newThread())
-			.subscribe(getConnectionSubject()::onNext,
-				e -> Logger.getGlobal().log(Level.SEVERE, "Error on tryConnect", e), () -> Logger.getGlobal().info("Completed try connect")));
+			//.subscribeOn(Schedulers.newThread())
+			.blockingSubscribe(getConnectionSubject()::onNext,
+				e -> Logger.getGlobal().log(Level.SEVERE, "Error on tryConnect", e), () -> Logger.getGlobal().info("Completed try connect"));
 
-	}
-
-	public <T extends Response> Observable<T> sendRequest(Action<T> req) {
-		return getConnection().switchMap(conn -> conn.send(req)).onErrorResumeNext(e -> {
-			Logger.getGlobal().info("SendRequest errored out!");
-		});
 	}
 
 	@Override
@@ -90,17 +96,41 @@ public class MusicBoxClient implements Runnable {
 			Logger.getGlobal().setLevel(app.getLoglevel().getLevel());
 		}
 		tryConnect(host, port);
+
+
+		var tempo = 100L;
+		var transpone = 0;
+		var title = "test2";
+// Remember that I only except an acknowledgement and not the whole play. That will come in through the listener
+
+
 		Disposable subscription = null;
 		try(var reader = new ConsoleReader()) {
 			reader.setPrompt("musicbox> ");
 
-			subscription = getConnection().switchMap(conn -> conn).subscribeOn(Schedulers.newThread()).subscribe(
-				next -> {
-					// reader.getOutput().append(next)
-					Logger.getGlobal().log(Level.INFO, " MusicBoxClient connection subscription onNext: {0}",
-					next);},
-				e -> Logger.getGlobal().log(Level.SEVERE, "MusicBoxClient listener error in tryConnect!", e),
-				() -> Logger.getGlobal().info("Connection finished!"));
+			var res = getConnection()
+				.flatMap(c -> new Play(c, tempo, transpone, title))
+				.blockingFirst();
+
+
+			subscription = getConnection()
+				.flatMap(conn -> conn)
+				.subscribeOn(Schedulers.newThread())
+				.observeOn(Schedulers.newThread())
+				.map(Note::construct)
+				.subscribe(
+					next -> {
+
+						if(next.getClass().equals(Hold.class)) {
+
+						} else if(next.getClass().equals(Rest.class)) {
+							synthesizer.getChannels()[0].allNotesOff();
+						} else {
+							synthesizer.getChannels()[0].noteOn(next.getNote(), 100);
+						}
+					},
+					e -> Logger.getGlobal().log(Level.SEVERE, "MusicBoxClient listener error in tryConnect!", e),
+					() -> Logger.getGlobal().info("Connection finished!"));
 			// set up the completion
 			var commands = new ClientCommands(reader, this);
 			var cmd = new CommandLine(commands);

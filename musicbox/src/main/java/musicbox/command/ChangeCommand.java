@@ -25,11 +25,9 @@ public class ChangeCommand implements Runnable {
 	@Override
 	public void run() {
 		// Verify the instructions rules: REP cant got further back than notes are behind it. Also, should be one note and one number.
-
-		parent.getClient().getConnection()
-			.switchMap(connection -> new Change(connection, no, tempo, transpose))
-			.blockingSubscribe(next -> parent.getOut().println("Changing... " + no + " transpose: " + transpose + " tempo: " + tempo),
-				err -> parent.getOut().println("Changing failed. " + no + " transpose: " + transpose + " tempo: " + tempo));
+		new Change(parent.getClient().getConnectionSubject().getValue(), no, tempo, transpose).blockingSubscribe();
+		parent.getOut().println("Changing...");
+		parent.getOut().flush();
 	}
 
 }

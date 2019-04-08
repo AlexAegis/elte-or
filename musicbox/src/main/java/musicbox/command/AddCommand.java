@@ -25,10 +25,9 @@ public class AddCommand implements Runnable {
 	@Override
 	public void run() {
 		// TODO: Verify the instructions rules: REP cant got further back than notes are behind it. Also, should be one note and one number.
-		parent.getClient().getConnection()
-			.switchMap(connection -> new Add(connection, title, instructions))
-			.blockingSubscribe(next -> parent.getOut().println("Adding... " + title + " instructions: " + instructions.toString()),
-				err -> parent.getOut().println("Adding failed. " + title + " instructions: " + instructions.toString()));
+		new Add(parent.getClient().getConnectionSubject().getValue(), title, instructions).blockingSubscribe();
+		parent.getOut().println("Adding...");
+		parent.getOut().flush();
 	}
 
 }

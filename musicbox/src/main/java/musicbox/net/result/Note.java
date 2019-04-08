@@ -1,6 +1,9 @@
 package musicbox.net.result;
 
+import io.reactivex.Observer;
 import musicbox.misc.Pair;
+import musicbox.net.action.Action;
+import org.junit.runner.Request;
 
 import java.io.Serializable;
 
@@ -9,7 +12,7 @@ import java.io.Serializable;
  *
  * It can be serialized but the task demanded to send it as a string
  */
-public class Note extends Response implements Serializable {
+public class Note extends Action<String> implements Serializable {
 
 	private static final long serialVersionUID = 8947857780242641675L;
 
@@ -19,7 +22,26 @@ public class Note extends Response implements Serializable {
 	private int transpose;
 	private String syllable;
 
-	public Note() {}
+	public Note() {
+		super(null);
+	}
+
+	public static Note construct(String from) {
+		if(from.startsWith("-")) {
+			return new Hold();
+		} else if(from.startsWith("R")) {
+			return new Rest();
+		} else {
+			return new Note(from);
+		}
+	}
+
+	@Override
+	protected void subscribeActual(Observer<? super String> observer) {
+		observer.onNext(toString());
+		observer.onComplete();
+	}
+
 
 	/**
 	 * To be used by the client for quick parsing of the incoming note.
@@ -42,6 +64,7 @@ public class Note extends Response implements Serializable {
 	 * @param syllable
 	 */
 	public Note(String note, String syllable) {
+		super(null);
 		var noteAndOctave = note.split("/");
 		var noteAndHalf = noteAndOctave[0].toCharArray();
 		base = parseNote(noteAndHalf[0]);
@@ -152,6 +175,11 @@ public class Note extends Response implements Serializable {
 			result.append('/');
 			result.append(octave);
 		}
-		return result.toString();
+		return result.toString() + " " + getSyllable();
+	}
+
+	@Override
+	public Class<String> getResponseClass() {
+		return String.class;
 	}
 }
