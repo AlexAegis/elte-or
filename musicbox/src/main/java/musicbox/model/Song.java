@@ -45,7 +45,7 @@ public class Song extends Observable<Note> implements Serializable {
 	}
 
 	public String getSyllable(int i) {
-		return getLyrics() != null && getLyrics().size() > i - 1 ? getLyrics().get(i) : null;
+		return getLyrics() != null && getLyrics().size() > i ? getLyrics().get(i) : null;
 	}
 
 	@Override
@@ -72,6 +72,7 @@ public class Song extends Observable<Note> implements Serializable {
 		try {
 			var localInstructions = new ArrayList<>(instructions); // I create a local copy because I'll modify it mid play
 			var i = 0;
+			var nextSyllable = 0;
 			while (i < localInstructions.size()) {
 				var next = localInstructions.get(i);
 				Note note;
@@ -88,7 +89,8 @@ public class Song extends Observable<Note> implements Serializable {
 						i = i + 2; // Else skip to the next
 					continue; // Skip this iteration from emitting notes as its a meta instruction
 				} else { // if its an actual note
-					note = new Note(localInstructions.get(i), getSyllable(i));
+					note = new Note(localInstructions.get(i), getSyllable(nextSyllable));
+					nextSyllable++;
 				}
 				// Actually sending a note, or rest
 				// Then when a note is longer than one unit, then send as many hold notes
