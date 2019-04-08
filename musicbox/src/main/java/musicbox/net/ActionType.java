@@ -23,7 +23,6 @@ public enum ActionType {
 	 * @return
 	 */
 	public static musicbox.net.action.Action<?> construct(Observable<Connection> connection, List<String> lines) {
-		System.out.println("CONSTRUCT of " + lines.toString());
 		var split = lines.stream().map(line -> Arrays.asList(line.split(" "))).collect(Collectors.toList());
 		switch (ActionType.getActionByName(split.get(0).get(0)).orElse(ActionType.NULL)) {
 			case ADD:
@@ -31,13 +30,13 @@ public enum ActionType {
 			case ADDLYRICS:
 				return new AddLyrics(connection, split.get(0).get(1), split.size() > 1 ? split.get(1) : null);
 			case PLAY:
-				return new Play(connection, split.get(0).get(1), split.get(0).get(2), split.get(0).get(3));
+				return new Play(connection, split.get(0).get(1), split.get(0).get(2),  split.get(0).subList(3, split.get(0).size()));
 			case CHANGE:
 				return new Change(connection, split.get(0).get(1), split.get(0).get(2), split.get(0).get(3));
 			case STOP:
 				return new Stop(connection, split.get(0).get(1));
 			case ACK:
-				return new Ack(connection, String.join(" ", split.get(0).subList(1, split.get(0).size() - 1)));
+				return new Ack(connection, String.join(" ", split.get(0).subList(1, split.get(0).size())));
 			default:
 				return new NullAction(connection);
 		}

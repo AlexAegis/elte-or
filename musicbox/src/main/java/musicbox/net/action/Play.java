@@ -8,21 +8,24 @@ import musicbox.misc.Pair;
 import musicbox.model.Song;
 import musicbox.net.Connection;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class Play extends Action<String> implements Serializable {
 
 	private static final long serialVersionUID = 8722933668160441290L;
 
-	private String title;
+	private List<String> titles;
 
 	private transient BehaviorSubject<Long> tempoSubject = BehaviorSubject.create();
 	private transient BehaviorSubject<Integer> transposeSubject = BehaviorSubject.create();
-	private transient Disposable disposable;
+	private transient Map<String, Disposable> disposables = new HashMap<>();
 
-	public Play(Observable<Connection> connection, String tempo, String transpose, String title) {
+	public Play(Observable<Connection> connection, String tempo, String transpose, List<String> titles) {
 		super(connection);
-		this.title = title;
+		this.titles = titles;
 		if (tempo.chars().allMatch(Character::isDigit)) {
 			this.setTempo(Long.parseLong(tempo));
 		}
@@ -31,9 +34,9 @@ public class Play extends Action<String> implements Serializable {
 		}
 	}
 
-	public Play(Observable<Connection> connection, Long tempo, Integer transpose, String title) {
+	public Play(Observable<Connection> connection, Long tempo, Integer transpose, List<String> titles) {
 		super(connection);
-		this.title = title;
+		this.titles = titles;
 		this.setTempo(tempo);
 		this.setTranspose(transpose);
 	}
@@ -46,8 +49,8 @@ public class Play extends Action<String> implements Serializable {
 		return transposeSubject.getValue();
 	}
 
-	public String getTitle() {
-		return title;
+	public List<String> getTitles() {
+		return titles;
 	}
 
 	public void setTranspose(Integer transpose) {
@@ -58,13 +61,13 @@ public class Play extends Action<String> implements Serializable {
 		tempoSubject.onNext(tempo);
 	}
 
-	public Disposable getDisposable() {
-		return disposable;
+	public Map<String, Disposable> getDisposables() {
+		return disposables;
 	}
 
 	@Override
 	public String toString() {
-		return "play " + getTempo() + " " + getTranspose() + " " + getTitle();
+		return "play " + getTempo() + " " + getTranspose() + " " + String.join(" ", getTitles());
 	}
 
 	@Override
@@ -95,26 +98,33 @@ public class Play extends Action<String> implements Serializable {
 	protected void subscribeActual(Observer<? super String> observer) {
 		var conn = connection.blockingFirst();
 		conn.getOptionalServer().ifPresent(server -> {
-			var song = server.getSongs().get(title);
-			if (song != null) {
-				// Remove `60000 /` if you want to specify the tempo in ms instead of bpm
-				disposable =
+			System.out.println(titles.toString());
+			var success = false;
+			for (var title : titles) {
+				var song = server.getSongs().get(title);
+				if (song != null) {
+					// Remove `60000 /` if you want to specify the tempo in ms instead of bpm
+					disposables.put(title,
 						Observable
-								.zip(song,
-										tempoSubject.switchMap(
-												t -> interval(60000 / (t == 0 ? 250 : t), TimeUnit.MILLISECONDS)),
-										(note, timer) -> note)
-								.withLatestFrom(transposeSubject, Pair::new)
-								.map(noteTransposePair -> noteTransposePair.getX().transpose(noteTransposePair.getY()))
-								.doOnDispose(() -> conn.send(Song.FIN)).subscribe(conn::send);
-				server.registerPlay(conn, this).ifPresentOrElse(
-						i -> conn.send(new Ack(connection, "play started on channel " + i)),
-						() -> conn.send(new Ack(connection, "play failed to start")));
-				observer.onComplete();
-			} else {
-				conn.send(new Ack(connection, "No such song"));
-				observer.onComplete();
+							.zip(song,
+								tempoSubject.switchMap(
+									t -> interval(60000 / (t == 0 ? 250 : t), TimeUnit.MILLISECONDS)),
+								(note, timer) -> note)
+							.withLatestFrom(transposeSubject, Pair::new)
+							.map(noteTransposePair -> noteTransposePair.getX().transpose(noteTransposePair.getY()))
+							.doOnDispose(() -> conn.send(Song.FIN)).subscribe(conn::send));
+					success = true;
+				} else {
+					conn.send(new Ack(connection, "No such song"));
+				}
 			}
+
+			if(success) {
+				server.registerPlay(conn, this).ifPresentOrElse(
+					i -> conn.send(new Ack(connection, "play started on channel " + i)),
+					() -> conn.send(new Ack(connection, "play failed to start")));
+			}
+			observer.onComplete();
 		});
 		conn.getOptionalClient().ifPresent(client -> {
 			conn.send(this);

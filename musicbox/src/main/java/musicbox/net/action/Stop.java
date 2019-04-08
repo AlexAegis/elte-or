@@ -2,6 +2,7 @@ package musicbox.net.action;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import musicbox.net.Connection;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ public class Stop extends Action<String> implements Serializable {
 			for (var target : targets) {
 				var play = server.getPlaying().get(target);
 				if (play != null) {
-					play.getY().getDisposable().dispose();
+					play.getY().getDisposables().values().forEach(Disposable::dispose);
 					hits++;
 				}
 				server.getPlaying().remove(target);

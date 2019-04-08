@@ -4,9 +4,11 @@ import hu.akarnokd.rxjava2.operators.FlowableTransformers;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 import musicbox.misc.Pair;
+import musicbox.misc.Triple;
 import musicbox.model.Song;
 import musicbox.net.ActionType;
 import musicbox.net.Connection;
@@ -72,7 +74,7 @@ public class MusicBox implements Runnable {
 
 	public void cleanPlaying() {
 		playing.entrySet().stream()
-			.filter(e -> e.getValue().getY().getDisposable().isDisposed())
+			.filter(e -> e.getValue().getY().getDisposables().values().stream().allMatch(Disposable::isDisposed))
 			.map(Map.Entry::getKey)
 			.collect(Collectors.toList())
 			.forEach(playing::remove);

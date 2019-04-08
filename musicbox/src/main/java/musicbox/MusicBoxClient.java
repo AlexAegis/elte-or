@@ -52,6 +52,8 @@ public class MusicBoxClient implements Runnable {
 
 	private Synthesizer synthesizer = MidiSystem.getSynthesizer();
 
+	public static final String PROMPT = "musicbox> ";
+
 	public MusicBoxClient() throws MidiUnavailableException {
 		synthesizer.open();
 	}
@@ -86,20 +88,28 @@ public class MusicBoxClient implements Runnable {
 
 		Disposable synthPlayer = null;
 		try (var reader = new ConsoleReader()) {
-			reader.setPrompt("musicbox> ");
-			synthPlayer = getConnection().flatMap(Connection::getListener).subscribeOn(Schedulers.computation())
-					.filter(s -> Arrays.stream(ActionType.values()).map(Enum::name)
-							.noneMatch(name -> name.equalsIgnoreCase(s.split(" ")[0])))
-					.map(Note::construct).subscribe(next -> {
-						if (!next.getClass().equals(Hold.class)) {
-							if (next.getClass().equals(Rest.class) || next.getClass().equals(Fin.class)) {
-								synthesizer.getChannels()[0].allNotesOff();
-							} else {
-								synthesizer.getChannels()[0].noteOn(next.getNote(), 100);
-							}
+			reader.setPrompt(PROMPT);
+			synthPlayer = getConnection()
+				.flatMap(Connection::getListener)
+				.subscribeOn(Schedulers.computation())
+				.filter(s -> Arrays.stream(ActionType.values()).map(Enum::name)
+					.noneMatch(name -> name.equalsIgnoreCase(s.split(" ")[0])))
+				.map(Note::construct)
+				.scan((acc, next) -> {
+					Note finalAcc = acc;
+					if (!next.getClass().equals(Hold.class)) {
+						if (next.getClass().equals(Rest.class) || next.getClass().equals(Fin.class)) {
+							synthesizer.getChannels()[0].noteOff(acc.getNote());
+							reader.setPrompt(PROMPT);
+						} else {
+							synthesizer.getChannels()[0].noteOn(next.getNote(), 100);
+							finalAcc = next;
+							//reader.getOutput().write(next.getSyllable() + " ");
+							//reader.getOutput().flush();
 						}
-					}, e -> Logger.getGlobal().log(Level.SEVERE, "MusicBoxClient listener error in tryConnect!", e),
-							() -> Logger.getGlobal().info("Connection finished!"));
+					}
+					return finalAcc;
+				}).subscribe();
 			// set up the completion
 			var commands = new ClientCommands(reader, this);
 			var cmd = new CommandLine(commands);
