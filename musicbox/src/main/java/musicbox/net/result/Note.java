@@ -2,6 +2,7 @@ package musicbox.net.result;
 
 import io.reactivex.Observer;
 import musicbox.misc.Pair;
+import musicbox.model.Song;
 import musicbox.net.action.Action;
 import java.io.Serializable;
 
@@ -20,6 +21,9 @@ public class Note extends Action<String> implements Serializable {
 	private int transpose = 0;
 	private String syllable;
 
+	private transient Song song;
+	private transient int nextSyllable;
+
 	public Note() {
 		super(null);
 	}
@@ -30,6 +34,47 @@ public class Note extends Action<String> implements Serializable {
 		this.half = half;
 		this.octave = octave;
 	}
+
+
+	/**
+	 * Acceptable formats:
+	 * A#/3; Note with both half modifier and octave modifier
+	 * A/3; Note only with octave modifier
+	 * A; Only the note
+	 * Ab; Note only with half modifier
+	 *
+	 * @param note
+	 * @param syllable
+	 */
+	public Note(String note, String syllable) {
+		super(null);
+		var noteAndOctave = note.split("/");
+		var noteAndHalf = noteAndOctave[0].toCharArray();
+		base = parseNote(noteAndHalf[0]);
+		if (noteAndHalf.length > 1) {
+			switch (noteAndHalf[1]) {
+				case '#':
+					half = 1;
+					break;
+				case 'b':
+					half = -1;
+					break;
+				default:
+					half = 0;
+			}
+		}
+		if (noteAndOctave.length > 1) {
+			octave = Integer.parseInt(noteAndOctave[1]);
+		}
+		this.syllable = syllable;
+	}
+
+	public Note(String note, String syllable, int nextSyllable, Song song) {
+		this(note, syllable);
+		this.nextSyllable = nextSyllable;
+		this.song = song;
+	}
+
 
 	public static Note construct(String from) {
 		if (from.startsWith("-")) {
@@ -75,38 +120,6 @@ public class Note extends Action<String> implements Serializable {
 		observer.onComplete();
 	}
 
-	/**
-	 * Acceptable formats:
-	 * A#/3; Note with both half modifier and octave modifier
-	 * A/3; Note only with octave modifier
-	 * A; Only the note
-	 * Ab; Note only with half modifier
-	 *
-	 * @param note
-	 * @param syllable
-	 */
-	public Note(String note, String syllable) {
-		super(null);
-		var noteAndOctave = note.split("/");
-		var noteAndHalf = noteAndOctave[0].toCharArray();
-		base = parseNote(noteAndHalf[0]);
-		if (noteAndHalf.length > 1) {
-			switch (noteAndHalf[1]) {
-				case '#':
-					half = 1;
-					break;
-				case 'b':
-					half = -1;
-					break;
-				default:
-					half = 0;
-			}
-		}
-		if (noteAndOctave.length > 1) {
-			octave = Integer.parseInt(noteAndOctave[1]);
-		}
-		this.syllable = syllable;
-	}
 
 	/**
 	 * Turns a character of a note into the corresponding pitch for the midi
@@ -143,10 +156,17 @@ public class Note extends Action<String> implements Serializable {
 	}
 
 	public Note transpose(Integer transpose) {
+		refreshLyric();
 		if (transpose != null) {
 			this.transpose = transpose;
 		}
 		return this;
+	}
+
+	public void refreshLyric() {
+		if(song != null) {
+			this.syllable = song.getSyllable(nextSyllable);
+		}
 	}
 
 	/**

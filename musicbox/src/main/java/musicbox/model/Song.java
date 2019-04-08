@@ -89,7 +89,7 @@ public class Song extends Observable<Note> implements Serializable {
 						i = i + 2; // Else skip to the next
 					continue; // Skip this iteration from emitting notes as its a meta instruction
 				} else { // if its an actual note
-					note = new Note(localInstructions.get(i), getSyllable(nextSyllable));
+					note = new Note(localInstructions.get(i), getSyllable(nextSyllable), nextSyllable, this);
 					nextSyllable++;
 				}
 				// Actually sending a note, or rest
