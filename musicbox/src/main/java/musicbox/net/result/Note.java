@@ -19,7 +19,7 @@ public class Note extends Action<String> implements Serializable {
 	private int base;
 	private int half;
 	private int octave;
-	private int transpose;
+	private int transpose = 0;
 	private String syllable;
 	private int channel;
 
@@ -106,7 +106,9 @@ public class Note extends Action<String> implements Serializable {
 	}
 
 	public Note transpose(Integer transpose) {
-		this.transpose = transpose;
+		if(transpose != null) {
+			this.transpose = transpose;
+		}
 		return this;
 	}
 

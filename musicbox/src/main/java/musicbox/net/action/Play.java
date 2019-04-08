@@ -2,6 +2,7 @@ package musicbox.net.action;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.BehaviorSubject;
 import musicbox.misc.Pair;
 import musicbox.model.Song;
@@ -18,39 +19,57 @@ public class Play extends Action<String> implements Serializable {
 
 	private static final long serialVersionUID = 8722933668160441290L;
 
-	private Long tempo;
-	private Integer transpose;
 	private String title;
 
 	private transient BehaviorSubject<Long> tempoSubject = BehaviorSubject.create();
+	private transient BehaviorSubject<Integer> transposeSubject = BehaviorSubject.create();
+	private transient Disposable disposable;
+
+	public Play(Observable<Connection> connection, String tempo, String transpose, String title) {
+		super(connection);
+		this.title = title;
+		if (tempo.chars().allMatch(Character::isDigit)) {
+			this.setTempo(Long.parseLong(tempo));
+		}
+		if (transpose.chars().allMatch(Character::isDigit)) {
+			this.setTranspose(Integer.parseInt(transpose));
+		}
+	}
 
 	public Play(Observable<Connection> connection, Long tempo, Integer transpose, String title) {
 		super(connection);
-		this.setTempo(tempo);
-		this.transpose = transpose;
 		this.title = title;
+		this.setTempo(tempo);
+		this.setTranspose(transpose);
 	}
 
 	public Long getTempo() {
-		return tempo;
+		return tempoSubject.getValue();
 	}
 
 	public Integer getTranspose() {
-		return transpose;
+		return transposeSubject.getValue();
 	}
 
 	public String getTitle() {
 		return title;
 	}
 
+	public void setTranspose(Integer transpose) {
+		transposeSubject.onNext(transpose);
+	}
+
 	public void setTempo(Long tempo) {
-		this.tempo = tempo;
 		tempoSubject.onNext(tempo);
+	}
+
+	public Disposable getDisposable() {
+		return disposable;
 	}
 
 	@Override
 	public String toString() {
-		return "play " + tempo + " " + transpose + " " + title;
+		return "play " + getTempo() + " " + getTranspose() + " " + getTitle();
 	}
 
 	@Override
@@ -86,10 +105,11 @@ public class Play extends Action<String> implements Serializable {
 		conn.getOptionalServer().ifPresent(server -> {
 			var song = server.getSongs().get(title);
 			if(song != null) {
-				server.registerPlay(conn, Observable.zip(song, tempoSubject.switchMap(t -> interval(t, TimeUnit.MILLISECONDS)), (note, timer) -> note)
-					.map(note -> note.transpose(transpose))
+				disposable = Observable.zip(song, tempoSubject.switchMap(t -> interval(t, TimeUnit.MILLISECONDS)), (note, timer) -> note)
+					.map(note -> note.transpose(getTranspose()))
 					.doOnDispose(() -> conn.send(Song.FIN))
-					.subscribe(conn::send))
+					.subscribe(conn::send);
+				server.registerPlay(conn, this)
 					.ifPresentOrElse(i -> conn.send(new Ack(connection, "play started on channel " + i)),
 						() -> conn.send(new Ack(connection, "play failed to start")));
 				observer.onComplete();

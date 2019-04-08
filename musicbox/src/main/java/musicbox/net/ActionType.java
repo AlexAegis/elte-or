@@ -39,11 +39,11 @@ public enum ActionType {
 			case ADDLYRICS:
 				return new AddLyrics(connection, split.get(0).get(1), split.get(1));
 			case PLAY:
-				return new Play(connection, Long.parseLong(split.get(0).get(1)), Integer.parseInt(split.get(0).get(2)), split.get(0).get(3));
+				return new Play(connection, split.get(0).get(1), split.get(0).get(2), split.get(0).get(3));
 			case CHANGE:
-				return new Change(connection, Integer.parseInt(split.get(0).get(1)), Integer.parseInt(split.get(0).get(2)), Integer.parseInt(split.get(0).get(3)));
+				return new Change(connection, split.get(0).get(1), split.get(0).get(2), split.get(0).get(3));
 			case STOP:
-				return new Stop(connection, Integer.parseInt(split.get(0).get(1)));
+				return new Stop(connection, split.get(0).get(1));
 			case ACK:
 				return new Ack(connection, String.join(" ", split.get(0).subList(1, split.get(0).size() - 1)));
 			default:

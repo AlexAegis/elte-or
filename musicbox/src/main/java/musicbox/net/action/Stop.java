@@ -8,11 +8,20 @@ import musicbox.net.ActionType;
 import musicbox.net.Connection;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Stop extends Action<String> implements Serializable {
 
-	private Integer no;
+	private Integer no = -1;
+
+	public Stop(Observable<Connection> connection, String no) {
+		super(connection);
+		if (no.chars().allMatch(Character::isDigit)) {
+			this.no = Integer.parseInt(no);
+		}
+	}
 
 	public Stop(Observable<Connection> connection, Integer no) {
 		super(connection);
@@ -38,16 +47,25 @@ public class Stop extends Action<String> implements Serializable {
 		var conn = connection.blockingFirst();
 		conn.getOptionalServer().ifPresent(server -> {
 			server.cleanPlaying();
-			if(no >= 0) {
-				stopSong(server, conn, no, true);
+			var targets = new ArrayList<Integer>();
+			if(no <= 0) {
+				targets.addAll(server.allPlayingByConnection(conn));
 			} else {
-				var allSongs = server.allPlayingByConnection(conn);
-				allSongs.forEach(n -> stopSong(server, conn, n, false));
-				if (allSongs.isEmpty()) {
-					conn.send(new Ack(null, "Songs already stopped"));
-				} else {
-					conn.send(new Ack(null, "Songs stopped for you: " + allSongs.stream().map(Object::toString).collect(Collectors.joining(" "))));
+				targets.add(no);
+			}
+			var hits = 0;
+			for (var target : targets) {
+				var play = server.getPlaying().get(target);
+				if(play != null) {
+					play.getY().getDisposable().dispose();
+					hits++;
 				}
+				server.getPlaying().remove(target);
+			}
+			if(hits > 0) {
+				conn.send(new Ack(null, "Song stopped: " + targets.stream().map(Object::toString).collect(Collectors.joining(" "))));
+			} else {
+				conn.send(new Ack(null, "Nothing is playing on " + no));
 			}
 			observer.onComplete();
 		});
@@ -57,16 +75,4 @@ public class Stop extends Action<String> implements Serializable {
 		});
 	}
 
-	private void stopSong(MusicBox server, Connection conn, Integer no, Boolean needAck) {
-		var play = server.getPlaying().get(no);
-		if(play != null) {
-			play.getY().dispose();
-			if(needAck) {
-				conn.send(new Ack(null, "Song stopped: " + no));
-			}
-		} else if (needAck) {
-			conn.send(new Ack(null, "Nothing is playing on " + no));
-		}
-		server.getPlaying().remove(no);
-	}
 }

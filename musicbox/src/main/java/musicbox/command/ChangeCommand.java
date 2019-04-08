@@ -21,7 +21,7 @@ public class ChangeCommand implements Runnable {
 	@CommandLine.Option(names = {"-tr", "--transpose"}, paramLabel = "<transpose>", description = "The transposition you with to change the song's playback to.")
 	private Integer transpose;
 	@CommandLine.Option(names = {"-t", "--tempo"}, paramLabel = "<tempo>", description = "The tempo you wish to change the song's playback to.")
-	private Integer tempo;
+	private Long tempo;
 
 	@Override
 	public void run() {

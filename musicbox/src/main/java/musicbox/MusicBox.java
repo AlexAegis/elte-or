@@ -16,6 +16,7 @@ import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 import musicbox.net.action.NullAction;
+import musicbox.net.action.Play;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -47,9 +48,9 @@ public class MusicBox implements Runnable {
 
 	private Map<String, Song> songs = new HashMap<>();
 
-	private Map<Integer, Pair<Connection, Disposable>> playing = new HashMap<>();
+	private Map<Integer, Pair<Connection, Play>> playing = new HashMap<>();
 
-	public Optional<Integer> registerPlay(Connection connection, Disposable disposable) {
+	public Optional<Integer> registerPlay(Connection connection, Play play) {
 		cleanPlaying();
 		var keys = playing.keySet();
 		int min;
@@ -64,20 +65,20 @@ public class MusicBox implements Runnable {
 		Set<Integer> k = IntStream.rangeClosed(++min, ++max).boxed().collect(Collectors.toSet());
 		k.removeAll(keys);
 		return k.stream().findFirst().map(i -> {
-			playing.put(i, new Pair<>(connection, disposable));
+			playing.put(i, new Pair<>(connection, play));
 			return i;
 		});
 	}
 
 	public void cleanPlaying() {
 		playing.entrySet().stream()
-			.filter(e -> e.getValue().getY().isDisposed())
+			.filter(e -> e.getValue().getY().getDisposable().isDisposed())
 			.map(Map.Entry::getKey)
 			.collect(Collectors.toList())
 			.forEach(playing::remove);
 	}
 
-	public Map<Integer, Pair<Connection, Disposable>> getPlaying() {
+	public Map<Integer, Pair<Connection, Play>> getPlaying() {
 		return playing;
 	}
 
