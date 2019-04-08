@@ -25,10 +25,10 @@ public class AddCommand implements Runnable {
 	@Override
 	public void run() {
 		new Add(parent.getClient().getConnection(), title, instructions)
-			.doOnError(err -> parent.getOut().println("Error while adding: " + err.getMessage()))
 			.doFinally(parent.getOut()::flush)
 			.map(s -> s.substring(4))
-			.blockingSubscribe(next -> parent.getOut().println("Song adding result: " + next));
+			.blockingSubscribe(next -> parent.getOut().println("Song adding result: " + next),
+				err -> parent.getOut().println("Song adding failed: " + err.getMessage()));
 	}
 
 }

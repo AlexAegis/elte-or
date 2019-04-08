@@ -30,10 +30,10 @@ public class PlayCommand implements Runnable {
 	@Override
 	public void run() {
 		new Play(parent.getClient().getConnection(), tempo, transpone, title)
-			.doOnError(err -> parent.getOut().println("Error while playing: " + err.getMessage()))
 			.doFinally(parent.getOut()::flush)
 			.map(s -> s.substring(4))
-			.blockingSubscribe(next -> parent.getOut().println("Playing on channel: " + next));
+			.blockingSubscribe(next -> parent.getOut().println("Playing on channel: " + next),
+				err -> parent.getOut().println("Play failed: " + err.getMessage()));
 	}
 
 }

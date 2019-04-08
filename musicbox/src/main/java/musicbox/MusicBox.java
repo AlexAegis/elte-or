@@ -107,18 +107,22 @@ public class MusicBox implements Runnable {
 				.parallel()
 				.runOn(Schedulers.newThread())
 				.flatMap(r -> r
+					.getListener()
 					.toFlowable(BackpressureStrategy.MISSING)
 					.compose(FlowableTransformers.bufferUntil(new Predicate<>() {
 						private int remaining = 0;
 						@Override
-						public boolean test(String stringConnectionPair) {
-							ActionType.ifStartingWithAction(stringConnectionPair).ifPresent(actionType ->
+						public boolean test(String next) {
+							ActionType.ifStartingWithAction(next).ifPresent(actionType ->
 								remaining = actionType.getAdditionalLines());
+							System.out.println("next from conn: " + next + " remaining: " + remaining);
 							return --remaining < 0;
 						}
 					}))
+					.doOnEach(e -> System.out.println("Each after buff: " + e))
 					.withLatestFrom(Flowable.just(r), Pair::new))
 				//.doOnNext(pair -> pair.getY().send(new NullAction(pair.getY())).subscribe())
+				.doOnNext(e -> System.out.println("do on nexteee: " + e))
 				.flatMap(pair -> ActionType.construct(Observable.just(pair.getY()), pair.getX()).toFlowable(BackpressureStrategy.MISSING))
 				.sequential()
 				.blockingSubscribe(System.out::println);

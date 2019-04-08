@@ -78,7 +78,6 @@ public class Play extends Action<String> implements Serializable {
 	}
 
 	/**
-	 * TODO: Send a playing notification to the client!
 	 *
 	 * Upon subscription to the Play ActionType/ActionType, this will first try to access the server.
 	 * If the connection was made from the server then this will be successful, otherwise an error will be thrown downstream
@@ -95,8 +94,6 @@ public class Play extends Action<String> implements Serializable {
 	 *
 	 * each note generated from the song will be forwarded to the Play actions subscriber.
 	 *
-	 * TODO: On stop dispose both the Play action and the Song.
-	 *
 	 * @param observer which will receive the notes and will handle the network forwarding to the client.
 	 */
 	@Override
@@ -105,7 +102,8 @@ public class Play extends Action<String> implements Serializable {
 		conn.getOptionalServer().ifPresent(server -> {
 			var song = server.getSongs().get(title);
 			if(song != null) {
-				disposable = Observable.zip(song, tempoSubject.switchMap(t -> interval(t, TimeUnit.MILLISECONDS)), (note, timer) -> note)
+				// Remove `60000 /` if you want to specify the tempo in ms instead of bpm
+				disposable = Observable.zip(song, tempoSubject.switchMap(t -> interval(60000 / t, TimeUnit.MILLISECONDS)), (note, timer) -> note)
 					.withLatestFrom(transposeSubject, Pair::new)
 					.map(noteTransposePair -> noteTransposePair.getX().transpose(noteTransposePair.getY()))
 					.doOnDispose(() -> conn.send(Song.FIN))

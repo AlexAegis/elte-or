@@ -32,6 +32,7 @@ public enum ActionType {
 	 * @return
 	 */
 	public static musicbox.net.action.Action<?> construct(Observable<Connection> connection, List<String> lines) {
+		System.out.println("CONSTRUCT of " + lines.toString());
 		var split = lines.stream().map(line -> Arrays.asList(line.split(" "))).collect(Collectors.toList());
 		switch(ActionType.ifStartingWithAction(lines.get(0)).orElse(ActionType.NULL)) {
 			case ADD:

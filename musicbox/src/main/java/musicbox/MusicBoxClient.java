@@ -99,29 +99,12 @@ public class MusicBoxClient implements Runnable {
 		}
 		tryConnect(host, port);
 
-		var tempo = 100L;
-		var transpone = 0;
-		var title = "test1";
-
 		Disposable synthPlayer = null;
 		try(var reader = new ConsoleReader()) {
 			reader.setPrompt("musicbox> ");
-/*
-			var res = getConnection()
-				.doOnEach(e -> System.out.println("HEY LETS SEND PLAY! " + e))
-				.flatMap(c -> new Play(getConnection(), tempo, transpone, title))
-				.blockingFirst();*/
-/*
-
-			var res = getConnection()
-				.doOnEach(e -> System.out.println("HEY LETS SEND STOP! " + e))
-				.flatMap(c -> new Stop(getConnection(), -1))
-				.blockingFirst();
-*/
 			synthPlayer = getConnection()
 				.flatMap(Connection::getListener)
 				.subscribeOn(Schedulers.computation())
-				//.observeOn(Schedulers.newThread())
 				.filter(s -> Arrays.stream(ActionType.values()).map(Enum::name).noneMatch(name -> name.equalsIgnoreCase(s.split(" ")[0])))
 				.map(Note::construct)
 				.subscribe(

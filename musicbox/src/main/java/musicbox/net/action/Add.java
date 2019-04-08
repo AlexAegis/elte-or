@@ -4,8 +4,10 @@ import io.reactivex.Observable;
 import io.reactivex.Observer;
 import musicbox.model.Song;
 import musicbox.net.Connection;
+import musicbox.net.result.Note;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 public class Add extends Action<String> implements Serializable {
@@ -50,19 +52,36 @@ public class Add extends Action<String> implements Serializable {
 	 */
 	@Override
 	protected void subscribeActual(Observer<? super String> observer) {
+		System.out.println("ADD SUBBED");
 		var conn = connection.blockingFirst();
+		System.out.println("ADD SUBBED GOT CONN");
 		conn.getOptionalServer().ifPresent(server -> {
 			server.getSongs().put(title, new Song(title, songInstructions));
 			conn.send(new Ack(connection, "Song added"));
 			observer.onComplete();
 		});
 		conn.getOptionalClient().ifPresent(client -> {
-			// TODO: Verify the instructions rules: REP cant got further back than notes are behind it. Also, should be one note and one number.
-			if(songInstructions.size() % 2 != 0) {
-				observer.onError(new Exception("Instructions are bad"));
+			var valid = true;
+			var reps = 0;
+			for (int i = 0; i < songInstructions.size(); i = i + 2) {
+				if (songInstructions.get(i).equalsIgnoreCase("REP")) {
+					valid &= songInstructions.get(i + 1).contains(";")
+						&& Arrays.stream(songInstructions.get(i + 1).split(";"))
+						.flatMapToInt(String::chars)
+						.allMatch(Character::isDigit)
+						&& (Integer.parseInt(songInstructions.get(i + 1).split(";")[0])) * 2 <= i - reps * 2;
+					reps++;
+				} else {
+					valid &= Note.isValid(songInstructions.get(i))
+						&& songInstructions.get(i + 1).chars().allMatch(Character::isDigit);
+				}
 			}
-			conn.send(this);
-			conn.forwardAck(observer);
+			if(songInstructions.size() % 2 != 0 || !valid) {
+				observer.onError(new Exception("Instructions are bad"));
+			} else {
+				conn.send(this);
+				conn.forwardAck(observer);
+			}
 		});
 	}
 }

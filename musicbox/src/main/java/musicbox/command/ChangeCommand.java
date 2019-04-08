@@ -26,10 +26,10 @@ public class ChangeCommand implements Runnable {
 	@Override
 	public void run() {
 		new Change(parent.getClient().getConnection(), no, tempo, transpose)
-			.doOnError(err -> parent.getOut().println("Error while changing: " + err.getMessage()))
 			.doFinally(parent.getOut()::flush)
 			.map(s -> s.substring(4))
-			.blockingSubscribe(next -> parent.getOut().println("Change result: " + next));
+			.blockingSubscribe(next -> parent.getOut().println("Change result: " + next),
+				err -> parent.getOut().println("Change failed: " + err.getMessage()));
 	}
 
 }

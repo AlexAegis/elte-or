@@ -3,8 +3,10 @@ package musicbox.net.action;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import musicbox.net.Connection;
+import musicbox.net.result.Note;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 public class AddLyrics extends Action<String> implements Serializable {

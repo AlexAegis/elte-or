@@ -40,6 +40,36 @@ public class Note extends Action<String> implements Serializable {
 		}
 	}
 
+	public static boolean isValid(String s) {
+		var valid = true;
+		var note = s;
+		if(s.contains("/")) {
+			var octaveSplit = s.split("/");
+			note = octaveSplit[0];
+			var octave = octaveSplit[1];
+			if (octaveSplit[1].contains("-")) {
+				octave = octave.replaceAll("-", "");
+			}
+			valid = octave.chars().allMatch(Character::isDigit);
+		}
+
+		var letters = note.toCharArray();
+
+		valid &= letters[0] == 'C'
+			|| letters[0] == 'D'
+			|| letters[0] == 'E'
+			|| letters[0] == 'F'
+			|| letters[0] == 'G'
+			|| letters[0] == 'A'
+			|| letters[0] == 'B';
+
+		if(letters.length > 1) {
+			valid &= letters[1] == 'b' || letters[1] == '#';
+		}
+
+		return valid;
+	}
+
 	@Override
 	protected void subscribeActual(Observer<? super String> observer) {
 		observer.onNext(toString());

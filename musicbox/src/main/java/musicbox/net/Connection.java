@@ -98,10 +98,14 @@ public class Connection extends Observable<String> implements AutoCloseable {
 		}
 	}
 
-	public void send(musicbox.net.action.Action<?> action) {
-		out.println(action.toString());
+	public void doSend(String message) {
+		out.println(message);
 		out.flush();
-		Logger.getGlobal().log(Level.INFO, "Packet sent as action: {0}", action);
+		Logger.getGlobal().log(Level.INFO, "Sent: {0}", message);
+	}
+
+	public void send(musicbox.net.action.Action<?> action) {
+		doSend(action.toString());
 	}
 
 	public void forwardAck(Observer<? super String> observer) {
