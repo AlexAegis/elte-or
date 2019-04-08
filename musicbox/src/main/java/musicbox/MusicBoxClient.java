@@ -39,18 +39,13 @@ public class MusicBoxClient implements Runnable {
 	@ParentCommand
 	private App app;
 
-	@Option(names = {"-i", "--init", "--initialFiles"}, paramLabel = "<files>", arity = "1..*",
-			description = "Initial placements")
-	private List<File> initialFiles = new ArrayList<>();
-
 	@Option(names = {"-h", "--host"}, paramLabel = "<host>",
-			description = "IP Address of the server (default: ${DEFAULT-VALUE})")
-	private String host = "127.0.0.1";
+			description = "IP Address of the server (default: ${DEFAULT-VALUE})", defaultValue = "127.0.0.1")
+	private String host;
 
 	@Option(names = {"-p", "--port"}, paramLabel = "<host>",
 			description = "Port of the server  (default: ${DEFAULT-VALUE})", defaultValue = "40000")
 	private Integer port;
-
 
 	private BehaviorSubject<Connection> connection = BehaviorSubject.create();
 	private Observable<Connection> connection$ = connection.filter(con -> con != null && !con.isClosed());
@@ -61,14 +56,10 @@ public class MusicBoxClient implements Runnable {
 		synthesizer.open();
 	}
 
-
 	public static void main(String[] args) throws MidiUnavailableException {
 		CommandLine.run(new MusicBoxClient(), System.err, args);
 	}
 
-	/**
-	 * @return the connection
-	 */
 	public BehaviorSubject<Connection> getConnectionSubject() {
 		return connection;
 	}
@@ -84,7 +75,6 @@ public class MusicBoxClient implements Runnable {
 				.blockingSubscribe(getConnectionSubject()::onNext,
 						e -> Logger.getGlobal().log(Level.SEVERE, "Error on tryConnect", e),
 						() -> Logger.getGlobal().info("Completed try connect"));
-
 	}
 
 	@Override
@@ -129,20 +119,6 @@ public class MusicBoxClient implements Runnable {
 			}
 		}
 
-	}
-
-	/**
-	 * @return the host
-	 */
-	public String getHost() {
-		return host;
-	}
-
-	/**
-	 * @return the port
-	 */
-	public Integer getPort() {
-		return port;
 	}
 
 }

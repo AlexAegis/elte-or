@@ -14,10 +14,10 @@ public class PlayCommand implements Runnable {
 	@ParentCommand
 	private ClientCommands parent;
 
-	@CommandLine.Parameters(index = "0", arity = "1", paramLabel = "<title>", defaultValue = "c4",
+	@CommandLine.Parameters(index = "0", arity = "1", paramLabel = "<title>", defaultValue = "megalovania",
 			description = "Title of the song you want to play.")
 	private String title;
-	@CommandLine.Parameters(index = "1", paramLabel = "<tempo>", defaultValue = "120",
+	@CommandLine.Parameters(index = "1", paramLabel = "<tempo>", defaultValue = "250",
 			description = "The tempo of you want to set the playback (default: ${DEFAULT-VALUE})")
 	private Long tempo;
 	@CommandLine.Parameters(index = "2", paramLabel = "<transpone>", defaultValue = "0",

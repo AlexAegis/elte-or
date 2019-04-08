@@ -10,10 +10,8 @@ public class NoteTest {
 
 	@Test
 	void test() {
-		for (int i = 50; i < 140; i++) {
-			System.out.print(i + ": ");
-			System.out.println((char) i);
-		}
+
+		System.out.println(Note.construct("C/1 1").getNote());
 	}
 
 	@Test
@@ -27,6 +25,24 @@ public class NoteTest {
 			new Pair<>('B', 11))) {
 			System.out.println("Parsenote: " + Note.parseNote(p.getX()) + " should be: " +( p.getY() + 60));
 			Assert.assertEquals(Note.parseNote(p.getX()),  p.getY() + 60);
+		}
+	}
+
+	@Test
+	void pitchTest() {
+		for (int i = -1; i <= 1; i++) {
+			System.out.println(i + ": " + new Note(60, 0, i));
+			System.out.println(i + ": " + new Note(60, 1, i));
+			System.out.println(i + ": " + new Note(62, 0, i));
+			System.out.println(i + ": " + new Note(62, 1, i));
+			System.out.println(i + ": " + new Note(64, 0, i));
+			System.out.println(i + ": " + new Note(65, 0, i));
+			System.out.println(i + ": " + new Note(65, 1, i));
+			System.out.println(i + ": " + new Note(67, 0, i));
+			System.out.println(i + ": " + new Note(67, 1, i));
+			System.out.println(i + ": " + new Note(69, 0, i));
+			System.out.println(i + ": " + new Note(69, 1, i));
+			System.out.println(i + ": " + new Note(71, 0, i));
 		}
 	}
 

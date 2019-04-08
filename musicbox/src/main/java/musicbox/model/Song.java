@@ -75,7 +75,7 @@ public class Song extends Observable<Note> implements Serializable {
 			while (i < localInstructions.size()) {
 				var next = localInstructions.get(i);
 				Note note;
-				if (next.equals(REST.toString())) { // if its a rest
+				if (next.equals(REST.toString(false))) { // if its a rest
 					note = REST;
 				} else if (next.equals("REP")) { // if it's a repeat
 					var rep = localInstructions.get(i + 1).split(";"); // Repeat instruction

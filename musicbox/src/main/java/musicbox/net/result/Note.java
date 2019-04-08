@@ -24,6 +24,13 @@ public class Note extends Action<String> implements Serializable {
 		super(null);
 	}
 
+	public Note(Integer base, Integer half, Integer octave) {
+		super(null);
+		this.base = base;
+		this.half = half;
+		this.octave = octave;
+	}
+
 	public static Note construct(String from) {
 		if (from.startsWith("-")) {
 			return new Hold();

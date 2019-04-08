@@ -44,6 +44,12 @@ public class MusicBox implements Runnable {
 
 	private Map<Integer, Pair<Connection, Play>> playing = new HashMap<>();
 
+	public static final Song SONG_C4 = new Song("c4", Arrays.asList("C 4".split(" ")));
+	public static final Song SONG_TEST1 = new Song("test1", Arrays.asList("C 4 E 4 C 4 E 4 G 8 G 8 REP 6;1 C/1 4 B 4 A 4 G 4 F 8 A 8 G 4 F 4 E 4 D 4 C 8 C 8".split(" ")));
+	public static final Song SONG_TEST2 = new Song("test2", Arrays.asList("D 1 D 3 D/1 1 D/1 3 C/1 1 C/1 3 C/1 2 C/1 2 D/1 1 D/1 3 C/1 1 Bb 3 A 4 A 2 R 2 REP 15;1 Bb 4 A 2 G 2 F 1 F 3 E 2 D 2 G 2 G 2 C/1 2 Bb 2 A 4 D/1 2 R 2 C/1 1 Bb 3 A 2 G 2 G 1 A 3 G 2 F 2 A 1 G 3 F# 2 Eb 2 D 4 D 2 R 2".split(" ")));
+	public static final Song SONG_MEGALOVANIA = new Song("megalovania", Arrays.asList("D 1 D 1 D/1 1 R 1 A 1 R 2 G# 1 R 1 G 1 R 1 F 2 D 1 F 1 G 1 REP 14;4".split(" ")));
+
+
 	public Optional<Integer> registerPlay(Connection connection, Play play) {
 		cleanPlaying();
 		var keys = playing.keySet();
@@ -91,9 +97,10 @@ public class MusicBox implements Runnable {
 			Logger.getGlobal().setLevel(app.getLoglevel().getLevel());
 		}
 		// Default songs:
-		songs.put("c4", new Song("c4", Arrays.asList("C 4".split(" "))));
-		songs.put("test1", new Song("test1", Arrays.asList("C 4 E 4 C 4 E 4 G 8 G 8 REP 6;1 C/1 4 B 4 A 4 G 4 F 8 A 8 G 4 F 4 E 4 D 4 C 8 C 8".split(" "))));
-		songs.put("test2", new Song("test2", Arrays.asList("D 1 D 3 D/1 1 D/1 3 C/1 1 C/1 3 C/1 2 C/1 2 D/1 1 D/1 3 C/1 1 Bb 3 A 4 A 2 R 2 REP 15;1 Bb 4 A 2 G 2 F 1 F 3 E 2 D 2 G 2 G 2 C/1 2 Bb 2 A 4 D/1 2 R 2 C/1 1 Bb 3 A 2 G 2 G 1 A 3 G 2 F 2 A 1 G 3 F# 2 Eb 2 D 4 D 2 R 2".split(" "))));
+		songs.put("c4", SONG_C4);
+		songs.put("test1", SONG_TEST1);
+		songs.put("test2", SONG_TEST2);
+		songs.put("megalovania", SONG_MEGALOVANIA);
 
 		try (var server = new ServerSocket(port)) {
 			Flowable.fromCallable(() -> new Connection(this, server))
@@ -113,10 +120,7 @@ public class MusicBox implements Runnable {
 							return --remaining < 0;
 						}
 					}))
-					.doOnEach(e -> System.out.println("Each after buff: " + e))
 					.withLatestFrom(Flowable.just(r), Pair::new))
-				//.doOnNext(pair -> pair.getY().send(new NullAction(pair.getY())).subscribe())
-				.doOnNext(e -> System.out.println("do on nexteee: " + e))
 				.flatMap(pair -> ActionType.construct(Observable.just(pair.getY()), pair.getX()).toFlowable(BackpressureStrategy.MISSING))
 				.sequential()
 				.blockingSubscribe(System.out::println);
