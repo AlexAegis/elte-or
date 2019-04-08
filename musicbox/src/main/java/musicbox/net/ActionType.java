@@ -17,8 +17,6 @@ public enum ActionType {
 	ACK(0),
 	NULL(0);
 
-	static List<String> actions;
-
 	private Integer additionalLines;
 
 	ActionType(Integer additionalLines) {
@@ -34,11 +32,11 @@ public enum ActionType {
 	public static musicbox.net.action.Action<?> construct(Observable<Connection> connection, List<String> lines) {
 		System.out.println("CONSTRUCT of " + lines.toString());
 		var split = lines.stream().map(line -> Arrays.asList(line.split(" "))).collect(Collectors.toList());
-		switch(ActionType.ifStartingWithAction(lines.get(0)).orElse(ActionType.NULL)) {
+		switch(ActionType.getActionByName(split.get(0).get(0)).orElse(ActionType.NULL)) {
 			case ADD:
 				return new Add(connection, split.get(0).get(1), split.get(1));
 			case ADDLYRICS:
-				return new AddLyrics(connection, split.get(0).get(1), split.get(1));
+				return new AddLyrics(connection, split.get(0).get(1), split.size() > 1 ? split.get(1) : null);
 			case PLAY:
 				return new Play(connection, split.get(0).get(1), split.get(0).get(2), split.get(0).get(3));
 			case CHANGE:
@@ -56,16 +54,10 @@ public enum ActionType {
 		return additionalLines;
 	}
 
-	public static Optional<ActionType> ifStartingWithAction(String line) {
+	public static Optional<ActionType> getActionByName(String line) {
 		return Arrays.stream(ActionType.values())
-			.filter(a -> line.toLowerCase().startsWith(a.name().toLowerCase()))
+			.filter(a -> line.equalsIgnoreCase(a.name()))
 			.findFirst();
 	}
 
-	public static List<String> getActions() {
-		if(actions == null) {
-			actions = Arrays.stream(ActionType.values()).map(Enum::name).collect(Collectors.toList());
-		}
-		return actions;
-	}
 }

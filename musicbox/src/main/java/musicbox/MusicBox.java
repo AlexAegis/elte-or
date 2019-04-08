@@ -1,35 +1,29 @@
 package musicbox;
 
 import hu.akarnokd.rxjava2.operators.FlowableTransformers;
-import hu.akarnokd.rxjava2.parallel.ParallelTransformers;
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Predicate;
-import io.reactivex.parallel.ParallelFlowable;
-import io.reactivex.parallel.ParallelFlowableConverter;
-import io.reactivex.parallel.ParallelTransformer;
+import io.reactivex.schedulers.Schedulers;
 import musicbox.misc.Pair;
 import musicbox.model.Song;
 import musicbox.net.ActionType;
 import musicbox.net.Connection;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
-import musicbox.net.action.NullAction;
 import musicbox.net.action.Play;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParentCommand;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static java.lang.System.*;
+import static java.lang.System.err;
 
 @Command(name = "server", sortOptions = false,
 		header = {"", "@|cyan                           |@", "@|cyan  ___ ___ ___ _ _ ___ ___  |@",
@@ -113,7 +107,7 @@ public class MusicBox implements Runnable {
 						private int remaining = 0;
 						@Override
 						public boolean test(String next) {
-							ActionType.ifStartingWithAction(next).ifPresent(actionType ->
+							ActionType.getActionByName(next.split(" ")[0]).ifPresent(actionType ->
 								remaining = actionType.getAdditionalLines());
 							System.out.println("next from conn: " + next + " remaining: " + remaining);
 							return --remaining < 0;

@@ -2,14 +2,10 @@ package musicbox.net.action;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-import musicbox.MusicBox;
-import musicbox.net.ActionType;
 import musicbox.net.Connection;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Stop extends Action<String> implements Serializable {

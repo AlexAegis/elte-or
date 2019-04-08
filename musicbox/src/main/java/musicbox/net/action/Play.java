@@ -6,13 +6,9 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.BehaviorSubject;
 import musicbox.misc.Pair;
 import musicbox.model.Song;
-import musicbox.net.ActionType;
-import musicbox.net.result.Hold;
-import musicbox.net.result.Note;
 import musicbox.net.Connection;
 
 import java.io.Serializable;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 public class Play extends Action<String> implements Serializable {
@@ -103,7 +99,7 @@ public class Play extends Action<String> implements Serializable {
 			var song = server.getSongs().get(title);
 			if(song != null) {
 				// Remove `60000 /` if you want to specify the tempo in ms instead of bpm
-				disposable = Observable.zip(song, tempoSubject.switchMap(t -> interval(60000 / t, TimeUnit.MILLISECONDS)), (note, timer) -> note)
+				disposable = Observable.zip(song, tempoSubject.switchMap(t -> interval(60000 / (t == 0 ? 128 : t), TimeUnit.MILLISECONDS)), (note, timer) -> note)
 					.withLatestFrom(transposeSubject, Pair::new)
 					.map(noteTransposePair -> noteTransposePair.getX().transpose(noteTransposePair.getY()))
 					.doOnDispose(() -> conn.send(Song.FIN))

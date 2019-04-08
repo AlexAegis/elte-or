@@ -2,12 +2,10 @@ package musicbox.net.action;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
-import musicbox.MusicBox;
 import musicbox.net.Connection;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Change extends Action<String> implements Serializable {

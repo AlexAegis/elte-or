@@ -1,19 +1,14 @@
 package musicbox;
 
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.BehaviorSubject;
 import jline.console.ConsoleReader;
 import jline.console.completer.ArgumentCompleter;
 import musicbox.command.ClientCommands;
 import musicbox.net.ActionType;
 import musicbox.net.Connection;
-import musicbox.net.action.Action;
-import io.reactivex.Observable;
-import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.BehaviorSubject;
-import musicbox.net.action.Play;
-import musicbox.net.action.Stop;
 import musicbox.net.result.Fin;
 import musicbox.net.result.Hold;
 import musicbox.net.result.Note;
@@ -22,15 +17,17 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParentCommand;
-import java.io.File;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import picocli.shell.jline2.PicocliJLineCompleter;
 
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Synthesizer;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Command(name = "client", sortOptions = false,
 		header = {"", "@|cyan      _ _         _    |@", "@|cyan  ___| |_|___ ___| |_  |@",

@@ -3,10 +3,8 @@ package musicbox.net.action;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import musicbox.net.Connection;
-import musicbox.net.result.Note;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 
 public class AddLyrics extends Action<String> implements Serializable {
@@ -30,7 +28,7 @@ public class AddLyrics extends Action<String> implements Serializable {
 
 	@Override
 	public String toString() {
-		return "addlyrics " + title + "\n" +String.join(" ", lyrics);
+		return "addlyrics " + title + "\n" + String.join(" ", lyrics);
 	}
 
 	@Override
@@ -55,8 +53,9 @@ public class AddLyrics extends Action<String> implements Serializable {
 			if(song != null) {
 				song.setLyrics(lyrics);
 				observer.onComplete();
+				conn.send(new Ack(connection, "Song lyrics updated: " + title));
 			} else {
-				observer.onError(new Exception("Song not found"));
+				conn.send(new Ack(connection, "Song not found " + title));
 			}
 		});
 		conn.getOptionalClient().ifPresent(client -> {

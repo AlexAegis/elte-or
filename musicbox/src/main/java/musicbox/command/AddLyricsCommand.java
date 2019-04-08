@@ -1,12 +1,11 @@
 package musicbox.command;
 
-import musicbox.net.action.Add;
 import musicbox.net.action.AddLyrics;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.ParentCommand;
 
-import java.util.*;
+import java.util.List;
 
 @Command(name = "addlyrics", sortOptions = false,
 	header = {"", ""},

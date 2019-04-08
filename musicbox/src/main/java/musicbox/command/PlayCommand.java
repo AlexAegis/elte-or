@@ -1,14 +1,9 @@
 package musicbox.command;
 
-import io.reactivex.schedulers.Schedulers;
-import musicbox.net.ActionType;
-import musicbox.net.action.Change;
 import musicbox.net.action.Play;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.ParentCommand;
-
-import java.io.IOException;
 
 @Command(name = "play", sortOptions = false,
 	header = {"", ""},

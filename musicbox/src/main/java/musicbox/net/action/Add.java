@@ -52,9 +52,7 @@ public class Add extends Action<String> implements Serializable {
 	 */
 	@Override
 	protected void subscribeActual(Observer<? super String> observer) {
-		System.out.println("ADD SUBBED");
 		var conn = connection.blockingFirst();
-		System.out.println("ADD SUBBED GOT CONN");
 		conn.getOptionalServer().ifPresent(server -> {
 			server.getSongs().put(title, new Song(title, songInstructions));
 			conn.send(new Ack(connection, "Song added"));

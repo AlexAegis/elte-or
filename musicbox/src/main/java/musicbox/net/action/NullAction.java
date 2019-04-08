@@ -4,7 +4,6 @@ import io.reactivex.Observable;
 import io.reactivex.Observer;
 import musicbox.net.Connection;
 
-import javax.swing.text.html.Option;
 import java.io.Serializable;
 
 public class NullAction extends Action<String> implements Serializable {

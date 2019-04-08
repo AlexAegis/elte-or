@@ -1,16 +1,16 @@
 package musicbox.model;
 
-import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
-import musicbox.misc.Pair;
 import musicbox.net.result.Fin;
 import musicbox.net.result.Hold;
 import musicbox.net.result.Note;
 import musicbox.net.result.Rest;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class Song extends Observable<Note> implements Serializable {
 

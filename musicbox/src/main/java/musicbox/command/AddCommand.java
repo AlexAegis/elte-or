@@ -5,7 +5,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.ParentCommand;
 
-import java.util.*;
+import java.util.List;
 
 @Command(name = "add", sortOptions = false,
 	header = {"", ""},

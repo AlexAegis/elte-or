@@ -1,15 +1,16 @@
 package musicbox;
 
+import musicbox.misc.Levels;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.IVersionProvider;
 import picocli.CommandLine.Option;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.jar.Manifest;
 import java.util.logging.Logger;
-import musicbox.misc.Levels;
 
 @Command(name = "App", sortOptions = false,
 		header = {"", "@|cyan  _____         _     _____          |@", "@|cyan |     |_ _ ___|_|___| __  |___ _ _  |@",

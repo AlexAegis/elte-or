@@ -1,6 +1,5 @@
 package musicbox.command;
 
-import musicbox.net.action.AddLyrics;
 import musicbox.net.action.Change;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;

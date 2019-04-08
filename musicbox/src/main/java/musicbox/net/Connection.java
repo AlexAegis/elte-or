@@ -1,14 +1,12 @@
 package musicbox.net;
 
-import hu.akarnokd.rxjava2.operators.Observables;
-import musicbox.MusicBoxClient;
-import musicbox.MusicBox;
-import musicbox.net.action.Action;
-import musicbox.net.result.HandledResponse;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
+import musicbox.MusicBox;
+import musicbox.MusicBoxClient;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Optional;
