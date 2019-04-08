@@ -28,6 +28,7 @@ public class AddLyricsCommand implements Runnable {
 		new AddLyrics(parent.getClient().getConnection(), title, syllables)
 			.doOnError(err -> parent.getOut().println("Error while adding lyrics: " + err.getMessage()))
 			.doFinally(parent.getOut()::flush)
+			.map(s -> s.substring(4))
 			.blockingSubscribe(next -> parent.getOut().println("Lyrics add result: " + next));
 	}
 

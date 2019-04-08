@@ -27,6 +27,7 @@ public class AddCommand implements Runnable {
 		new Add(parent.getClient().getConnection(), title, instructions)
 			.doOnError(err -> parent.getOut().println("Error while adding: " + err.getMessage()))
 			.doFinally(parent.getOut()::flush)
+			.map(s -> s.substring(4))
 			.blockingSubscribe(next -> parent.getOut().println("Song adding result: " + next));
 	}
 

@@ -25,6 +25,7 @@ public class StopCommand implements Runnable {
 		new Stop(parent.getClient().getConnection(), no)
 			.doOnError(err -> parent.getOut().println("Error while stopping: " + err.getMessage()))
 			.doFinally(parent.getOut()::flush)
+			.map(s -> s.substring(4))
 			.blockingSubscribe(next -> parent.getOut().println("Stop result: " + next));
 	}
 

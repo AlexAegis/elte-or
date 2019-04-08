@@ -122,11 +122,10 @@ public class Note extends Action<String> implements Serializable {
 	public static Pair<Integer, Integer> applyTranspose(int pitch, int transpose) {
 		var t = ((pitch - 60) + transpose); // [60, 72] -> [0, 12] then add the transpose
 		var negativeOffset = t < 0 ? 1 : 0;
-		t += negativeOffset; // Shift the negatives by one
-		var octaveChange = (t / 12) - negativeOffset; // by dividing it with the range we get how many octaves me moved.
+		var octaveChange = ((t + negativeOffset) / 12) - negativeOffset; // by dividing it with the range we get how many octaves me moved.
 		// We have to adjust this by one if the value is negative
 		// because even though [-13, -1] is a different segment than [0, 12]
-		var transposedBase = (pitch % 12) + 60; // modulo it bact to [0, 12] then translate it to [60, 72]
+		var transposedBase = (t % 12) + 60; // modulo it bact to [0, 12] then translate it to [60, 72]
 		return new Pair<>(transposedBase, octaveChange);
 	}
 
@@ -136,8 +135,7 @@ public class Note extends Action<String> implements Serializable {
 	 * @return the final pitch of the note
 	 */
 	public int getNote() {
-		var transposed = applyTranspose(base, transpose);
-		return transposed.getX() + half + (octave + transposed.getY()) * 12;
+		return base + half + octave * 12;
 	}
 
 	/**
@@ -159,8 +157,14 @@ public class Note extends Action<String> implements Serializable {
 	 */
 	@Override
 	public String toString() {
+		return toString(true);
+	}
+
+	public String toString(Boolean withSyllable) {
 		var result = new StringBuilder();
-		result.append(parsePitch(base));
+		var t = applyTranspose(base, transpose);
+		System.out.println("To Note String transpose: " + transpose + " base before: " + base + " after: " + t.getX() + " octave before: " + octave + " octave after: " + (octave + t.getY()));
+		result.append(parsePitch(t.getX()));
 		if(half == 1) {
 			result.append('#');
 		} else if(half == -1) {
@@ -168,9 +172,9 @@ public class Note extends Action<String> implements Serializable {
 		}
 		if(octave != 0) {
 			result.append('/');
-			result.append(octave);
+			result.append(octave + t.getY());
 		}
-		return result.toString() + " " + getSyllable();
+		return result.toString() + (withSyllable ? " " + getSyllable() : "");
 	}
 
 	@Override

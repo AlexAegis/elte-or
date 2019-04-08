@@ -106,7 +106,8 @@ public class Play extends Action<String> implements Serializable {
 			var song = server.getSongs().get(title);
 			if(song != null) {
 				disposable = Observable.zip(song, tempoSubject.switchMap(t -> interval(t, TimeUnit.MILLISECONDS)), (note, timer) -> note)
-					.map(note -> note.transpose(getTranspose()))
+					.withLatestFrom(transposeSubject, Pair::new)
+					.map(noteTransposePair -> noteTransposePair.getX().transpose(noteTransposePair.getY()))
 					.doOnDispose(() -> conn.send(Song.FIN))
 					.subscribe(conn::send);
 				server.registerPlay(conn, this)

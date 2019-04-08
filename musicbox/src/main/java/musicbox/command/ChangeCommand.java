@@ -28,6 +28,7 @@ public class ChangeCommand implements Runnable {
 		new Change(parent.getClient().getConnection(), no, tempo, transpose)
 			.doOnError(err -> parent.getOut().println("Error while changing: " + err.getMessage()))
 			.doFinally(parent.getOut()::flush)
+			.map(s -> s.substring(4))
 			.blockingSubscribe(next -> parent.getOut().println("Change result: " + next));
 	}
 

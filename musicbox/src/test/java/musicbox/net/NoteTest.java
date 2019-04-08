@@ -15,6 +15,14 @@ public class NoteTest {
 
 	@Test
 	void transposeTest() {
+		for (int i = 0; i < 10; i++) {
+			var transposition = Note.applyTranspose(60, i);
+			Assert.assertEquals((long) 60 + i, (long) transposition.getX());
+		}
+	}
+
+	@Test
+	void transposeOctaveTest() {
 		for (int i = -20; i < 20; i++) {
 			var transposition = Note.applyTranspose(60, i);
 			int supposedOctaveChange = -2;

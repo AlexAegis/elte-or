@@ -1,6 +1,7 @@
 package musicbox.command;
 
 import io.reactivex.schedulers.Schedulers;
+import musicbox.net.ActionType;
 import musicbox.net.action.Change;
 import musicbox.net.action.Play;
 import picocli.CommandLine;
@@ -31,6 +32,7 @@ public class PlayCommand implements Runnable {
 		new Play(parent.getClient().getConnection(), tempo, transpone, title)
 			.doOnError(err -> parent.getOut().println("Error while playing: " + err.getMessage()))
 			.doFinally(parent.getOut()::flush)
+			.map(s -> s.substring(4))
 			.blockingSubscribe(next -> parent.getOut().println("Playing on channel: " + next));
 	}
 

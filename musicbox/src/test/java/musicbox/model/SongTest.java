@@ -138,8 +138,8 @@ public class SongTest {
 			"-",
 			"-",
 			"-",
-			"-");
-		song.blockingSubscribe(note -> resultList.add(note.toString()));
+			"-", "FIN");
+		song.blockingSubscribe(note -> resultList.add(note.toString(false)));
 		Assert.assertArrayEquals(shouldList.toArray(), resultList.toArray());
 	}
 
@@ -275,8 +275,8 @@ public class SongTest {
 			"D",
 			"-",
 			"R",
-			"-");
-		song.blockingSubscribe(note -> resultList.add(note.toString()));
+			"-", "FIN");
+		song.blockingSubscribe(note -> resultList.add(note.toString(false)));
 		Assert.assertArrayEquals(shouldList.toArray(), resultList.toArray());
 	}
 }
