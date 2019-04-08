@@ -21,6 +21,7 @@ public class Note extends Action<String> implements Serializable {
 	private int octave;
 	private int transpose;
 	private String syllable;
+	private int channel;
 
 	public Note() {
 		super(null);
@@ -32,7 +33,8 @@ public class Note extends Action<String> implements Serializable {
 		} else if(from.startsWith("R")) {
 			return new Rest();
 		} else {
-			return new Note(from);
+			var split = from.split(" ");
+			return new Note(split[0], split[1]);
 		}
 	}
 
@@ -40,17 +42,6 @@ public class Note extends Action<String> implements Serializable {
 	protected void subscribeActual(Observer<? super String> observer) {
 		observer.onNext(toString());
 		observer.onComplete();
-	}
-
-
-	/**
-	 * To be used by the client for quick parsing of the incoming note.
-	 *
-	 * Obsolete when using serialization
-	 *
-	 */
-	public Note(String noteAndSyllable) {
-		this(noteAndSyllable.split(" ")[0], noteAndSyllable.split(" ")[1]);
 	}
 
 	/**
@@ -182,4 +173,6 @@ public class Note extends Action<String> implements Serializable {
 	public Class<String> getResponseClass() {
 		return String.class;
 	}
+
+
 }

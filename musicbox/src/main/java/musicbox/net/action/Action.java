@@ -9,9 +9,9 @@ public abstract class Action<T> extends Observable<T> implements Serializable {
 
 	private static final long serialVersionUID = -1396265613021084526L;
 
-	protected transient Connection connection;
+	protected transient Observable<Connection> connection;
 
-	public Action(Connection connection) {
+	public Action(Observable<Connection> connection) {
 		this.connection = connection;
 	}
 

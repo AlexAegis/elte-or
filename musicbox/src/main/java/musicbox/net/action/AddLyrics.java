@@ -1,5 +1,6 @@
 package musicbox.net.action;
 
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import musicbox.net.Connection;
 
@@ -11,7 +12,7 @@ public class AddLyrics extends Action<String> implements Serializable {
 	private String title;
 	private List<String> lyrics;
 
-	public AddLyrics(Connection connection, String title, List<String> lyrics) {
+	public AddLyrics(Observable<Connection> connection, String title, List<String> lyrics) {
 		super(connection);
 		this.title = title;
 		this.lyrics = lyrics;
@@ -46,7 +47,8 @@ public class AddLyrics extends Action<String> implements Serializable {
 	 */
 	@Override
 	protected void subscribeActual(Observer<? super String> observer) {
-		connection.getOptionalServer().ifPresent(server -> {
+		var conn = connection.blockingLast();
+		conn.getOptionalServer().ifPresent(server -> {
 			var song = server.getSongs().get(title);
 			if(song != null) {
 				song.setLyrics(lyrics);
@@ -55,8 +57,8 @@ public class AddLyrics extends Action<String> implements Serializable {
 				observer.onError(new Exception("Song not found"));
 			}
 		});
-		connection.getOptionalClient().ifPresent(client -> {
-			connection.send(this); // send everything downstream
+		conn.getOptionalClient().ifPresent(client -> {
+			conn.send(this); // send everything downstream
 		});
 	}
 }

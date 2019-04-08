@@ -1,5 +1,6 @@
 package musicbox.net;
 
+import io.reactivex.Observable;
 import musicbox.net.action.*;
 
 import java.util.Arrays;
@@ -13,6 +14,7 @@ public enum ActionType {
 	PLAY(0),
 	CHANGE(0),
 	STOP(0),
+	ACK(0),
 	NULL(0);
 
 	static List<String> actions;
@@ -29,7 +31,7 @@ public enum ActionType {
 	 * @param lines
 	 * @return
 	 */
-	public static musicbox.net.action.Action<?> construct(Connection connection, List<String> lines) {
+	public static musicbox.net.action.Action<?> construct(Observable<Connection> connection, List<String> lines) {
 		var split = lines.stream().map(line -> Arrays.asList(line.split(" "))).collect(Collectors.toList());
 		switch(ActionType.ifStartingWithAction(lines.get(0)).orElse(ActionType.NULL)) {
 			case ADD:
@@ -42,6 +44,8 @@ public enum ActionType {
 				return new Change(connection, Integer.parseInt(split.get(0).get(1)), Integer.parseInt(split.get(0).get(2)), Integer.parseInt(split.get(0).get(3)));
 			case STOP:
 				return new Stop(connection, Integer.parseInt(split.get(0).get(1)));
+			case ACK:
+				return new Ack(connection, split.get(0).get(1));
 			default:
 				return new NullAction(connection);
 		}

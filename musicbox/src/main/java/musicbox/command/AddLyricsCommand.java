@@ -25,7 +25,7 @@ public class AddLyricsCommand implements Runnable {
 
 	@Override
 	public void run() {
-		new AddLyrics(parent.getClient().getConnectionSubject().getValue(), title, syllables).blockingSubscribe();
+		new AddLyrics(parent.getClient().getConnection(), title, syllables).blockingSubscribe();
 		parent.getOut().println("Adding lyrics...");
 		parent.getOut().flush();
 	}

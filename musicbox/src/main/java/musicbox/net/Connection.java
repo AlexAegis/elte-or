@@ -7,16 +7,10 @@ import musicbox.net.action.Action;
 import musicbox.net.result.HandledResponse;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
-import io.reactivex.subjects.BehaviorSubject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -28,13 +22,14 @@ public class Connection extends Observable<String> implements AutoCloseable {
 	private PrintWriter out;
 	private Scanner in;
 
-	private final HandledResponse handledResponse = new HandledResponse();
-	private BehaviorSubject<String> listenerSource = BehaviorSubject.create();
-	private Observable<String> listener = listenerSource.filter(r -> !handledResponse.toString().equals(r));
 	private MusicBox optionalServer;
 	private MusicBoxClient optionalClient;
-	private int remaining = 0;
-	private List<String> buffer = new ArrayList<>();
+
+	private final Observable<String> listener = this.share();
+
+	public Observable<String> getListener() {
+		return listener;
+	}
 
 	public Connection(MusicBox server, ServerSocket serverSocket) throws IOException {
 		optionalServer = server;
@@ -65,17 +60,13 @@ public class Connection extends Observable<String> implements AutoCloseable {
 	@Override
 	protected void subscribeActual(Observer<? super String> observer) {
 		Logger.getGlobal().info("Listener started");
-		try {/*
-			if(optionalServer != null) {
-				observer.onNext("play 100 0 test1");
-			}*/
+		try {
 			while (!isClosed() && in.hasNextLine()) {
 				observer.onNext(in.nextLine());
-				System.out.println("GOT STUFF");
 			}
 		} catch (Exception e) {
 			Logger.getGlobal().log(Level.SEVERE, "Exception in listener!", e);
-			// observer.onError(e);
+			observer.onError(e);
 		} finally {
 			Logger.getGlobal().info("MusicBoxClient disconnected, trying to reconnect..");
 			close();
@@ -108,11 +99,8 @@ public class Connection extends Observable<String> implements AutoCloseable {
 	}
 
 	public void send(musicbox.net.action.Action<?> action) {
-		System.out.println("Sending actiong");
 		out.println(action.toString());
 		out.flush();
-		listenerSource.onNext(handledResponse.toString());
 		Logger.getGlobal().log(Level.INFO, "Packet sent as action: {0}", action);
-	//	return listener.take(1);
 	}
 }

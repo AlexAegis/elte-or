@@ -2,36 +2,28 @@ package musicbox.net.action;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
-import musicbox.model.Song;
 import musicbox.net.Connection;
 
 import java.io.Serializable;
-import java.util.List;
 
-public class Add extends Action<String> implements Serializable {
+public class Ack extends Action<String> implements Serializable {
 
 	private static final long serialVersionUID = -3970140793679151888L;
 
-	private String title;
-	private List<String> songInstructions;
+	private String message;
 
-	public Add(Observable<Connection> connection, String title, List<String> songInstructions) {
+	public Ack(Observable<Connection> connection, String message) {
 		super(connection);
-		this.title = title;
-		this.songInstructions = songInstructions;
+		this.message = message;
 	}
 
-	public String getTitle() {
-		return title;
-	}
-
-	public List<String> getSongInstructions() {
-		return songInstructions;
+	public String getMessage() {
+		return message;
 	}
 
 	@Override
 	public String toString() {
-		return "add " + title + "\n" + String.join(" ", songInstructions);
+		return "ack " + message;
 	}
 
 
@@ -52,11 +44,12 @@ public class Add extends Action<String> implements Serializable {
 	protected void subscribeActual(Observer<? super String> observer) {
 		var conn = connection.blockingLast();
 		conn.getOptionalServer().ifPresent(server -> {
-			server.getSongs().put(title, new Song(title, songInstructions));
+			conn.send(this);
 			observer.onComplete();
 		});
 		conn.getOptionalClient().ifPresent(client -> {
-			conn.send(this); // send everything downstream
+			observer.onNext(message);
+			observer.onComplete();
 		});
 	}
 }

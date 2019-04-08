@@ -3,14 +3,17 @@ package musicbox.net.action;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.subjects.BehaviorSubject;
+import musicbox.misc.Pair;
+import musicbox.net.ActionType;
 import musicbox.net.result.Hold;
 import musicbox.net.result.Note;
 import musicbox.net.Connection;
 
 import java.io.Serializable;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-public class Play extends Action<Note> implements Serializable {
+public class Play extends Action<String> implements Serializable {
 
 	private static final long serialVersionUID = 8722933668160441290L;
 
@@ -20,7 +23,7 @@ public class Play extends Action<Note> implements Serializable {
 
 	private transient BehaviorSubject<Long> tempoSubject = BehaviorSubject.create();
 
-	public Play(Connection connection, Long tempo, Integer transpose, String title) {
+	public Play(Observable<Connection> connection, Long tempo, Integer transpose, String title) {
 		super(connection);
 		this.setTempo(tempo);
 		this.transpose = transpose;
@@ -50,8 +53,8 @@ public class Play extends Action<Note> implements Serializable {
 	}
 
 	@Override
-	public Class<Note> getResponseClass() {
-		return Note.class;
+	public Class<String> getResponseClass() {
+		return String.class;
 	}
 
 	/**
@@ -77,26 +80,26 @@ public class Play extends Action<Note> implements Serializable {
 	 * @param observer which will receive the notes and will handle the network forwarding to the client.
 	 */
 	@Override
-	protected void subscribeActual(Observer<? super Note> observer) {
-		connection.getOptionalServer().ifPresent(server -> {
+	protected void subscribeActual(Observer<? super String> observer) {
+		var conn = connection.blockingFirst();
+		conn.getOptionalServer().ifPresent(server -> {
 			var song = server.getSongs().get(title);
 			if(song != null) {
-				Observable.zip(song, tempoSubject.switchMap(t -> interval(t, TimeUnit.MILLISECONDS)), (note, timer) -> note)
+				var sub = Observable.zip(song, tempoSubject.switchMap(t -> interval(t, TimeUnit.MILLISECONDS)), (note, timer) -> note)
 					.map(note -> note.transpose(transpose))
 					//.takeUntil() // TODO: Take until a stop signal says so
-					.doOnEach(e -> System.out.println("SEND BEFIRE EACH " + e))
-					.subscribe(next -> connection.send(next));
+					.subscribe(conn::send);
+				conn.send(new Ack(connection, "PLAYSTART"));
+				observer.onComplete();
 			} else {
-				observer.onError(new Exception("No song found"));
+				observer.onError(new Exception("No song"));
 			}
-			observer.onComplete();
 		});
-		connection.getOptionalClient().ifPresent(client -> {
-			System.out.println("SEEENDINNNG");
-			connection.send(this);
-			System.out.println("SEEENT");
-			observer.onNext(new Hold());
-			observer.onComplete();
+		conn.getOptionalClient().ifPresent(client -> {
+			conn.send(this);
+			conn.getListener().filter(s -> s.startsWith(ActionType.ACK.name().toLowerCase())).take(1).blockingSubscribe(observer);
 		});
+
+
 	}
 }

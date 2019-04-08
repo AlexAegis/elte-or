@@ -6,6 +6,7 @@ import io.reactivex.disposables.Disposable;
 import jline.console.ConsoleReader;
 import jline.console.completer.ArgumentCompleter;
 import musicbox.command.ClientCommands;
+import musicbox.net.ActionType;
 import musicbox.net.Connection;
 import musicbox.net.action.Action;
 import io.reactivex.Observable;
@@ -54,8 +55,7 @@ public class MusicBoxClient implements Runnable {
 
 
 	private BehaviorSubject<Connection> connection = BehaviorSubject.create();
-	private Observable<Connection> connection$ = connection.filter(con -> con != null && !con.isClosed()).doOnEach(System.out::println);
-	private CompositeDisposable subscriptions = new CompositeDisposable();
+	private Observable<Connection> connection$ = connection.filter(con -> con != null && !con.isClosed());
 
 	private Synthesizer synthesizer = MidiSystem.getSynthesizer();
 
@@ -97,36 +97,34 @@ public class MusicBoxClient implements Runnable {
 		}
 		tryConnect(host, port);
 
-
 		var tempo = 100L;
 		var transpone = 0;
-		var title = "test2";
-// Remember that I only except an acknowledgement and not the whole play. That will come in through the listener
+		var title = "test1";
 
-
-		Disposable subscription = null;
+		Disposable synthPlayer = null;
 		try(var reader = new ConsoleReader()) {
 			reader.setPrompt("musicbox> ");
-
+/*
 			var res = getConnection()
-				.flatMap(c -> new Play(c, tempo, transpone, title))
+				.doOnEach(e -> System.out.println("HEY LETS SEND PLAY! " + e))
+				.flatMap(c -> new Play(getConnection(), tempo, transpone, title))
 				.blockingFirst();
+*/
 
-
-			subscription = getConnection()
-				.flatMap(conn -> conn)
+			synthPlayer = getConnection()
+				.flatMap(Connection::getListener)
 				.subscribeOn(Schedulers.newThread())
 				.observeOn(Schedulers.newThread())
+				.filter(s -> Arrays.stream(ActionType.values()).map(Enum::name).noneMatch(name -> name.equalsIgnoreCase(s.split(" ")[0])))
 				.map(Note::construct)
 				.subscribe(
 					next -> {
-
-						if(next.getClass().equals(Hold.class)) {
-
-						} else if(next.getClass().equals(Rest.class)) {
-							synthesizer.getChannels()[0].allNotesOff();
-						} else {
-							synthesizer.getChannels()[0].noteOn(next.getNote(), 100);
+						if(!next.getClass().equals(Hold.class)) {
+							if(next.getClass().equals(Rest.class)) {
+								synthesizer.getChannels()[0].allNotesOff();
+							} else {
+								synthesizer.getChannels()[0].noteOn(next.getNote(), 100);
+							}
 						}
 					},
 					e -> Logger.getGlobal().log(Level.SEVERE, "MusicBoxClient listener error in tryConnect!", e),
@@ -146,8 +144,8 @@ public class MusicBoxClient implements Runnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			if(subscription != null) {
-				subscription.dispose();
+			if(synthPlayer != null) {
+				synthPlayer.dispose();
 			}
 		}
 

@@ -1,15 +1,17 @@
 package musicbox.net.action;
 
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import musicbox.net.Connection;
 
+import javax.swing.text.html.Option;
 import java.io.Serializable;
 
 public class NullAction extends Action<String> implements Serializable {
 
 	private static final long serialVersionUID = -3970140793679151888L;
 
-	public NullAction(Connection connection) {
+	public NullAction(Observable<Connection> connection) {
 		super(connection);
 	}
 

@@ -22,7 +22,7 @@ public class StopCommand implements Runnable {
 
 	@Override
 	public void run() {
-		new Stop(parent.getClient().getConnectionSubject().getValue(), no).blockingSubscribe();
+		new Stop(parent.getClient().getConnection(), no).blockingSubscribe();
 		parent.getOut().println("Stopping...");
 		parent.getOut().flush();
 	}

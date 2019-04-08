@@ -28,9 +28,9 @@ public class PlayCommand implements Runnable {
 
 	@Override
 	public void run() {
-		new Play(parent.getClient().getConnectionSubject().getValue(), tempo, transpone, title).blockingSubscribe();
-		parent.getOut().println("Playing...");
-		parent.getOut().flush();
+		new Play(parent.getClient().getConnection(), tempo, transpone, title)
+			.doOnComplete(parent.getOut()::flush)
+			.blockingSubscribe(next -> parent.getOut().println("Playing on channel: " + next));
 	}
 
 }

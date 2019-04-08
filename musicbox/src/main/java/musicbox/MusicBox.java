@@ -82,7 +82,7 @@ public class MusicBox implements Runnable {
 					}))
 					.withLatestFrom(Flowable.just(r), Pair::new))
 				//.doOnNext(pair -> pair.getY().send(new NullAction(pair.getY())).subscribe())
-				.flatMap(pair -> ActionType.construct(pair.getY(), pair.getX()).toFlowable(BackpressureStrategy.MISSING))
+				.flatMap(pair -> ActionType.construct(Observable.just(pair.getY()), pair.getX()).toFlowable(BackpressureStrategy.MISSING))
 				.sequential()
 				.blockingSubscribe(System.out::println);
 		} catch (IOException e) {

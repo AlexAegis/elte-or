@@ -1,5 +1,6 @@
 package musicbox.net.action;
 
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import musicbox.net.Connection;
 
@@ -11,7 +12,7 @@ public class Change extends Action<String> implements Serializable {
 	private Integer tempo;
 	private Integer transpose;
 
-	public Change(Connection connection, Integer no, Integer tempo, Integer transpose) {
+	public Change(Observable<Connection> connection, Integer no, Integer tempo, Integer transpose) {
 		super(connection);
 		this.no = no;
 		this.tempo = tempo;
@@ -49,12 +50,12 @@ public class Change extends Action<String> implements Serializable {
 	 */
 	@Override
 	protected void subscribeActual(Observer<? super String> observer) {
-		connection.getOptionalServer().ifPresent(server -> {
-
+		var conn = connection.blockingLast();
+		conn.getOptionalServer().ifPresent(server -> {
 			observer.onComplete();
 		});
-		connection.getOptionalClient().ifPresent(client -> {
-			connection.send(this); // send everything downstream
+		conn.getOptionalClient().ifPresent(client -> {
+			conn.send(this); // send everything downstream
 		});
 	}
 }
