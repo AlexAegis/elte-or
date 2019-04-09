@@ -9,17 +9,18 @@ import java.util.Arrays;
 import java.util.List;
 
 @Command(name = "play", sortOptions = false, header = {"", ""}, mixinStandardHelpOptions = true,
-		descriptionHeading = "@|bold %nDescription|@:%n",
-		description = {"", "Play command submodule for MusicBoxClient",}, optionListHeading = "@|bold %nOptions|@:%n",
-		footer = {"", "Author: AlexAegis"})
+	descriptionHeading = "@|bold %nDescription|@:%n",
+	description = {"", "Play command submodule for MusicBoxClient",}, optionListHeading = "@|bold %nOptions|@:%n",
+	footer = {"", "Author: AlexAegis"})
 public class PlayCommand implements Runnable {
 
 	@ParentCommand
 	private ClientCommands parent;
 
 	@CommandLine.Parameters(index = "0", arity = "0..*", paramLabel = "<title>",
-			description = "Title of the song you want to play.")
-	private List<String> titles = Arrays.asList("megalovania_base", "megalovania_raised", "megalovania_base_upper", "megalovania_base_lower");
+		description = "Title of the song you want to play.")
+	private List<String> titles =
+		Arrays.asList("megalovania_base", "megalovania_raised", "megalovania_base_upper", "megalovania_base_lower");
 	@CommandLine.Option(names = {"-tr", "--transpose"}, paramLabel = "<transpose>", defaultValue = "0",
 		description = "The transposition you want to apply (default: ${DEFAULT-VALUE})")
 	private Integer transpose;
@@ -30,9 +31,9 @@ public class PlayCommand implements Runnable {
 	@Override
 	public void run() {
 		new Play(parent.getClient().getConnection(), tempo, transpose, titles).doFinally(parent.getOut()::flush)
-				.map(s -> s.substring(4))
-				.blockingSubscribe(next -> parent.getOut().println("Playing on channel: " + next),
-						err -> parent.getOut().println("Play failed: " + err.getMessage()));
+			.map(s -> s.substring(4))
+			.blockingSubscribe(next -> parent.getOut().println("Playing on channel: " + next),
+				err -> parent.getOut().println("Play failed: " + err.getMessage()));
 	}
 
 }

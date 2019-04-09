@@ -3,6 +3,7 @@ package musicbox.net.action;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import musicbox.net.Connection;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -88,7 +89,7 @@ public class Change extends Action<String> implements Serializable {
 			}
 			if (hits > 0) {
 				conn.send(new Ack(null,
-						"Song changed: " + targets.stream().map(Object::toString).collect(Collectors.joining(" "))));
+					"Song changed: " + targets.stream().map(Object::toString).collect(Collectors.joining(" "))));
 			} else {
 				conn.send(new Ack(null, "Nothing is playing on " + no));
 			}

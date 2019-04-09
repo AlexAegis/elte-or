@@ -6,6 +6,7 @@ import musicbox.net.result.Fin;
 import musicbox.net.result.Hold;
 import musicbox.net.result.Note;
 import musicbox.net.result.Rest;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,14 +27,6 @@ public class Song extends Observable<Note> implements Serializable {
 	public Song(String title, List<String> instructions) {
 		this.title = title;
 		this.instructions = instructions;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public List<String> getInstructions() {
-		return instructions;
 	}
 
 	public List<String> getLyrics() {
@@ -64,7 +57,6 @@ public class Song extends Observable<Note> implements Serializable {
 	}
 
 	/**
-	 *
 	 * @param observer will receive all the notes this song has generated based on it's instructions
 	 */
 	@Override

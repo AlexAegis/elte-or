@@ -97,3 +97,5 @@ c
 3musicbox/src/main/java/musicbox/net/action/Ack.java,c\3\c382ff7a6500d3a01f2dd4d154fea84ac6c03a9d
 c
 3musicbox/src/main/java/musicbox/net/result/Fin.java,0\e\0e526a8bf405d9d0bc66d8a5450c7033ff40e632
+`
+0musicbox/src/main/java/musicbox/misc/Triple.java,4\7\47c33e8b9ae0e107d03f551f0525265daa7fc6c4

@@ -18,10 +18,10 @@ public class ChangeCommand implements Runnable {
 			description = "The playing songs number. If empty, then all the songs playing towards the client is affected.")
 	private Integer no;
 	@CommandLine.Option(names = {"-tr", "--transpose"}, paramLabel = "<transpose>",
-			description = "The transposition you with to change the song's playback to.")
+		description = "The transposition you with to change the song's playback to.")
 	private Integer transpose;
 	@CommandLine.Option(names = {"-t", "--tempo"}, paramLabel = "<tempo>",
-			description = "The tempo you wish to change the song's playback to.")
+		description = "The tempo you wish to change the song's playback to.")
 	private Long tempo;
 
 	@Override

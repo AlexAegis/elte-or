@@ -2,6 +2,7 @@ package musicbox.net.action;
 
 import io.reactivex.Observable;
 import musicbox.net.Connection;
+
 import java.io.Serializable;
 
 public abstract class Action<T> extends Observable<T> implements Serializable {

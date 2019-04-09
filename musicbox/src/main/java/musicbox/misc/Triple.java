@@ -3,7 +3,7 @@ package musicbox.misc;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class Triple<T, U, V> extends Pair<T, U>implements Serializable {
+public class Triple<T, U, V> extends Pair<T, U> implements Serializable {
 
 	private static final long serialVersionUID = -3130232890865229195L;
 
@@ -28,9 +28,12 @@ public class Triple<T, U, V> extends Pair<T, U>implements Serializable {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		if (!super.equals(o)) return false;
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		if (!super.equals(o))
+			return false;
 		Triple<?, ?, ?> triple = (Triple<?, ?, ?>) o;
 		return Objects.equals(z, triple.z);
 	}
@@ -42,10 +45,6 @@ public class Triple<T, U, V> extends Pair<T, U>implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Triple{" +
-			"z=" + z +
-			", x=" + x +
-			", y=" + y +
-			'}';
+		return "Triple{" + "z=" + z + ", x=" + x + ", y=" + y + '}';
 	}
 }

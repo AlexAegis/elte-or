@@ -4,6 +4,7 @@ import io.reactivex.Observable;
 import io.reactivex.Observer;
 import musicbox.MusicBox;
 import musicbox.MusicBoxClient;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -107,6 +108,6 @@ public class Connection extends Observable<String> implements AutoCloseable {
 
 	public void forwardAck(Observer<? super String> observer) {
 		getListener().filter(s -> s.startsWith(ActionType.ACK.name().toLowerCase())).take(1)
-				.blockingSubscribe(observer);
+			.blockingSubscribe(observer);
 	}
 }

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class Stop extends Action<String> implements Serializable {
 
 	private static final long serialVersionUID = -6090679322129097464L;
-	
+
 	private Integer no = -1;
 
 	public Stop(Observable<Connection> connection, String no) {

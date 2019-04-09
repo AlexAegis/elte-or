@@ -2,6 +2,7 @@ package musicbox.net;
 
 import io.reactivex.Observable;
 import musicbox.net.action.*;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -18,9 +19,6 @@ public enum ActionType {
 
 	/**
 	 * Input sanitization is not required by the task
-	 *
-	 * @param lines
-	 * @return
 	 */
 	public static musicbox.net.action.Action<?> construct(Observable<Connection> connection, List<String> lines) {
 		var split = lines.stream().map(line -> Arrays.asList(line.split(" "))).collect(Collectors.toList());
@@ -30,7 +28,8 @@ public enum ActionType {
 			case ADDLYRICS:
 				return new AddLyrics(connection, split.get(0).get(1), split.size() > 1 ? split.get(1) : null);
 			case PLAY:
-				return new Play(connection, split.get(0).get(1), split.get(0).get(2),  split.get(0).subList(3, split.get(0).size()));
+				return new Play(connection, split.get(0).get(1), split.get(0).get(2),
+					split.get(0).subList(3, split.get(0).size()));
 			case CHANGE:
 				return new Change(connection, split.get(0).get(1), split.get(0).get(2), split.get(0).get(3));
 			case STOP:

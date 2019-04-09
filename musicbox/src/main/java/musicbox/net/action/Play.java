@@ -7,6 +7,7 @@ import io.reactivex.subjects.BehaviorSubject;
 import musicbox.misc.Pair;
 import musicbox.model.Song;
 import musicbox.net.Connection;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -76,20 +77,19 @@ public class Play extends Action<String> implements Serializable {
 	}
 
 	/**
-	 *
 	 * Upon subscription to the Play ActionType/ActionType, this will first try to access the server.
 	 * If the connection was made from the server then this will be successful, otherwise an error will be thrown downstream
-	 *
+	 * <p>
 	 * After accessing the server the play action then tries to access the song defined in the `title` field.
 	 * If not found, then again the downstream receives an error, if found then a zip subscribes to the song and the timing
-	 *
+	 * <p>
 	 * The timing delays every emit of the song by the amount specified in the tempoSubject. (When the tempoSubject recieves
 	 * a new value, then a different interval will be subscribed, changing the speed of the playback)
-	 *
+	 * <p>
 	 * The zip only sends the notes coming from the song downstream.
-	 *
+	 * <p>
 	 * Each note gets transposed here if necessary
-	 *
+	 * <p>
 	 * each note generated from the song will be forwarded to the Play actions subscriber.
 	 *
 	 * @param observer which will receive the notes and will handle the network forwarding to the client.
@@ -104,22 +104,18 @@ public class Play extends Action<String> implements Serializable {
 				var song = server.getSongs().get(title);
 				if (song != null) {
 					// Remove `60000 /` if you want to specify the tempo in ms instead of bpm
-					disposables.put(title,
-						Observable
-							.zip(song,
-								tempoSubject.switchMap(
-									t -> interval(30000 / (t == 0 ? 250 : t), TimeUnit.MILLISECONDS)),
-								(note, timer) -> note)
-							.withLatestFrom(transposeSubject, Pair::new)
-							.map(noteTransposePair -> noteTransposePair.getX().transpose(noteTransposePair.getY()))
-							.doOnDispose(() -> conn.send(Song.FIN)).subscribe(conn::send));
+					disposables.put(title, Observable
+						.zip(song, tempoSubject.switchMap(t -> interval(30000 / (t == 0 ? 250 : t), TimeUnit.MILLISECONDS)), (note, timer) -> note)
+						.withLatestFrom(transposeSubject, Pair::new)
+						.map(noteTransposePair -> noteTransposePair.getX().transpose(noteTransposePair.getY()))
+						.doOnDispose(() -> conn.send(Song.FIN))
+						.subscribe(conn::send));
 					success = true;
 				} else {
 					conn.send(new Ack(connection, "No such song"));
 				}
 			}
-
-			if(success) {
+			if (success) {
 				server.registerPlay(conn, this).ifPresentOrElse(
 					i -> conn.send(new Ack(connection, "play started on channel " + i)),
 					() -> conn.send(new Ack(connection, "play failed to start")));

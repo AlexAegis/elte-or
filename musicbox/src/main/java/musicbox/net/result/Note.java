@@ -4,11 +4,12 @@ import io.reactivex.Observer;
 import musicbox.misc.Pair;
 import musicbox.model.Song;
 import musicbox.net.action.Action;
+
 import java.io.Serializable;
 
 /**
  * This class represents a note that can be played by the midi synthesiser
- *
+ * <p>
  * It can be serialized but the task demanded to send it as a string
  */
 public class Note extends Action<String> implements Serializable {
@@ -105,7 +106,7 @@ public class Note extends Action<String> implements Serializable {
 		var letters = note.toCharArray();
 
 		valid &= letters[0] == 'C' || letters[0] == 'D' || letters[0] == 'E' || letters[0] == 'F' || letters[0] == 'G'
-				|| letters[0] == 'A' || letters[0] == 'B';
+			|| letters[0] == 'A' || letters[0] == 'B';
 
 		if (letters.length > 1) {
 			valid &= letters[1] == 'b' || letters[1] == '#';
@@ -135,7 +136,7 @@ public class Note extends Action<String> implements Serializable {
 			baseNoteForCalc = 'I';
 		}
 		var offset = 0;
-		if(baseNoteForCalc >= 'F') {
+		if (baseNoteForCalc >= 'F') {
 			offset = -1;
 		}
 		return (((baseNoteForCalc - 7) - 60) * 2) + 60 + offset;
@@ -149,10 +150,10 @@ public class Note extends Action<String> implements Serializable {
 	 */
 	public static char parsePitch(int pitch) {
 		var offset = 0;
-		if(pitch >= 'A') {
+		if (pitch >= 'A') {
 			offset = -1;
 		}
-		return (char) (((((pitch - 60) / 2 - offset) +  2) % 7) + 67 - 2);
+		return (char) (((((pitch - 60) / 2 - offset) + 2) % 7) + 67 - 2);
 	}
 
 	public Note transpose(Integer transpose) {
@@ -164,7 +165,7 @@ public class Note extends Action<String> implements Serializable {
 	}
 
 	public void refreshLyric() {
-		if(song != null) {
+		if (song != null) {
 			this.syllable = song.getSyllable(nextSyllable);
 		}
 	}
@@ -172,7 +173,7 @@ public class Note extends Action<String> implements Serializable {
 	/**
 	 * Applies a transposition on a base pitch (must be between 60 and 72 inclusive)
 	 *
-	 * @param pitch to be transposed [60, 72]
+	 * @param pitch     to be transposed [60, 72]
 	 * @param transpose by this amount any
 	 * @return the transposed pitch [60, 72] and the amount of the octave change
 	 */
@@ -192,7 +193,7 @@ public class Note extends Action<String> implements Serializable {
 	 * @return the final pitch of the note
 	 */
 	public int getNote() {
-		return  base + half + octave * 12;
+		return base + half + octave * 12;
 	}
 
 	/**
@@ -210,6 +211,7 @@ public class Note extends Action<String> implements Serializable {
 
 	/**
 	 * Reconstructs the string
+	 *
 	 * @return
 	 */
 	@Override
