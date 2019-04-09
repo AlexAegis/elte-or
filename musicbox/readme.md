@@ -11,6 +11,8 @@ Default port `40000`. Configurable with options.
 
 Use the `-?` help flag for more info.
 
+> The program contains parts of [Toby Fox](https://en.wikipedia.org/wiki/Toby_Fox)'s song, [Megalovania](https://www.youtube.com/watch?v=ZcoqR9Bwx1Y)
+
 ## Szerver
 
 Készítsd el a `MusicBox` osztályt, amelynek főprogramja egy szervert indít el a `40000` porton. A szerver dalokat tárol el és játszik vissza; egyszerre tetszőlegesen sok klienst tud kiszolgálni. A szerver a következő fajta szöveges üzeneteket várja:
