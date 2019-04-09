@@ -8,7 +8,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 import musicbox.misc.Pair;
-import musicbox.misc.Triple;
 import musicbox.model.Song;
 import musicbox.net.ActionType;
 import musicbox.net.Connection;
@@ -49,8 +48,11 @@ public class MusicBox implements Runnable {
 	public static final Song SONG_C4 = new Song("c4", Arrays.asList("C 4".split(" ")));
 	public static final Song SONG_TEST1 = new Song("test1", Arrays.asList("C 4 E 4 C 4 E 4 G 8 G 8 REP 6;1 C/1 4 B 4 A 4 G 4 F 8 A 8 G 4 F 4 E 4 D 4 C 8 C 8".split(" ")));
 	public static final Song SONG_TEST2 = new Song("test2", Arrays.asList("D 1 D 3 D/1 1 D/1 3 C/1 1 C/1 3 C/1 2 C/1 2 D/1 1 D/1 3 C/1 1 Bb 3 A 4 A 2 R 2 REP 15;1 Bb 4 A 2 G 2 F 1 F 3 E 2 D 2 G 2 G 2 C/1 2 Bb 2 A 4 D/1 2 R 2 C/1 1 Bb 3 A 2 G 2 G 1 A 3 G 2 F 2 A 1 G 3 F# 2 Eb 2 D 4 D 2 R 2".split(" ")));
-	public static final Song SONG_MEGALOVANIA = new Song("megalovania", Arrays.asList("D 1 D 1 D/1 1 R 1 A 1 R 2 G# 1 R 1 G 1 R 1 F 2 D 1 F 1 G 1 REP 14;4".split(" ")));
-
+	public static final Song SONG_MEGALOVANIA_MAIN_BASE = new Song("megalovania", Arrays.asList("D 1 D 1 D/1 1 R 1 A 1 R 2 G# 1 R 1 G 1 R 1 F 2 D 1 F 1 G 1 C 1 C 1 D/1 1 R 1 A 1 R 2 G# 1 R 1 G 1 R 1 F 2 D 1 F 1 G 1 B/-1 1 B/-1 1 D/1 1 R 1 A 1 R 2 G# 1 R 1 G 1 R 1 F 2 D 1 F 1 G 1 A#/-1 1 A#/-1 1 D/1 1 R 1 A 1 R 2 G# 1 R 1 G 1 R 1 F 2 D 1 F 1 G 1 REP 56;3".split(" ")));
+	public static final Song SONG_MEGALOVANIA_MAIN_RAISED = new Song("megalovania_raised", Arrays.asList("R 64 D/1 1 D/1 1 D/2 1 R 1 A/1 1 R 2 G#/1 1 R 1 G/1 1 R 1 F/1 2 D/1 1 F/1 1 G/1 1 C/1 1 C/1 1 D/2 1 R 1 A/1 1 R 2 G#/1 1 R 1 G/1 1 R 1 F/1 2 D/1 1 F/1 1 G/1 1 B 1 B 1 D/2 1 R 1 A/1 1 R 2 G#/1 1 R 1 G/1 1 R 1 F/1 2 D/1 1 F/1 1 G/1 1 A# 1 A# 1 D/2 1 R 1 A/1 1 R 2 G#/1 1 R 1 G/1 1 R 1 F/1 2 D/1 1 F/1 1 G/1 1 REP 56;2".split(" ")));
+	public static final Song SONG_MEGALOVANIA_BASE_BASS = new Song("megalovania_bass", Arrays.asList("R 64 R 32 R 24 R 2 D#/-1 2 D#/-1 2 R 2 G/-2 2 E/-2 2 G/-2 2 E/-2 2 REP 4;6 E/-2 2 REP 1;3 G/-2 2 E/-2 2 G/-2 2 E/-2 2 REP 4;6 E/-2 2 REP 1;3".split(" ")));
+	public static final Song SONG_MEGALOVANIA_BASE_UPPER = new Song("megalovania_base_upper", Arrays.asList("R 64 D 4 D 4 D 4 D 4 C 4 C 4 C 4 C 4 B 4 B 4 B 4 B 4 A# 4 A# 4 C 4 C 4 REP 16;3".split(" ")));
+	public static final Song SONG_MEGALOVANIA_BASE_LOWER = new Song("megalovania_base_lower", Arrays.asList("R 64 D/-1 4 D/-1 4 D/-1 4 D/-1 4 C/-1 4 C/-1 4 C/-1 4 C/-1 4 B/-1 4 B/-1 4 B/-1 4 B/-1 4 A#/-1 4 A#/-1 4 C/-1 4 C/-1 4 REP 16;3".split(" ")));
 
 	public Optional<Integer> registerPlay(Connection connection, Play play) {
 		cleanPlaying();
@@ -102,7 +104,11 @@ public class MusicBox implements Runnable {
 		songs.put("c4", SONG_C4);
 		songs.put("test1", SONG_TEST1);
 		songs.put("test2", SONG_TEST2);
-		songs.put("megalovania", SONG_MEGALOVANIA);
+		songs.put("megalovania_base", SONG_MEGALOVANIA_MAIN_BASE);
+		songs.put("megalovania_raised", SONG_MEGALOVANIA_MAIN_RAISED);
+		songs.put("megalovania_bass", SONG_MEGALOVANIA_BASE_BASS);
+		songs.put("megalovania_base_upper", SONG_MEGALOVANIA_BASE_UPPER);
+		songs.put("megalovania_base_lower", SONG_MEGALOVANIA_BASE_LOWER);
 
 		try (var server = new ServerSocket(port)) {
 			Flowable.fromCallable(() -> new Connection(this, server))
@@ -118,7 +124,6 @@ public class MusicBox implements Runnable {
 						public boolean test(String next) {
 							ActionType.getActionByName(next.split(" ")[0]).ifPresent(actionType ->
 								remaining = actionType.getAdditionalLines());
-							System.out.println("next from conn: " + next + " remaining: " + remaining);
 							return --remaining < 0;
 						}
 					}))

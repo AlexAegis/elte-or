@@ -108,7 +108,7 @@ public class Play extends Action<String> implements Serializable {
 						Observable
 							.zip(song,
 								tempoSubject.switchMap(
-									t -> interval(60000 / (t == 0 ? 250 : t), TimeUnit.MILLISECONDS)),
+									t -> interval(30000 / (t == 0 ? 250 : t), TimeUnit.MILLISECONDS)),
 								(note, timer) -> note)
 							.withLatestFrom(transposeSubject, Pair::new)
 							.map(noteTransposePair -> noteTransposePair.getX().transpose(noteTransposePair.getY()))

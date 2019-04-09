@@ -10,7 +10,7 @@ public class SongTest {
 
 	@Test
 	void megalovania() {
-		MusicBox.SONG_MEGALOVANIA.blockingSubscribe(note -> {
+		MusicBox.SONG_MEGALOVANIA_MAIN_BASE.blockingSubscribe(note -> {
 			System.out.println(note.toString(false) + "\t\tpitch: " + (note.getNote()));
 			// F is bad. It's A and not 29
 		});

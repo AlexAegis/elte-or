@@ -5,6 +5,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.ParentCommand;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Command(name = "play", sortOptions = false, header = {"", ""}, mixinStandardHelpOptions = true,
@@ -16,13 +17,13 @@ public class PlayCommand implements Runnable {
 	@ParentCommand
 	private ClientCommands parent;
 
-	@CommandLine.Parameters(index = "0", arity = "1..*", paramLabel = "<title>", defaultValue = "megalovania",
+	@CommandLine.Parameters(index = "0", arity = "0..*", paramLabel = "<title>",
 			description = "Title of the song you want to play.")
-	private List<String> titles;
+	private List<String> titles = Arrays.asList("megalovania_base", "megalovania_raised", "megalovania_base_upper", "megalovania_base_lower");
 	@CommandLine.Option(names = {"-tr", "--transpose"}, paramLabel = "<transpose>", defaultValue = "0",
 		description = "The transposition you want to apply (default: ${DEFAULT-VALUE})")
 	private Integer transpose;
-	@CommandLine.Option(names = {"-t", "--tempo"}, paramLabel = "<tempo>", defaultValue = "250",
+	@CommandLine.Option(names = {"-t", "--tempo"}, paramLabel = "<tempo>", defaultValue = "200",
 		description = "The tempo of you want to set the playback (default: ${DEFAULT-VALUE})")
 	private Long tempo;
 

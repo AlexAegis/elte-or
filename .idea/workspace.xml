@@ -3,8 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="e9fc54b6-7ad8-4c50-9c86-12c7d09a261d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/musicbox/src/main/java/musicbox/model/Song.java" beforeDir="false" afterPath="$PROJECT_DIR$/musicbox/src/main/java/musicbox/model/Song.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/musicbox/src/main/java/musicbox/net/result/Note.java" beforeDir="false" afterPath="$PROJECT_DIR$/musicbox/src/main/java/musicbox/net/result/Note.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/musicbox/src/main/java/musicbox/MusicBox.java" beforeDir="false" afterPath="$PROJECT_DIR$/musicbox/src/main/java/musicbox/MusicBox.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/musicbox/src/main/java/musicbox/command/PlayCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/musicbox/src/main/java/musicbox/command/PlayCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/musicbox/src/main/java/musicbox/net/action/Play.java" beforeDir="false" afterPath="$PROJECT_DIR$/musicbox/src/main/java/musicbox/net/action/Play.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/musicbox/src/test/java/musicbox/model/SongTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/musicbox/src/test/java/musicbox/model/SongTest.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/.gradle/" />
@@ -136,9 +138,9 @@
           <entry key="MF" value="1" />
           <entry key="bat" value="1" />
           <entry key="classpath" value="1" />
-          <entry key="gradle" value="5" />
+          <entry key="gradle" value="6" />
           <entry key="gradlew" value="1" />
-          <entry key="java" value="777" />
+          <entry key="java" value="783" />
           <entry key="json" value="6" />
           <entry key="md" value="9" />
           <entry key="properties" value="3" />
@@ -147,8 +149,8 @@
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="Eclipse" value="1" />
-          <entry key="Groovy" value="5" />
-          <entry key="JAVA" value="777" />
+          <entry key="Groovy" value="6" />
+          <entry key="JAVA" value="783" />
           <entry key="JSON" value="6" />
           <entry key="Manifest" value="1" />
           <entry key="Markdown" value="9" />
@@ -159,18 +161,18 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="gradle" value="147" />
-          <entry key="java" value="79682" />
+          <entry key="java" value="80237" />
           <entry key="json" value="94" />
           <entry key="properties" value="266" />
-          <entry key="txt" value="1182" />
+          <entry key="txt" value="1217" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Groovy" value="147" />
-          <entry key="JAVA" value="79682" />
+          <entry key="JAVA" value="80237" />
           <entry key="JSON" value="94" />
-          <entry key="PLAIN_TEXT" value="1182" />
+          <entry key="PLAIN_TEXT" value="1217" />
           <entry key="Properties" value="266" />
         </counts>
       </usages-collector>
@@ -219,53 +221,39 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/net/Connection.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="688">
+              <caret line="61" selection-start-line="61" selection-end-line="61" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/net/action/Play.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="731">
-              <caret line="113" column="82" selection-start-line="113" selection-start-column="82" selection-end-line="113" selection-end-column="82" />
-              <folding>
-                <element signature="e#1762#1763#0" expanded="true" />
-                <element signature="e#1854#1855#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="465">
+              <caret line="99" selection-start-line="99" selection-end-line="99" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/net/action/Stop.java">
+        <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/command/PlayCommand.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="640">
-              <caret line="49" column="46" selection-start-line="49" selection-start-column="46" selection-end-line="49" selection-end-column="46" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="496">
+              <caret line="37" column="1" lean-forward="true" selection-start-line="37" selection-start-column="1" selection-end-line="37" selection-end-column="1" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/net/action/AddLyrics.java">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/MusicBox.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="592">
-              <caret line="45" column="6" selection-start-line="45" selection-start-column="6" selection-end-line="45" selection-end-column="6" />
+            <state relative-caret-position="540">
+              <caret line="119" column="61" lean-forward="true" selection-start-line="119" selection-start-column="61" selection-end-line="119" selection-end-column="61" />
               <folding>
                 <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/misc/Pair.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="144">
-              <caret line="9" column="18" lean-forward="true" selection-start-line="9" selection-start-column="18" selection-end-line="9" selection-end-column="18" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#401#402#0" expanded="true" />
-                <element signature="e#418#419#0" expanded="true" />
-                <element signature="e#444#445#0" expanded="true" />
-                <element signature="e#461#462#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -275,72 +263,7 @@
         <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/net/result/Note.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="710">
-              <caret line="166" column="26" lean-forward="true" selection-start-line="166" selection-start-column="26" selection-end-line="166" selection-end-column="26" />
-              <folding>
-                <element signature="e#572#573#0" expanded="true" />
-                <element signature="e#590#591#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/model/Song.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="419">
-              <caret line="72" column="92" selection-start-line="72" selection-start-column="92" selection-end-line="72" selection-end-column="92" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#1086#1087#0" expanded="true" />
-                <element signature="e#1173#1174#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/MusicBoxClient.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="104">
-              <caret line="58" column="5" lean-forward="true" selection-start-line="58" selection-start-column="5" selection-end-line="58" selection-end-column="5" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/MusicBox.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="157">
-              <caret line="86" column="25" selection-start-line="86" selection-start-column="25" selection-end-line="86" selection-end-column="25" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/net/ActionType.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="19" column="53" lean-forward="true" selection-start-line="19" selection-start-column="53" selection-end-line="19" selection-end-column="53" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/musicbox/readme.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-            <state split_layout="SECOND">
-              <first_editor relative-caret-position="112">
-                <caret line="7" selection-start-line="7" selection-end-line="7" />
-              </first_editor>
-              <second_editor>
-                <markdownNavigatorState />
-              </second_editor>
+              <caret line="52" selection-start-line="52" selection-end-line="52" />
             </state>
           </provider>
         </entry>
@@ -1374,16 +1297,16 @@
         <option value="$PROJECT_DIR$/musicbox/src/test/java/musicbox/net/NoteTest.java" />
         <option value="$PROJECT_DIR$/musicbox/src/test/java/musicbox/model/SongTest.java" />
         <option value="$PROJECT_DIR$/musicbox/src/main/java/musicbox/net/action/Lyric.java" />
-        <option value="$PROJECT_DIR$/musicbox/src/main/java/musicbox/command/PlayCommand.java" />
         <option value="$PROJECT_DIR$/musicbox/src/main/java/musicbox/MusicBoxClient.java" />
         <option value="$PROJECT_DIR$/musicbox/src/main/java/musicbox/misc/Pair.java" />
         <option value="$PROJECT_DIR$/musicbox/src/main/java/musicbox/misc/Triple.java" />
         <option value="$PROJECT_DIR$/musicbox/src/main/java/musicbox/net/action/Stop.java" />
-        <option value="$PROJECT_DIR$/musicbox/src/main/java/musicbox/MusicBox.java" />
         <option value="$PROJECT_DIR$/musicbox/src/main/java/musicbox/net/ActionType.java" />
+        <option value="$PROJECT_DIR$/musicbox/src/main/java/musicbox/net/result/Note.java" />
         <option value="$PROJECT_DIR$/musicbox/src/main/java/musicbox/net/action/Play.java" />
         <option value="$PROJECT_DIR$/musicbox/src/main/java/musicbox/model/Song.java" />
-        <option value="$PROJECT_DIR$/musicbox/src/main/java/musicbox/net/result/Note.java" />
+        <option value="$PROJECT_DIR$/musicbox/src/main/java/musicbox/command/PlayCommand.java" />
+        <option value="$PROJECT_DIR$/musicbox/src/main/java/musicbox/MusicBox.java" />
       </list>
     </option>
   </component>
@@ -1401,7 +1324,7 @@
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="-8" />
-    <option name="width" value="2523" />
+    <option name="width" value="3382" />
     <option name="height" value="2118" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -1573,7 +1496,7 @@
     <property name="SearchEverywhereHistoryKey" value="Clien&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/Client.java&#10;Pale&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/gui/Palette.java&#10;ShotM&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/marker/ShotMarker.java&#10;sea&#9;PSI&#9;JAVA://battleships.gui.container.Sea&#10;Water&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/gui/element/Water.java&#10;Ship&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/model/Ship.java&#10;Dra&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/gui/container/Drawer.java&#10;Ad&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/model/Admiral.java&#10;ship&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/gui/element/Ship.java&#10;Opp&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/gui/container/Opponent.java&#10;fromFile&#9;PSI&#9;JAVA://battleships.Client#fieldInitFromFile&#10;ser&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/Server.java&#10;Sea&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/gui/container/Sea.java&#10;Dr&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/gui/container/Drawer.java&#10;segm&#9;PSI&#9;JAVA://battleships.gui.element.ShipSegment&#10;segme&#9;PSI&#9;JAVA://battleships.gui.element.ShipSegment&#10;Segme&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/gui/element/ShipSegment.java&#10;focusNext&#9;PSI&#9;JAVA://battleships.gui.container.ActionBar#focusNextButton&#10;Admir&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/model/Admiral.java&#10;SGR&#9;PSI&#9;JAVA://com.googlecode.lanterna.SGR&#10;dSwitc&#9;PSI&#9;JAVA://battleships.misc.Switchable#doSwitch&#10;Server&#9;FILE&#9;file://C:/git/elte-or/src/main/java/battleships/Server.java" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1554766107471" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1554769411414" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="project.structure.last.edited" value="Modules" />
@@ -1778,14 +1701,7 @@
       <workItem from="1554505450387" duration="384000" />
       <workItem from="1554505905174" duration="65045000" />
       <workItem from="1554713244946" duration="26719000" />
-      <workItem from="1554745936841" duration="11827000" />
-    </task>
-    <task id="LOCAL-00010" summary="cool explosion effect">
-      <created>1552406700015</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1552406700015</updated>
+      <workItem from="1554745936841" duration="15145000" />
     </task>
     <task id="LOCAL-00011" summary="niceeee">
       <created>1552406819102</created>
@@ -2123,7 +2039,14 @@
       <option name="project" value="LOCAL" />
       <updated>1554765344458</updated>
     </task>
-    <option name="localTasksCounter" value="59" />
+    <task id="LOCAL-00059" summary="Now lyrics can be changed mid-play">
+      <created>1554766147622</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1554766147623</updated>
+    </task>
+    <option name="localTasksCounter" value="60" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -2159,13 +2082,13 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="248431000" />
+    <option name="totallyTimeSpent" value="251749000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-6" y="0" width="2018" height="1694" extended-state="0" />
+    <frame x="-6" y="0" width="2705" height="1694" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20888662" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15463138" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -2192,7 +2115,7 @@
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="right" id="Capture Analysis" order="4" />
       <window_info anchor="right" id="Maven Projects" order="5" weight="0.32980832" />
-      <window_info anchor="right" id="Gradle" order="6" sideWeight="0.49787596" visible="true" weight="0.047497448" />
+      <window_info anchor="right" id="Gradle" order="6" sideWeight="0.49787596" visible="true" weight="0.1463138" />
       <window_info anchor="right" id="Database" order="7" />
       <window_info anchor="right" id="Palette&#9;" order="8" />
       <window_info anchor="right" id="Theme Preview" order="9" />
@@ -2242,7 +2165,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="version 1.0.0 Relogging is still not done completly (Opponent knowledge restore)" />
     <MESSAGE value="relog knowledge restore is fine" />
     <MESSAGE value="Continuous game" />
     <MESSAGE value="remove logs, bugs: resize, sea disappears (still functional), on relog, some of the reveals among the knowledges wont register" />
@@ -2267,10 +2189,10 @@
     <MESSAGE value="fixed note parse error on rest" />
     <MESSAGE value="multiplay added" />
     <MESSAGE value="Fixed lyrics matching, now it will ignore REP's" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed lyrics matching, now it will ignore REP's" />
+    <MESSAGE value="Now lyrics can be changed mid-play" />
+    <option name="LAST_COMMIT_MESSAGE" value="Now lyrics can be changed mid-play" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/misc/RequestParser.java" />
     <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/net/Packet.java" />
     <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.reactivex.rxjava2/rxjava/2.2.8/ad84eaacebe8ef666a792794f50c6702d6951d0/rxjava-2.2.8-sources.jar!/io/reactivex/FlowableTransformer.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -2479,13 +2401,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/net/Connection.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="688">
-          <caret line="77" selection-start-line="77" selection-end-line="77" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/net/action/Change.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="624">
@@ -2562,31 +2477,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/command/PlayCommand.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="512">
-          <caret line="37" lean-forward="true" selection-start-line="37" selection-end-line="37" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/MusicBoxClient.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="104">
           <caret line="58" column="5" lean-forward="true" selection-start-line="58" selection-start-column="5" selection-end-line="58" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/misc/Pair.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="9" column="18" lean-forward="true" selection-start-line="9" selection-start-column="18" selection-end-line="9" selection-end-column="18" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#401#402#0" expanded="true" />
-            <element signature="e#418#419#0" expanded="true" />
-            <element signature="e#444#445#0" expanded="true" />
-            <element signature="e#461#462#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2617,16 +2511,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/MusicBox.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="157">
-          <caret line="86" column="25" selection-start-line="86" selection-start-column="25" selection-end-line="86" selection-end-column="25" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/net/ActionType.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="272">
@@ -2649,6 +2533,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/settings.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="80">
+          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/misc/Pair.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="9" column="18" lean-forward="true" selection-start-line="9" selection-start-column="18" selection-end-line="9" selection-end-column="18" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#401#402#0" expanded="true" />
+            <element signature="e#418#419#0" expanded="true" />
+            <element signature="e#444#445#0" expanded="true" />
+            <element signature="e#461#462#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/net/action/AddLyrics.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="592">
@@ -2659,13 +2564,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/net/action/Play.java">
+    <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/net/Connection.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="731">
-          <caret line="113" column="82" selection-start-line="113" selection-start-column="82" selection-end-line="113" selection-end-column="82" />
+        <state relative-caret-position="688">
+          <caret line="61" selection-start-line="61" selection-end-line="61" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/model/Song.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="257">
+          <caret line="25" column="11" selection-start-line="25" selection-start-column="11" selection-end-line="25" selection-end-column="11" />
           <folding>
-            <element signature="e#1762#1763#0" expanded="true" />
-            <element signature="e#1854#1855#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#1086#1087#0" expanded="true" />
+            <element signature="e#1173#1174#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2673,22 +2586,30 @@
     <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/net/result/Note.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="710">
-          <caret line="166" column="26" lean-forward="true" selection-start-line="166" selection-start-column="26" selection-end-line="166" selection-end-column="26" />
-          <folding>
-            <element signature="e#572#573#0" expanded="true" />
-            <element signature="e#590#591#0" expanded="true" />
-          </folding>
+          <caret line="52" selection-start-line="52" selection-end-line="52" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/model/Song.java">
+    <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/command/PlayCommand.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="419">
-          <caret line="72" column="92" selection-start-line="72" selection-start-column="92" selection-end-line="72" selection-end-column="92" />
+        <state relative-caret-position="496">
+          <caret line="37" column="1" lean-forward="true" selection-start-line="37" selection-start-column="1" selection-end-line="37" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/net/action/Play.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="465">
+          <caret line="99" selection-start-line="99" selection-end-line="99" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/musicbox/src/main/java/musicbox/MusicBox.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="540">
+          <caret line="119" column="61" lean-forward="true" selection-start-line="119" selection-start-column="61" selection-end-line="119" selection-end-column="61" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1086#1087#0" expanded="true" />
-            <element signature="e#1173#1174#0" expanded="true" />
           </folding>
         </state>
       </provider>
