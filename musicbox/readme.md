@@ -50,12 +50,12 @@ Készítsd el a `MusicBox` osztályt, amelynek főprogramja egy szervert indít 
 
 ## Kliens
 
-Készíts `MusicBoxClient` klienst, amely képes csatlakozni a portra, és a parancssorban megadott adatokkal meghívja a szerver `play` metódusát, majd fogadja a dal hangjait/szövegét, és lejátssza/megjeleníti őket.
+Készíts `MusicBoxClient` klienst, amely képes csatlakozni a portra, és a parancssorban megadott adatokkal `play` üzenetet küld a szervernek, majd fogadja a dal hangjait/szövegét, és lejátssza/megjeleníti őket.
 
 - Két lépést előre meg kell tenni.
   - A lejátszáshoz először meg kell hívni a [`MidiSystem` osztály `getSynthesizer()` metódusát](<https://docs.oracle.com/en/java/javase/12/docs/api/java.desktop/javax/sound/midi/MidiSystem.html#getSynthesizer()>).
   - Ezután [meg kell nyitni](<https://docs.oracle.com/en/java/javase/12/docs/api/java.desktop/javax/sound/midi/MidiDevice.html#open()>) a kapott `Synthesizer` objektumot, és ennek csatornái ([getChannels()](<https://docs.oracle.com/en/java/javase/12/docs/api/java.desktop/javax/sound/midi/Synthesizer.html#getChannels()>)) közül ki kell választani egyet, pl. a legelső a zongora.
 - Hang képzéséhez a csatornán a megfelelő ütemben meg kell hívni a [noteOn()](<https://docs.oracle.com/en/java/javase/12/docs/api/java.desktop/javax/sound/midi/MidiChannel.html#noteOn(int,int)>) és [noteOff()](<https://docs.oracle.com/en/java/javase/12/docs/api/java.desktop/javax/sound/midi/MidiChannel.html#noteOff(int)>) metódusokat.
-  - A metódusok első paramétere adja meg, melyik hang szóljon. A `C` hang kódja `60`, innen minden lépés egy félhangnyi távolságra van: `C#` kódja `61`, `Bb/-1` kódja `59`, `Db/1` kódja `73`…
+  - A metódusok első paramétere adja meg, melyik hang szóljon. A `C` hang kódja `60`, innen minden lépés egy félhangnyi távolságra van: `C#` kódja `61`, `Bb/-1` kódja `58`, `Db/1` kódja `73`…
 
 Új dal és dalszöveg feltöltése szokásos konzolos klienssel (PuTTY vagy telnet) tehető meg, de igény szerint szabad hozzá saját kliensprogramot készíteni.

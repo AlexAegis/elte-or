@@ -1,8 +1,5 @@
 
-Fsquid:S1148}"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8ÚûÓøŸ-
-[squid:UselessImportCheck"+Remove this unused import 'java.util.List'.(Õë±Äøÿÿÿÿ8øı›óŸ-
-Tsquid:UselessImportCheck")Remove this unused import 'java.io.File'.(†Ğ¥Å8øı›óŸ-
-hsquid:S4275E"JRefactor this getter so that it actually refers to the field "connection".(‘ĞæÂ8ÚûÓøŸ-
-[squid:UselessImportCheck"0Remove this unused import 'java.util.ArrayList'.(÷‰îƒ8øı›óŸ-
-isquid:CommentedOutCodeLinek"<This block of commented-out lines of code should be removed.(«Œ¨‰8ŠâùøŸ-
-usquid:S001163"VRename this field "connection$" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÜÏŠ¦8»åšÑŸ-
+usquid:S001167"VRename this field "connection$" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÜÏŠ¦8»åšÑŸ-
+isquid:CommentedOutCodeLineo"<This block of commented-out lines of code should be removed.(«Œ¨‰8ŠâùøŸ-
+hsquid:S4275I"JRefactor this getter so that it actually refers to the field "connection".(‘ĞæÂ8ÚûÓøŸ-
+Gsquid:S1148€"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8ÚûÓøŸ-
