@@ -4,15 +4,54 @@
 
 ELTE-IK 2018-19/2
 
-# BattleShips!
+## Requirements
 
-_Now With Exclusive Battle Royale Mode!~_
+- Java 11
+
+## BattleShips
+
+_Now With Exclusive Battle Royale Mode!_
+
+### Running through gradle
+
+Start up a server
+
+```sh
+./gradlew :battleships:run --args="server"
+# Or for real time mode:
+./gradlew :battleships:run --args="server --mode=ROYLE"
+```
+
+Then start some clients to join. This will start a swing terminal client even
+when ran from a terminal
+
+```sh
+./gradlew :battleships:run --args="client"
+```
+
+If you use the built jar, it will start normally in a terminal
+
+```sh
+./gradlew :battleships:build
+cd battleships/build/libs
+java -jar ./battleships-1.1.1.jar client
+```
+
+Check other options:
+
+```sh
+./gradlew :battleships:run # --args="help" # <- defaults to help
+./gradlew :battleships:run --args="client help"
+./gradlew :battleships:run --args="server help"
+```
+
+### Using the built jar
 
 ```bash
 java -jar battleships-1.0.0.jar
 ```
 
-## If you want to run the client on Windows use `javaw` instead of `java`! (Or use [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10))
+### If you want to run the client on Windows use `javaw` instead of `java`! (Or use [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10))
 
 (Lanterna can't use CMD or PS to display)
 
@@ -34,7 +73,7 @@ java -jar battleships-1.0.0.jar client -h
 
 ---
 
-## [Lesson 1 - resuscitation](./src/main/java/lesson01/)
+### [Lesson 1 - resuscitation](./src/main/java/lesson01/)
 
 | #   | Task                                                                           | [Test](./src/test/java/lesson01/)                               |
 | --- | ------------------------------------------------------------------------------ | --------------------------------------------------------------- |
@@ -44,7 +83,7 @@ java -jar battleships-1.0.0.jar client -h
 | 4   | [Fibonacci Trace](./src/main/java/lesson01/FibonacciTrace.java)                | [Test](./src/test/java/lesson01/FibonacciTraceTest.java)        |
 | 5   | [Reverse Polish Notation](./src/main/java/lesson01/ReversePolishNotation.java) | [Test](./src/test/java/lesson01/ReversePolishNotationTest.java) |
 
-## [Lesson 2 - file handling, scanner, battleships](./src/main/java/lesson02/)
+### [Lesson 2 - file handling, scanner, battleships](./src/main/java/lesson02/)
 
 | #   | Task                                         | [Test](./src/test/java/lesson02/)               |
 | --- | -------------------------------------------- | ----------------------------------------------- |
@@ -59,7 +98,7 @@ java -jar battleships-1.0.0.jar client -h
 | [Coord](./src/main/java/battleships/model/Coord.java)         |
 | [Direction](./src/main/java/battleships/model/Direction.java) |
 
-## [Lesson 3 - Basic server-client connection](./src/main/java/lesson03/)
+### [Lesson 3 - Basic server-client connection](./src/main/java/lesson03/)
 
 | #   | Task                                                                                                                                                |
 | --- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -77,7 +116,7 @@ java -jar battleships-1.0.0.jar client -h
 | [Shot](./src/main/java/battleships/model/Shot.java)           |
 | [Direction](./src/main/java/battleships/model/Direction.java) |
 
-## [Lesson 4 - BattleShips over network](./src/main/java/lesson04/)
+### [Lesson 4 - BattleShips over network](./src/main/java/lesson04/)
 
 ---
 
